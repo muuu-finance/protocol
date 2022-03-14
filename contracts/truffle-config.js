@@ -20,8 +20,8 @@
 
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 const fs = require('fs');
-const mnemonic = fs.readFileSync(".secret").toString().trim();
-const etherscanAPI = fs.readFileSync(".etherscanApi").toString().trim();
+const mnemonic = fs.existsSync(".secret") ? fs.readFileSync(".secret").toString().trim() : ""
+const etherscanAPI = fs.existsSync(".etherscanApi") ? fs.readFileSync(".etherscanApi").toString().trim() : ""
 
 module.exports = {
   /**
