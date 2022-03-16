@@ -112,42 +112,42 @@ module.exports = function (deployer, network, accounts) {
   deployer
     // ========================== Preparation start ==========================
     .deploy(MintableERC20, 'crv', 'CRV', 18)
-    .then(function (instance) {
+    .then((instance) => {
       crv = instance;
       addContract('mocks', 'CRV', crv.address);
     })
     .then(() => deployer.deploy(MintableERC20, 'weth', 'WETH', 18))
-    .then(function (instance) {
+    .then((instance) => {
       weth = instance;
       addContract('mocks', 'WETH', weth.address);
     })
     .then(() => deployer.deploy(MintableERC20, 'dai', 'DAI', 18))
-    .then(function (instance) {
+    .then((instance) => {
       dai = instance;
       addContract('mocks', 'DAI', dai.address);
     })
     .then(() => deployer.deploy(MintableERC20, '3Crv', 'Curve.fi DAI/USDC/USDT', 18))
-    .then(function (instance) {
+    .then((instance) => {
       threeCrv = instance;
       addContract('mocks', '3Crv', threeCrv.address);
     })
     .then(() => deployer.deploy(MockVotingEscrow))
-    .then(function (instance) {
+    .then((instance) => {
       mockVotingEscrow = instance;
       addContract('mocks', 'mockVotingEscrow', mockVotingEscrow.address);
     })
     .then(() => deployer.deploy(MockRegistry, threeCrv.address))
-    .then(function (instance) {
+    .then((instance) => {
       mockRegistry = instance;
       addContract('mocks', 'mockRegistry', mockRegistry.address);
     })
     .then(() => deployer.deploy(MockFeeDistributor, threeCrv.address))
-    .then(function (instance) {
+    .then((instance) => {
       mockFeeDistributor = instance;
       addContract('mocks', 'mockFeeDistributor', mockFeeDistributor.address);
     })
     .then(() => deployer.deploy(MockAddressProvider, mockRegistry.address, mockFeeDistributor.address))
-    .then(function (instance) {
+    .then((instance) => {
       mockAddressProvider = instance;
       addContract('mocks', 'mockAddressProvider', mockAddressProvider.address);
     })
@@ -158,13 +158,13 @@ module.exports = function (deployer, network, accounts) {
       ZERO_ADDRESS, // TODO:
       ZERO_ADDRESS // TODO:
     ))
-    .then(function (instance) {
+    .then((instance) => {
       voter = instance;
       addContract('system', 'voteProxy', voter.address);
     })
     // ========================== Preparation end ==========================
     .then(() => deployer.deploy(ConvexToken, voter.address))
-    .then(function (instance) {
+    .then((instance) => {
       cvx = instance;
       addContract('system', 'cvx', cvx.address);
     })
@@ -175,12 +175,12 @@ module.exports = function (deployer, network, accounts) {
       crv.address,
       mockAddressProvider.address
     ))
-    .then(function (instance) {
+    .then((instance) => {
       booster = instance;
       addContract('system', 'booster', booster.address);
       return voter.owner();
     })
-    .then(function (currentOwner) {
+    .then((currentOwner) => {
       //if develop, change current owner to current deployer
       if (currentOwner != admin) {
         return voter.transferOwnership(admin, { from: currentOwner });
@@ -189,22 +189,22 @@ module.exports = function (deployer, network, accounts) {
     .then(() =>voter.setOperator(booster.address))
     .then(() =>cvx.mint(accounts[0], premine.toString()))
     .then(() => deployer.deploy(RewardFactory, booster.address))
-    .then(function (instance) {
+    .then((instance) => {
       rFactory = instance;
       addContract('system', 'rFactory', rFactory.address);
     })
     .then(() => deployer.deploy(TokenFactory, booster.address))
-    .then(function (instance) {
+    .then((instance) => {
       tFactory = instance;
       addContract('system', 'tFactory', tFactory.address);
       return deployer.deploy(StashFactory, booster.address, rFactory.address);
     })
-    .then(function (instance) {
+    .then((instance) => {
       sFactory = instance;
       addContract('system', 'sFactory', sFactory.address);
       return deployer.deploy(cvxCrvToken);
     })
-    .then(function (instance) {
+    .then((instance) => {
       cvxCrv = instance;
       addContract('system', 'cvxCrv', cvxCrv.address);
       return deployer.deploy(
@@ -215,7 +215,7 @@ module.exports = function (deployer, network, accounts) {
         mockVotingEscrow.address // TODO: replace
       );
     })
-    .then(function (instance) {
+    .then((instance) => {
       deposit = instance;
       addContract('system', 'crvDepositor', deposit.address);
       return cvxCrv.setOperator(deposit.address);
@@ -231,7 +231,7 @@ module.exports = function (deployer, network, accounts) {
       booster.address,
       rFactory.address
     ))
-    .then(function (instance) {
+    .then((instance) => {
       cvxCrvRewards = instance;
       addContract('system', 'cvxCrvRewards', cvxCrvRewards.address);
       // reward manager is admin to add any new incentive programs
@@ -246,13 +246,13 @@ module.exports = function (deployer, network, accounts) {
         admin
       );
     })
-    .then(function (instance) {
+    .then((instance) => {
       cvxRewards = instance;
       addContract('system', 'cvxRewards', cvxRewards.address);
       return booster.setRewardContracts(cvxCrvRewards.address, cvxRewards.address);
     })
     .then(() => deployer.deploy(PoolManager, booster.address, mockAddressProvider.address))
-    .then(function (instance) {
+    .then((instance) => {
       pools = instance;
       addContract('system', 'poolManager', pools.address);
       return booster.setPoolManager(pools.address);
@@ -260,23 +260,23 @@ module.exports = function (deployer, network, accounts) {
     .then(() => booster.setFactories(rFactory.address, sFactory.address, tFactory.address))
     .then(() => booster.setFeeInfo())
     .then(() => deployer.deploy(ArbitratorVault, booster.address))
-    .then(function (instance) {
+    .then((instance) => {
       arb = instance;
       addContract('system', 'arbitratorVault', arb.address);
       return booster.setArbitrator(arb.address);
     })
 
     // added CVX LockerV2 ref: /contracts/test/UI_7_DeployLockerV2.js
-    .then(function () {
+    .then(() => {
       // TODO: constructor
       return deployer.deploy(CvxLockerV2);
     })
-    .then(function (instance) {
+    .then((instance) => {
       cvxLockerV2 = instance;
       addContract('system', 'cvxLockerV2', cvxLockerV2.address);
     })
 
-    .then(function () {
+    .then(() => {
       return deployer.deploy(
         ClaimZap,
         crv.address,
@@ -289,13 +289,13 @@ module.exports = function (deployer, network, accounts) {
         cvxLockerV2.address
       );
     })
-    .then(function (instance) {
+    .then((instance) => {
       addContract('system', 'claimZap', instance.address);
       return instance.setApprovals();
     })
 
     //Fund vested escrow
-    .then(function () {
+    .then(() => {
       //vest team, invest, treasury
       return deployer.deploy(
         VestedEscrow,
@@ -306,7 +306,7 @@ module.exports = function (deployer, network, accounts) {
         admin
       );
     })
-    .then(function (instance) {
+    .then((instance) => {
       vesting = instance;
       addContract('system', 'vestedEscrow', vesting.address);
       return cvx.approve(vesting.address, distroList.vested.total);
@@ -314,34 +314,34 @@ module.exports = function (deployer, network, accounts) {
     .then(() => vesting.addTokens(distroList.vested.total))
     .then(() => vesting.fund(vestedAddresses, vestedAmounts))
     .then(() => vesting.unallocatedSupply())
-    .then(function (unallocatedSupply) {
+    .then((unallocatedSupply) => {
       console.log('vesting unallocatedSupply: ' + unallocatedSupply);
       return vesting.initialLockedSupply();
     })
     .then((initialLockedSupply) => console.log('vesting initialLockedSupply: ' + initialLockedSupply))
     .then(() => deployer.deploy(MerkleAirdropFactory))
-    .then(function (dropFactory) {
+    .then((dropFactory) => {
       addContract('system', 'dropFactory', dropFactory.address);
       return dropFactory.CreateMerkleAirdrop();
     })
-    .then(function (tx) {
+    .then((tx) => {
       console.log('factory return: ' + tx.logs[0].args.drop);
       return MerkleAirdrop.at(tx.logs[0].args.drop);
     })
-    .then(function (instance) {
+    .then((instance) => {
       airdrop = instance;
       addContract('system', 'airdrop', airdrop.address);
       return airdrop.setRewardToken(cvx.address);
     })
     .then(() => cvx.transfer(airdrop.address, distroList.vecrv))
     .then(() => cvx.balanceOf(airdrop.address))
-    .then(function (dropBalance) {
+    .then((dropBalance) => {
       console.log('airdrop balance: ' + dropBalance);
       return airdrop.setRoot(merkleRoot);
     })
 
     //Create convex pools
-    .then(function() {
+    .then(() => {
       poolNames.push("3pool");
       console.log("adding pool " +poolNames[poolNames.length-1]);
       return pools.addPool( // TODO: remove Curve address, use test or mock address
@@ -352,7 +352,7 @@ module.exports = function (deployer, network, accounts) {
     })
 
     .then(() => booster.poolLength())
-    .then(function (poolCount) {
+    .then((poolCount) => {
       var pList = [];
       for (var i = 0; i < poolCount; i++) {
         pList.push(booster.poolInfo(i));
@@ -360,7 +360,7 @@ module.exports = function (deployer, network, accounts) {
       //var pinfo = await booster.poolInfo(0)
       return Promise.all(pList);
     })
-    .then(function (poolInfoList) {
+    .then((poolInfoList) => {
       //console.log("poolInfo: " +JSON.stringify(poolInfoList));
       for (var i = 0; i < poolInfoList.length; i++) {
         delete poolInfoList[i]['0'];
@@ -380,7 +380,7 @@ module.exports = function (deployer, network, accounts) {
       }
     })
 
-    .then(function () {
+    .then(() => {
       var contractListOutput = JSON.stringify(contractList, null, 4);
       console.log(contractListOutput);
       fs.writeFileSync('contracts.json', contractListOutput, function (err) {
