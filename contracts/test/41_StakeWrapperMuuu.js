@@ -6,7 +6,7 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 const Booster = artifacts.require('Booster');
 const KglDepositor = artifacts.require('KglDepositor');
 const MuuuToken = artifacts.require('MuuuToken');
-const cvxKglToken = artifacts.require('cvxKglToken');
+const muuuKglToken = artifacts.require('muuuKglToken');
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const MuuuStakingWrapper = artifacts.require('MuuuStakingWrapper');
@@ -44,11 +44,11 @@ contract('Test stake wrapper', async (accounts) => {
     //system
     let booster = await Booster.at(contractList.system.booster);
     let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
-    let cvx = await MuuuToken.at(contractList.system.cvx);
+    let muuu = await MuuuToken.at(contractList.system.muuu);
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let stkaave = await IERC20.at('0x4da27a545c0c5B758a6BA100e3a049001de870f5');
-    let cvxKgl = await cvxKglToken.at(contractList.system.cvxKgl);
-    let cvxKglLP = await IERC20.at(contractList.system.cvxKglKglSLP);
+    let muuuKgl = await muuuKglToken.at(contractList.system.muuuKgl);
+    let muuuKglLP = await IERC20.at(contractList.system.muuuKglKglSLP);
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
@@ -77,7 +77,7 @@ contract('Test stake wrapper', async (accounts) => {
     var userBBalance = await kaglaLP.balanceOf(userB);
     console.log('userA: ' + userABalance + ',  userB: ' + userBBalance);
 
-    let lib = await MuuuMining.at(contractList.system.cvxMining);
+    let lib = await MuuuMining.at(contractList.system.muuuMining);
     console.log('mining lib at: ' + lib.address);
     await MuuuStakingWrapper.link('MuuuMining', lib.address);
     let staker = await MuuuStakingWrapper.new();
@@ -129,11 +129,11 @@ contract('Test stake wrapper', async (accounts) => {
     console.log('======');
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('user a wallet kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('user a wallet muuu: ' + a));
     console.log('-----');
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
     await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
-    await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
+    await muuu.balanceOf(userB).then((a) => console.log('user b wallet muuu: ' + a));
 
     console.log('checkpoint');
     var tx = await staker.user_checkpoint([userA, addressZero]);
@@ -158,7 +158,7 @@ contract('Test stake wrapper', async (accounts) => {
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
 
     await kgl.balanceOf(staker.address).then((a) => console.log('staker kgl: ' + a));
-    await cvx.balanceOf(staker.address).then((a) => console.log('staker cvx: ' + a));
+    await muuu.balanceOf(staker.address).then((a) => console.log('staker muuu: ' + a));
     for (var i = 0; i < rewardCount; i++) {
       var rInfo = await staker.rewards(i);
       console.log('rewards ' + i + ': ' + JSON.stringify(rInfo));
@@ -167,11 +167,11 @@ contract('Test stake wrapper', async (accounts) => {
     console.log('======');
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('user a wallet kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('user a wallet muuu: ' + a));
     console.log('-----');
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
     await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
-    await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
+    await muuu.balanceOf(userB).then((a) => console.log('user b wallet muuu: ' + a));
     for (var i = 0; i < rewardCount; i++) {
       var rInfo = await staker.rewards(i);
       console.log('rewards ' + i + ': ' + JSON.stringify(rInfo));
@@ -183,27 +183,27 @@ contract('Test stake wrapper', async (accounts) => {
     console.log('======');
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('user a wallet kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('user a wallet muuu: ' + a));
     console.log('-----');
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
     await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
-    await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
+    await muuu.balanceOf(userB).then((a) => console.log('user b wallet muuu: ' + a));
     console.log('claiming rewards...');
     console.log('======');
     var tx = await staker.getReward(userA, { from: userA });
     console.log('claimed A, gas: ' + tx.receipt.gasUsed);
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('user a wallet kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('user a wallet muuu: ' + a));
     console.log('-----');
     var tx = await staker.getReward(userB, { from: userB });
     console.log('claimed B, gas: ' + tx.receipt.gasUsed);
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
     await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
-    await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
+    await muuu.balanceOf(userB).then((a) => console.log('user b wallet muuu: ' + a));
 
     await kgl.balanceOf(staker.address).then((a) => console.log('kgl on staker: ' + a));
-    await cvx.balanceOf(staker.address).then((a) => console.log('staker cvx: ' + a));
+    await muuu.balanceOf(staker.address).then((a) => console.log('staker muuu: ' + a));
 
     for (var i = 0; i < rewardCount; i++) {
       var rInfo = await staker.rewards(i);
@@ -217,26 +217,26 @@ contract('Test stake wrapper', async (accounts) => {
     console.log('======');
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('user a wallet kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('user a wallet muuu: ' + a));
     console.log('-----');
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
     await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
-    await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
+    await muuu.balanceOf(userB).then((a) => console.log('user b wallet muuu: ' + a));
     console.log('claiming rewards...');
     var tx = await staker.getReward(userA, { from: userA });
     console.log('claimed A, gas: ' + tx.receipt.gasUsed);
     var tx = await staker.getReward(userB, { from: userB });
     console.log('claimed B, gas: ' + tx.receipt.gasUsed);
     await kgl.balanceOf(staker.address).then((a) => console.log('kgl on staker: ' + a));
-    await cvx.balanceOf(staker.address).then((a) => console.log('staker cvx: ' + a));
+    await muuu.balanceOf(staker.address).then((a) => console.log('staker muuu: ' + a));
     console.log('======');
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('user a wallet kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('user a wallet muuu: ' + a));
     console.log('-----');
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
     await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
-    await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
+    await muuu.balanceOf(userB).then((a) => console.log('user b wallet muuu: ' + a));
     for (var i = 0; i < rewardCount; i++) {
       var rInfo = await staker.rewards(i);
       console.log('rewards ' + i + ': ' + JSON.stringify(rInfo));
@@ -249,11 +249,11 @@ contract('Test stake wrapper', async (accounts) => {
     console.log('======');
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('user a wallet kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('user a wallet muuu: ' + a));
     console.log('-----');
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
     await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
-    await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
+    await muuu.balanceOf(userB).then((a) => console.log('user b wallet muuu: ' + a));
     console.log('claiming rewards...');
     var tx = await staker.getReward(userA, { from: userA });
     console.log('claimed A, gas: ' + tx.receipt.gasUsed);
@@ -262,11 +262,11 @@ contract('Test stake wrapper', async (accounts) => {
     console.log('======');
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('user a wallet kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('user a wallet muuu: ' + a));
     console.log('-----');
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
     await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
-    await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
+    await muuu.balanceOf(userB).then((a) => console.log('user b wallet muuu: ' + a));
 
     await time.increase(86400);
     await time.advanceBlock();
@@ -283,26 +283,26 @@ contract('Test stake wrapper', async (accounts) => {
 
     console.log('--- current rewards on wrapper ---');
     await kgl.balanceOf(staker.address).then((a) => console.log('staker kgl: ' + a));
-    await cvx.balanceOf(staker.address).then((a) => console.log('staker cvx: ' + a));
+    await muuu.balanceOf(staker.address).then((a) => console.log('staker muuu: ' + a));
     console.log('-----');
     await kgl.balanceOf(userA).then((a) => console.log('user a wallet kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('user a wallet muuu: ' + a));
 
     var tx = await staker.getReward(userB, { from: userB });
     console.log('claimed B, gas: ' + tx.receipt.gasUsed);
 
     console.log('--- current rewards on wrapper ---');
     await kgl.balanceOf(staker.address).then((a) => console.log('staker kgl: ' + a));
-    await cvx.balanceOf(staker.address).then((a) => console.log('staker cvx: ' + a));
+    await muuu.balanceOf(staker.address).then((a) => console.log('staker muuu: ' + a));
     console.log('-----');
 
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('user a wallet kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('user a wallet muuu: ' + a));
     console.log('-----');
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
     await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
-    await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
+    await muuu.balanceOf(userB).then((a) => console.log('user b wallet muuu: ' + a));
 
     //check whats left on the staker
     console.log('>>> remaining check <<<<');
@@ -310,6 +310,6 @@ contract('Test stake wrapper', async (accounts) => {
     await staker.balanceOf(userB).then((a) => console.log('user b staked: ' + a));
     await staker.totalSupply().then((a) => console.log('remaining supply: ' + a));
     await kgl.balanceOf(staker.address).then((a) => console.log('remaining kgl: ' + a));
-    await cvx.balanceOf(staker.address).then((a) => console.log('remaining cvx: ' + a));
+    await muuu.balanceOf(staker.address).then((a) => console.log('remaining muuu: ' + a));
   });
 });

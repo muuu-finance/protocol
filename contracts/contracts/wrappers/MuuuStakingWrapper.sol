@@ -43,7 +43,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
     //constants/immutables
     address public constant muuuBooster = address(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
     address public constant kgl = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
-    address public constant cvx = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
+    address public constant muuu = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
     address public kaglaToken;
     address public muuuToken;
     address public muuuPool;
@@ -149,22 +149,22 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
             );
             rewards.push(
                 RewardType({
-                    reward_token: cvx,
+                    reward_token: muuu,
                     reward_pool: address(0),
                     reward_integral: 0,
                     reward_remaining: 0
                 })
             );
             registeredRewards[kgl] = KGL_INDEX+1; //mark registered at index+1
-            registeredRewards[cvx] = MUUU_INDEX+1; //mark registered at index+1
+            registeredRewards[muuu] = MUUU_INDEX+1; //mark registered at index+1
         }
 
         uint256 extraCount = IRewardStaking(mainPool).extraRewardsLength();
         for (uint256 i = 0; i < extraCount; i++) {
             address extraPool = IRewardStaking(mainPool).extraRewards(i);
             address extraToken = IRewardStaking(extraPool).rewardToken();
-            if(extraToken == cvx){
-                //update cvx reward pool address
+            if(extraToken == muuu){
+                //update muuu reward pool address
                 rewards[MUUU_INDEX].reward_pool = extraPool;
             }else if(registeredRewards[extraToken] == 0){
                 //add new token to list
@@ -291,7 +291,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
             RewardType storage reward = rewards[i];
 
             if(reward.reward_pool == address(0)){
-                //cvx reward may not have a reward pool yet
+                //muuu reward may not have a reward pool yet
                 //so just add whats already been checkpointed
                 claimable[i].amount = claimable[i].amount.add(reward.claimable_reward[_account]);
                 claimable[i].token = reward.reward_token;
@@ -312,8 +312,8 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
             claimable[i].amount = claimable[i].amount.add(reward.claimable_reward[_account].add(newlyClaimable));
             claimable[i].token = reward.reward_token;
 
-            //calc cvx minted from kgl and add to cvx claimables
-            //note: kgl is always index 0 so will always run before cvx
+            //calc muuu minted from kgl and add to muuu claimables
+            //note: kgl is always index 0 so will always run before muuu
             if(i == KGL_INDEX){
                 //because someone can call claim for the pool outside of checkpoints, need to recalculate kgl without the local balance
                 I = reward.reward_integral;
@@ -322,7 +322,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
                 }
                 newlyClaimable = _getDepositedBalance(_account).mul(I.sub(reward.reward_integral_for[_account])).div(1e20);
                 claimable[MUUU_INDEX].amount = MuuuMining.ConvertKglToMuuu(newlyClaimable);
-                claimable[MUUU_INDEX].token = cvx;
+                claimable[MUUU_INDEX].token = muuu;
             }
         }
         return claimable;

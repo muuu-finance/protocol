@@ -8,10 +8,10 @@ const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
-//const cvxKglRewardPool = artifacts.require("cvxKglRewardPool");
-const cvxRewardPool = artifacts.require('cvxRewardPool');
+//const muuuKglRewardPool = artifacts.require("muuuKglRewardPool");
+const muuuRewardPool = artifacts.require('muuuRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const cvxKglToken = artifacts.require('cvxKglToken');
+const muuuKglToken = artifacts.require('muuuKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 const DepositToken = artifacts.require('DepositToken');
@@ -22,7 +22,7 @@ const IERC20 = artifacts.require('IERC20');
 const ERC20 = artifacts.require('ERC20');
 
 contract('RewardsTest', async (accounts) => {
-  it('should deposit and receive kgl and cvx rewards', async () => {
+  it('should deposit and receive kgl and muuu rewards', async () => {
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
     let dai = await IERC20.at('0x6b175474e89094c44da98b954eedeac495271d0f');
@@ -42,13 +42,13 @@ contract('RewardsTest', async (accounts) => {
     let booster = await Booster.deployed();
     let rewardFactory = await RewardFactory.deployed();
     let stashFactory = await StashFactory.deployed();
-    let cvx = await MuuuToken.deployed();
-    let cvxKgl = await cvxKglToken.deployed();
+    let muuu = await MuuuToken.deployed();
+    let muuuKgl = await muuuKglToken.deployed();
     let kglDeposit = await KglDepositor.deployed();
-    let cvxKglRewards = await booster.lockRewards();
-    let cvxRewards = await booster.stakerRewards();
-    let cvxKglRewardsContract = await BaseRewardPool.at(cvxKglRewards);
-    let cvxRewardsContract = await cvxRewardPool.at(cvxRewards);
+    let muuuKglRewards = await booster.lockRewards();
+    let muuuRewards = await booster.stakerRewards();
+    let muuuKglRewardsContract = await BaseRewardPool.at(muuuKglRewards);
+    let muuuRewardsContract = await muuuRewardPool.at(muuuRewards);
 
     var poolId = contractList.pools.find((pool) => pool.name == '3pool').id;
     let poolinfo = await booster.poolInfo(poolId);
@@ -63,7 +63,7 @@ contract('RewardsTest', async (accounts) => {
     await depositToken.symbol().then((a) => console.log('deposit token symbol: ' + a));
     await depositTokenOp.operator().then((a) => console.log('deposit token operator: ' + a));
 
-    //increase time so that cvx rewards start
+    //increase time so that muuu rewards start
     await time.increase(10 * 86400);
     await time.advanceBlock();
     console.log('advance time...');
@@ -90,21 +90,21 @@ contract('RewardsTest', async (accounts) => {
     let startingThreeKgl = await threeKgl.balanceOf(userA);
     console.log('3kgl: ' + startingThreeKgl);
 
-    //send cvx to user b to stake
+    //send muuu to user b to stake
     await weth.approve(sushiexchange.address, startingWeth, { from: userA });
     await sushiexchange.swapExactTokensForTokens(
       web3.utils.toWei('1.0', 'ether'),
       0,
-      [weth.address, cvx.address],
+      [weth.address, muuu.address],
       userB,
       starttime + 3000,
       { from: userA }
     );
-    let cvxBal = await cvx.balanceOf(userB);
-    console.log('exchanged for cvx: ' + cvxBal);
-    await cvx.approve(cvxRewardsContract.address, cvxBal, { from: userB });
-    await cvxRewardsContract.stakeAll({ from: userB });
-    await cvxRewardsContract.balanceOf(userB).then((a) => console.log('user b staked cvx: ' + a));
+    let muuuBal = await muuu.balanceOf(userB);
+    console.log('exchanged for muuu: ' + muuuBal);
+    await muuu.approve(muuuRewardsContract.address, muuuBal, { from: userB });
+    await muuuRewardsContract.stakeAll({ from: userB });
+    await muuuRewardsContract.balanceOf(userB).then((a) => console.log('user b staked muuu: ' + a));
 
     //approve
     await threeKgl.approve(booster.address, 0, { from: userA });
@@ -138,7 +138,7 @@ contract('RewardsTest', async (accounts) => {
 
     //check pre reward balances
     await kgl.balanceOf(userA).then((a) => console.log('userA kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('userA cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('userA muuu: ' + a));
 
     //claim kgl rewards from gauge and send to reward contract
     await booster.earmarkRewards(poolId, { from: caller });
@@ -149,10 +149,10 @@ contract('RewardsTest', async (accounts) => {
     await kgl.balanceOf(booster.address).then((a) => console.log('kgl at booster ' + a));
     await kgl.balanceOf(caller).then((a) => console.log('kgl at caller ' + a));
     await kgl.balanceOf(rewardPool.address).then((a) => console.log('kgl at reward pool ' + a));
-    await kgl.balanceOf(cvxKglRewards).then((a) => console.log('kgl at cvxKglRewards ' + a));
-    await kgl.balanceOf(cvxRewards).then((a) => console.log('kgl at cvxRewards ' + a));
+    await kgl.balanceOf(muuuKglRewards).then((a) => console.log('kgl at muuuKglRewards ' + a));
+    await kgl.balanceOf(muuuRewards).then((a) => console.log('kgl at muuuRewards ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('userA kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('userA cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('userA muuu: ' + a));
 
     //earned should still be 0
     await rewardPool.earned(userA).then((a) => console.log('rewards earned(unclaimed): ' + a));
@@ -166,11 +166,11 @@ contract('RewardsTest', async (accounts) => {
     //should now have earned amount
     await rewardPool.earned(userA).then((a) => console.log('rewards earned(unclaimed): ' + a));
 
-    //claim reward, should receive kgl and cvx (cvx should be about half)
+    //claim reward, should receive kgl and muuu (muuu should be about half)
     await rewardPool.getReward({ from: userA });
     console.log('getReward()');
     await kgl.balanceOf(userA).then((a) => console.log('userA kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('userA cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('userA muuu: ' + a));
     await kgl.balanceOf(rewardPool.address).then((a) => console.log('rewards left: ' + a));
 
     //advance time
@@ -187,7 +187,7 @@ contract('RewardsTest', async (accounts) => {
     await rewardPool.getReward({ from: userA });
     console.log('getReward()');
     await kgl.balanceOf(userA).then((a) => console.log('userA kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('userA cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('userA muuu: ' + a));
     await rewardPool.earned(userA).then((a) => console.log('rewards earned(unclaimed): ' + a));
 
     //check rewards left
@@ -213,7 +213,7 @@ contract('RewardsTest', async (accounts) => {
     await rewardPool.getReward({ from: userA });
     console.log('getReward()');
     await kgl.balanceOf(userA).then((a) => console.log('userA kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('userA cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('userA muuu: ' + a));
     await kgl.balanceOf(rewardPool.address).then((a) => console.log('rewards left: ' + a));
 
     //advance time
@@ -225,7 +225,7 @@ contract('RewardsTest', async (accounts) => {
 
     //withdraw should also claim rewards
     await kgl.balanceOf(userA).then((a) => console.log('userA kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('userA cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('userA muuu: ' + a));
 
     //unstake + unwrap + claim
     let rbal = await rewardPool.balanceOf(userA);
@@ -234,36 +234,36 @@ contract('RewardsTest', async (accounts) => {
 
     await threeKgl.balanceOf(userA).then((a) => console.log('userA 3kgl final: ' + a));
     await depositToken.balanceOf(userA).then((a) => console.log('final lp balance: ' + a));
-    await kgl.balanceOf(cvxKglRewards).then((a) => console.log('kgl at cvxKglRewards ' + a));
-    await kgl.balanceOf(cvxRewards).then((a) => console.log('kgl at cvxRewards ' + a));
+    await kgl.balanceOf(muuuKglRewards).then((a) => console.log('kgl at muuuKglRewards ' + a));
+    await kgl.balanceOf(muuuRewards).then((a) => console.log('kgl at muuuRewards ' + a));
     await rewardPool
       .balanceOf(userA)
       .then((a) => console.log('reward pool balance of user(==0): ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('userA kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('userA cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('userA muuu: ' + a));
 
-    //meanwhile user B should be receiving cvxKgl rewards via cvx staking
+    //meanwhile user B should be receiving muuuKgl rewards via muuu staking
     await kgl.balanceOf(userB).then((a) => console.log('userB kgl(before claim): ' + a));
-    await cvxKgl.balanceOf(userB).then((a) => console.log('userB cvxKgl(before claim): ' + a));
-    await cvxKglRewardsContract
+    await muuuKgl.balanceOf(userB).then((a) => console.log('userB muuuKgl(before claim): ' + a));
+    await muuuKglRewardsContract
       .balanceOf(userB)
-      .then((a) => console.log('userB staked cvxKgl(before claim): ' + a));
-    await cvxRewardsContract.earned(userB).then((a) => console.log('userB earned: ' + a));
-    //await cvxRewardsContract.getReward(false,{from:userB});
-    await cvxRewardsContract.getReward(true, { from: userB });
+      .then((a) => console.log('userB staked muuuKgl(before claim): ' + a));
+    await muuuRewardsContract.earned(userB).then((a) => console.log('userB earned: ' + a));
+    //await muuuRewardsContract.getReward(false,{from:userB});
+    await muuuRewardsContract.getReward(true, { from: userB });
     await kgl.balanceOf(userB).then((a) => console.log('userB kgl(after claim): ' + a));
-    await cvxKgl.balanceOf(userB).then((a) => console.log('userB cvxKgl(after claim): ' + a));
-    await cvxKglRewardsContract
+    await muuuKgl.balanceOf(userB).then((a) => console.log('userB muuuKgl(after claim): ' + a));
+    await muuuKglRewardsContract
       .balanceOf(userB)
-      .then((a) => console.log('userB staked cvxKgl(after claim): ' + a));
+      .then((a) => console.log('userB staked muuuKgl(after claim): ' + a));
 
-    //withdraw from cvx
-    await cvx.balanceOf(userB).then((a) => console.log('userB cvx on wallet: ' + a));
-    var stakedMuuu = await cvxRewardsContract.balanceOf(userB);
-    console.log('staked cvx: ' + stakedMuuu);
-    await cvxRewardsContract.withdraw(stakedMuuu, true, { from: userB });
+    //withdraw from muuu
+    await muuu.balanceOf(userB).then((a) => console.log('userB muuu on wallet: ' + a));
+    var stakedMuuu = await muuuRewardsContract.balanceOf(userB);
+    console.log('staked muuu: ' + stakedMuuu);
+    await muuuRewardsContract.withdraw(stakedMuuu, true, { from: userB });
     console.log('withdraw()');
-    await cvx.balanceOf(userB).then((a) => console.log('userB cvx on wallet: ' + a));
-    await cvxRewardsContract.balanceOf(userB).then((a) => console.log('userB staked cvx: ' + a));
+    await muuu.balanceOf(userB).then((a) => console.log('userB muuu on wallet: ' + a));
+    await muuuRewardsContract.balanceOf(userB).then((a) => console.log('userB staked muuu: ' + a));
   });
 });

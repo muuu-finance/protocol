@@ -4,7 +4,7 @@ const { keccak256: k256 } = require('ethereum-cryptography/keccak');
 var jsonfile = require('jsonfile');
 var contractList = jsonfile.readFileSync('./contracts.json');
 
-const rewardFile = jsonfile.readFileSync('./vlcvx_token_rewards.json');
+const rewardFile = jsonfile.readFileSync('./vlmuuu_token_rewards.json');
 
 const Booster = artifacts.require('Booster');
 const IERC20 = artifacts.require('IERC20');
@@ -35,8 +35,8 @@ contract('Rescue tokens from voteProxy', async (accounts) => {
     //system
     let booster = await Booster.at(contractList.system.booster);
     let locker = await MuuuLocker.at(contractList.system.locker);
-    let cvx = await IERC20.at(contractList.system.cvx);
-    let cvxkgl = await IERC20.at(contractList.system.cvxKgl);
+    let muuu = await IERC20.at(contractList.system.muuu);
+    let muuukgl = await IERC20.at(contractList.system.muuuKgl);
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');

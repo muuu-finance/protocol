@@ -8,10 +8,10 @@ const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
-//const cvxKglRewardPool = artifacts.require("cvxKglRewardPool");
-const cvxRewardPool = artifacts.require('cvxRewardPool');
+//const muuuKglRewardPool = artifacts.require("muuuKglRewardPool");
+const muuuRewardPool = artifacts.require('muuuRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const cvxKglToken = artifacts.require('cvxKglToken');
+const muuuKglToken = artifacts.require('muuuKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 
@@ -53,13 +53,13 @@ contract('Voting Test', async (accounts) => {
     let booster = await Booster.deployed();
     let rewardFactory = await RewardFactory.deployed();
     let stashFactory = await StashFactory.deployed();
-    let cvx = await MuuuToken.deployed();
-    let cvxKgl = await cvxKglToken.deployed();
+    let muuu = await MuuuToken.deployed();
+    let muuuKgl = await muuuKglToken.deployed();
     let kglDeposit = await KglDepositor.deployed();
-    let cvxKglRewards = await booster.lockRewards();
-    let cvxRewards = await booster.stakerRewards();
-    let cvxKglRewardsContract = await BaseRewardPool.at(cvxKglRewards);
-    let cvxRewardsContract = await cvxRewardPool.at(cvxRewards);
+    let muuuKglRewards = await booster.lockRewards();
+    let muuuRewards = await booster.stakerRewards();
+    let muuuKglRewardsContract = await BaseRewardPool.at(muuuKglRewards);
+    let muuuRewardsContract = await muuuRewardPool.at(muuuRewards);
 
     var poolId = contractList.pools.find((pool) => pool.name == '3pool').id;
     let poolinfo = await booster.poolInfo(poolId);
@@ -99,8 +99,8 @@ contract('Voting Test', async (accounts) => {
       from: userA,
     });
     console.log('kgl deposited');
-    await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
-    await cvxKgl.totalSupply().then((a) => console.log('cvxKgl supply: ' + a));
+    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
+    await muuuKgl.totalSupply().then((a) => console.log('muuuKgl supply: ' + a));
     await kgl.balanceOf(kglDeposit.address).then((a) => console.log('depositor kgl(>0): ' + a));
     await kgl.balanceOf(voteproxy.address).then((a) => console.log('proxy kgl(==0): ' + a));
     await vekgl.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(==0): ' + a));

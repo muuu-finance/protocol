@@ -7,7 +7,7 @@ import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
 
 
-//Distribute various rewards to locked cvx holders
+//Distribute various rewards to locked muuu holders
 // - Rewards added are assigned to the previous epoch (it was the previous epoch lockers who deserve today's rewards)
 // - As soon as claiming for a token at an epoch is eligibe, no more tokens should be allowed to be added
 // - To allow multiple txs to add to the same token, rewards added during the current epoch (and assigned to previous) will not
@@ -23,7 +23,7 @@ contract vlMuuuExtraRewardDistribution {
     using BoringMath
     for uint256;
 
-    ILockedMuuu public immutable cvxlocker;
+    ILockedMuuu public immutable muuulocker;
     uint256 public constant rewardsDuration = 86400 * 7;
 
     mapping(address => mapping(uint256 => uint256)) public rewardData; // token -> epoch -> amount
@@ -31,7 +31,7 @@ contract vlMuuuExtraRewardDistribution {
     mapping(address => mapping(address => uint256)) public userClaims; //token -> account -> last claimed epoch index
 
     constructor(address _locker) public {
-        cvxlocker = ILockedMuuu(_locker);
+        muuulocker = ILockedMuuu(_locker);
     }
 
 
@@ -43,13 +43,13 @@ contract vlMuuuExtraRewardDistribution {
         //count - 1 = next
         //count - 2 = current
         //count - 3 = prev
-        return cvxlocker.epochCount() - 3;
+        return muuulocker.epochCount() - 3;
     }
 
     //add a reward to a specific epoch
     function addRewardToEpoch(address _token, uint256 _amount, uint256 _epoch) external {
         //checkpoint locker
-        cvxlocker.checkpointEpoch();
+        muuulocker.checkpointEpoch();
 
 
         //if adding a reward to a specific epoch, make sure it's
@@ -69,7 +69,7 @@ contract vlMuuuExtraRewardDistribution {
     //add a reward to the current epoch. can be called multiple times for the same reward token
     function addReward(address _token, uint256 _amount) external {
         //checkpoint locker
-        cvxlocker.checkpointEpoch();
+        muuulocker.checkpointEpoch();
 
         //assign to previous epoch
         uint256 prevEpoch = previousEpoch();
@@ -79,7 +79,7 @@ contract vlMuuuExtraRewardDistribution {
 
     function _addReward(address _token, uint256 _amount, uint256 _epoch) internal {
         //convert to reward per token
-        uint256 supply = cvxlocker.totalSupplyAtEpoch(_epoch);
+        uint256 supply = muuulocker.totalSupplyAtEpoch(_epoch);
         uint256 rPerT = _amount.mul(1e20).div(supply);
         rewardData[_token][_epoch] = rewardData[_token][_epoch].add(rPerT);
 
@@ -126,7 +126,7 @@ contract vlMuuuExtraRewardDistribution {
     //get claimable rewards for a token at a specific epoch
     function _claimableRewards(address _account, address _token, uint256 _epoch) internal view returns(uint256) {
         //get balance and calc share
-        uint256 balance = cvxlocker.balanceAtEpochOf(_epoch, _account);
+        uint256 balance = muuulocker.balanceAtEpochOf(_epoch, _account);
         return balance.mul(rewardData[_token][_epoch]).div(1e20);
     }
 

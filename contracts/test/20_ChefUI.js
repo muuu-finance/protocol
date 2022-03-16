@@ -10,9 +10,9 @@ const ExtraRewardStashV1 = artifacts.require('ExtraRewardStashV1');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
-const cvxRewardPool = artifacts.require('cvxRewardPool');
+const muuuRewardPool = artifacts.require('muuuRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const cvxKglToken = artifacts.require('cvxKglToken');
+const muuuKglToken = artifacts.require('muuuKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 const ArbitratorVault = artifacts.require('ArbitratorVault');
@@ -40,10 +40,10 @@ contract('Test masterchef rewards setup', async (accounts) => {
     let booster = await Booster.at(contractList.system.booster);
     let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let chef = await MuuuMasterChef.at(contractList.system.chef);
-    let cvx = await MuuuToken.at(contractList.system.cvx);
-    let cvxKgl = await cvxKglToken.at(contractList.system.cvxKgl);
-    let cvxLP = await IERC20.at(contractList.system.cvxEthSLP);
-    let cvxKglLP = await IERC20.at(contractList.system.cvxKglKglSLP);
+    let muuu = await MuuuToken.at(contractList.system.muuu);
+    let muuuKgl = await muuuKglToken.at(contractList.system.muuuKgl);
+    let muuuLP = await IERC20.at(contractList.system.muuuEthSLP);
+    let muuuKglLP = await IERC20.at(contractList.system.muuuKglKglSLP);
     let kglDeposit = await KglDepositor.at(contractList.system.kglDepositor);
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
@@ -58,7 +58,7 @@ contract('Test masterchef rewards setup', async (accounts) => {
 
     let dummyMuuu = await ChefToken.at(contractList.system.chefMuuuToken);
     console.log('dummyMuuu: ' + dummyMuuu.address);
-    let dummyMuuuKgl = await ChefToken.at(contractList.system.chefcvxKglToken);
+    let dummyMuuuKgl = await ChefToken.at(contractList.system.chefmuuuKglToken);
     console.log('dummyMuuuKgl: ' + dummyMuuuKgl.address);
 
     //set points from v1 to v2
@@ -77,42 +77,42 @@ contract('Test masterchef rewards setup', async (accounts) => {
     var wethBalance = await weth.balanceOf(deployer);
     console.log('receive weth: ' + wethBalance);
     await weth.approve(exchange.address, wethBalance, { from: deployer });
-    //get cvx slp
+    //get muuu slp
     await exchange.swapExactTokensForTokens(
       web3.utils.toWei('1.0', 'ether'),
       0,
-      [weth.address, cvx.address],
+      [weth.address, muuu.address],
       deployer,
       starttime + 3000,
       { from: deployer }
     );
-    var cvxbalance = await cvx.balanceOf(deployer);
-    console.log('swapped for cvx: ' + cvxbalance);
+    var muuubalance = await muuu.balanceOf(deployer);
+    console.log('swapped for muuu: ' + muuubalance);
     wethBalance = await weth.balanceOf(deployer);
     console.log('weth remainig: ' + wethBalance);
-    //trade for a bunch of cvx
+    //trade for a bunch of muuu
     //add to slp using a portion
-    await cvx.approve(exchangerouter.address, cvxbalance, { from: deployer });
+    await muuu.approve(exchangerouter.address, muuubalance, { from: deployer });
     await weth.approve(exchangerouter.address, wethBalance, { from: deployer });
     await exchangerouter.addLiquidity(
       weth.address,
-      cvx.address,
+      muuu.address,
       web3.utils.toWei('1.0', 'ether'),
-      cvxbalance,
+      muuubalance,
       0,
       0,
       deployer,
       starttime + 3000,
       { from: deployer }
     );
-    var lpbalance = await cvxLP.balanceOf(deployer);
-    //  console.log("cvx lpbalance: " +lpbalance);
+    var lpbalance = await muuuLP.balanceOf(deployer);
+    //  console.log("muuu lpbalance: " +lpbalance);
 
     //send to test account
-    await cvxLP.transfer(accounts[0], lpbalance, { from: deployer });
-    await cvxLP.balanceOf(accounts[0]).then((a) => console.log('cvxEth lp balance: ' + a));
+    await muuuLP.transfer(accounts[0], lpbalance, { from: deployer });
+    await muuuLP.balanceOf(accounts[0]).then((a) => console.log('muuuEth lp balance: ' + a));
 
-    //get cvxkgl slp
+    //get muuukgl slp
     await exchange.swapExactTokensForTokens(
       web3.utils.toWei('1.0', 'ether'),
       0,
@@ -122,39 +122,39 @@ contract('Test masterchef rewards setup', async (accounts) => {
       { from: deployer }
     );
     var kglbalance = await kgl.balanceOf(deployer);
-    console.log('swapped for cvx: ' + cvxbalance);
+    console.log('swapped for muuu: ' + muuubalance);
     var depositamount = kglbalance.div(new BN('2'));
     await kgl.approve(kglDeposit.address, kglbalance, { from: deployer });
     await kglDeposit.deposit(depositamount, false, addressZero, { from: deployer });
-    var cvxkglBal = await cvxKgl.balanceOf(deployer);
+    var muuukglBal = await muuuKgl.balanceOf(deployer);
     kglbalance = await kgl.balanceOf(deployer);
-    console.log('cvxkgl bal: ' + cvxkglBal);
+    console.log('muuukgl bal: ' + muuukglBal);
     console.log('kgl bal: ' + kglbalance);
     await kgl.approve(exchange.address, kglbalance, { from: deployer });
-    await cvxKgl.approve(exchange.address, kglbalance, { from: deployer });
-    console.log('approved kgl and cvxkgl');
+    await muuuKgl.approve(exchange.address, kglbalance, { from: deployer });
+    console.log('approved kgl and muuukgl');
     await exchangerouter.addLiquidity(
       kgl.address,
-      cvxKgl.address,
+      muuuKgl.address,
       kglbalance,
-      cvxkglBal,
+      muuukglBal,
       0,
       0,
       deployer,
       starttime + 3000,
       { from: deployer }
     );
-    var cvxKgllpbalance = await cvxKglLP.balanceOf(deployer);
-    // console.log("cvxkgl lpbalance: " +lpbalance);
+    var muuuKgllpbalance = await muuuKglLP.balanceOf(deployer);
+    // console.log("muuukgl lpbalance: " +lpbalance);
 
     //send to test account
-    await cvxKglLP.transfer(accounts[0], cvxKgllpbalance, { from: deployer });
-    await cvxKglLP.balanceOf(accounts[0]).then((a) => console.log('cvxkglKgl lp balance: ' + a));
+    await muuuKglLP.transfer(accounts[0], muuuKgllpbalance, { from: deployer });
+    await muuuKglLP.balanceOf(accounts[0]).then((a) => console.log('muuukglKgl lp balance: ' + a));
 
-    //get more cvx
-    // await exchange.swapExactTokensForTokens(web3.utils.toWei("6.0", "ether"),0,[weth.address,cvx.address],deployer,starttime+3000,{from:deployer});
-    cvxbalance = await cvx.balanceOf(deployer);
-    console.log('cvx for init: ' + cvxbalance);
+    //get more muuu
+    // await exchange.swapExactTokensForTokens(web3.utils.toWei("6.0", "ether"),0,[weth.address,muuu.address],deployer,starttime+3000,{from:deployer});
+    muuubalance = await muuu.balanceOf(deployer);
+    console.log('muuu for init: ' + muuubalance);
 
     //add slot slot for dummy token on muuu master chef
     // await chef.add(8000000000,dummyMuuu.address,addressZero,true,{from:multisig,gasPrice:0});
@@ -162,21 +162,24 @@ contract('Test masterchef rewards setup', async (accounts) => {
     // await chef.add(12000000000,dummyMuuuKgl.address,addressZero,true,{from:multisig,gasPrice:0});
     // console.log("add slot to muuu chef");
 
-    //create rewarder for cvx/eth
-    let rewardercvx = await MuuuRewarder.at(contractList.system.cvxEthRewarder);
-    // let rewardercvx = await MuuuRewarder.new(cvxLP.address,cvx.address,multisig,sushiChef.address,chef.address,2);
-    console.log('created cvxeth rewarder at ' + rewardercvx.address);
+    //create rewarder for muuu/eth
+    let rewardermuuu = await MuuuRewarder.at(contractList.system.muuuEthRewarder);
+    // let rewardermuuu = await MuuuRewarder.new(muuuLP.address,muuu.address,multisig,sushiChef.address,chef.address,2);
+    console.log('created muuueth rewarder at ' + rewardermuuu.address);
 
-    let rewardercvxkgl = await MuuuRewarder.at(contractList.system.cvxKglKglRewarder);
-    //let rewardercvxkgl = await MuuuRewarder.new(cvxKglLP.address,cvx.address,multisig,sushiChef.address,chef.address,3);
-    console.log('created cvxkglkgl rewarder at ' + rewardercvxkgl.address);
+    let rewardermuuukgl = await MuuuRewarder.at(contractList.system.muuuKglKglRewarder);
+    //let rewardermuuukgl = await MuuuRewarder.new(muuuKglLP.address,muuu.address,multisig,sushiChef.address,chef.address,3);
+    console.log('created muuukglkgl rewarder at ' + rewardermuuukgl.address);
 
     //add to sushi chef pool
-    //await sushiChef.add(10000,cvxLP.address,rewardercvx.address,{from:sushiAdmin,gasPrice:0});
-    await sushiChef.set(1, 10000, rewardercvx.address, false, { from: sushiAdmin, gasPrice: 0 });
+    //await sushiChef.add(10000,muuuLP.address,rewardermuuu.address,{from:sushiAdmin,gasPrice:0});
+    await sushiChef.set(1, 10000, rewardermuuu.address, false, { from: sushiAdmin, gasPrice: 0 });
     console.log('added slot to sushi chef');
-    //await sushiChef.add(10000,cvxKglLP.address,rewardercvxkgl.address,{from:sushiAdmin,gasPrice:0});
-    await sushiChef.set(2, 10000, rewardercvxkgl.address, false, { from: sushiAdmin, gasPrice: 0 });
+    //await sushiChef.add(10000,muuuKglLP.address,rewardermuuukgl.address,{from:sushiAdmin,gasPrice:0});
+    await sushiChef.set(2, 10000, rewardermuuukgl.address, false, {
+      from: sushiAdmin,
+      gasPrice: 0,
+    });
     console.log('added slot to sushi chef');
 
     await sushiChef.rewarder(1).then((a) => console.log('rewarder 1 on sushi pool: ' + a));
@@ -184,20 +187,20 @@ contract('Test masterchef rewards setup', async (accounts) => {
 
     //call init(dummy.address)
     var dummybal = await dummyMuuu.balanceOf(deployer);
-    await dummyMuuu.approve(rewardercvx.address, dummybal, { from: deployer });
+    await dummyMuuu.approve(rewardermuuu.address, dummybal, { from: deployer });
     console.log('approve dummyMuuu for ' + dummybal);
     var dummybal = await dummyMuuuKgl.balanceOf(deployer);
-    await dummyMuuuKgl.approve(rewardercvxkgl.address, dummybal, { from: deployer });
+    await dummyMuuuKgl.approve(rewardermuuukgl.address, dummybal, { from: deployer });
     console.log('approve dummyMuuu for ' + dummybal);
 
-    var cvxbalance = await cvx.balanceOf(deployer);
-    cvxbalance = cvxbalance.div(new BN('2'));
-    await cvx.transfer(rewardercvx.address, cvxbalance, { from: deployer });
-    await cvx.transfer(rewardercvxkgl.address, cvxbalance, { from: deployer });
-    console.log('send cvx to rewardercvx: ' + cvxbalance);
-    await rewardercvx.init(dummyMuuu.address, { from: deployer });
-    console.log('init rewardercvx');
-    await rewardercvxkgl.init(dummyMuuuKgl.address, { from: deployer });
-    console.log('init rewardercvxkgl');
+    var muuubalance = await muuu.balanceOf(deployer);
+    muuubalance = muuubalance.div(new BN('2'));
+    await muuu.transfer(rewardermuuu.address, muuubalance, { from: deployer });
+    await muuu.transfer(rewardermuuukgl.address, muuubalance, { from: deployer });
+    console.log('send muuu to rewardermuuu: ' + muuubalance);
+    await rewardermuuu.init(dummyMuuu.address, { from: deployer });
+    console.log('init rewardermuuu');
+    await rewardermuuukgl.init(dummyMuuuKgl.address, { from: deployer });
+    console.log('init rewardermuuukgl');
   });
 });

@@ -10,32 +10,32 @@ import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
 
 
-//Basic functionality to integrate with locking cvx
+//Basic functionality to integrate with locking muuu
 contract BasicMuuuHolder{
     using SafeERC20 for IERC20;
     using Address for address;
 
 
-    address public constant cvxKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
-    address public constant cvxkglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
-    address public constant cvx = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
+    address public constant muuuKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
+    address public constant muuukglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
+    address public constant muuu = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
     address public constant kgl = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
     address public constant kglDeposit = address(0x8014595F2AB54cD7c604B00E9fb932176fDc86Ae);
 
     address public operator;
-    ILockedMuuu public immutable cvxlocker;
+    ILockedMuuu public immutable muuulocker;
 
-    constructor(address _cvxlocker) public {
-        cvxlocker = ILockedMuuu(_cvxlocker);
+    constructor(address _muuulocker) public {
+        muuulocker = ILockedMuuu(_muuulocker);
         operator = msg.sender;
     }
 
     function setApprovals() external {
-        IERC20(cvxKgl).safeApprove(cvxkglStaking, 0);
-        IERC20(cvxKgl).safeApprove(cvxkglStaking, uint256(-1));
+        IERC20(muuuKgl).safeApprove(muuukglStaking, 0);
+        IERC20(muuuKgl).safeApprove(muuukglStaking, uint256(-1));
 
-        IERC20(cvx).safeApprove(address(cvxlocker), 0);
-        IERC20(cvx).safeApprove(address(cvxlocker), uint256(-1));
+        IERC20(muuu).safeApprove(address(muuulocker), 0);
+        IERC20(muuu).safeApprove(address(muuulocker), uint256(-1));
 
         IERC20(kgl).safeApprove(kglDeposit, 0);
         IERC20(kgl).safeApprove(kglDeposit, uint256(-1));
@@ -48,41 +48,41 @@ contract BasicMuuuHolder{
 
     function setDelegate(address _delegateContract, address _delegate) external{
         require(msg.sender == operator, "!auth");
-        // IDelegation(_delegateContract).setDelegate(keccak256("cvx.eth"), _delegate);
-        IDelegation(_delegateContract).setDelegate("cvx.eth", _delegate);
+        // IDelegation(_delegateContract).setDelegate(keccak256("muuu.eth"), _delegate);
+        IDelegation(_delegateContract).setDelegate("muuu.eth", _delegate);
     }
 
     function lock(uint256 _amount, uint256 _spendRatio) external{
         require(msg.sender == operator, "!auth");
 
         if(_amount > 0){
-            IERC20(cvx).safeTransferFrom(msg.sender, address(this), _amount);
+            IERC20(muuu).safeTransferFrom(msg.sender, address(this), _amount);
         }
-        _amount = IERC20(cvx).balanceOf(address(this));
+        _amount = IERC20(muuu).balanceOf(address(this));
 
-        cvxlocker.lock(address(this),_amount,_spendRatio);
+        muuulocker.lock(address(this),_amount,_spendRatio);
     }
 
     function processExpiredLocks(bool _relock, uint256 _spendRatio) external{
         require(msg.sender == operator, "!auth");
 
-        cvxlocker.processExpiredLocks(_relock, _spendRatio, address(this));
+        muuulocker.processExpiredLocks(_relock, _spendRatio, address(this));
     }
 
     function processRewards() external{
         require(msg.sender == operator, "!auth");
 
-        cvxlocker.getReward(address(this), true);
-        IRewardStaking(cvxkglStaking).getReward(address(this), true);
+        muuulocker.getReward(address(this), true);
+        IRewardStaking(muuukglStaking).getReward(address(this), true);
 
         uint256 kglBal = IERC20(kgl).balanceOf(address(this));
         if (kglBal > 0) {
             IKglDepositor(kglDeposit).deposit(kglBal, true);
         }
 
-        uint cvxkglBal = IERC20(cvxKgl).balanceOf(address(this));
-        if(cvxkglBal > 0){
-            IRewardStaking(cvxkglStaking).stake(cvxkglBal);
+        uint muuukglBal = IERC20(muuuKgl).balanceOf(address(this));
+        if(muuukglBal > 0){
+            IRewardStaking(muuukglStaking).stake(muuukglBal);
         }
     }
 
@@ -90,10 +90,10 @@ contract BasicMuuuHolder{
         require(msg.sender == operator, "!auth");
         require(_withdrawTo != address(0),"bad address");
 
-        IRewardStaking(cvxkglStaking).withdraw(_amount, true);
-        uint cvxkglBal = IERC20(cvxKgl).balanceOf(address(this));
-        if(cvxkglBal > 0){
-            IERC20(cvxKgl).safeTransfer(_withdrawTo, cvxkglBal);
+        IRewardStaking(muuukglStaking).withdraw(_amount, true);
+        uint muuukglBal = IERC20(muuuKgl).balanceOf(address(this));
+        if(muuukglBal > 0){
+            IERC20(muuuKgl).safeTransfer(_withdrawTo, muuukglBal);
         }
     }
 

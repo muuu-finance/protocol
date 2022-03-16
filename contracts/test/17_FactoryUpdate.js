@@ -25,7 +25,7 @@ contract('Factory Update', async (accounts) => {
 
     let booster = await Booster.at(contractList.system.booster);
     let pools = await PoolManager.at(contractList.system.poolManager);
-    let cvx = await MuuuToken.at(contractList.system.cvx);
+    let muuu = await MuuuToken.at(contractList.system.muuu);
 
     let newStashFactory = await StashFactory.new(booster.address, contractList.system.rFactory);
     console.log('new factory: ' + newStashFactory.address);
@@ -146,7 +146,7 @@ contract('Factory Update', async (accounts) => {
     //earmark
     await booster.earmarkRewards(poolCount - 1);
     console.log('earmarked');
-    await cvx
+    await muuu
       .balanceOf(stash.address)
       .then((a) => console.log('weth on stash after earmark: ' + a));
     await weth.balanceOf(hook.address).then((a) => console.log('weth on hook after earmark: ' + a));

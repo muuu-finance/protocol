@@ -38,9 +38,9 @@ contract Booster is Ownable {
     address public rewardArbitrator;
     address public voteDelegate;
     address public treasury;
-    address public stakerRewards; //cvx rewards
-    address public lockRewards; //cvxKgl rewards(kgl)
-    address public lockFees; //cvxKgl vekgl fees
+    address public stakerRewards; //muuu rewards
+    address public lockRewards; //muuuKgl rewards(kgl)
+    address public lockFees; //muuuKgl vekgl fees
     address public feeDistro;
     address public feeToken;
     address public registry;
@@ -123,7 +123,7 @@ contract Booster is Ownable {
         require(msg.sender == owner(), "!auth");
 
         //reward contracts are immutable or else the owner
-        //has a means to redeploy and mint cvx via rewardClaimed()
+        //has a means to redeploy and mint muuu via rewardClaimed()
         if(lockRewards == address(0)){
             lockRewards = _rewards;
             stakerRewards = _stakerRewards;

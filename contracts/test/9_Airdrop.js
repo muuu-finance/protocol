@@ -16,7 +16,7 @@ const MulticallerView = artifacts.require('MulticallerView');
 contract('Airdrop Test', async (accounts) => {
   it('should claim airdrop for all users', async () => {
     //system
-    let cvx = await MuuuToken.at(contractList.system.cvx);
+    let muuu = await MuuuToken.at(contractList.system.muuu);
     let airdrop = await MerkleAirdrop.at(contractList.system.airdrop);
     console.log('airdrop at: ' + airdrop.address);
     let mroot = await airdrop.merkleRoot();
@@ -57,10 +57,10 @@ contract('Airdrop Test', async (accounts) => {
       var proof = info.proof;
       proof = proof.map((e) => Buffer.from(e, 'hex'));
       // await airdrop.claim(proof,dropAddresses[i],amount).catch(a=>console.log("--> could not claim"));
-      // await cvx.balanceOf(dropAddresses[i]).then(a => console.log("claimed: " +a));
+      // await muuu.balanceOf(dropAddresses[i]).then(a => console.log("claimed: " +a));
 
-      var calldata = cvx.contract.methods.balanceOf(dropAddresses[i]).encodeABI();
-      callDataList.push([cvx.address, calldata]);
+      var calldata = muuu.contract.methods.balanceOf(dropAddresses[i]).encodeABI();
+      callDataList.push([muuu.address, calldata]);
 
       if (callDataList.length == 100) {
         console.log('call multi balanceOf');
@@ -127,6 +127,6 @@ contract('Airdrop Test', async (accounts) => {
     // }
 
     // await vekglVesting.claim(lastaddress);
-    // await cvx.balanceOf(lastaddress).then(a=>console.log("cvx balance in wallet: " +a))
+    // await muuu.balanceOf(lastaddress).then(a=>console.log("muuu balance in wallet: " +a))
   });
 });

@@ -9,7 +9,7 @@ import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
 
 
-contract cvxKglToken is ERC20 {
+contract muuuKglToken is ERC20 {
     using SafeERC20 for IERC20;
     using Address for address;
     using SafeMath for uint256;
@@ -20,7 +20,7 @@ contract cvxKglToken is ERC20 {
         public
         ERC20(
             "Muuu KGL",
-            "cvxKGL"
+            "muuuKGL"
         )
     {
         operator = msg.sender;

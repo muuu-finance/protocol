@@ -7,15 +7,15 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 var distroList = jsonfile.readFileSync('./migrations/distro.json');
 
 const VestedEscrow = artifacts.require('VestedEscrow');
-const cvxRewardPool = artifacts.require('cvxRewardPool');
+const muuuRewardPool = artifacts.require('muuuRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
 
 contract('VestedEscrow Test', async (accounts) => {
   it('should claim unlock over time and claim', async () => {
     //system
     let vested = await VestedEscrow.at(contractList.system.vestedEscrow);
-    let cvxRewards = await cvxRewardPool.at(contractList.system.cvxRewards);
-    let cvx = await MuuuToken.at(contractList.system.cvx);
+    let muuuRewards = await muuuRewardPool.at(contractList.system.muuuRewards);
+    let muuu = await MuuuToken.at(contractList.system.muuu);
 
     var team = distroList.vested.team.addresses;
     var investor = distroList.vested.investor.addresses;
@@ -62,9 +62,9 @@ contract('VestedEscrow Test', async (accounts) => {
     }
 
     await vested.claim(accountA);
-    await cvx.balanceOf(accountA).then((a) => console.log('User A cvx in wallet: ' + a));
+    await muuu.balanceOf(accountA).then((a) => console.log('User A muuu in wallet: ' + a));
 
     await vested.claimAndStake({ from: accountB });
-    await cvxRewards.balanceOf(accountB).then((a) => console.log('User B cvx staked: ' + a));
+    await muuuRewards.balanceOf(accountB).then((a) => console.log('User B muuu staked: ' + a));
   });
 });

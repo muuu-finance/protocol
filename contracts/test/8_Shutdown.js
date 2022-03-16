@@ -8,10 +8,10 @@ const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
-//const cvxKglRewardPool = artifacts.require("cvxKglRewardPool");
-const cvxRewardPool = artifacts.require('cvxRewardPool');
+//const muuuKglRewardPool = artifacts.require("muuuKglRewardPool");
+const muuuRewardPool = artifacts.require('muuuRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const cvxKglToken = artifacts.require('cvxKglToken');
+const muuuKglToken = artifacts.require('muuuKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 const TokenFactory = artifacts.require('TokenFactory');
@@ -42,13 +42,13 @@ contract('Shutdown Test', async (accounts) => {
     let voterewardFactoryproxy = await RewardFactory.deployed();
     let stashFactory = await StashFactory.deployed();
     let poolManager = await PoolManager.deployed();
-    let cvx = await MuuuToken.deployed();
-    let cvxKgl = await cvxKglToken.deployed();
+    let muuu = await MuuuToken.deployed();
+    let muuuKgl = await muuuKglToken.deployed();
     let kglDeposit = await KglDepositor.deployed();
-    let cvxKglRewards = await booster.lockRewards();
-    let cvxRewards = await booster.stakerRewards();
-    let cvxKglRewardsContract = await BaseRewardPool.at(cvxKglRewards);
-    let cvxRewardsContract = await cvxRewardPool.at(cvxRewards);
+    let muuuKglRewards = await booster.lockRewards();
+    let muuuRewards = await booster.stakerRewards();
+    let muuuKglRewardsContract = await BaseRewardPool.at(muuuKglRewards);
+    let muuuRewardsContract = await muuuRewardPool.at(muuuRewards);
 
     var poolId = contractList.pools.find((pool) => pool.name == '3pool').id;
     var poolinfo = await booster.poolInfo(poolId);
@@ -108,11 +108,11 @@ contract('Shutdown Test', async (accounts) => {
     await threeKgl.balanceOf(booster.address).then((a) => console.log('3kgl at booster ' + a));
     await voteproxy.balanceOfPool(threeKglGauge).then((a) => console.log('3kgl on gauge ' + a));
 
-    //relaunch the system and connect to voteproxy and cvx contracts
+    //relaunch the system and connect to voteproxy and muuu contracts
 
     //first booster and set as operator on vote proxy
     console.log('create new booster and factories');
-    let booster2 = await Booster.new(voteproxy.address, cvx.address, 0);
+    let booster2 = await Booster.new(voteproxy.address, muuu.address, 0);
     await voteproxy.setOperator(booster2.address);
     console.log('set new booster as voteproxy operator');
 
@@ -127,30 +127,33 @@ contract('Shutdown Test', async (accounts) => {
     );
     console.log('factories set');
 
-    //tell cvx to update its operator(mint role)
-    await cvx.updateOperator();
-    console.log('cvx operater updated');
+    //tell muuu to update its operator(mint role)
+    await muuu.updateOperator();
+    console.log('muuu operater updated');
 
-    //create new reward pools for staking cvxKgl and cvx
-    let cvxKglRewardsContract2 = await BaseRewardPool.new(
+    //create new reward pools for staking muuuKgl and muuu
+    let muuuKglRewardsContract2 = await BaseRewardPool.new(
       0,
-      cvxKgl.address,
+      muuuKgl.address,
       kgl.address,
       booster2.address,
       rewardFactory2.address
     );
-    console.log('create new cvxKgl reward pool');
-    let cvxRewardsContract2 = await cvxRewardPool.new(
-      cvx.address,
+    console.log('create new muuuKgl reward pool');
+    let muuuRewardsContract2 = await muuuRewardPool.new(
+      muuu.address,
       kgl.address,
       kglDeposit.address,
-      cvxKglRewardsContract2.address,
-      cvxKgl.address,
+      muuuKglRewardsContract2.address,
+      muuuKgl.address,
       booster2.address,
       admin
     );
-    console.log('create new cvx reward pool');
-    await booster2.setRewardContracts(cvxKglRewardsContract2.address, cvxRewardsContract2.address);
+    console.log('create new muuu reward pool');
+    await booster2.setRewardContracts(
+      muuuKglRewardsContract2.address,
+      muuuRewardsContract2.address
+    );
     console.log('set stake reward contracts');
 
     //set vekgl info
@@ -205,13 +208,13 @@ contract('Shutdown Test', async (accounts) => {
     await rewardPool.balanceOf(userA).then((a) => console.log('reward balance: ' + a));
     await rewardPool.earned(userA).then((a) => console.log('rewards earned(unclaimed): ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('userA kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('userA cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('userA muuu: ' + a));
 
     //claim rewards
     await rewardPool.getReward({ from: userA });
     console.log('getReward()');
     await kgl.balanceOf(userA).then((a) => console.log('userA kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('userA cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('userA muuu: ' + a));
     await kgl.balanceOf(rewardPool.address).then((a) => console.log('rewards left: ' + a));
   });
 });

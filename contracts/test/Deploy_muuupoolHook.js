@@ -6,7 +6,7 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 const Booster = artifacts.require('Booster');
 const KglDepositor = artifacts.require('KglDepositor');
 const MuuuToken = artifacts.require('MuuuToken');
-const cvxKglToken = artifacts.require('cvxKglToken');
+const muuuKglToken = artifacts.require('muuuKglToken');
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const MuuuStakingWrapper = artifacts.require('MuuuStakingWrapper');
@@ -18,7 +18,7 @@ const Multicaller = artifacts.require('Multicaller');
 const ExtraRewardStashV3 = artifacts.require('ExtraRewardStashV3');
 const ProxyFactory = artifacts.require('ProxyFactory');
 
-contract('Deploy cvx pool hook', async (accounts) => {
+contract('Deploy muuu pool hook', async (accounts) => {
   it('should deploy contracts', async () => {
     let deployer = '0x947B7742C403f20e5FaCcDAc5E092C943E7D0277';
     let multisig = '0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB';
@@ -27,17 +27,17 @@ contract('Deploy cvx pool hook', async (accounts) => {
     //system
     let booster = await Booster.at(contractList.system.booster);
     let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
-    let cvx = await MuuuToken.at(contractList.system.cvx);
+    let muuu = await MuuuToken.at(contractList.system.muuu);
     let kgl = await IERC20.at(contractList.kagla.kgl);
-    let cvxKgl = await cvxKglToken.at(contractList.system.cvxKgl);
-    let cvxKglLP = await IERC20.at(contractList.system.cvxKglKglSLP);
+    let muuuKgl = await muuuKglToken.at(contractList.system.muuuKgl);
+    let muuuKglLP = await IERC20.at(contractList.system.muuuKglKglSLP);
     let chef = await MuuuMasterChef.at(contractList.system.chef);
     let multicaller = await Multicaller.at('0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441');
     let stash = await ExtraRewardStashV3.at('0x679df29F380F1BEc31657cd6a5638aec4AEA3300');
 
-    var newcvxpid = 6;
-    var oldcvxPid = 2;
-    var cvxkglPid = 4;
+    var newmuuupid = 6;
+    var oldmuuuPid = 2;
+    var muuukglPid = 4;
     var treasuryPid = 5;
 
     //create a reward hook
@@ -57,16 +57,16 @@ contract('Deploy cvx pool hook', async (accounts) => {
     return;
 
     await chef.add(1000, cheftoken.address, addressZero, false, { from: multisig, gasPrice: 0 });
-    await chef.set(oldcvxPid, 0, addressZero, true, false, { from: multisig, gasPrice: 0 });
-    await chef.set(cvxkglPid, 1000, addressZero, true, false, { from: multisig, gasPrice: 0 });
+    await chef.set(oldmuuuPid, 0, addressZero, true, false, { from: multisig, gasPrice: 0 });
+    await chef.set(muuukglPid, 1000, addressZero, true, false, { from: multisig, gasPrice: 0 });
     await chef.set(treasuryPid, 8000, addressZero, true, false, { from: multisig, gasPrice: 0 });
     await stash.setRewardHook(hook.address, { from: multisig, gasPrice: 0 });
 
-    await hook.init(stash.address, newcvxpid, cheftoken.address, { from: deployer });
+    await hook.init(stash.address, newmuuupid, cheftoken.address, { from: deployer });
 
     let rewards = await BaseRewardPool.at('0x834B9147Fd23bF131644aBC6e557Daf99C5cDa15');
-    await cvx.balanceOf(hook.address).then((a) => console.log('cvx on hook: ' + a));
-    await cvx.balanceOf(rewards.address).then((a) => console.log('cvx on rewards: ' + a));
+    await muuu.balanceOf(hook.address).then((a) => console.log('muuu on hook: ' + a));
+    await muuu.balanceOf(rewards.address).then((a) => console.log('muuu on rewards: ' + a));
 
     await time.increase(86400);
     await time.advanceBlock();
@@ -76,8 +76,8 @@ contract('Deploy cvx pool hook', async (accounts) => {
     await time.advanceBlock();
     console.log('advance time...');
 
-    await cvx.balanceOf(hook.address).then((a) => console.log('cvx on hook: ' + a));
-    await cvx.balanceOf(rewards.address).then((a) => console.log('cvx on rewards: ' + a));
+    await muuu.balanceOf(hook.address).then((a) => console.log('muuu on hook: ' + a));
+    await muuu.balanceOf(rewards.address).then((a) => console.log('muuu on rewards: ' + a));
     await rewards.rewardRate().then((a) => console.log('reward rate: ' + a));
     await booster.earmarkRewards(64);
     await time.increase(86400);
@@ -88,8 +88,8 @@ contract('Deploy cvx pool hook', async (accounts) => {
     await time.advanceBlock();
     console.log('advance time...');
     await booster.earmarkRewards(64);
-    await cvx.balanceOf(hook.address).then((a) => console.log('cvx on hook: ' + a));
-    await cvx.balanceOf(rewards.address).then((a) => console.log('cvx on rewards: ' + a));
+    await muuu.balanceOf(hook.address).then((a) => console.log('muuu on hook: ' + a));
+    await muuu.balanceOf(rewards.address).then((a) => console.log('muuu on rewards: ' + a));
     await rewards.rewardRate().then((a) => console.log('reward rate: ' + a));
     console.log('finish');
     return;

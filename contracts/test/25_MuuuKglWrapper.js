@@ -6,7 +6,7 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 const Booster = artifacts.require('Booster');
 const KglDepositor = artifacts.require('KglDepositor');
 const MuuuToken = artifacts.require('MuuuToken');
-const cvxKglToken = artifacts.require('cvxKglToken');
+const muuuKglToken = artifacts.require('muuuKglToken');
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const MuuuKglStakingWrapper = artifacts.require('MuuuKglStakingWrapper');
@@ -17,8 +17,8 @@ const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01');
 const MuuuMining = artifacts.require('MuuuMining');
 const MuuuKglRari = artifacts.require('MuuuKglRari');
 
-contract('Test cvxkgl stake wrapper', async (accounts) => {
-  it('should deposit cvxkgl and earn rewards while being transferable', async () => {
+contract('Test muuukgl stake wrapper', async (accounts) => {
+  it('should deposit muuukgl and earn rewards while being transferable', async () => {
     let deployer = '0x947B7742C403f20e5FaCcDAc5E092C943E7D0277';
     let multisig = '0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB';
     let addressZero = '0x0000000000000000000000000000000000000000';
@@ -27,11 +27,11 @@ contract('Test cvxkgl stake wrapper', async (accounts) => {
     let booster = await Booster.at(contractList.system.booster);
     let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let kglDeposit = await KglDepositor.at(contractList.system.kglDepositor);
-    let cvx = await MuuuToken.at(contractList.system.cvx);
+    let muuu = await MuuuToken.at(contractList.system.muuu);
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
-    let cvxKgl = await cvxKglToken.at(contractList.system.cvxKgl);
-    let cvxKglLP = await IERC20.at(contractList.system.cvxKglKglSLP);
+    let muuuKgl = await muuuKglToken.at(contractList.system.muuuKgl);
+    let muuuKglLP = await IERC20.at(contractList.system.muuuKglKglSLP);
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
@@ -99,14 +99,14 @@ contract('Test cvxkgl stake wrapper', async (accounts) => {
     //user A will deposit kagla tokens and user B muuu
     await kgl.approve(staker.address, userABalance, { from: userA });
     await kgl.approve(kglDeposit.address, userBBalance, { from: userB });
-    await cvxKgl.approve(staker.address, userBBalance, { from: userB });
+    await muuuKgl.approve(staker.address, userBBalance, { from: userB });
     console.log('approved booster and staker');
     await kglDeposit.deposit(userBBalance, false, addressZero, { from: userB });
     console.log('deposited into muuu for user b');
 
     var depositTx = await staker.deposit(userABalance, userA, { from: userA });
     console.log('user A deposited, gas: ' + depositTx.receipt.gasUsed);
-    await cvxKgl.balanceOf(userB).then((a) => console.log('user b cvxKgl: ' + a));
+    await muuuKgl.balanceOf(userB).then((a) => console.log('user b muuuKgl: ' + a));
     var stakeTx = await staker.stake(userBBalance, userB, { from: userB });
     console.log('user b staked, gas: ' + stakeTx.receipt.gasUsed);
     await staker.totalSupply().then((a) => console.log('staker supply: ' + a));
@@ -124,19 +124,19 @@ contract('Test cvxkgl stake wrapper', async (accounts) => {
     console.log('======');
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('user a wallet kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('user a wallet muuu: ' + a));
     await threeKgl.balanceOf(userA).then((a) => console.log('user a wallet threeKgl: ' + a));
     console.log('-----');
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
     await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
-    await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
+    await muuu.balanceOf(userB).then((a) => console.log('user b wallet muuu: ' + a));
     await threeKgl.balanceOf(userB).then((a) => console.log('user b wallet threeKgl: ' + a));
 
     console.log('checkpoint');
     await staker.user_checkpoint([userA, addressZero]);
     await staker.user_checkpoint([userB, addressZero]);
     await kgl.balanceOf(staker.address).then((a) => console.log('staker kgl: ' + a));
-    await cvx.balanceOf(staker.address).then((a) => console.log('staker cvx: ' + a));
+    await muuu.balanceOf(staker.address).then((a) => console.log('staker muuu: ' + a));
     await threeKgl.balanceOf(staker.address).then((a) => console.log('staker threeKgl: ' + a));
     for (var i = 0; i < rewardCount; i++) {
       var rInfo = await staker.rewards(i);
@@ -146,12 +146,12 @@ contract('Test cvxkgl stake wrapper', async (accounts) => {
     console.log('======');
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('user a wallet kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('user a wallet muuu: ' + a));
     await threeKgl.balanceOf(userA).then((a) => console.log('user a wallet threeKgl: ' + a));
     console.log('-----');
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
     await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
-    await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
+    await muuu.balanceOf(userB).then((a) => console.log('user b wallet muuu: ' + a));
     await threeKgl.balanceOf(userB).then((a) => console.log('user b wallet threeKgl: ' + a));
 
     //test transfering to account C
@@ -159,12 +159,12 @@ contract('Test cvxkgl stake wrapper', async (accounts) => {
     console.log('transfer to userC');
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
     await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
-    await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
+    await muuu.balanceOf(userB).then((a) => console.log('user b wallet muuu: ' + a));
     await threeKgl.balanceOf(userB).then((a) => console.log('user b wallet threeKgl: ' + a));
     console.log('-----');
     await staker.earned(userC).then((a) => console.log('user c earned: ' + a));
     await kgl.balanceOf(userC).then((a) => console.log('user c wallet kgl: ' + a));
-    await cvx.balanceOf(userC).then((a) => console.log('user c wallet cvx: ' + a));
+    await muuu.balanceOf(userC).then((a) => console.log('user c wallet muuu: ' + a));
     await threeKgl.balanceOf(userC).then((a) => console.log('user c wallet threeKgl: ' + a));
 
     await time.increase(86400);
@@ -173,12 +173,12 @@ contract('Test cvxkgl stake wrapper', async (accounts) => {
 
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
     await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
-    await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
+    await muuu.balanceOf(userB).then((a) => console.log('user b wallet muuu: ' + a));
     await threeKgl.balanceOf(userB).then((a) => console.log('user b wallet threeKgl: ' + a));
     console.log('-----');
     await staker.earned(userC).then((a) => console.log('user c earned: ' + a));
     await kgl.balanceOf(userC).then((a) => console.log('user c wallet kgl: ' + a));
-    await cvx.balanceOf(userC).then((a) => console.log('user c wallet cvx: ' + a));
+    await muuu.balanceOf(userC).then((a) => console.log('user c wallet muuu: ' + a));
     await threeKgl.balanceOf(userC).then((a) => console.log('user c wallet threeKgl: ' + a));
 
     //withdraw
@@ -196,17 +196,17 @@ contract('Test cvxkgl stake wrapper', async (accounts) => {
 
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('user a wallet kgl: ' + a));
-    await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('user a wallet muuu: ' + a));
     await threeKgl.balanceOf(userA).then((a) => console.log('user a wallet threeKgl: ' + a));
     console.log('-----');
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
     await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
-    await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
+    await muuu.balanceOf(userB).then((a) => console.log('user b wallet muuu: ' + a));
     await threeKgl.balanceOf(userB).then((a) => console.log('user b wallet threeKgl: ' + a));
     console.log('-----');
     await staker.earned(userC).then((a) => console.log('user c earned: ' + a));
     await kgl.balanceOf(userC).then((a) => console.log('user c wallet kgl: ' + a));
-    await cvx.balanceOf(userC).then((a) => console.log('user c wallet cvx: ' + a));
+    await muuu.balanceOf(userC).then((a) => console.log('user c wallet muuu: ' + a));
     await threeKgl.balanceOf(userC).then((a) => console.log('user c wallet threeKgl: ' + a));
 
     //check whats left on the staker
@@ -216,7 +216,7 @@ contract('Test cvxkgl stake wrapper', async (accounts) => {
     await staker.balanceOf(userC).then((a) => console.log('user c staked: ' + a));
     await staker.totalSupply().then((a) => console.log('remaining supply: ' + a));
     await kgl.balanceOf(staker.address).then((a) => console.log('remaining kgl: ' + a));
-    await cvx.balanceOf(staker.address).then((a) => console.log('remaining cvx: ' + a));
+    await muuu.balanceOf(staker.address).then((a) => console.log('remaining muuu: ' + a));
     await threeKgl.balanceOf(staker.address).then((a) => console.log('remaining threeKgl: ' + a));
   });
 });

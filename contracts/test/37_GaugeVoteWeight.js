@@ -6,7 +6,7 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 
 const MuuuLocker = artifacts.require('MuuuLocker');
 const MuuuStakingProxy = artifacts.require('MuuuStakingProxy');
-const cvxRewardPool = artifacts.require('cvxRewardPool');
+const muuuRewardPool = artifacts.require('muuuRewardPool');
 const IERC20 = artifacts.require('IERC20');
 const IExchange = artifacts.require('IExchange');
 const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01');
@@ -26,10 +26,10 @@ contract('check vote balance', async (accounts) => {
     let addressZero = '0x0000000000000000000000000000000000000000';
 
     //system
-    let cvx = await IERC20.at(contractList.system.cvx);
-    let cvxkgl = await IERC20.at(contractList.system.cvxKgl);
-    let cvxrewards = await cvxRewardPool.at(contractList.system.cvxRewards);
-    let cvxkglrewards = await cvxRewardPool.at(contractList.system.cvxKglRewards);
+    let muuu = await IERC20.at(contractList.system.muuu);
+    let muuukgl = await IERC20.at(contractList.system.muuuKgl);
+    let muuurewards = await muuuRewardPool.at(contractList.system.muuuRewards);
+    let muuukglrewards = await muuuRewardPool.at(contractList.system.muuuKglRewards);
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
@@ -81,7 +81,7 @@ contract('check vote balance', async (accounts) => {
     await locker.balanceOf(userZ).then((a) => console.log('balance via locker: ' + a));
     await votebalance.balanceOf(userZ).then((a) => console.log('balance via votebalance: ' + a));
     await votebalance.pendingBalanceOf(userZ).then((a) => console.log('pending balance: ' + a));
-    await cvx.balanceOf(userZ).then((a) => console.log('balance on wallet: ' + a));
+    await muuu.balanceOf(userZ).then((a) => console.log('balance on wallet: ' + a));
 
     await advanceTime(day * 7);
 
@@ -89,7 +89,7 @@ contract('check vote balance', async (accounts) => {
     await locker.balanceOf(userZ).then((a) => console.log('balance via locker: ' + a));
     await votebalance.balanceOf(userZ).then((a) => console.log('balance via votebalance: ' + a));
     await votebalance.pendingBalanceOf(userZ).then((a) => console.log('pending balance: ' + a));
-    await cvx.balanceOf(userZ).then((a) => console.log('balance on wallet: ' + a));
+    await muuu.balanceOf(userZ).then((a) => console.log('balance on wallet: ' + a));
 
     await locker.processExpiredLocks(true, { from: userZ });
     console.log('relocked');
@@ -98,7 +98,7 @@ contract('check vote balance', async (accounts) => {
     await locker.balanceOf(userZ).then((a) => console.log('balance via locker: ' + a));
     await votebalance.balanceOf(userZ).then((a) => console.log('balance via votebalance: ' + a));
     await votebalance.pendingBalanceOf(userZ).then((a) => console.log('pending balance: ' + a));
-    await cvx.balanceOf(userZ).then((a) => console.log('balance on wallet: ' + a));
+    await muuu.balanceOf(userZ).then((a) => console.log('balance on wallet: ' + a));
 
     await advanceTime(day * 7);
 
@@ -106,6 +106,6 @@ contract('check vote balance', async (accounts) => {
     await locker.balanceOf(userZ).then((a) => console.log('balance via locker: ' + a));
     await votebalance.balanceOf(userZ).then((a) => console.log('balance via votebalance: ' + a));
     await votebalance.pendingBalanceOf(userZ).then((a) => console.log('pending balance: ' + a));
-    await cvx.balanceOf(userZ).then((a) => console.log('balance on wallet: ' + a));
+    await muuu.balanceOf(userZ).then((a) => console.log('balance on wallet: ' + a));
   });
 });

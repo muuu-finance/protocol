@@ -34,8 +34,8 @@ contract('Test claim zap', async (accounts) => {
 
     //system
     let booster = await Booster.at(contractList.system.booster);
-    let cvx = await IERC20.at(contractList.system.cvx);
-    let cvxkgl = await IERC20.at(contractList.system.cvxKgl);
+    let muuu = await IERC20.at(contractList.system.muuu);
+    let muuukgl = await IERC20.at(contractList.system.muuuKgl);
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
@@ -90,7 +90,7 @@ contract('Test claim zap', async (accounts) => {
     // console.log("calldata: " +calldata);
     // await kaglapool.exchange(0,1,kglbalance,0,{from:userA});
     // await kgl.balanceOf(userA).then(a=>console.log("wallet kgl: " +a));
-    // await cvxkgl.balanceOf(userA).then(a=>console.log("wallet cvxkgl: " +a));
+    // await muuukgl.balanceOf(userA).then(a=>console.log("wallet muuukgl: " +a));
 
     // return;
     //deploy
@@ -101,10 +101,10 @@ contract('Test claim zap', async (accounts) => {
     // console.log("approved");
     // await zap.claimRewards([],[],[],[],kglbalance,1000,0,0);
 
-    let cvxkglpool = await BaseRewardPool.at('0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e');
+    let muuukglpool = await BaseRewardPool.at('0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e');
     // await kgl.balanceOf(userA).then(a=>console.log("wallet kgl: " +a));
     // await kgl.balanceOf(zap.address).then(a=>console.log("zap kgl: " +a));
-    // await cvxkglpool.balanceOf(userA).then(a=>console.log("pool cvxkgl: " +a));
+    // await muuukglpool.balanceOf(userA).then(a=>console.log("pool muuukgl: " +a));
 
     //tests
     let spell = await IERC20.at('0x090185f2135308bad17527004364ebcc2d37e5f6');
@@ -131,34 +131,34 @@ contract('Test claim zap', async (accounts) => {
     });
     console.log('added spell rewards');
 
-    let cvxpool = await BaseRewardPool.at('0xCF50b810E57Ac33B91dCF525C6ddd9881B139332');
+    let muuupool = await BaseRewardPool.at('0xCF50b810E57Ac33B91dCF525C6ddd9881B139332');
     await kgl.approve(zap.address, web3.utils.toWei('100000000000.0', 'ether'), {
       from: userZ,
       gasPrice: 0,
     });
-    await cvx.approve(zap.address, web3.utils.toWei('100000000000.0', 'ether'), {
+    await muuu.approve(zap.address, web3.utils.toWei('100000000000.0', 'ether'), {
       from: userZ,
       gasPrice: 0,
     });
     console.log('approved');
 
-    await cvxkgl.totalSupply().then((a) => console.log('cvxkgl totaly supply: ' + a));
+    await muuukgl.totalSupply().then((a) => console.log('muuukgl totaly supply: ' + a));
     await kgl.balanceOf(userZ).then((a) => console.log('userZ kgl: ' + a));
-    await cvxkgl.balanceOf(userZ).then((a) => console.log('userZ cvxkgl: ' + a));
-    await cvx.balanceOf(userZ).then((a) => console.log('userZ cvx: ' + a));
+    await muuukgl.balanceOf(userZ).then((a) => console.log('userZ muuukgl: ' + a));
+    await muuu.balanceOf(userZ).then((a) => console.log('userZ muuu: ' + a));
     await threeKgl.balanceOf(userZ).then((a) => console.log('userZ threeKgl: ' + a));
     await spell.balanceOf(userZ).then((a) => console.log('userZ spell: ' + a));
-    await cvxkglpool.balanceOf(userZ).then((a) => console.log('pool cvxkgl: ' + a));
-    await cvxpool.balanceOf(userZ).then((a) => console.log('pool cvx: ' + a));
-    await cvxkglpool.earned(userZ).then((a) => console.log('pool cvxkgl earned: ' + a));
-    await cvxpool.earned(userZ).then((a) => console.log('pool cvx earned: ' + a));
+    await muuukglpool.balanceOf(userZ).then((a) => console.log('pool muuukgl: ' + a));
+    await muuupool.balanceOf(userZ).then((a) => console.log('pool muuu: ' + a));
+    await muuukglpool.earned(userZ).then((a) => console.log('pool muuukgl earned: ' + a));
+    await muuupool.earned(userZ).then((a) => console.log('pool muuu earned: ' + a));
     await locker.lockedBalanceOf(userZ).then((a) => console.log('locked balance: ' + a));
     await locker.claimableRewards(userZ).then((a) => console.log('locked claimableRewards: ' + a));
     await rewardDistro
       .claimableRewards(userZ, spell.address)
       .then((a) => console.log('claimable spell from distro: ' + a));
-    var mask = 2 + 4; //claimcvxstake, claim cvxkgl
-    // var mask = 4; //claimcvxstake, claim cvxkgl
+    var mask = 2 + 4; //claimmuuustake, claim muuukgl
+    // var mask = 4; //claimmuuustake, claim muuukgl
     // mask = 8 + 16;
     mask = 4 + 128 + 64;
     await zap.claimRewards(
@@ -175,16 +175,16 @@ contract('Test claim zap', async (accounts) => {
     );
     // await zap.claimRewards([],[],[rewardDistro.address],[spell.address],0,1,0,0,mask,{from:userZ,gasPrice:0});
     console.log("zap'd");
-    await cvxkgl.totalSupply().then((a) => console.log('cvxkgl totaly supply: ' + a));
+    await muuukgl.totalSupply().then((a) => console.log('muuukgl totaly supply: ' + a));
     await kgl.balanceOf(userZ).then((a) => console.log('userZ kgl: ' + a));
-    await cvxkgl.balanceOf(userZ).then((a) => console.log('userZ cvxkgl: ' + a));
-    await cvx.balanceOf(userZ).then((a) => console.log('userZ cvx: ' + a));
+    await muuukgl.balanceOf(userZ).then((a) => console.log('userZ muuukgl: ' + a));
+    await muuu.balanceOf(userZ).then((a) => console.log('userZ muuu: ' + a));
     await threeKgl.balanceOf(userZ).then((a) => console.log('userZ threeKgl: ' + a));
     await spell.balanceOf(userZ).then((a) => console.log('userZ spell: ' + a));
-    await cvxkglpool.balanceOf(userZ).then((a) => console.log('pool cvxkgl: ' + a));
-    await cvxpool.balanceOf(userZ).then((a) => console.log('pool cvx: ' + a));
-    await cvxkglpool.earned(userZ).then((a) => console.log('pool cvxkgl earned: ' + a));
-    await cvxpool.earned(userZ).then((a) => console.log('pool cvx earned: ' + a));
+    await muuukglpool.balanceOf(userZ).then((a) => console.log('pool muuukgl: ' + a));
+    await muuupool.balanceOf(userZ).then((a) => console.log('pool muuu: ' + a));
+    await muuukglpool.earned(userZ).then((a) => console.log('pool muuukgl earned: ' + a));
+    await muuupool.earned(userZ).then((a) => console.log('pool muuu earned: ' + a));
     await locker.lockedBalanceOf(userZ).then((a) => console.log('locked balance: ' + a));
     await locker.claimableRewards(userZ).then((a) => console.log('locked claimableRewards: ' + a));
     await rewardDistro

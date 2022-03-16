@@ -64,8 +64,8 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
     }
 
     //token constants
-    IERC20 public constant stakingToken = IERC20(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B); //cvx
-    address public constant cvxKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
+    IERC20 public constant stakingToken = IERC20(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B); //muuu
+    address public constant muuuKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
 
     //rewards
     address[] public rewardTokens;
@@ -105,7 +105,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
     uint256 public minimumStake = 10000;
     uint256 public maximumStake = 10000;
     address public stakingProxy;
-    address public constant cvxkglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
+    address public constant muuukglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
     uint256 public constant stakeOffsetOnLock = 500; //allow broader range for staking when depositing
 
     //management
@@ -174,7 +174,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
         rewardDistributors[_rewardsToken][_distributor] = _approved;
     }
 
-    //Set the staking contract for the underlying cvx
+    //Set the staking contract for the underlying muuu
     function setStakingContract(address _staking) external onlyOwner {
         require(stakingProxy == address(0), "!assign");
 
@@ -218,10 +218,10 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
         isShutdown = true;
     }
 
-    //set approvals for staking cvx and cvxkgl
+    //set approvals for staking muuu and muuukgl
     function setApprovals() external {
-        IERC20(cvxKgl).safeApprove(cvxkglStaking, 0);
-        IERC20(cvxKgl).safeApprove(cvxkglStaking, uint256(-1));
+        IERC20(muuuKgl).safeApprove(muuukglStaking, 0);
+        IERC20(muuuKgl).safeApprove(muuukglStaking, uint256(-1));
 
         IERC20(stakingToken).safeApprove(stakingProxy, 0);
         IERC20(stakingToken).safeApprove(stakingProxy, uint256(-1));
@@ -702,7 +702,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
         //send process incentive
         if (reward > 0) {
             //if theres a reward(kicked), it will always be a withdraw only
-            //preallocate enough cvx from stake contract to pay for both reward and withdraw
+            //preallocate enough muuu from stake contract to pay for both reward and withdraw
             allocateMUUUForTransfer(uint256(locked));
 
             //reduce return amount by the kick reward
@@ -713,7 +713,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
 
             emit KickReward(_rewardAddress, _account, reward);
         }else if(_spendRatio > 0){
-            //preallocate enough cvx to transfer the boost cost
+            //preallocate enough muuu to transfer the boost cost
             allocateMUUUForTransfer( uint256(locked).mul(_spendRatio).div(denominator) );
         }
 
@@ -740,7 +740,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
         _processExpiredLocks(_account, false, 0, _account, msg.sender, rewardsDuration.mul(kickRewardEpochDelay));
     }
 
-    //pull required amount of cvx from staking for an upcoming transfer
+    //pull required amount of muuu from staking for an upcoming transfer
     function allocateMUUUForTransfer(uint256 _amount) internal{
         uint256 balance = stakingToken.balanceOf(address(this));
         if (_amount > balance) {
@@ -750,7 +750,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
 
     //transfer helper: pull enough from staking, transfer, updating staking ratio
     function transferMUUU(address _account, uint256 _amount, bool _updateStake) internal {
-        //allocate enough cvx from staking for the transfer
+        //allocate enough muuu from staking for the transfer
         allocateMUUUForTransfer(_amount);
         //transfer
         stakingToken.safeTransfer(_account, _amount);
@@ -761,7 +761,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
         }
     }
 
-    //calculate how much cvx should be staked. update if needed
+    //calculate how much muuu should be staked. update if needed
     function updateStakeRatio(uint256 _offset) internal {
         if (isShutdown) return;
 
@@ -797,8 +797,8 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
             uint256 reward = rewards[_account][_rewardsToken];
             if (reward > 0) {
                 rewards[_account][_rewardsToken] = 0;
-                if (_rewardsToken == cvxKgl && _stake) {
-                    IRewardStaking(cvxkglStaking).stakeFor(_account, reward);
+                if (_rewardsToken == muuuKgl && _stake) {
+                    IRewardStaking(muuukglStaking).stakeFor(_account, reward);
                 } else {
                     IERC20(_rewardsToken).safeTransfer(_account, reward);
                 }
@@ -842,7 +842,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
 
         emit RewardAdded(_rewardsToken, _reward);
 
-        if(_rewardsToken == cvxKgl){
+        if(_rewardsToken == muuuKgl){
             //update staking ratio if main reward
             updateStakeRatio(0);
         }

@@ -11,11 +11,11 @@ const RewardFactory = artifacts.require('RewardFactory');
 const StashFactory = artifacts.require('StashFactory');
 const TokenFactory = artifacts.require('TokenFactory');
 const MuuuToken = artifacts.require('MuuuToken');
-const cvxKglToken = artifacts.require('cvxKglToken');
+const muuuKglToken = artifacts.require('muuuKglToken');
 const KglDepositor = artifacts.require('KglDepositor');
 const PoolManager = artifacts.require('PoolManager');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
-const cvxRewardPool = artifacts.require('cvxRewardPool');
+const muuuRewardPool = artifacts.require('muuuRewardPool');
 const ArbitratorVault = artifacts.require('ArbitratorVault');
 const ClaimZap = artifacts.require('ClaimZap');
 const MuuuMasterChef = artifacts.require('MuuuMasterChef');
@@ -53,7 +53,7 @@ module.exports = function (deployer, network, accounts) {
   var premine = new BN(0);
   premine.add(distroList.lpincentives);
   premine.add(distroList.vekgl);
-  premine.add(distroList.teamcvxLpSeed);
+  premine.add(distroList.teammuuuLpSeed);
   var vestedAddresses = distroList.vested.team.addresses.concat(
     distroList.vested.investor.addresses,
     distroList.vested.treasury.addresses
@@ -70,18 +70,18 @@ module.exports = function (deployer, network, accounts) {
   }
   console.log('total vested: ' + totalVested.toString());
   premine.add(totalVested);
-  console.log('total cvx premine: ' + premine.toString());
+  console.log('total muuu premine: ' + premine.toString());
   var totaldistro = new BN(premine).add(distroList.miningRewards);
-  console.log('total cvx: ' + totaldistro.toString());
+  console.log('total muuu: ' + totaldistro.toString());
 
-  var booster, voter, rFactory, sFactory, tFactory, cvx, cvxKgl, deposit, arb, pools;
+  var booster, voter, rFactory, sFactory, tFactory, muuu, muuuKgl, deposit, arb, pools;
   var kglToken;
-  var cvxKglRewards, cvxRewards, airdrop, vesting;
+  var muuuKglRewards, muuuRewards, airdrop, vesting;
   var pairToken;
-  var kgldepositAmt, kglbal, cvxKglBal;
+  var kgldepositAmt, kglbal, muuuKglBal;
   var kgl, weth, dai, threeKgl;
   var muuuVoterProxy;
-  var cvxLockerV2;
+  var muuuLockerV2;
 
   let mockVotingEscrow, mockRegistry, mockFeeDistributor, mockAddressProvider;
 
@@ -169,11 +169,17 @@ module.exports = function (deployer, network, accounts) {
     // ========================== Preparation end ==========================
     .then(() => deployer.deploy(MuuuToken, voter.address))
     .then((instance) => {
-      cvx = instance;
-      addContract('system', 'cvx', cvx.address);
+      muuu = instance;
+      addContract('system', 'muuu', muuu.address);
     })
     .then(() =>
-      deployer.deploy(Booster, voter.address, cvx.address, kgl.address, mockAddressProvider.address)
+      deployer.deploy(
+        Booster,
+        voter.address,
+        muuu.address,
+        kgl.address,
+        mockAddressProvider.address
+      )
     )
     .then((instance) => {
       booster = instance;
@@ -187,7 +193,7 @@ module.exports = function (deployer, network, accounts) {
       }
     })
     .then(() => voter.setOperator(booster.address))
-    .then(() => cvx.mint(accounts[0], premine.toString()))
+    .then(() => muuu.mint(accounts[0], premine.toString()))
     .then(() => deployer.deploy(RewardFactory, booster.address))
     .then((instance) => {
       rFactory = instance;
@@ -202,15 +208,15 @@ module.exports = function (deployer, network, accounts) {
     .then((instance) => {
       sFactory = instance;
       addContract('system', 'sFactory', sFactory.address);
-      return deployer.deploy(cvxKglToken);
+      return deployer.deploy(muuuKglToken);
     })
     .then((instance) => {
-      cvxKgl = instance;
-      addContract('system', 'cvxKgl', cvxKgl.address);
+      muuuKgl = instance;
+      addContract('system', 'muuuKgl', muuuKgl.address);
       return deployer.deploy(
         KglDepositor,
         voter.address,
-        cvxKgl.address,
+        muuuKgl.address,
         kgl.address,
         mockVotingEscrow.address // TODO: replace
       );
@@ -218,7 +224,7 @@ module.exports = function (deployer, network, accounts) {
     .then((instance) => {
       deposit = instance;
       addContract('system', 'kglDepositor', deposit.address);
-      return cvxKgl.setOperator(deposit.address);
+      return muuuKgl.setOperator(deposit.address);
     })
     .then(() => voter.setDepositor(deposit.address))
     .then(() => deposit.initialLock())
@@ -227,31 +233,31 @@ module.exports = function (deployer, network, accounts) {
       deployer.deploy(
         BaseRewardPool,
         0,
-        cvxKgl.address,
+        muuuKgl.address,
         kgl.address,
         booster.address,
         rFactory.address
       )
     )
     .then((instance) => {
-      cvxKglRewards = instance;
-      addContract('system', 'cvxKglRewards', cvxKglRewards.address);
+      muuuKglRewards = instance;
+      addContract('system', 'muuuKglRewards', muuuKglRewards.address);
       // reward manager is admin to add any new incentive programs
       return deployer.deploy(
-        cvxRewardPool,
-        cvx.address,
+        muuuRewardPool,
+        muuu.address,
         kgl.address,
         deposit.address,
-        cvxKglRewards.address,
-        cvxKgl.address,
+        muuuKglRewards.address,
+        muuuKgl.address,
         booster.address,
         admin
       );
     })
     .then((instance) => {
-      cvxRewards = instance;
-      addContract('system', 'cvxRewards', cvxRewards.address);
-      return booster.setRewardContracts(cvxKglRewards.address, cvxRewards.address);
+      muuuRewards = instance;
+      addContract('system', 'muuuRewards', muuuRewards.address);
+      return booster.setRewardContracts(muuuKglRewards.address, muuuRewards.address);
     })
     .then(() => deployer.deploy(PoolManager, booster.address, mockAddressProvider.address))
     .then((instance) => {
@@ -274,21 +280,21 @@ module.exports = function (deployer, network, accounts) {
       return deployer.deploy(MuuuLockerV2);
     })
     .then((instance) => {
-      cvxLockerV2 = instance;
-      addContract('system', 'cvxLockerV2', cvxLockerV2.address);
+      muuuLockerV2 = instance;
+      addContract('system', 'muuuLockerV2', muuuLockerV2.address);
     })
 
     .then(() => {
       return deployer.deploy(
         ClaimZap,
         kgl.address,
-        cvx.address,
-        cvxKgl.address,
+        muuu.address,
+        muuuKgl.address,
         deposit.address,
-        cvxKglRewards.address,
-        cvxRewards.address,
-        treasuryAddress, // TODO: replace. this is supposed to be Factory cvxKGL in kagla
-        cvxLockerV2.address
+        muuuKglRewards.address,
+        muuuRewards.address,
+        treasuryAddress, // TODO: replace. this is supposed to be Factory muuuKGL in kagla
+        muuuLockerV2.address
       );
     })
     .then((instance) => {
@@ -301,17 +307,17 @@ module.exports = function (deployer, network, accounts) {
       //vest team, invest, treasury
       return deployer.deploy(
         VestedEscrow,
-        cvx.address,
+        muuu.address,
         rewardsStart,
         rewardsEnd,
-        cvxRewards.address,
+        muuuRewards.address,
         admin
       );
     })
     .then((instance) => {
       vesting = instance;
       addContract('system', 'vestedEscrow', vesting.address);
-      return cvx.approve(vesting.address, distroList.vested.total);
+      return muuu.approve(vesting.address, distroList.vested.total);
     })
     .then(() => vesting.addTokens(distroList.vested.total))
     .then(() => vesting.fund(vestedAddresses, vestedAmounts))
@@ -335,10 +341,10 @@ module.exports = function (deployer, network, accounts) {
     .then((instance) => {
       airdrop = instance;
       addContract('system', 'airdrop', airdrop.address);
-      return airdrop.setRewardToken(cvx.address);
+      return airdrop.setRewardToken(muuu.address);
     })
-    .then(() => cvx.transfer(airdrop.address, distroList.vekgl))
-    .then(() => cvx.balanceOf(airdrop.address))
+    .then(() => muuu.transfer(airdrop.address, distroList.vekgl))
+    .then(() => muuu.balanceOf(airdrop.address))
     .then((dropBalance) => {
       console.log('airdrop balance: ' + dropBalance);
       return airdrop.setRoot(merkleRoot);

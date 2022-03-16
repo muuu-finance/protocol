@@ -6,7 +6,7 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 
 const MuuuLocker = artifacts.require('MuuuLocker');
 const MuuuStakingProxy = artifacts.require('MuuuStakingProxy');
-const cvxRewardPool = artifacts.require('cvxRewardPool');
+const muuuRewardPool = artifacts.require('muuuRewardPool');
 const IERC20 = artifacts.require('IERC20');
 const IExchange = artifacts.require('IExchange');
 const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01');
@@ -23,10 +23,10 @@ contract('setup lock contract', async (accounts) => {
     let addressZero = '0x0000000000000000000000000000000000000000';
 
     //system
-    let cvx = await IERC20.at(contractList.system.cvx);
-    let cvxkgl = await IERC20.at(contractList.system.cvxKgl);
-    let cvxrewards = await cvxRewardPool.at(contractList.system.cvxRewards);
-    let cvxkglrewards = await cvxRewardPool.at(contractList.system.cvxKglRewards);
+    let muuu = await IERC20.at(contractList.system.muuu);
+    let muuukgl = await IERC20.at(contractList.system.muuuKgl);
+    let muuurewards = await muuuRewardPool.at(contractList.system.muuuRewards);
+    let muuukglrewards = await muuuRewardPool.at(contractList.system.muuuKglRewards);
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
@@ -54,7 +54,7 @@ contract('setup lock contract', async (accounts) => {
     };
     const day = 86400;
 
-    //swap for cvx
+    //swap for muuu
     await weth.sendTransaction({ value: web3.utils.toWei('10.0', 'ether'), from: deployer });
     var wethBalance = await weth.balanceOf(deployer);
     console.log('receive weth: ' + wethBalance);
@@ -62,13 +62,13 @@ contract('setup lock contract', async (accounts) => {
     await exchange.swapExactTokensForTokens(
       web3.utils.toWei('10.0', 'ether'),
       0,
-      [weth.address, cvx.address],
+      [weth.address, muuu.address],
       userA,
       starttime + 3000,
       { from: deployer }
     );
-    var cvxbalance = await cvx.balanceOf(userA);
-    console.log('swapped for cvx(userA): ' + cvxbalance);
+    var muuubalance = await muuu.balanceOf(userA);
+    console.log('swapped for muuu(userA): ' + muuubalance);
 
     //deploy
     let locker = await MuuuLocker.new({ from: deployer });
@@ -80,7 +80,7 @@ contract('setup lock contract', async (accounts) => {
     contractList.system.lockerStakeProxy = stakeproxy.address;
     // jsonfile.writeFileSync("./contracts.json", contractList, { spaces: 4 });
     await stakeproxy.setApprovals();
-    await locker.addReward(cvxkgl.address, stakeproxy.address, true, { from: deployer });
+    await locker.addReward(muuukgl.address, stakeproxy.address, true, { from: deployer });
     await locker.setStakingContract(stakeproxy.address, { from: deployer });
     await locker.setApprovals();
     console.log('setup complete');
@@ -91,8 +91,8 @@ contract('setup lock contract', async (accounts) => {
     console.log('holder deployed');
 
     console.log('user b: ' + userB);
-    console.log('keccak256: ' + k256('cvx.eth').toString('hex'));
-    var spaceHex = '0x' + Buffer.from('cvx.eth', 'utf8').toString('hex');
+    console.log('keccak256: ' + k256('muuu.eth').toString('hex'));
+    var spaceHex = '0x' + Buffer.from('muuu.eth', 'utf8').toString('hex');
     console.log('space(hex): ' + spaceHex);
     var tx = await delegation.setDelegate(spaceHex, userB);
     var calldata = delegation.contract.methods.setDelegate(spaceHex, userB).encodeABI();
@@ -110,11 +110,11 @@ contract('setup lock contract', async (accounts) => {
     //0xbd86e508 6376782e65746800000000000000000000000000000000000000000000000000000000000000000000000000
     //..which appears to NOT be keccak and is just a string
 
-    await cvx.transfer(holder.address, cvxbalance, { from: userA });
-    await cvx.balanceOf(holder.address).then((a) => console.log('unlocked cvx: ' + a));
+    await muuu.transfer(holder.address, muuubalance, { from: userA });
+    await muuu.balanceOf(holder.address).then((a) => console.log('unlocked muuu: ' + a));
     await holder.lock(0, 0);
-    await cvx.balanceOf(holder.address).then((a) => console.log('unlocked cvx: ' + a));
-    await locker.lockedBalanceOf(holder.address).then((a) => console.log('locked cvx: ' + a));
+    await muuu.balanceOf(holder.address).then((a) => console.log('unlocked muuu: ' + a));
+    await locker.lockedBalanceOf(holder.address).then((a) => console.log('locked muuu: ' + a));
     await locker.balanceOf(holder.address).then((a) => console.log('voting power: ' + a));
     await locker
       .lockedBalances(holder.address)
@@ -146,15 +146,15 @@ contract('setup lock contract', async (accounts) => {
 
     await holder.processExpiredLocks(false, 0);
     console.log('locks processed');
-    var cvxkglRewards = await BaseRewardPool.at('0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e');
-    var cvxkglBal = await cvxkglRewards.balanceOf(holder.address);
-    console.log('staked cvxkgl: ' + cvxkglBal);
-    await holder.withdrawMuuuKgl(cvxkglBal, userA);
+    var muuukglRewards = await BaseRewardPool.at('0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e');
+    var muuukglBal = await muuukglRewards.balanceOf(holder.address);
+    console.log('staked muuukgl: ' + muuukglBal);
+    await holder.withdrawMuuuKgl(muuukglBal, userA);
 
-    await cvxkgl.balanceOf(userA).then((a) => console.log('withdraw cvxkgl to a: ' + a));
+    await muuukgl.balanceOf(userA).then((a) => console.log('withdraw muuukgl to a: ' + a));
 
-    await holder.withdrawTo(cvx.address, cvxbalance, userA);
+    await holder.withdrawTo(muuu.address, muuubalance, userA);
 
-    await cvx.balanceOf(userA).then((a) => console.log('withdraw cvx to a: ' + a));
+    await muuu.balanceOf(userA).then((a) => console.log('withdraw muuu to a: ' + a));
   });
 });

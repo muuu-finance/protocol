@@ -37,8 +37,8 @@ contract('Test Deploy locker for UI testing', async (accounts) => {
     let addressZero = '0x0000000000000000000000000000000000000000';
 
     //system
-    let cvx = await IERC20.at(contractList.system.cvx);
-    let cvxkgl = await IERC20.at(contractList.system.cvxKgl);
+    let muuu = await IERC20.at(contractList.system.muuu);
+    let muuukgl = await IERC20.at(contractList.system.muuuKgl);
 
     let userA = accounts[0];
     let userB = accounts[1];
@@ -67,9 +67,9 @@ contract('Test Deploy locker for UI testing', async (accounts) => {
     //get old locker
     var oldLocker = await MuuuLocker.at(contractList.system.locker);
 
-    //send cvx to usera
-    await cvx.transfer(userA, web3.utils.toWei('123.0', 'ether'), { from: treasury, gasPrice: 0 });
-    await cvx.approve(oldLocker.address, web3.utils.toWei('123.0', 'ether'), { from: userA });
+    //send muuu to usera
+    await muuu.transfer(userA, web3.utils.toWei('123.0', 'ether'), { from: treasury, gasPrice: 0 });
+    await muuu.approve(oldLocker.address, web3.utils.toWei('123.0', 'ether'), { from: userA });
     await oldLocker.lock(userA, web3.utils.toWei('123.0', 'ether'), 0, { from: userA });
     await advanceTime(7 * day * 7);
     await oldLocker.checkpointEpoch();
@@ -86,7 +86,7 @@ contract('Test Deploy locker for UI testing', async (accounts) => {
     let stakeproxy = await MuuuStakingProxyV2.new(locker.address, { from: deployer });
     console.log('deployed v2: ' + locker.address);
     await stakeproxy.setApprovals();
-    await locker.addReward(cvxkgl.address, stakeproxy.address, true, { from: deployer });
+    await locker.addReward(muuukgl.address, stakeproxy.address, true, { from: deployer });
     await locker.setStakingContract(stakeproxy.address, { from: deployer });
     await locker.setApprovals();
     await locker.checkpointEpoch();

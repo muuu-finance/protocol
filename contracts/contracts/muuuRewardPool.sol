@@ -11,7 +11,7 @@ pragma solidity 0.6.12;
 /___/ \_, //_//_/\__//_//_/\__/ \__//_/ /_\_\
      /___/
 
-* Synthetix: cvxRewardPool.sol
+* Synthetix: muuuRewardPool.sol
 *
 * Docs: https://docs.synthetix.io/
 *
@@ -47,7 +47,7 @@ import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
 
 
-contract cvxRewardPool{
+contract muuuRewardPool{
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
@@ -58,8 +58,8 @@ contract cvxRewardPool{
 
     address public immutable operator;
     address public immutable kglDeposits;
-    address public immutable cvxKglRewards;
-    IERC20 public immutable cvxKglToken;
+    address public immutable muuuKglRewards;
+    IERC20 public immutable muuuKglToken;
     address public immutable rewardManager;
 
     uint256 public periodFinish = 0;
@@ -86,8 +86,8 @@ contract cvxRewardPool{
         address stakingToken_,
         address rewardToken_,
         address kglDeposits_,
-        address cvxKglRewards_,
-        address cvxKglToken_,
+        address muuuKglRewards_,
+        address muuuKglToken_,
         address operator_,
         address rewardManager_
     ) public {
@@ -96,8 +96,8 @@ contract cvxRewardPool{
         operator = operator_;
         rewardManager = rewardManager_;
         kglDeposits = kglDeposits_;
-        cvxKglRewards = cvxKglRewards_;
-        cvxKglToken = IERC20(cvxKglToken_);
+        muuuKglRewards = muuuKglRewards_;
+        muuuKglToken = IERC20(muuuKglToken_);
     }
 
     function totalSupply() public view returns (uint256) {
@@ -254,15 +254,15 @@ contract cvxRewardPool{
             rewardToken.safeApprove(kglDeposits,reward);
             IKglDeposit(kglDeposits).deposit(reward,false);
 
-            uint256 cvxKglBalance = cvxKglToken.balanceOf(address(this));
+            uint256 muuuKglBalance = muuuKglToken.balanceOf(address(this));
             if(_stake){
-                IERC20(cvxKglToken).safeApprove(cvxKglRewards,0);
-                IERC20(cvxKglToken).safeApprove(cvxKglRewards,cvxKglBalance);
-                IRewards(cvxKglRewards).stakeFor(_account,cvxKglBalance);
+                IERC20(muuuKglToken).safeApprove(muuuKglRewards,0);
+                IERC20(muuuKglToken).safeApprove(muuuKglRewards,muuuKglBalance);
+                IRewards(muuuKglRewards).stakeFor(_account,muuuKglBalance);
             }else{
-                cvxKglToken.safeTransfer(_account, cvxKglBalance);
+                muuuKglToken.safeTransfer(_account, muuuKglBalance);
             }
-            emit RewardPaid(_account, cvxKglBalance);
+            emit RewardPaid(_account, muuuKglBalance);
         }
 
         //also get rewards from linked rewards

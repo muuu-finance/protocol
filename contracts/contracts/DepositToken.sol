@@ -22,7 +22,7 @@ contract DepositToken is ERC20 {
              string(
                 abi.encodePacked(ERC20(_lptoken).name()," Muuu Deposit")
             ),
-            string(abi.encodePacked("cvx", ERC20(_lptoken).symbol()))
+            string(abi.encodePacked("muuu", ERC20(_lptoken).symbol()))
         )
     {
         operator =  _operator;

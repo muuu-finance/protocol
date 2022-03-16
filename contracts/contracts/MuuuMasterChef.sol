@@ -40,13 +40,13 @@ contract MuuuMasterChef is Ownable {
         IRewarder rewarder;
     }
 
-    //cvx
-    IERC20 public cvx;
+    //muuu
+    IERC20 public muuu;
     // Block number when bonus MUUU period ends.
     uint256 public bonusEndBlock;
     // MUUU tokens created per block.
     uint256 public rewardPerBlock;
-    // Bonus muliplier for early cvx makers.
+    // Bonus muliplier for early muuu makers.
     uint256 public constant BONUS_MULTIPLIER = 2;
 
     // Info of each pool.
@@ -69,12 +69,12 @@ contract MuuuMasterChef is Ownable {
     );
 
     constructor(
-        IERC20 _cvx,
+        IERC20 _muuu,
         uint256 _rewardPerBlock,
         uint256 _startBlock,
         uint256 _bonusEndBlock
     ) public {
-        cvx = _cvx;
+        muuu = _muuu;
         rewardPerBlock = _rewardPerBlock;
         bonusEndBlock = _bonusEndBlock;
         startBlock = _startBlock;
@@ -163,12 +163,12 @@ contract MuuuMasterChef is Ownable {
                 pool.lastRewardBlock,
                 block.number
             );
-            uint256 cvxReward = multiplier
+            uint256 muuuReward = multiplier
                 .mul(rewardPerBlock)
                 .mul(pool.allocPoint)
                 .div(totalAllocPoint);
             accMuuuPerShare = accMuuuPerShare.add(
-                cvxReward.mul(1e12).div(lpSupply)
+                muuuReward.mul(1e12).div(lpSupply)
             );
         }
         return user.amount.mul(accMuuuPerShare).div(1e12).sub(user.rewardDebt);
@@ -194,13 +194,13 @@ contract MuuuMasterChef is Ownable {
             return;
         }
         uint256 multiplier = getMultiplier(pool.lastRewardBlock, block.number);
-        uint256 cvxReward = multiplier
+        uint256 muuuReward = multiplier
             .mul(rewardPerBlock)
             .mul(pool.allocPoint)
             .div(totalAllocPoint);
-        //cvx.mint(address(this), cvxReward);
+        //muuu.mint(address(this), muuuReward);
         pool.accMuuuPerShare = pool.accMuuuPerShare.add(
-            cvxReward.mul(1e12).div(lpSupply)
+            muuuReward.mul(1e12).div(lpSupply)
         );
         pool.lastRewardBlock = block.number;
     }
@@ -295,13 +295,13 @@ contract MuuuMasterChef is Ownable {
         }
     }
 
-    // Safe cvx transfer function, just in case if rounding error causes pool to not have enough MUUUs.
+    // Safe muuu transfer function, just in case if rounding error causes pool to not have enough MUUUs.
     function safeRewardTransfer(address _to, uint256 _amount) internal {
-        uint256 cvxBal = cvx.balanceOf(address(this));
-        if (_amount > cvxBal) {
-            cvx.safeTransfer(_to, cvxBal);
+        uint256 muuuBal = muuu.balanceOf(address(this));
+        if (_amount > muuuBal) {
+            muuu.safeTransfer(_to, muuuBal);
         } else {
-            cvx.safeTransfer(_to, _amount);
+            muuu.safeTransfer(_to, _amount);
         }
     }
 

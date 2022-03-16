@@ -16,7 +16,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 
-//Tokenized cvxKgl staked position for Rari's Fuse platform
+//Tokenized muuuKgl staked position for Rari's Fuse platform
 //Based on Kagla.fi's gauge wrapper implementations at https://github.com/kaglafi/kagla-dao-contracts/tree/master/contracts/gauges/wrappers
 contract MuuuKglRari is MuuuKglStakingWrapper {
     using SafeERC20

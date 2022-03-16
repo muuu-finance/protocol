@@ -266,17 +266,17 @@ contract('deploy pool manager layer', async (accounts) => {
     await poolSecondary.owner().then((a) => console.log('owner: ' + a));
     await poolSecondary.operator().then((a) => console.log('operator: ' + a));
 
-    let lpToken = await IERC20.at('0x3A283D9c08E8b55966afb64C515f5143cf907611'); //cvx lp
-    let depositToken = await IERC20.at('0x0bC857f97c0554d1d0D602b56F2EEcE682016fBA'); //cvx lp
+    let lpToken = await IERC20.at('0x3A283D9c08E8b55966afb64C515f5143cf907611'); //muuu lp
+    let depositToken = await IERC20.at('0x0bC857f97c0554d1d0D602b56F2EEcE682016fBA'); //muuu lp
     let badlpToken = await IERC20.at('0x1cEBdB0856dd985fAe9b8fEa2262469360B8a3a6'); //kgl lp
-    let gauge = await IKaglaGauge.at('0x7E1444BA99dcdFfE8fBdb42C02F0005D14f13BE1'); //cvx lp gauge
+    let gauge = await IKaglaGauge.at('0x7E1444BA99dcdFfE8fBdb42C02F0005D14f13BE1'); //muuu lp gauge
     let sVersion = 3;
 
     //shutdown individual pools
     await lpToken.balanceOf(booster.address).then((a) => console.log('lp on booster: ' + a));
     await depositToken.totalSupply().then((a) => console.log('deposit token supply: ' + a));
     await poolManager.shutdownPool(64, { from: multisig, gasPrice: 0 });
-    console.log('shutdown cvx pool');
+    console.log('shutdown muuu pool');
     await lpToken.balanceOf(booster.address).then((a) => console.log('lp on booster: ' + a));
     await depositToken.totalSupply().then((a) => console.log('deposit token supply: ' + a));
 
@@ -442,9 +442,9 @@ contract('deploy pool manager layer', async (accounts) => {
     let somestash = await ExtraRewardStashV3.at('0xb24Ea588066fBEB9610141d4b779d5D9F80A1180');
     await somestash.tokenCount().then((a) => console.log('stash token count: ' + a));
     await boosterowner
-      .setStashExtraReward(somestash.address, contractList.system.cvx)
+      .setStashExtraReward(somestash.address, contractList.system.muuu)
       .catch((a) => console.log('ownership fail: ' + a));
-    await boosterowner.setStashExtraReward(somestash.address, contractList.system.cvx, {
+    await boosterowner.setStashExtraReward(somestash.address, contractList.system.muuu, {
       from: multisig,
       gasPrice: 0,
     });

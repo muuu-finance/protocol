@@ -42,19 +42,19 @@ interface ISwapExchange {
 //v2:
 // - change exchange to use kagla pool
 // - add getReward(address,token) type
-// - add option to lock cvx
+// - add option to lock muuu
 // - add option use all funds in wallet
 contract ClaimZap is Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
     address public kgl;
-    address public cvx;
-    address public cvxKgl;
+    address public muuu;
+    address public muuuKgl;
     address public kglDeposit;
-    address public cvxKglRewards;
-    address public cvxRewards;
-    address public exchange; //Factory cvxKGL in kagla
+    address public muuuKglRewards;
+    address public muuuRewards;
+    address public exchange; //Factory muuuKGL in kagla
     address public locker;  //MuuuLockerV2
 
     enum Options{
@@ -68,13 +68,13 @@ contract ClaimZap is Ownable {
         LockMuuu //128
     }
 
-    constructor(address _kgl, address _cvx, address _cvxKgl, address _kglDeposit, address _cvxKglRewards, address _cvxRewards, address _exchange, address _locker ) public {
+    constructor(address _kgl, address _muuu, address _muuuKgl, address _kglDeposit, address _muuuKglRewards, address _muuuRewards, address _exchange, address _locker ) public {
         kgl = _kgl;
-        cvx = _cvx;
-        cvxKgl = _cvxKgl;
+        muuu = _muuu;
+        muuuKgl = _muuuKgl;
         kglDeposit = _kglDeposit;
-        cvxKglRewards = _cvxKglRewards;
-        cvxRewards = _cvxRewards;
+        muuuKglRewards = _muuuKglRewards;
+        muuuRewards = _muuuRewards;
         exchange = _exchange;
         locker = _locker;
     }
@@ -89,14 +89,14 @@ contract ClaimZap is Ownable {
         IERC20(kgl).safeApprove(exchange, 0);
         IERC20(kgl).safeApprove(exchange, uint256(-1));
 
-        IERC20(cvx).safeApprove(cvxRewards, 0);
-        IERC20(cvx).safeApprove(cvxRewards, uint256(-1));
+        IERC20(muuu).safeApprove(muuuRewards, 0);
+        IERC20(muuu).safeApprove(muuuRewards, uint256(-1));
 
-        IERC20(cvxKgl).safeApprove(cvxKglRewards, 0);
-        IERC20(cvxKgl).safeApprove(cvxKglRewards, uint256(-1));
+        IERC20(muuuKgl).safeApprove(muuuKglRewards, 0);
+        IERC20(muuuKgl).safeApprove(muuuKglRewards, uint256(-1));
 
-        IERC20(cvx).safeApprove(locker, 0);
-        IERC20(cvx).safeApprove(locker, uint256(-1));
+        IERC20(muuu).safeApprove(locker, 0);
+        IERC20(muuu).safeApprove(locker, uint256(-1));
     }
 
     function CheckOption(uint256 _mask, uint256 _flag) internal pure returns(bool){
@@ -116,7 +116,7 @@ contract ClaimZap is Ownable {
         ) external{
 
         uint256 kglBalance = IERC20(kgl).balanceOf(msg.sender);
-        uint256 cvxBalance = IERC20(cvx).balanceOf(msg.sender);
+        uint256 muuuBalance = IERC20(muuu).balanceOf(msg.sender);
 
         //claim from main kagla LP pools
         for(uint256 i = 0; i < rewardContracts.length; i++){
@@ -132,7 +132,7 @@ contract ClaimZap is Ownable {
         }
 
         //claim others/deposit/lock/stake
-        _claimExtras(depositKglMaxAmount,minAmountOut,depositMuuuMaxAmount,spendMuuuAmount,kglBalance,cvxBalance,options);
+        _claimExtras(depositKglMaxAmount,minAmountOut,depositMuuuMaxAmount,spendMuuuAmount,kglBalance,muuuBalance,options);
     }
 
     function _claimExtras(
@@ -145,16 +145,16 @@ contract ClaimZap is Ownable {
         uint256 options
         ) internal{
 
-        //claim (and stake) from cvx rewards
+        //claim (and stake) from muuu rewards
         if(CheckOption(options,uint256(Options.ClaimMuuuAndStake))){
-            IMuuuRewards(cvxRewards).getReward(msg.sender,true,true);
+            IMuuuRewards(muuuRewards).getReward(msg.sender,true,true);
         }else if(CheckOption(options,uint256(Options.ClaimMuuu))){
-            IMuuuRewards(cvxRewards).getReward(msg.sender,true,false);
+            IMuuuRewards(muuuRewards).getReward(msg.sender,true,false);
         }
 
-        //claim from cvxKgl rewards
+        //claim from muuuKgl rewards
         if(CheckOption(options,uint256(Options.ClaimMuuuKgl))){
-            IBasicRewards(cvxKglRewards).getReward(msg.sender,true);
+            IBasicRewards(muuuKglRewards).getReward(msg.sender,true);
         }
 
         //claim from locker
@@ -182,25 +182,25 @@ contract ClaimZap is Ownable {
                     //deposit
                     IMuuuKglDeposit(kglDeposit).deposit(kglBalance,CheckOption(options,uint256(Options.LockKglDeposit)));
                 }
-                //get cvxkgl amount
-                uint256 cvxKglBalance = IERC20(cvxKgl).balanceOf(address(this));
+                //get muuukgl amount
+                uint256 muuuKglBalance = IERC20(muuuKgl).balanceOf(address(this));
                 //stake for msg.sender
-                IBasicRewards(cvxKglRewards).stakeFor(msg.sender, cvxKglBalance);
+                IBasicRewards(muuuKglRewards).stakeFor(msg.sender, muuuKglBalance);
             }
         }
 
-        //stake up to given amount of cvx
+        //stake up to given amount of muuu
         if(depositMuuuMaxAmount > 0){
-            uint256 cvxBalance = IERC20(cvx).balanceOf(msg.sender).sub(removeMuuuBalance);
-            cvxBalance = MathUtil.min(cvxBalance, depositMuuuMaxAmount);
-            if(cvxBalance > 0){
-                //pull cvx
-                IERC20(cvx).safeTransferFrom(msg.sender, address(this), cvxBalance);
+            uint256 muuuBalance = IERC20(muuu).balanceOf(msg.sender).sub(removeMuuuBalance);
+            muuuBalance = MathUtil.min(muuuBalance, depositMuuuMaxAmount);
+            if(muuuBalance > 0){
+                //pull muuu
+                IERC20(muuu).safeTransferFrom(msg.sender, address(this), muuuBalance);
                 if(CheckOption(options,uint256(Options.LockMuuu))){
-                    ILockedMuuu(locker).lock(msg.sender, cvxBalance, spendMuuuAmount);
+                    ILockedMuuu(locker).lock(msg.sender, muuuBalance, spendMuuuAmount);
                 }else{
                     //stake for msg.sender
-                    IBasicRewards(cvxRewards).stakeFor(msg.sender, cvxBalance);
+                    IBasicRewards(muuuRewards).stakeFor(msg.sender, muuuBalance);
                 }
             }
         }

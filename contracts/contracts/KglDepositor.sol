@@ -112,10 +112,10 @@ contract KglDepositor is Ownable {
         }
     }
 
-    //deposit kgl for cvxKgl
+    //deposit kgl for muuuKgl
     //can locking immediately or defer locking to someone else by paying a fee.
     //while users can choose to lock or defer, this is mostly in place so that
-    //the cvx reward contract isnt costly to claim rewards
+    //the muuu reward contract isnt costly to claim rewards
     function deposit(uint256 _amount, bool _lock, address _stakeAddress) public {
         require(_amount > 0,"!>0");
 

@@ -41,7 +41,7 @@ contract MuuuToken is ERC20{
     function mint(address _to, uint256 _amount) external {
         if(msg.sender != operator){
             //dont error just return. if a shutdown happens, rewards on old system
-            //can still be claimed, just wont mint cvx
+            //can still be claimed, just wont mint muuu
             return;
         }
 
