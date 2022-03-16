@@ -5,7 +5,7 @@ pragma solidity 0.6.12;
 // refs
 // - https://curve.readthedocs.io/registry-address-provider.html
 // - https://github.com/curvefi/curve-pool-registry/blob/master/contracts/AddressProvider.vy
-contract MockAddressProvider {
+contract MockCurveAddressProvider {
   address public registry;
   address public feeDistributor;
 

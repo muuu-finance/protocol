@@ -5,7 +5,7 @@ pragma solidity 0.6.12;
 // refs
 // - https://curve.readthedocs.io/registry-registry.html
 // - https://github.com/curvefi/curve-pool-registry/blob/master/contracts/Registry.vy
-contract MockRegistry {
+contract MockCurveRegistry {
   function get_lp_token(address) external view returns(address) {
     return address(0);
   }
