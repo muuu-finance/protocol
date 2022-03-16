@@ -326,9 +326,6 @@ module.exports = function (deployer, network, accounts) {
     .then(function () {
       return vesting.fund(vestedAddresses, vestedAmounts);
     })
-    // .then(function() {
-    // 	return vesting.fund(distroList.vested.investor.addresses,distroList.vested.investor.amounts);
-    // })
     .then(function () {
       return vesting.unallocatedSupply();
     })
