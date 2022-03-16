@@ -22,8 +22,12 @@ const ConvexMasterChef = artifacts.require('ConvexMasterChef');
 const VestedEscrow = artifacts.require('VestedEscrow');
 const MerkleAirdrop = artifacts.require('MerkleAirdrop');
 const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory');
+// define Mocks
 const MintableERC20 = artifacts.require('MintableERC20');
 const MockVotingEscrow = artifacts.require('MockCurveVoteEscrow');
+const MockRegistry = artifacts.require('MockCurveRegistry');
+const MockFeeDistributor = artifacts.require('MockCurveFeeDistributor');
+const MockAddressProvider = artifacts.require('MockCurveAddressProvider');
 
 module.exports = function (deployer, network, accounts) {
   if (network === 'skipMigration') {
@@ -73,10 +77,10 @@ module.exports = function (deployer, network, accounts) {
   var cvxCrvRewards, cvxRewards, airdrop, vesting, chef;
   var pairToken;
   var crvdepositAmt, crvbal, cvxCrvBal;
-  var crv, weth, dai;
+  var crv, weth, dai, threeCrv;
   var convexVoterProxy;
 
-  let mockVotingEscrow;
+  let mockVotingEscrow, mockRegistry, mockFeeDistributor, mockAddressProvider;
 
   var rewardsStart = Math.floor(Date.now() / 1000) + 3600;
   var rewardsEnd = rewardsStart + 1 * 364 * 86400;
@@ -124,11 +128,42 @@ module.exports = function (deployer, network, accounts) {
       addContract('mocks', 'DAI', dai.address);
     })
     .then(function () {
+      return deployer.deploy(MintableERC20, '3Crv', 'Curve.fi DAI/USDC/USDT', 18);
+    })
+    .then(function (instance) {
+      threeCrv = instance;
+      addContract('mocks', 'DAI', threeCrv.address);
+    })
+    .then(function () {
       return deployer.deploy(MockVotingEscrow);
     })
     .then(function (instance) {
       mockVotingEscrow = instance;
       addContract('mocks', 'mockVotingEscrow', mockVotingEscrow.address);
+    })
+    .then(function () {
+      return deployer.deploy(MockRegistry);
+    })
+    .then(function (instance) {
+      mockRegistry = instance;
+      addContract('mocks', 'mockRegistry', mockRegistry.address);
+    })
+    .then(function () {
+      return deployer.deploy(MockFeeDistributor, threeCrv.address);
+    })
+    .then(function (instance) {
+      mockFeeDistributor = instance;
+      addContract('mocks', 'mockFeeDistributor', mockFeeDistributor.address);
+    })
+    .then(function () {
+      return deployer.deploy(MockAddressProvider,
+        mockRegistry.address,
+        mockFeeDistributor.address
+      );
+    })
+    .then(function (instance) {
+      mockAddressProvider = instance;
+      addContract('mocks', 'mockAddressProvider', mockAddressProvider.address);
     })
     .then(function () {
       return deployer.deploy(
