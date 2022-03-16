@@ -187,7 +187,13 @@ module.exports = function (deployer, network, accounts) {
       addContract('system', 'cvx', cvx.address);
     })
     .then(function () {
-      return deployer.deploy(Booster, voter.address, cvx.address, crv.address);
+      return deployer.deploy(
+        Booster,
+        voter.address,
+        cvx.address,
+        crv.address,
+        mockAddressProvider.address
+      );
     })
     .then(function (instance) {
       booster = instance;
@@ -293,8 +299,7 @@ module.exports = function (deployer, network, accounts) {
       return booster.setFactories(rFactory.address, sFactory.address, tFactory.address);
     })
     .then(function () {
-      //  TODO:
-      // return booster.setFeeInfo();
+      return booster.setFeeInfo();
     })
     .then(function () {
       return deployer.deploy(ArbitratorVault, booster.address);
