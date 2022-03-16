@@ -1,8 +1,8 @@
-const { time } = require('openzeppelin-test-helpers');
+const { time } = require('@openzeppelin/test-helpers');
 var fs = require('fs');
 var jsonfile = require('jsonfile');
 var BN = require('big-number');
-const { ZERO_ADDRESS } = require('openzeppelin-test-helpers/src/constants');
+const { ZERO_ADDRESS } = require('@openzeppelin/test-helpers/src/constants');
 var distroList = jsonfile.readFileSync('./distro.json');
 
 const Booster = artifacts.require('Booster');

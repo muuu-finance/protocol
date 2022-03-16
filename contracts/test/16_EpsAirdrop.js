@@ -1,4 +1,4 @@
-const { BN, constants, expectEvent, expectRevert, time } = require('openzeppelin-test-helpers');
+const { BN, constants, expectEvent, expectRevert, time } = require('@openzeppelin/test-helpers');
 const fs = require('fs');
 const MerkleTree = require('./helpers/merkleTree');
 var jsonfile = require('jsonfile');
@@ -6,30 +6,29 @@ var jsonfile = require('jsonfile');
 var droplist = jsonfile.readFileSync('../airdrop/eps/2022_03_10/drop_proofs.json');
 var contractList = jsonfile.readFileSync('./contracts.json');
 
-const IERC20 = artifacts.require("IERC20");
-const MerkleAirdrop = artifacts.require("MerkleAirdrop");
-const MerkleAirdropFactory = artifacts.require("MerkleAirdropFactory");
+const IERC20 = artifacts.require('IERC20');
+const MerkleAirdrop = artifacts.require('MerkleAirdrop');
+const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory');
 
-const Multicaller = artifacts.require("Multicaller");
-const MulticallerView = artifacts.require("MulticallerView");
+const Multicaller = artifacts.require('Multicaller');
+const MulticallerView = artifacts.require('MulticallerView');
 
-const progressFile = "drop_progress.json";
+const progressFile = 'drop_progress.json';
 if (fs.existsSync(progressFile)) {
-    drop_progress = jsonfile.readFileSync(progressFile);
+  drop_progress = jsonfile.readFileSync(progressFile);
 } else {
-    drop_progress = {
-        progress: 0
-    };
+  drop_progress = {
+    progress: 0,
+  };
 }
 
-contract("Airdrop Test", async accounts => {
-  it("should claim airdrop for all users", async () => {
-
-    let deployer = "0x947B7742C403f20e5FaCcDAc5E092C943E7D0277";
+contract('Airdrop Test', async (accounts) => {
+  it('should claim airdrop for all users', async () => {
+    let deployer = '0x947B7742C403f20e5FaCcDAc5E092C943E7D0277';
     var dropAddresses = Object.keys(droplist.users);
-    //system    
-    let eps = await IERC20.at("0xA7f552078dcC247C2684336020c03648500C6d9F");
-    let factory = await MerkleAirdropFactory.at("0xF403C135812408BFbE8713b5A23a04b3D48AAE31");
+    //system
+    let eps = await IERC20.at('0xA7f552078dcC247C2684336020c03648500C6d9F');
+    let factory = await MerkleAirdropFactory.at('0xF403C135812408BFbE8713b5A23a04b3D48AAE31');
     //await factory.CreateMerkleAirdrop();
     //return;
 
@@ -75,126 +74,130 @@ contract("Airdrop Test", async accounts => {
     // let airdrop = await MerkleAirdrop.at("0xDAB55C39784b24C68C20b54f3f14494E208BA215");//week 40
     // let airdrop = await MerkleAirdrop.at("0xC850B3F0737B59C47Be7E3b3439C45567A0E95fB");//week 41
     // let airdrop = await MerkleAirdrop.at("0x158F8f5B1cCb172bb79EAb75ED11eE70083f0e12");//week 42
-    let airdrop = await MerkleAirdrop.at("0x3EE776BE4Eb9Ac0a7D2DF18052d33fD13abaA476");//week 43
-    console.log("airdrop at: " +airdrop.address);
+    let airdrop = await MerkleAirdrop.at('0x3EE776BE4Eb9Ac0a7D2DF18052d33fD13abaA476'); //week 43
+    console.log('airdrop at: ' + airdrop.address);
 
     // //set reward token
-    await airdrop.setRewardToken(eps.address,{from:deployer});
-    console.log("set reward token")
+    await airdrop.setRewardToken(eps.address, { from: deployer });
+    console.log('set reward token');
 
     // //transfer eps
     var epsbalance = await eps.balanceOf(deployer);
-    console.log("transfering balance... " +epsbalance);
-    await eps.transfer(airdrop.address,epsbalance,{from:deployer});
+    console.log('transfering balance... ' + epsbalance);
+    await eps.transfer(airdrop.address, epsbalance, { from: deployer });
     epsbalance = await eps.balanceOf(airdrop.address);
-    console.log("eps drop total: " +epsbalance);
+    console.log('eps drop total: ' + epsbalance);
     var total = new BN(0);
-    for(var i = 0; i < dropAddresses.length; i++){
-        var userAmount = droplist.users[dropAddresses[i]].amount;
-        total = total.add(new BN(userAmount.toString()));
+    for (var i = 0; i < dropAddresses.length; i++) {
+      var userAmount = droplist.users[dropAddresses[i]].amount;
+      total = total.add(new BN(userAmount.toString()));
     }
-    console.log("total from drop data: " +total.toString());
-    assert.equal(epsbalance.toString(),total.toString(),"address balance and drop data balance dont match");
-    
+    console.log('total from drop data: ' + total.toString());
+    assert.equal(
+      epsbalance.toString(),
+      total.toString(),
+      'address balance and drop data balance dont match'
+    );
+
     //set merkle root
-    await airdrop.setRoot(droplist.root,{from:deployer})
+    await airdrop.setRoot(droplist.root, { from: deployer });
     let mroot = await airdrop.merkleRoot();
-    console.log("airdrop root: " +mroot);
+    console.log('airdrop root: ' + mroot);
 
     return;
 
-    let multicaller = await Multicaller.at("0x1Ee38d535d541c55C9dae27B12edf090C608E6Fb");
-    let multicallerview = await MulticallerView.at("0x1Ee38d535d541c55C9dae27B12edf090C608E6Fb");
+    let multicaller = await Multicaller.at('0x1Ee38d535d541c55C9dae27B12edf090C608E6Fb');
+    let multicallerview = await MulticallerView.at('0x1Ee38d535d541c55C9dae27B12edf090C608E6Fb');
 
     //get balances
-    
 
     //claiming
-    console.log("claiming for " +dropAddresses.length +" users");
+    console.log('claiming for ' + dropAddresses.length + ' users');
     var beforecallDataList = [];
     var callDataList = [];
     var aftercallDataList = [];
     var claimcount = 0;
     var claimsize = 20;
-    for(var i = drop_progress.progress; i < dropAddresses.length; i++){
-        var info = droplist.users[dropAddresses[i]];
-        var amount = info.amount;
-        var proof = info.proof;
-        proof = proof.map(e=>Buffer.from(e,'hex'));
+    for (var i = drop_progress.progress; i < dropAddresses.length; i++) {
+      var info = droplist.users[dropAddresses[i]];
+      var amount = info.amount;
+      var proof = info.proof;
+      proof = proof.map((e) => Buffer.from(e, 'hex'));
 
-       // console.log("claiming " +i +" amount: " +amount +"  user: " +dropAddresses[i]);
-        // await airdrop.claim(proof,dropAddresses[i],amount);
-        // console.log("claimed " +i);
-        var balancecalldata = eps.contract.methods.balanceOf(dropAddresses[i]).encodeABI();
-        var calldata = airdrop.contract.methods.claim(proof,dropAddresses[i],amount).encodeABI();
-        beforecallDataList.push([eps.address,balancecalldata]);
-        callDataList.push([airdrop.address,calldata]);
-        aftercallDataList.push([eps.address,balancecalldata]);
+      // console.log("claiming " +i +" amount: " +amount +"  user: " +dropAddresses[i]);
+      // await airdrop.claim(proof,dropAddresses[i],amount);
+      // console.log("claimed " +i);
+      var balancecalldata = eps.contract.methods.balanceOf(dropAddresses[i]).encodeABI();
+      var calldata = airdrop.contract.methods.claim(proof, dropAddresses[i], amount).encodeABI();
+      beforecallDataList.push([eps.address, balancecalldata]);
+      callDataList.push([airdrop.address, calldata]);
+      aftercallDataList.push([eps.address, balancecalldata]);
 
-        if(callDataList.length == claimsize){
-            claimcount++;
-            console.log("call multi claim " +(i-claimsize+1) +"~" +(i));
-
-            var beforeUserbalances = [];
-            var afterUserbalances = [];
-            let retData = await multicallerview.aggregate(beforecallDataList);
-            
-            for(var d = 0; d < retData[1].length; d++){
-                //console.log("add balance bn2: " +web3.utils.toBN(retData[1][d]).toString());
-                beforeUserbalances.push(web3.utils.toBN(retData[1][d]).toString());
-            }
-            await multicaller.aggregate(callDataList);
-            let retDataAfter = await multicallerview.aggregate(aftercallDataList);
-            for(var d = 0; d < retDataAfter[1].length; d++){
-                //console.log("add balance bn2: " +web3.utils.toBN(retDataAfter[1][d]).toString());
-                afterUserbalances.push(web3.utils.toBN(retDataAfter[1][d]).toString());
-            }
-            for(var x = 0; x < beforeUserbalances.length; x++){
-                var claimedAmount = new BN(afterUserbalances[x]).sub(new BN(beforeUserbalances[x]))
-                var info = droplist.users[dropAddresses[i-claimsize+1+x]];
-                var amount = info.amount;
-                //console.log("assert: " +claimedAmount.toString() +" == " +amount.toString())
-                assert.equal(claimedAmount.toString(),amount.toString(),"claimed amount doesnt match");
-            }
-
-            drop_progress.progress = i+1;
-            jsonfile.writeFileSync(progressFile, drop_progress, { spaces: 4 });
-            beforecallDataList = [];
-            callDataList = [];
-            aftercallDataList = [];
-        }
-    }
-    if(callDataList.length > 0){
-        console.log("call multi claim final " +(dropAddresses.length-callDataList.length) +"~" +(dropAddresses.length) );
-        // await multicaller.aggregate(callDataList);
+      if (callDataList.length == claimsize) {
+        claimcount++;
+        console.log('call multi claim ' + (i - claimsize + 1) + '~' + i);
 
         var beforeUserbalances = [];
         var afterUserbalances = [];
         let retData = await multicallerview.aggregate(beforecallDataList);
-        for(var d = 0; d < retData[1].length; d++){
-            //console.log("add balance bn2: " +web3.utils.toBN(retData[1][d]).toString());
-            beforeUserbalances.push(web3.utils.toBN(retData[1][d]).toString());
+
+        for (var d = 0; d < retData[1].length; d++) {
+          //console.log("add balance bn2: " +web3.utils.toBN(retData[1][d]).toString());
+          beforeUserbalances.push(web3.utils.toBN(retData[1][d]).toString());
         }
         await multicaller.aggregate(callDataList);
         let retDataAfter = await multicallerview.aggregate(aftercallDataList);
-        for(var d = 0; d < retDataAfter[1].length; d++){
-            //console.log("add balance bn2: " +web3.utils.toBN(retDataAfter[1][d]).toString());
-            afterUserbalances.push(web3.utils.toBN(retDataAfter[1][d]).toString());
+        for (var d = 0; d < retDataAfter[1].length; d++) {
+          //console.log("add balance bn2: " +web3.utils.toBN(retDataAfter[1][d]).toString());
+          afterUserbalances.push(web3.utils.toBN(retDataAfter[1][d]).toString());
         }
-        for(var x = 0; x < beforeUserbalances.length; x++){
-            var claimedAmount = new BN(afterUserbalances[x]).sub(new BN(beforeUserbalances[x]))
-            var info = droplist.users[dropAddresses[ dropAddresses.length-callDataList.length+x]];
-            var amount = info.amount;
-            // console.log("assert: " +claimedAmount.toString() +" == " +amount.toString())
-            assert.equal(claimedAmount.toString(),amount.toString(),"claimed amount doesnt match");
+        for (var x = 0; x < beforeUserbalances.length; x++) {
+          var claimedAmount = new BN(afterUserbalances[x]).sub(new BN(beforeUserbalances[x]));
+          var info = droplist.users[dropAddresses[i - claimsize + 1 + x]];
+          var amount = info.amount;
+          //console.log("assert: " +claimedAmount.toString() +" == " +amount.toString())
+          assert.equal(claimedAmount.toString(), amount.toString(), 'claimed amount doesnt match');
         }
+
+        drop_progress.progress = i + 1;
+        jsonfile.writeFileSync(progressFile, drop_progress, { spaces: 4 });
         beforecallDataList = [];
         callDataList = [];
         aftercallDataList = [];
+      }
     }
+    if (callDataList.length > 0) {
+      console.log(
+        'call multi claim final ' +
+          (dropAddresses.length - callDataList.length) +
+          '~' +
+          dropAddresses.length
+      );
+      // await multicaller.aggregate(callDataList);
 
-
+      var beforeUserbalances = [];
+      var afterUserbalances = [];
+      let retData = await multicallerview.aggregate(beforecallDataList);
+      for (var d = 0; d < retData[1].length; d++) {
+        //console.log("add balance bn2: " +web3.utils.toBN(retData[1][d]).toString());
+        beforeUserbalances.push(web3.utils.toBN(retData[1][d]).toString());
+      }
+      await multicaller.aggregate(callDataList);
+      let retDataAfter = await multicallerview.aggregate(aftercallDataList);
+      for (var d = 0; d < retDataAfter[1].length; d++) {
+        //console.log("add balance bn2: " +web3.utils.toBN(retDataAfter[1][d]).toString());
+        afterUserbalances.push(web3.utils.toBN(retDataAfter[1][d]).toString());
+      }
+      for (var x = 0; x < beforeUserbalances.length; x++) {
+        var claimedAmount = new BN(afterUserbalances[x]).sub(new BN(beforeUserbalances[x]));
+        var info = droplist.users[dropAddresses[dropAddresses.length - callDataList.length + x]];
+        var amount = info.amount;
+        // console.log("assert: " +claimedAmount.toString() +" == " +amount.toString())
+        assert.equal(claimedAmount.toString(), amount.toString(), 'claimed amount doesnt match');
+      }
+      beforecallDataList = [];
+      callDataList = [];
+      aftercallDataList = [];
+    }
   });
 });
-
-
