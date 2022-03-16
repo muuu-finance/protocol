@@ -6,15 +6,17 @@ import '@openzeppelin/contracts/math/SafeMath.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
 
 
-contract CrvDepositor{
+contract CrvDepositor is Ownable {
     using SafeERC20 for IERC20;
     using Address for address;
     using SafeMath for uint256;
 
-    address public constant crv = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
-    address public constant escrow = address(0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2);
+    address public crv;
+    address public votingEscrow;
+
     uint256 private constant MAXTIME = 4 * 364 * 86400;
     uint256 private constant WEEK = 7 * 86400;
 
@@ -27,10 +29,20 @@ contract CrvDepositor{
     uint256 public incentiveCrv = 0;
     uint256 public unlockTime;
 
-    constructor(address _staker, address _minter) public {
+    constructor(address _staker, address _minter, address _crv, address _votingEscrow) public {
         staker = _staker;
         minter = _minter;
         feeManager = msg.sender;
+        crv = _crv;
+        votingEscrow = _votingEscrow;
+    }
+
+    function setCrv(address _crv) external onlyOwner {
+        crv = _crv;
+    }
+
+    function setVotingEscrow(address _votingEscrow) external onlyOwner {
+        votingEscrow = _votingEscrow;
     }
 
     function setFeeManager(address _feeManager) external {
@@ -49,7 +61,7 @@ contract CrvDepositor{
     function initialLock() external{
         require(msg.sender==feeManager, "!auth");
 
-        uint256 vecrv = IERC20(escrow).balanceOf(staker);
+        uint256 vecrv = IERC20(votingEscrow).balanceOf(staker);
         if(vecrv == 0){
             uint256 unlockAt = block.timestamp + MAXTIME;
             uint256 unlockInWeeks = (unlockAt/WEEK)*WEEK;
@@ -69,16 +81,16 @@ contract CrvDepositor{
         if(crvBalance > 0){
             IERC20(crv).safeTransfer(staker, crvBalance);
         }
-        
+
         //increase ammount
         uint256 crvBalanceStaker = IERC20(crv).balanceOf(staker);
         if(crvBalanceStaker == 0){
             return;
         }
-        
+
         //increase amount
         IStaker(staker).increaseAmount(crvBalanceStaker);
-        
+
 
         uint256 unlockAt = block.timestamp + MAXTIME;
         uint256 unlockInWeeks = (unlockAt/WEEK)*WEEK;
@@ -106,7 +118,7 @@ contract CrvDepositor{
     //the cvx reward contract isnt costly to claim rewards
     function deposit(uint256 _amount, bool _lock, address _stakeAddress) public {
         require(_amount > 0,"!>0");
-        
+
         if(_lock){
             //lock immediately, transfer directly to staker to skip an erc20 transfer
             IERC20(crv).safeTransferFrom(msg.sender, staker, _amount);
@@ -132,7 +144,7 @@ contract CrvDepositor{
             //mint for msg.sender
             ITokenMinter(minter).mint(msg.sender,_amount);
         }else{
-            //mint here 
+            //mint here
             ITokenMinter(minter).mint(address(this),_amount);
             //stake for msg.sender
             IERC20(minter).safeApprove(_stakeAddress,0);
