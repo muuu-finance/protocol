@@ -19,10 +19,10 @@ contract('Deploy MUUU Locker', async (accounts) => {
     //system
     let booster = await Booster.at(contractList.system.booster);
     let cvx = await IERC20.at(contractList.system.cvx);
-    let cvxcrv = await IERC20.at(contractList.system.cvxKgl);
+    let cvxkgl = await IERC20.at(contractList.system.cvxKgl);
     let cvxrewards = await cvxRewardPool.at(contractList.system.cvxRewards);
-    let cvxcrvrewards = await cvxRewardPool.at(contractList.system.cvxKglRewards);
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
+    let cvxkglrewards = await cvxRewardPool.at(contractList.system.cvxKglRewards);
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
 
     //deploy
     let locker = await MuuuLocker.new({ from: deployer });
@@ -34,7 +34,7 @@ contract('Deploy MUUU Locker', async (accounts) => {
     contractList.system.lockerStakeProxy = stakeproxy.address;
     jsonfile.writeFileSync('./contracts.json', contractList, { spaces: 4 });
     await stakeproxy.setApprovals();
-    await locker.addReward(cvxcrv.address, stakeproxy.address, true, { from: deployer });
+    await locker.addReward(cvxkgl.address, stakeproxy.address, true, { from: deployer });
     await locker.setStakingContract(stakeproxy.address, { from: deployer });
     await locker.setApprovals();
     await locker.transferOwnership(multisig, { from: deployer });
@@ -54,13 +54,13 @@ contract('Deploy MUUU Locker', async (accounts) => {
     // console.log("test harvest");
     // await booster.earmarkRewards(38);
 
-    // await crv.balanceOf(stakeproxy.address).then(a=>console.log("extra incentive on stakeproxy: " +a))
-    // await cvxcrv.balanceOf(locker.address).then(a=>console.log("cvxcrv on locker: " +a))
+    // await kgl.balanceOf(stakeproxy.address).then(a=>console.log("extra incentive on stakeproxy: " +a))
+    // await cvxkgl.balanceOf(locker.address).then(a=>console.log("cvxkgl on locker: " +a))
 
     // await stakeproxy.distribute();
-    // await crv.balanceOf(stakeproxy.address).then(a=>console.log("crv on stakeproxy: " +a))
-    // await crv.balanceOf(locker.address).then(a=>console.log("crv incentive on locker: " +a))
-    // await cvxcrv.balanceOf(locker.address).then(a=>console.log("cvxcrv on locker: " +a))
+    // await kgl.balanceOf(stakeproxy.address).then(a=>console.log("kgl on stakeproxy: " +a))
+    // await kgl.balanceOf(locker.address).then(a=>console.log("kgl incentive on locker: " +a))
+    // await cvxkgl.balanceOf(locker.address).then(a=>console.log("cvxkgl on locker: " +a))
 
     console.log('setup complete');
   });

@@ -29,9 +29,9 @@ contract('KaglaVoterProxy', async (accounts) => {
       'Fail to check .mintr'
     );
     assert.equal(
-      await instance.crv(),
+      await instance.kgl(),
       '0xD533a949740bb3306d119CC777fa900bA034cd52',
-      'Fail to check .crv'
+      'Fail to check .kgl'
     );
     assert.equal(
       await instance.gaugeController(),

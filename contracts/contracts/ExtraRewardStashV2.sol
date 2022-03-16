@@ -13,7 +13,7 @@ contract ExtraRewardStashV2 {
     using Address for address;
     using SafeMath for uint256;
 
-    address public constant crv = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
+    address public constant kgl = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
     uint256 private constant maxRewards = 8;
     uint256 private constant WEEK = 7 * 86400;
 
@@ -208,8 +208,8 @@ contract ExtraRewardStashV2 {
             uint256 amount = IERC20(token).balanceOf(address(this));
             if (amount > 0) {
                 historicalRewards[token] = historicalRewards[token].add(amount);
-                if(token == crv){
-                    //if crv, send back to booster to distribute
+                if(token == kgl){
+                    //if kgl, send back to booster to distribute
                     IERC20(token).safeTransfer(operator, amount);
                     continue;
                 }

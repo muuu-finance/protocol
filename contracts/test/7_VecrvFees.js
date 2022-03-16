@@ -23,17 +23,17 @@ const IWalletCheckerDebug = artifacts.require('IWalletCheckerDebug');
 const IBurner = artifacts.require('IBurner');
 
 contract('VeKgl Fees Test', async (accounts) => {
-  it('should add to whitelist, lock crv, test vecrv fee distribution', async () => {
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
+  it('should add to whitelist, lock kgl, test vekgl fee distribution', async () => {
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
     let wbtc = await IERC20.at('0x2260fac5e5542a773aa44fbcfedf7c193bc2c599');
     let dai = await IERC20.at('0x6B175474E89094C44Da98b954EedeAC495271d0F');
-    let vecrv = await IERC20.at('0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2');
-    let threecrv = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
+    let vekgl = await IERC20.at('0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2');
+    let threekgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
     let exchange = await IExchange.at('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D');
     let walletChecker = await IWalletCheckerDebug.at('0xca719728Ef172d0961768581fdF35CB116e0B7a4');
     let checkerAdmin = '0x40907540d8a6C65c637785e8f8B742ae6b0b9968';
-    let vecrvWhale = '0xb01151B93B5783c252333Ce0707D704d0BBDF5EC';
+    let vekglWhale = '0xb01151B93B5783c252333Ce0707D704d0BBDF5EC';
 
     //memo: these burner addresses may change
     let burner = await IBurner.at('0xeCb456EA5365865EbAb8a2661B0c503410e9B347');
@@ -52,13 +52,13 @@ contract('VeKgl Fees Test', async (accounts) => {
     let stashFactory = await StashFactory.deployed();
     let cvx = await MuuuToken.deployed();
     let cvxKgl = await cvxKglToken.deployed();
-    let crvDeposit = await KglDepositor.deployed();
+    let kglDeposit = await KglDepositor.deployed();
     let cvxKglRewards = await booster.lockRewards();
     let cvxRewards = await booster.stakerRewards();
-    let vecrvRewards = await booster.lockFees();
+    let vekglRewards = await booster.lockFees();
     let cvxKglRewardsContract = await BaseRewardPool.at(cvxKglRewards);
     let cvxRewardsContract = await cvxRewardPool.at(cvxRewards);
-    let vecrvRewardsContract = await VirtualBalanceRewardPool.at(vecrvRewards);
+    let vekglRewardsContract = await VirtualBalanceRewardPool.at(vekglRewards);
 
     let starttime = await time.latest();
     console.log('current block time: ' + starttime);
@@ -70,7 +70,7 @@ contract('VeKgl Fees Test', async (accounts) => {
     let isWhitelist = await walletChecker.check(voteproxy.address);
     console.log('is whitelist? ' + isWhitelist);
 
-    //exchange for crv
+    //exchange for kgl
     await weth.sendTransaction({ value: web3.utils.toWei('1.0', 'ether'), from: userA });
     let wethForKgl = await weth.balanceOf(userA);
     await weth.approve(exchange.address, 0, { from: userA });
@@ -78,29 +78,29 @@ contract('VeKgl Fees Test', async (accounts) => {
     await exchange.swapExactTokensForTokens(
       wethForKgl,
       0,
-      [weth.address, crv.address],
+      [weth.address, kgl.address],
       userA,
       starttime + 3000,
       { from: userA }
     );
-    let startingcrv = await crv.balanceOf(userA);
-    console.log('crv to deposit: ' + startingcrv);
+    let startingkgl = await kgl.balanceOf(userA);
+    console.log('kgl to deposit: ' + startingkgl);
 
-    //deposit crv and stake
-    await crv.approve(crvDeposit.address, 0, { from: userA });
-    await crv.approve(crvDeposit.address, startingcrv, { from: userA });
-    await crvDeposit.deposit(startingcrv, true, '0x0000000000000000000000000000000000000000', {
+    //deposit kgl and stake
+    await kgl.approve(kglDeposit.address, 0, { from: userA });
+    await kgl.approve(kglDeposit.address, startingkgl, { from: userA });
+    await kglDeposit.deposit(startingkgl, true, '0x0000000000000000000000000000000000000000', {
       from: userA,
     });
-    console.log('crv deposited');
+    console.log('kgl deposited');
     await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
     await cvxKgl.totalSupply().then((a) => console.log('cvxKgl supply: ' + a));
-    await crv.balanceOf(crvDeposit.address).then((a) => console.log('depositor crv(>0): ' + a));
-    await crv.balanceOf(voteproxy.address).then((a) => console.log('proxy crv(==0): ' + a));
-    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(==0): ' + a));
-    console.log('staking crv');
+    await kgl.balanceOf(kglDeposit.address).then((a) => console.log('depositor kgl(>0): ' + a));
+    await kgl.balanceOf(voteproxy.address).then((a) => console.log('proxy kgl(==0): ' + a));
+    await vekgl.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(==0): ' + a));
+    console.log('staking kgl');
     await cvxKgl.approve(cvxKglRewardsContract.address, 0, { from: userA });
-    await cvxKgl.approve(cvxKglRewardsContract.address, startingcrv, { from: userA });
+    await cvxKgl.approve(cvxKglRewardsContract.address, startingkgl, { from: userA });
     await cvxKglRewardsContract.stakeAll({ from: userA });
     console.log('staked');
     await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
@@ -114,21 +114,21 @@ contract('VeKgl Fees Test', async (accounts) => {
     console.log('fees earmarked');
 
     //reward contract balance (should be 0 still)
-    await threecrv
-      .balanceOf(vecrvRewardsContract.address)
-      .then((a) => console.log('vecrvRewardsContract balance: ' + a));
+    await threekgl
+      .balanceOf(vekglRewardsContract.address)
+      .then((a) => console.log('vekglRewardsContract balance: ' + a));
 
     //move forward about 2 weeks
     await time.increase(86400 * 15);
     await time.advanceBlock();
     console.log('advance time...');
 
-    /// ----- burn fees to vecrv claim contracts (kagla dao side) ----
-    let burnerBalance = await threecrv.balanceOf('0xA464e6DCda8AC41e03616F95f4BC98a13b8922Dc');
-    console.log('3crv on burner: ' + burnerBalance);
+    /// ----- burn fees to vekgl claim contracts (kagla dao side) ----
+    let burnerBalance = await threekgl.balanceOf('0xA464e6DCda8AC41e03616F95f4BC98a13b8922Dc');
+    console.log('3kgl on burner: ' + burnerBalance);
 
     await dai.balanceOf(burner.address).then((a) => console.log('burner dai: ' + a));
-    //withdraw 3crv fees
+    //withdraw 3kgl fees
     await burner.withdraw_admin_fees('0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7');
     console.log('admin fees withdrawn from pool');
     await dai.balanceOf(burner.address).then((a) => console.log('burner dai: ' + a));
@@ -147,7 +147,7 @@ contract('VeKgl Fees Test', async (accounts) => {
       .balanceOf(underlyingburner.address)
       .then((a) => console.log('dai on underlyingburner: ' + a));
 
-    //execute to wrap everything to 3crv then send to "receiver" at 0xa464
+    //execute to wrap everything to 3kgl then send to "receiver" at 0xa464
     await underlyingburner.execute();
     console.log('burner executed');
 
@@ -156,51 +156,51 @@ contract('VeKgl Fees Test', async (accounts) => {
     await dai
       .balanceOf(underlyingburner.address)
       .then((a) => console.log('dai on underlyingburner: ' + a));
-    //burn 3crv
-    await burner.burn(threecrv.address);
-    console.log('burn complete, checkpoit 3crv');
+    //burn 3kgl
+    await burner.burn(threekgl.address);
+    console.log('burn complete, checkpoit 3kgl');
 
-    let burnerBalance2 = await threecrv.balanceOf('0xA464e6DCda8AC41e03616F95f4BC98a13b8922Dc');
-    console.log('3crv on burner: ' + burnerBalance2);
+    let burnerBalance2 = await threekgl.balanceOf('0xA464e6DCda8AC41e03616F95f4BC98a13b8922Dc');
+    console.log('3kgl on burner: ' + burnerBalance2);
 
-    /// ----- burn to vecrv claim contract complete ----
+    /// ----- burn to vekgl claim contract complete ----
 
     //claim fees for muuu platform
     await booster.earmarkFees();
     console.log('fees earmarked');
 
-    //balance check (should be all in vecrv reward contract)
-    await threecrv
-      .balanceOf(vecrvRewardsContract.address)
-      .then((a) => console.log('vecrvRewardsContract balance: ' + a));
-    await threecrv
+    //balance check (should be all in vekgl reward contract)
+    await threekgl
+      .balanceOf(vekglRewardsContract.address)
+      .then((a) => console.log('vekglRewardsContract balance: ' + a));
+    await threekgl
       .balanceOf(voteproxy.address)
       .then((a) => console.log('voteproxy balance(==0): ' + a));
-    await threecrv
+    await threekgl
       .balanceOf(booster.address)
       .then((a) => console.log('booster balance(==0): ' + a));
 
     //check earned
-    await vecrvRewardsContract.earned(userA).then((a) => console.log('earned fees: ' + a));
+    await vekglRewardsContract.earned(userA).then((a) => console.log('earned fees: ' + a));
 
     //increase time
     await time.increase(86400);
     await time.advanceBlock();
     console.log('advance time...');
     //check earned
-    await vecrvRewardsContract.earned(userA).then((a) => console.log('earned fees: ' + a));
+    await vekglRewardsContract.earned(userA).then((a) => console.log('earned fees: ' + a));
     //increase time
     await time.increase(86400);
     await time.advanceBlock();
     console.log('advance time...');
 
     //check earned
-    await vecrvRewardsContract.earned(userA).then((a) => console.log('earned fees: ' + a));
+    await vekglRewardsContract.earned(userA).then((a) => console.log('earned fees: ' + a));
 
     //before balance
-    await threecrv.balanceOf(userA).then((a) => console.log('3crv before claim: ' + a));
-    //get reward from main contract which will also claim from children contracts(crv is main, vecrv fees is child)
+    await threekgl.balanceOf(userA).then((a) => console.log('3kgl before claim: ' + a));
+    //get reward from main contract which will also claim from children contracts(kgl is main, vekgl fees is child)
     await cvxKglRewardsContract.getReward({ from: userA });
-    await threecrv.balanceOf(userA).then((a) => console.log('3crv after claim: ' + a));
+    await threekgl.balanceOf(userA).then((a) => console.log('3kgl after claim: ' + a));
   });
 });

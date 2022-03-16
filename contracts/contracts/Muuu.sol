@@ -15,7 +15,7 @@ contract MuuuToken is ERC20{
     using SafeMath for uint256;
 
     address public operator;
-    address public vecrvProxy;
+    address public vekglProxy;
 
     uint256 public maxSupply = 100 * 1000000 * 1e18; //100mil
     uint256 public totalCliffs = 1000;
@@ -29,13 +29,13 @@ contract MuuuToken is ERC20{
         )
     {
         operator = msg.sender;
-        vecrvProxy = _proxy;
+        vekglProxy = _proxy;
         reductionPerCliff = maxSupply.div(totalCliffs);
     }
 
     //get current operator off proxy incase there was a change
     function updateOperator() public {
-        operator = IStaker(vecrvProxy).operator();
+        operator = IStaker(vekglProxy).operator();
     }
 
     function mint(address _to, uint256 _amount) external {

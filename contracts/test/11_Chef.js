@@ -42,7 +42,7 @@ contract('Test masterchef rewards', async (accounts) => {
     let chef = await MuuuMasterChef.deployed();
     let cvx = await MuuuToken.deployed();
     let cvxKgl = await cvxKglToken.deployed();
-    let crvDeposit = await KglDepositor.deployed();
+    let kglDeposit = await KglDepositor.deployed();
     let cvxKglRewards = await booster.lockRewards();
     let cvxRewards = await booster.stakerRewards();
     let cvxKglRewardsContract = await BaseRewardPool.at(cvxKglRewards);
@@ -73,7 +73,7 @@ contract('Test masterchef rewards', async (accounts) => {
     await chef.userInfo(1, userA).then((a) => console.log('user a cvxeth: ' + JSON.stringify(a)));
     await chef
       .userInfo(0, userB)
-      .then((a) => console.log('user b cvxcrvcrvv: ' + JSON.stringify(a)));
+      .then((a) => console.log('user b cvxkglkglv: ' + JSON.stringify(a)));
     await time.increase(60);
     await time.advanceBlock();
     await chef.pendingMuuu(1, userA).then((a) => console.log('user a pending: ' + a));
@@ -116,7 +116,7 @@ contract('Test masterchef rewards', async (accounts) => {
     await chef.userInfo(1, userA).then((a) => console.log('user a cvxeth: ' + JSON.stringify(a)));
     await chef
       .userInfo(0, userB)
-      .then((a) => console.log('user b cvxcrvcrvv: ' + JSON.stringify(a)));
+      .then((a) => console.log('user b cvxkglkglv: ' + JSON.stringify(a)));
 
     await cvxLP.balanceOf(userA).then((a) => console.log('user a lp on wallet: ' + a));
     await cvxKglLP.balanceOf(userB).then((a) => console.log('user b lp on wallet: ' + a));

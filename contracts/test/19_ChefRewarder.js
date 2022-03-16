@@ -59,7 +59,7 @@ contract('Test masterchef rewards', async (accounts) => {
     // console.log("dummyMuuuKgl: " +dummyMuuuKgl.address);
 
     let rewardercvx = await MuuuRewarder.at(contractList.system.cvxEthRewarder);
-    let rewardercvxcrv = await MuuuRewarder.at(contractList.system.cvxKglKglRewarder);
+    let rewardercvxkgl = await MuuuRewarder.at(contractList.system.cvxKglKglRewarder);
 
     let dummyMuuu = await ChefToken.at(contractList.system.chefMuuuToken);
     console.log('dummyMuuu: ' + dummyMuuu.address);
@@ -70,27 +70,27 @@ contract('Test masterchef rewards', async (accounts) => {
     await dummyMuuu.approve(rewardercvx.address, dummybal, { from: deployer });
     console.log('approve dummyMuuu for ' + dummybal);
     var dummybal = await dummyMuuuKgl.balanceOf(deployer);
-    await dummyMuuuKgl.approve(rewardercvxcrv.address, dummybal, { from: deployer });
+    await dummyMuuuKgl.approve(rewardercvxkgl.address, dummybal, { from: deployer });
     console.log('approve dummyMuuu for ' + dummybal);
 
     // var cvxbalance = await cvx.balanceOf(deployer);
     // cvxbalance = cvxbalance.div(new BN("2"));
-    var cvxcrvAmount = '54000000000000000000000';
+    var cvxkglAmount = '54000000000000000000000';
     var cvxAmount = '36000000000000000000000';
     await cvx.transfer(rewardercvx.address, cvxAmount, { from: deployer });
-    await cvx.transfer(rewardercvxcrv.address, cvxcrvAmount, { from: deployer });
+    await cvx.transfer(rewardercvxkgl.address, cvxkglAmount, { from: deployer });
     await cvx.balanceOf(deployer).then((a) => console.log('balance on deployer:' + a));
     await cvx
       .balanceOf(rewardercvx.address)
       .then((a) => console.log('balance on rewardercvx:' + a));
     await cvx
-      .balanceOf(rewardercvxcrv.address)
-      .then((a) => console.log('balance on rewardercvxcrv:' + a));
+      .balanceOf(rewardercvxkgl.address)
+      .then((a) => console.log('balance on rewardercvxkgl:' + a));
     // console.log("send cvx to rewardercvx: " +cvxbalance)
     await rewardercvx.init(dummyMuuu.address, { from: deployer });
     console.log('init rewardercvx');
-    await rewardercvxcrv.init(dummyMuuuKgl.address, { from: deployer });
-    console.log('init rewardercvxcrv');
+    await rewardercvxkgl.init(dummyMuuuKgl.address, { from: deployer });
+    console.log('init rewardercvxkgl');
 
     // return;
 

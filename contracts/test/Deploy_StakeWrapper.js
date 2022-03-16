@@ -28,7 +28,7 @@ contract('Deploy stake wrapper', async (accounts) => {
     let booster = await Booster.at(contractList.system.booster);
     let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let cvx = await MuuuToken.at(contractList.system.cvx);
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let stkaave = await IERC20.at('0x4da27a545c0c5B758a6BA100e3a049001de870f5');
     let cvxKgl = await cvxKglToken.at(contractList.system.cvxKgl);
     let cvxKglLP = await IERC20.at(contractList.system.cvxKglKglSLP);
@@ -63,7 +63,7 @@ contract('Deploy stake wrapper', async (accounts) => {
 
     let staker = await MuuuStakingWrapperAbra.at(clone);
     let pool = contractList.pools.find((a) => a.name == cloneName);
-    await staker.initialize(pool.lptoken, pool.token, pool.crvRewards, pool.id, addressZero);
+    await staker.initialize(pool.lptoken, pool.token, pool.kglRewards, pool.id, addressZero);
     console.log('staker token: ' + staker.address);
     await staker.name().then((a) => console.log('name: ' + a));
     await staker.symbol().then((a) => console.log('symbol: ' + a));

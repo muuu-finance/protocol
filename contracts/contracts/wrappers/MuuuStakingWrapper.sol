@@ -42,7 +42,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
 
     //constants/immutables
     address public constant muuuBooster = address(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
-    address public constant crv = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
+    address public constant kgl = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
     address public constant cvx = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
     address public kaglaToken;
     address public muuuToken;
@@ -141,7 +141,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
         if (rewards.length == 0) {
             rewards.push(
                 RewardType({
-                    reward_token: crv,
+                    reward_token: kgl,
                     reward_pool: mainPool,
                     reward_integral: 0,
                     reward_remaining: 0
@@ -155,7 +155,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
                     reward_remaining: 0
                 })
             );
-            registeredRewards[crv] = KGL_INDEX+1; //mark registered at index+1
+            registeredRewards[kgl] = KGL_INDEX+1; //mark registered at index+1
             registeredRewards[cvx] = MUUU_INDEX+1; //mark registered at index+1
         }
 
@@ -312,10 +312,10 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
             claimable[i].amount = claimable[i].amount.add(reward.claimable_reward[_account].add(newlyClaimable));
             claimable[i].token = reward.reward_token;
 
-            //calc cvx minted from crv and add to cvx claimables
-            //note: crv is always index 0 so will always run before cvx
+            //calc cvx minted from kgl and add to cvx claimables
+            //note: kgl is always index 0 so will always run before cvx
             if(i == KGL_INDEX){
-                //because someone can call claim for the pool outside of checkpoints, need to recalculate crv without the local balance
+                //because someone can call claim for the pool outside of checkpoints, need to recalculate kgl without the local balance
                 I = reward.reward_integral;
                 if (supply > 0) {
                     I = I + IRewardStaking(reward.reward_pool).earned(address(this)).mul(1e20).div(supply);

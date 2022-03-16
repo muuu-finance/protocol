@@ -29,7 +29,7 @@ const ISnxRewards = artifacts.require('ISnxRewards');
 
 contract('Arbitrator Test', async (accounts) => {
   it('should move snx to arbitration when two pools try to claim', async () => {
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
     let dai = await IERC20.at('0x6b175474e89094c44da98b954eedeac495271d0f');
@@ -57,7 +57,7 @@ contract('Arbitrator Test', async (accounts) => {
     let poolManager = await PoolManager.deployed();
     let cvx = await MuuuToken.deployed();
     let cvxKgl = await cvxKglToken.deployed();
-    let crvDeposit = await KglDepositor.deployed();
+    let kglDeposit = await KglDepositor.deployed();
     let cvxKglRewards = await booster.lockRewards();
     let cvxRewards = await booster.stakerRewards();
     let cvxKglRewardsContract = await BaseRewardPool.at(cvxKglRewards);
@@ -65,7 +65,7 @@ contract('Arbitrator Test', async (accounts) => {
 
     var poolId = contractList.pools.find((pool) => pool.name == 'susd').id;
     let poolinfo = await booster.poolInfo(poolId);
-    let rewardPoolAddress = poolinfo.crvRewards;
+    let rewardPoolAddress = poolinfo.kglRewards;
     let rewardPool = await BaseRewardPool.at(rewardPoolAddress);
     console.log('reward contract at ' + rewardPool.address);
     let stash = poolinfo.stash;
@@ -140,14 +140,14 @@ contract('Arbitrator Test', async (accounts) => {
     let snxRewards = await VirtualBalanceRewardPool.at(snxRewardsAddress);
     console.log('snx token rewards (from main rewards): ' + snxRewards.address);
 
-    //make sure crv and snx is where they should be
-    // await crv.balanceOf(voteproxy.address).then(a=>console.log("crv at voteproxy " +a));
-    // await crv.balanceOf(booster.address).then(a=>console.log("crv at booster " +a));
-    // await crv.balanceOf(caller).then(a=>console.log("crv at caller " +a));
-    // await crv.balanceOf(rewardPool.address).then(a=>console.log("crv at reward pool " +a));
-    // await crv.balanceOf(cvxKglRewards).then(a=>console.log("crv at cvxKglRewards " +a));
-    // await crv.balanceOf(cvxRewards).then(a=>console.log("crv at cvxRewards " +a));
-    // await crv.balanceOf(userA).then(a=>console.log("userA crv: " +a))
+    //make sure kgl and snx is where they should be
+    // await kgl.balanceOf(voteproxy.address).then(a=>console.log("kgl at voteproxy " +a));
+    // await kgl.balanceOf(booster.address).then(a=>console.log("kgl at booster " +a));
+    // await kgl.balanceOf(caller).then(a=>console.log("kgl at caller " +a));
+    // await kgl.balanceOf(rewardPool.address).then(a=>console.log("kgl at reward pool " +a));
+    // await kgl.balanceOf(cvxKglRewards).then(a=>console.log("kgl at cvxKglRewards " +a));
+    // await kgl.balanceOf(cvxRewards).then(a=>console.log("kgl at cvxRewards " +a));
+    // await kgl.balanceOf(userA).then(a=>console.log("userA kgl: " +a))
     // await rewardPool.earned(userA).then(a=>console.log("rewards earned(unclaimed): " +a));
 
     await snx.balanceOf(rewardStash.address).then((a) => console.log('snx on stash (==0): ' + a));
@@ -179,7 +179,7 @@ contract('Arbitrator Test', async (accounts) => {
     //eurs pool
     var eurspoolId = contractList.pools.find((pool) => pool.name == 'eurs').id;
     let eurspoolinfo = await booster.poolInfo(eurspoolId);
-    let eursrewardPoolAddress = eurspoolinfo.crvRewards;
+    let eursrewardPoolAddress = eurspoolinfo.kglRewards;
     let eursrewardPool = await BaseRewardPool.at(eursrewardPoolAddress);
     console.log('reward contract at ' + eursrewardPool.address);
     let eursStash = await ExtraRewardStashV2.at(eurspoolinfo.stash);

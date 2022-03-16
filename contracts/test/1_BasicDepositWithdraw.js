@@ -21,15 +21,15 @@ const IERC20 = artifacts.require('IERC20');
 
 contract('BasicDepositWithdraw', async (accounts) => {
   it('should test basic deposits and withdrawals', async () => {
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
     let dai = await IERC20.at('0x6b175474e89094c44da98b954eedeac495271d0f');
     let exchange = await IExchange.at('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D');
-    let threecrvswap = await IKaglaFi.at('0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7');
+    let threekglswap = await IKaglaFi.at('0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7');
     let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
     let threeKglGauge = '0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A';
     let threeKglSwap = '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7';
-    let vecrvFeeDistro = '0xA464e6DCda8AC41e03616F95f4BC98a13b8922Dc';
+    let vekglFeeDistro = '0xA464e6DCda8AC41e03616F95f4BC98a13b8922Dc';
 
     let admin = accounts[0];
     let userA = accounts[1];
@@ -43,14 +43,14 @@ contract('BasicDepositWithdraw', async (accounts) => {
     let stashFactory = await StashFactory.deployed();
     let cvx = await MuuuToken.deployed();
     let cvxKgl = await cvxKglToken.deployed();
-    let crvDeposit = await KglDepositor.deployed();
+    let kglDeposit = await KglDepositor.deployed();
     let cvxKglRewards = await booster.lockRewards();
     let cvxRewards = await booster.stakerRewards();
 
     var poolId = contractList.pools.find((pool) => pool.name == '3pool').id;
     console.log('pool id: ' + poolId);
     let poolinfo = await booster.poolInfo(poolId);
-    let rewardPoolAddress = poolinfo.crvRewards;
+    let rewardPoolAddress = poolinfo.kglRewards;
     let rewardPool = await BaseRewardPool.at(rewardPoolAddress);
     let depositToken = await IERC20.at(poolinfo.token);
     console.log('pool lp token ' + poolinfo.lptoken);
@@ -73,11 +73,11 @@ contract('BasicDepositWithdraw', async (accounts) => {
     );
     let startingDai = await dai.balanceOf(userA);
 
-    //deposit dai for 3crv
-    await dai.approve(threecrvswap.address, startingDai, { from: userA });
-    await threecrvswap.add_liquidity([startingDai, 0, 0], 0, { from: userA });
+    //deposit dai for 3kgl
+    await dai.approve(threekglswap.address, startingDai, { from: userA });
+    await threekglswap.add_liquidity([startingDai, 0, 0], 0, { from: userA });
     let startingThreeKgl = await threeKgl.balanceOf(userA);
-    console.log('3crv: ' + startingThreeKgl);
+    console.log('3kgl: ' + startingThreeKgl);
 
     //approve
     await threeKgl.approve(booster.address, 0, { from: userA });
@@ -142,8 +142,8 @@ contract('BasicDepositWithdraw', async (accounts) => {
       { from: userB }
     );
     let userBDai = await dai.balanceOf(userB);
-    await dai.approve(threecrvswap.address, userBDai, { from: userB });
-    await threecrvswap.add_liquidity([userBDai, 0, 0], 0, { from: userB });
+    await dai.approve(threekglswap.address, userBDai, { from: userB });
+    await threekglswap.add_liquidity([userBDai, 0, 0], 0, { from: userB });
     let userBThreeKgl = await threeKgl.balanceOf(userB);
     await threeKgl.approve(booster.address, 0, { from: userB });
     await threeKgl.approve(booster.address, userBThreeKgl, { from: userB });

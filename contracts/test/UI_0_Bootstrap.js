@@ -24,7 +24,7 @@ contract('Bootstrap', async (accounts) => {
     let eursLp = await IERC20.at('0x194eBd173F6cDacE046C53eACcE9B953F28411d1');
     let threeKglSwap = await I3KaglaFi.at('0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7');
     let threeKglLp = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let walletChecker = await IWalletCheckerDebug.at('0xca719728Ef172d0961768581fdF35CB116e0B7a4');
     let checkerAdmin = '0x40907540d8a6C65c637785e8f8B742ae6b0b9968';
 
@@ -79,15 +79,15 @@ contract('Bootstrap', async (accounts) => {
 
     await threeKglLp.balanceOf(self).then((a) => console.log('threeKglLp: ' + a));
 
-    //get crv
+    //get kgl
     await exchange.swapExactTokensForTokens(
       web3.utils.toWei('5.0', 'ether'),
       0,
-      [weth.address, crv.address],
+      [weth.address, kgl.address],
       self,
       currentTime + 3000
     );
-    await crv.balanceOf(self).then((a) => console.log('crv: ' + a));
+    await kgl.balanceOf(self).then((a) => console.log('kgl: ' + a));
 
     //whitelist
     console.log('whitelisting proxy...');
@@ -97,10 +97,10 @@ contract('Bootstrap', async (accounts) => {
     let isWhitelist = await walletChecker.check(contractList.system.voteProxy);
     console.log('is whitelist? ' + isWhitelist);
 
-    let crvDeposit = await KglDepositor.at(contractList.system.crvDepositor);
-    await crv.transfer(contractList.system.voteProxy, 10000);
-    console.log('transfered crv to deposit');
-    await crvDeposit.initialLock();
+    let kglDeposit = await KglDepositor.at(contractList.system.kglDepositor);
+    await kgl.transfer(contractList.system.voteProxy, 10000);
+    console.log('transfered kgl to deposit');
+    await kglDeposit.initialLock();
 
     //add pbtc too
     let sbtcswap = await I3KaglaFi.at('0x7fC77b5c7614E1533320Ea6DDc2Eb61fa00A9714');

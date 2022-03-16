@@ -71,7 +71,7 @@ contract('deploy pool manager layer', async (accounts) => {
     await poolProxy.operator().then((a) => console.log('operator: ' + a));
 
     let lpToken = '0x3A283D9c08E8b55966afb64C515f5143cf907611'; //cvx lp
-    let badlpToken = '0x1cEBdB0856dd985fAe9b8fEa2262469360B8a3a6'; //crv lp
+    let badlpToken = '0x1cEBdB0856dd985fAe9b8fEa2262469360B8a3a6'; //kgl lp
     let gauge = await IKaglaGauge.at('0x7E1444BA99dcdFfE8fBdb42C02F0005D14f13BE1'); //cvx lp gauge
     let sVersion = 3;
 

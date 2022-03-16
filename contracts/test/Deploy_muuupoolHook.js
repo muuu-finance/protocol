@@ -28,7 +28,7 @@ contract('Deploy cvx pool hook', async (accounts) => {
     let booster = await Booster.at(contractList.system.booster);
     let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let cvx = await MuuuToken.at(contractList.system.cvx);
-    let crv = await IERC20.at(contractList.kagla.crv);
+    let kgl = await IERC20.at(contractList.kagla.kgl);
     let cvxKgl = await cvxKglToken.at(contractList.system.cvxKgl);
     let cvxKglLP = await IERC20.at(contractList.system.cvxKglKglSLP);
     let chef = await MuuuMasterChef.at(contractList.system.chef);
@@ -37,7 +37,7 @@ contract('Deploy cvx pool hook', async (accounts) => {
 
     var newcvxpid = 6;
     var oldcvxPid = 2;
-    var cvxcrvPid = 4;
+    var cvxkglPid = 4;
     var treasuryPid = 5;
 
     //create a reward hook
@@ -58,7 +58,7 @@ contract('Deploy cvx pool hook', async (accounts) => {
 
     await chef.add(1000, cheftoken.address, addressZero, false, { from: multisig, gasPrice: 0 });
     await chef.set(oldcvxPid, 0, addressZero, true, false, { from: multisig, gasPrice: 0 });
-    await chef.set(cvxcrvPid, 1000, addressZero, true, false, { from: multisig, gasPrice: 0 });
+    await chef.set(cvxkglPid, 1000, addressZero, true, false, { from: multisig, gasPrice: 0 });
     await chef.set(treasuryPid, 8000, addressZero, true, false, { from: multisig, gasPrice: 0 });
     await stash.setRewardHook(hook.address, { from: multisig, gasPrice: 0 });
 

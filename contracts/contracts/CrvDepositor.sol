@@ -14,13 +14,13 @@ contract KglDepositor is Ownable {
     using Address for address;
     using SafeMath for uint256;
 
-    address public crv;
+    address public kgl;
     address public votingEscrow;
 
     uint256 private constant MAXTIME = 4 * 364 * 86400;
     uint256 private constant WEEK = 7 * 86400;
 
-    uint256 public lockIncentive = 10; //incentive to users who spend gas to lock crv
+    uint256 public lockIncentive = 10; //incentive to users who spend gas to lock kgl
     uint256 public constant FEE_DENOMINATOR = 10000;
 
     address public feeManager;
@@ -29,16 +29,16 @@ contract KglDepositor is Ownable {
     uint256 public incentiveKgl = 0;
     uint256 public unlockTime;
 
-    constructor(address _staker, address _minter, address _crv, address _votingEscrow) public {
+    constructor(address _staker, address _minter, address _kgl, address _votingEscrow) public {
         staker = _staker;
         minter = _minter;
         feeManager = msg.sender;
-        crv = _crv;
+        kgl = _kgl;
         votingEscrow = _votingEscrow;
     }
 
-    function setKgl(address _crv) external onlyOwner {
-        crv = _crv;
+    function setKgl(address _kgl) external onlyOwner {
+        kgl = _kgl;
     }
 
     function setVotingEscrow(address _votingEscrow) external onlyOwner {
@@ -61,35 +61,35 @@ contract KglDepositor is Ownable {
     function initialLock() external{
         require(msg.sender==feeManager, "!auth");
 
-        uint256 vecrv = IERC20(votingEscrow).balanceOf(staker);
-        if(vecrv == 0){
+        uint256 vekgl = IERC20(votingEscrow).balanceOf(staker);
+        if(vekgl == 0){
             uint256 unlockAt = block.timestamp + MAXTIME;
             uint256 unlockInWeeks = (unlockAt/WEEK)*WEEK;
 
             //release old lock if exists
             IStaker(staker).release();
             //create new lock
-            uint256 crvBalanceStaker = IERC20(crv).balanceOf(staker);
-            IStaker(staker).createLock(crvBalanceStaker, unlockAt);
+            uint256 kglBalanceStaker = IERC20(kgl).balanceOf(staker);
+            IStaker(staker).createLock(kglBalanceStaker, unlockAt);
             unlockTime = unlockInWeeks;
         }
     }
 
     //lock kagla
     function _lockKagla() internal {
-        uint256 crvBalance = IERC20(crv).balanceOf(address(this));
-        if(crvBalance > 0){
-            IERC20(crv).safeTransfer(staker, crvBalance);
+        uint256 kglBalance = IERC20(kgl).balanceOf(address(this));
+        if(kglBalance > 0){
+            IERC20(kgl).safeTransfer(staker, kglBalance);
         }
 
         //increase ammount
-        uint256 crvBalanceStaker = IERC20(crv).balanceOf(staker);
-        if(crvBalanceStaker == 0){
+        uint256 kglBalanceStaker = IERC20(kgl).balanceOf(staker);
+        if(kglBalanceStaker == 0){
             return;
         }
 
         //increase amount
-        IStaker(staker).increaseAmount(crvBalanceStaker);
+        IStaker(staker).increaseAmount(kglBalanceStaker);
 
 
         uint256 unlockAt = block.timestamp + MAXTIME;
@@ -112,7 +112,7 @@ contract KglDepositor is Ownable {
         }
     }
 
-    //deposit crv for cvxKgl
+    //deposit kgl for cvxKgl
     //can locking immediately or defer locking to someone else by paying a fee.
     //while users can choose to lock or defer, this is mostly in place so that
     //the cvx reward contract isnt costly to claim rewards
@@ -121,7 +121,7 @@ contract KglDepositor is Ownable {
 
         if(_lock){
             //lock immediately, transfer directly to staker to skip an erc20 transfer
-            IERC20(crv).safeTransferFrom(msg.sender, staker, _amount);
+            IERC20(kgl).safeTransferFrom(msg.sender, staker, _amount);
             _lockKagla();
             if(incentiveKgl > 0){
                 //add the incentive tokens here so they can be staked together
@@ -130,7 +130,7 @@ contract KglDepositor is Ownable {
             }
         }else{
             //move tokens here
-            IERC20(crv).safeTransferFrom(msg.sender, address(this), _amount);
+            IERC20(kgl).safeTransferFrom(msg.sender, address(this), _amount);
             //defer lock cost to another user
             uint256 callIncentive = _amount.mul(lockIncentive).div(FEE_DENOMINATOR);
             _amount = _amount.sub(callIncentive);
@@ -158,7 +158,7 @@ contract KglDepositor is Ownable {
     }
 
     function depositAll(bool _lock, address _stakeAddress) external{
-        uint256 crvBal = IERC20(crv).balanceOf(msg.sender);
-        deposit(crvBal,_lock,_stakeAddress);
+        uint256 kglBal = IERC20(kgl).balanceOf(msg.sender);
+        deposit(kglBal,_lock,_stakeAddress);
     }
 }

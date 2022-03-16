@@ -21,7 +21,7 @@ contract('Airdrop Test', async (accounts) => {
     console.log('airdrop at: ' + airdrop.address);
     let mroot = await airdrop.merkleRoot();
     console.log('airdrop root: ' + mroot);
-    let vecrvVesting = await VestedEscrow.at(contractList.system.vestedEscrow);
+    let vekglVesting = await VestedEscrow.at(contractList.system.vestedEscrow);
     let multicaller = await Multicaller.at('0x5e227AD1969Ea493B43F840cfF78d08a6fc17796');
     let multicallerview = await MulticallerView.at('0x5e227AD1969Ea493B43F840cfF78d08a6fc17796');
 
@@ -116,17 +116,17 @@ contract('Airdrop Test', async (accounts) => {
     //     await time.advanceBlock();
 
     //     await time.latest().then(a=>console.log("advance time..."+a));
-    //     await vecrvVesting.totalTime().then(a=>console.log("vesting total time: " +a));
-    //     await vecrvVesting.initialLockedSupply().then(a=>console.log("vesting initialLockedSupply: " +a));
-    //     await vecrvVesting.unallocatedSupply().then(a=>console.log("vesting unallocatedSupply: " +a));
-    //     await vecrvVesting.vestedSupply().then(a=>console.log("vesting vestedSupply: " +a));
+    //     await vekglVesting.totalTime().then(a=>console.log("vesting total time: " +a));
+    //     await vekglVesting.initialLockedSupply().then(a=>console.log("vesting initialLockedSupply: " +a));
+    //     await vekglVesting.unallocatedSupply().then(a=>console.log("vesting unallocatedSupply: " +a));
+    //     await vekglVesting.vestedSupply().then(a=>console.log("vesting vestedSupply: " +a));
 
-    //     await vecrvVesting.lockedOf(lastaddress).then(a=>console.log("user locked: " +a))
-    //     await vecrvVesting.balanceOf(lastaddress).then(a=>console.log("user balance: " +a))
-    //     await vecrvVesting.vestedOf(lastaddress).then(a=>console.log("user vested: " +a))
+    //     await vekglVesting.lockedOf(lastaddress).then(a=>console.log("user locked: " +a))
+    //     await vekglVesting.balanceOf(lastaddress).then(a=>console.log("user balance: " +a))
+    //     await vekglVesting.vestedOf(lastaddress).then(a=>console.log("user vested: " +a))
     // }
 
-    // await vecrvVesting.claim(lastaddress);
+    // await vekglVesting.claim(lastaddress);
     // await cvx.balanceOf(lastaddress).then(a=>console.log("cvx balance in wallet: " +a))
   });
 });

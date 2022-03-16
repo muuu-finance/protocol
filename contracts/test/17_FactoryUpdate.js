@@ -117,7 +117,7 @@ contract('Factory Update', async (accounts) => {
     await time.advanceBlock();
     console.log('advance time...');
 
-    let pool = await IBaseRewards.at(info.crvRewards);
+    let pool = await IBaseRewards.at(info.kglRewards);
     await pool.getReward(userA, true);
     await stafi.balanceOf(userA).then((a) => console.log('stafi on user A ' + a));
 

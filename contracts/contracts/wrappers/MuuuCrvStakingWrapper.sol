@@ -44,9 +44,9 @@ contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
     mapping(address => uint256) public cvx_claimable_reward;
 
     //constants/immutables
-    address public constant crvDepositor = address(0x8014595F2AB54cD7c604B00E9fb932176fDc86Ae);
+    address public constant kglDepositor = address(0x8014595F2AB54cD7c604B00E9fb932176fDc86Ae);
     address public constant cvxKglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
-    address public constant crv = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
+    address public constant kgl = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
     address public constant cvx = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
     address public constant cvxKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
 
@@ -126,8 +126,8 @@ contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
     }
 
     function setApprovals() public {
-        IERC20(crv).safeApprove(crvDepositor, 0);
-        IERC20(crv).safeApprove(crvDepositor, uint256(-1));
+        IERC20(kgl).safeApprove(kglDepositor, 0);
+        IERC20(kgl).safeApprove(kglDepositor, uint256(-1));
         IERC20(cvxKgl).safeApprove(cvxKglStaking, 0);
         IERC20(cvxKgl).safeApprove(cvxKglStaking, uint256(-1));
     }
@@ -137,7 +137,7 @@ contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
         if (rewards.length == 0) {
             rewards.push(
                 RewardType({
-                    reward_token: crv,
+                    reward_token: kgl,
                     reward_pool: cvxKglStaking,
                     reward_integral: 0,
                     reward_remaining: 0
@@ -325,7 +325,7 @@ contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
             claimable[i].token = reward.reward_token;
 
             //calc cvx here
-            if(reward.reward_token == crv){
+            if(reward.reward_token == kgl){
                 claimable[rewardCount].amount = cvx_claimable_reward[_account].add(MuuuMining.ConvertKglToMuuu(newlyClaimable));
                 claimable[rewardCount].token = cvx;
             }
@@ -346,8 +346,8 @@ contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
 
         if (_amount > 0) {
             _mint(_to, _amount);
-            IERC20(crv).safeTransferFrom(msg.sender, address(this), _amount);
-            IMuuuDeposits(crvDepositor).deposit(_amount, false, cvxKglStaking);
+            IERC20(kgl).safeTransferFrom(msg.sender, address(this), _amount);
+            IMuuuDeposits(kglDepositor).deposit(_amount, false, cvxKglStaking);
         }
 
         emit Deposited(msg.sender, _to, _amount, true);

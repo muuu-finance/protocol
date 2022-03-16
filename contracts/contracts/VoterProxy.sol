@@ -14,7 +14,7 @@ contract KaglaVoterProxy is Ownable {
     using Address for address;
     using SafeMath for uint256;
 
-    address public crv; // IERC20 / KGL Token
+    address public kgl; // IERC20 / KGL Token
     address public votingEscrow; // for Specialize DEX
     address public gaugeController; // IVoting / GaugeController
     address public tokenMinter; // IMinter / Minter
@@ -25,8 +25,8 @@ contract KaglaVoterProxy is Ownable {
     mapping (address => bool) private stashPool;
     mapping (address => bool) private protectedTokens;
 
-    constructor(address _crv, address _votingEscrow, address _gaugeController, address _tokenMinter) public {
-        crv= _crv;
+    constructor(address _kgl, address _votingEscrow, address _gaugeController, address _tokenMinter) public {
+        kgl= _kgl;
         votingEscrow = _votingEscrow;
         gaugeController= _gaugeController;
         tokenMinter = _tokenMinter;
@@ -36,8 +36,8 @@ contract KaglaVoterProxy is Ownable {
         return "KaglaVoterProxy";
     }
 
-    function setKgl(address _crv) external onlyOwner {
-        crv = _crv;
+    function setKgl(address _kgl) external onlyOwner {
+        kgl = _kgl;
     }
 
     function setVotingEscrow(address _votingEscrow) external onlyOwner {
@@ -131,16 +131,16 @@ contract KaglaVoterProxy is Ownable {
 
     function createLock(uint256 _value, uint256 _unlockTime) external returns(bool){
         require(msg.sender == depositor, "!auth");
-        IERC20(crv).safeApprove(votingEscrow, 0);
-        IERC20(crv).safeApprove(votingEscrow, _value);
+        IERC20(kgl).safeApprove(votingEscrow, 0);
+        IERC20(kgl).safeApprove(votingEscrow, _value);
         IKaglaVoteEscrow(votingEscrow).create_lock(_value, _unlockTime);
         return true;
     }
 
     function increaseAmount(uint256 _value) external returns(bool){
         require(msg.sender == depositor, "!auth");
-        IERC20(crv).safeApprove(votingEscrow, 0);
-        IERC20(crv).safeApprove(votingEscrow, _value);
+        IERC20(kgl).safeApprove(votingEscrow, 0);
+        IERC20(kgl).safeApprove(votingEscrow, _value);
         IKaglaVoteEscrow(votingEscrow).increase_amount(_value);
         return true;
     }
@@ -176,8 +176,8 @@ contract KaglaVoterProxy is Ownable {
 
         uint256 _balance = 0;
         try IMinter(tokenMinter).mint(_gauge){
-            _balance = IERC20(crv).balanceOf(address(this));
-            IERC20(crv).safeTransfer(operator, _balance);
+            _balance = IERC20(kgl).balanceOf(address(this));
+            IERC20(kgl).safeTransfer(operator, _balance);
         }catch{}
 
         return _balance;

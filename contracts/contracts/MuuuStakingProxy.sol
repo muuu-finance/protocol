@@ -39,14 +39,14 @@ contract MuuuStakingProxy {
     for uint256;
 
     //tokens
-    address public constant crv = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
+    address public constant kgl = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
     address public constant cvx = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
     address public constant cvxKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
 
     //muuu addresses
     address public constant cvxStaking = address(0xCF50b810E57Ac33B91dCF525C6ddd9881B139332);
     address public constant cvxKglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
-    address public constant crvDeposit = address(0x8014595F2AB54cD7c604B00E9fb932176fDc86Ae);
+    address public constant kglDeposit = address(0x8014595F2AB54cD7c604B00E9fb932176fDc86Ae);
     uint256 public constant denominator = 10000;
 
     address public immutable rewards;
@@ -85,8 +85,8 @@ contract MuuuStakingProxy {
         IERC20(cvx).safeApprove(cvxStaking, 0);
         IERC20(cvx).safeApprove(cvxStaking, uint256(-1));
 
-        IERC20(crv).safeApprove(crvDeposit, 0);
-        IERC20(crv).safeApprove(crvDeposit, uint256(-1));
+        IERC20(kgl).safeApprove(kglDeposit, 0);
+        IERC20(kgl).safeApprove(kglDeposit, uint256(-1));
 
         IERC20(cvxKgl).safeApprove(rewards, 0);
         IERC20(cvxKgl).safeApprove(rewards, uint256(-1));
@@ -94,7 +94,7 @@ contract MuuuStakingProxy {
 
     function rescueToken(address _token, address _to) external {
         require(msg.sender == owner, "!auth");
-        require(_token != crv && _token != cvx && _token != cvxKgl, "not allowed");
+        require(_token != kgl && _token != cvx && _token != cvxKgl, "not allowed");
 
         uint256 bal = IERC20(_token).balanceOf(address(this));
         IERC20(_token).safeTransfer(_to, bal);
@@ -125,10 +125,10 @@ contract MuuuStakingProxy {
         //claim rewards
         IMuuuRewards(cvxStaking).getReward(false);
 
-        //convert any crv that was directly added
-        uint256 crvBal = IERC20(crv).balanceOf(address(this));
-        if (crvBal > 0) {
-            IKglDepositor(crvDeposit).deposit(crvBal, true);
+        //convert any kgl that was directly added
+        uint256 kglBal = IERC20(kgl).balanceOf(address(this));
+        if (kglBal > 0) {
+            IKglDepositor(kglDeposit).deposit(kglBal, true);
         }
 
         //make sure nothing is in here
@@ -137,7 +137,7 @@ contract MuuuStakingProxy {
             IMuuuRewards(cvxKglStaking).withdraw(sCheck,false);
         }
 
-        //distribute cvxcrv
+        //distribute cvxkgl
         uint256 cvxKglBal = IERC20(cvxKgl).balanceOf(address(this));
 
         if (cvxKglBal > 0) {
@@ -156,7 +156,7 @@ contract MuuuStakingProxy {
 
     //in case a new reward is ever added, allow generic distribution
     function distributeOther(IERC20 _token) external {
-        require( address(_token) != crv && address(_token) != cvxKgl, "not allowed");
+        require( address(_token) != kgl && address(_token) != cvxKgl, "not allowed");
 
         uint256 bal = _token.balanceOf(address(this));
 

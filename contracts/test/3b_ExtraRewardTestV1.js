@@ -25,8 +25,8 @@ const IKaglaGauge = artifacts.require('IKaglaGauge');
 //3. extra rewards, but with v1 gauges
 
 contract('ExtraRewardsTest v1', async (accounts) => {
-  it('should deposit and claim crv/cvx as well as extra incentives', async () => {
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
+  it('should deposit and claim kgl/cvx as well as extra incentives', async () => {
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
     let dai = await IERC20.at('0x6b175474e89094c44da98b954eedeac495271d0f');
@@ -50,7 +50,7 @@ contract('ExtraRewardsTest v1', async (accounts) => {
     let poolManager = await PoolManager.deployed();
     let cvx = await MuuuToken.deployed();
     let cvxKgl = await cvxKglToken.deployed();
-    let crvDeposit = await KglDepositor.deployed();
+    let kglDeposit = await KglDepositor.deployed();
     let cvxKglRewards = await booster.lockRewards();
     let cvxRewards = await booster.stakerRewards();
     let cvxKglRewardsContract = await BaseRewardPool.at(cvxKglRewards);
@@ -58,7 +58,7 @@ contract('ExtraRewardsTest v1', async (accounts) => {
 
     var poolId = contractList.pools.find((pool) => pool.name == 'susd').id;
     let poolinfo = await booster.poolInfo(poolId);
-    let rewardPoolAddress = poolinfo.crvRewards;
+    let rewardPoolAddress = poolinfo.kglRewards;
     let rewardPool = await BaseRewardPool.at(rewardPoolAddress);
     console.log('reward contract at ' + rewardPool.address);
     let stash = poolinfo.stash;
@@ -132,14 +132,14 @@ contract('ExtraRewardsTest v1', async (accounts) => {
     let snxRewards = await VirtualBalanceRewardPool.at(snxRewardsAddress);
     console.log('snx token rewards (from main rewards): ' + snxRewards.address);
 
-    //make sure crv and snx is where they should be
-    await crv.balanceOf(voteproxy.address).then((a) => console.log('crv at voteproxy ' + a));
-    await crv.balanceOf(booster.address).then((a) => console.log('crv at booster ' + a));
-    await crv.balanceOf(caller).then((a) => console.log('crv at caller ' + a));
-    await crv.balanceOf(rewardPool.address).then((a) => console.log('crv at reward pool ' + a));
-    await crv.balanceOf(cvxKglRewards).then((a) => console.log('crv at cvxKglRewards ' + a));
-    await crv.balanceOf(cvxRewards).then((a) => console.log('crv at cvxRewards ' + a));
-    await crv.balanceOf(userA).then((a) => console.log('userA crv: ' + a));
+    //make sure kgl and snx is where they should be
+    await kgl.balanceOf(voteproxy.address).then((a) => console.log('kgl at voteproxy ' + a));
+    await kgl.balanceOf(booster.address).then((a) => console.log('kgl at booster ' + a));
+    await kgl.balanceOf(caller).then((a) => console.log('kgl at caller ' + a));
+    await kgl.balanceOf(rewardPool.address).then((a) => console.log('kgl at reward pool ' + a));
+    await kgl.balanceOf(cvxKglRewards).then((a) => console.log('kgl at cvxKglRewards ' + a));
+    await kgl.balanceOf(cvxRewards).then((a) => console.log('kgl at cvxRewards ' + a));
+    await kgl.balanceOf(userA).then((a) => console.log('userA kgl: ' + a));
     await rewardPool.earned(userA).then((a) => console.log('rewards earned(unclaimed): ' + a));
 
     await snx.balanceOf(rewardStash.address).then((a) => console.log('snx on stash (==0): ' + a));
@@ -200,14 +200,14 @@ contract('ExtraRewardsTest v1', async (accounts) => {
     await booster.earmarkRewards(poolId, { from: caller });
     console.log('earmark 2');
 
-    //check balances, snx/crv should be moved to their reward contracts
-    await crv.balanceOf(voteproxy.address).then((a) => console.log('crv at voteproxy ' + a));
-    await crv.balanceOf(booster.address).then((a) => console.log('crv at booster ' + a));
-    await crv.balanceOf(caller).then((a) => console.log('crv at caller ' + a));
-    await crv.balanceOf(rewardPool.address).then((a) => console.log('crv at reward pool ' + a));
-    await crv.balanceOf(cvxKglRewards).then((a) => console.log('crv at cvxKglRewards ' + a));
-    await crv.balanceOf(cvxRewards).then((a) => console.log('crv at cvxRewards ' + a));
-    await crv.balanceOf(userA).then((a) => console.log('userA crv: ' + a));
+    //check balances, snx/kgl should be moved to their reward contracts
+    await kgl.balanceOf(voteproxy.address).then((a) => console.log('kgl at voteproxy ' + a));
+    await kgl.balanceOf(booster.address).then((a) => console.log('kgl at booster ' + a));
+    await kgl.balanceOf(caller).then((a) => console.log('kgl at caller ' + a));
+    await kgl.balanceOf(rewardPool.address).then((a) => console.log('kgl at reward pool ' + a));
+    await kgl.balanceOf(cvxKglRewards).then((a) => console.log('kgl at cvxKglRewards ' + a));
+    await kgl.balanceOf(cvxRewards).then((a) => console.log('kgl at cvxRewards ' + a));
+    await kgl.balanceOf(userA).then((a) => console.log('userA kgl: ' + a));
 
     await snx.balanceOf(rewardStash.address).then((a) => console.log('snx on stash (==0): ' + a));
     await snx.balanceOf(voteproxy.address).then((a) => console.log('snx on voter (==0): ' + a));
@@ -221,14 +221,14 @@ contract('ExtraRewardsTest v1', async (accounts) => {
     await time.advanceBlock();
     console.log('advance time...');
 
-    //claim crv reward pool, should also trigger cvx and snx
-    await rewardPool.earned(userA).then((a) => console.log('crv rewards earned(unclaimed): ' + a));
+    //claim kgl reward pool, should also trigger cvx and snx
+    await rewardPool.earned(userA).then((a) => console.log('kgl rewards earned(unclaimed): ' + a));
     await snxRewards.earned(userA).then((a) => console.log('snx rewards earned(unclaimed): ' + a));
     await rewardPool.getReward({ from: userA });
     console.log('getReward()');
-    await rewardPool.earned(userA).then((a) => console.log('crv rewards earned(unclaimed): ' + a));
+    await rewardPool.earned(userA).then((a) => console.log('kgl rewards earned(unclaimed): ' + a));
     await snxRewards.earned(userA).then((a) => console.log('snx rewards earned(unclaimed): ' + a));
-    await crv.balanceOf(userA).then((a) => console.log('userA crv: ' + a));
+    await kgl.balanceOf(userA).then((a) => console.log('userA kgl: ' + a));
     await snx.balanceOf(userA).then((a) => console.log('userA snx: ' + a));
     await cvx.balanceOf(userA).then((a) => console.log('userA cvx: ' + a));
   });

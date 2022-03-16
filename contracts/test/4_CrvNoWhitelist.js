@@ -21,11 +21,11 @@ const IERC20 = artifacts.require('IERC20');
 
 contract('cvxKgl Rewards', async (accounts) => {
   it('should deposit and gain rewrds with cvxKgl', async () => {
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
     let dai = await IERC20.at('0x6b175474e89094c44da98b954eedeac495271d0f');
     let exchange = await IExchange.at('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D');
-    let threecrvswap = await IKaglaFi.at('0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7');
+    let threekglswap = await IKaglaFi.at('0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7');
     let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
     let threeKglGauge = '0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A';
     let threeKglSwap = '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7';
@@ -42,7 +42,7 @@ contract('cvxKgl Rewards', async (accounts) => {
     let stashFactory = await StashFactory.deployed();
     let cvx = await MuuuToken.deployed();
     let cvxKgl = await cvxKglToken.deployed();
-    let crvDeposit = await KglDepositor.deployed();
+    let kglDeposit = await KglDepositor.deployed();
     let cvxKglRewards = await booster.lockRewards();
     let cvxRewards = await booster.stakerRewards();
     let cvxKglRewardsContract = await BaseRewardPool.at(cvxKglRewards);
@@ -50,7 +50,7 @@ contract('cvxKgl Rewards', async (accounts) => {
 
     var poolId = contractList.pools.find((pool) => pool.name == '3pool').id;
     let poolinfo = await booster.poolInfo(poolId);
-    let rewardPoolAddress = poolinfo.crvRewards;
+    let rewardPoolAddress = poolinfo.kglRewards;
     let rewardPool = await BaseRewardPool.at(rewardPoolAddress);
 
     //advance to start cvx farming
@@ -62,7 +62,7 @@ contract('cvxKgl Rewards', async (accounts) => {
     console.log('current block time: ' + starttime);
     await time.latestBlock().then((a) => console.log('current block: ' + a));
 
-    //exchange and deposit for 3crv
+    //exchange and deposit for 3kgl
     await weth.sendTransaction({ value: web3.utils.toWei('2.0', 'ether'), from: userA });
     let startingWeth = await weth.balanceOf(userA);
     await weth.approve(exchange.address, startingWeth, { from: userA });
@@ -75,12 +75,12 @@ contract('cvxKgl Rewards', async (accounts) => {
       { from: userA }
     );
     let startingDai = await dai.balanceOf(userA);
-    await dai.approve(threecrvswap.address, startingDai, { from: userA });
-    await threecrvswap.add_liquidity([startingDai, 0, 0], 0, { from: userA });
+    await dai.approve(threekglswap.address, startingDai, { from: userA });
+    await threekglswap.add_liquidity([startingDai, 0, 0], 0, { from: userA });
     let startingThreeKgl = await threeKgl.balanceOf(userA);
-    console.log('3crv: ' + startingThreeKgl);
+    console.log('3kgl: ' + startingThreeKgl);
 
-    //approve and deposit 3crv
+    //approve and deposit 3kgl
     await threeKgl.approve(booster.address, 0, { from: userA });
     await threeKgl.approve(booster.address, startingThreeKgl, { from: userA });
 
@@ -90,7 +90,7 @@ contract('cvxKgl Rewards', async (accounts) => {
     await rewardPool.earned(userA).then((a) => console.log('rewards earned(unclaimed): ' + a));
     console.log('deposited lp tokens');
 
-    //exchange for crv
+    //exchange for kgl
     await weth.sendTransaction({ value: web3.utils.toWei('1.0', 'ether'), from: userA });
     let wethForKgl = await weth.balanceOf(userA);
     await weth.approve(exchange.address, 0, { from: userA });
@@ -98,34 +98,34 @@ contract('cvxKgl Rewards', async (accounts) => {
     await exchange.swapExactTokensForTokens(
       wethForKgl,
       0,
-      [weth.address, crv.address],
+      [weth.address, kgl.address],
       userA,
       starttime + 3000,
       { from: userA }
     );
-    let startingcrv = await crv.balanceOf(userA);
-    console.log('crv: ' + startingcrv);
+    let startingkgl = await kgl.balanceOf(userA);
+    console.log('kgl: ' + startingkgl);
 
-    //deposit crv
-    await crv.approve(crvDeposit.address, 0, { from: userA });
-    await crv.approve(crvDeposit.address, startingcrv, { from: userA });
-    await crvDeposit.deposit(startingcrv, true, '0x0000000000000000000000000000000000000000', {
+    //deposit kgl
+    await kgl.approve(kglDeposit.address, 0, { from: userA });
+    await kgl.approve(kglDeposit.address, startingkgl, { from: userA });
+    await kglDeposit.deposit(startingkgl, true, '0x0000000000000000000000000000000000000000', {
       from: userA,
     });
-    console.log('crv deposited');
+    console.log('kgl deposited');
     await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
     //stake cvxKgl
     console.log('stake at ' + cvxKglRewardsContract.address);
     await cvxKgl.approve(cvxKglRewardsContract.address, 0, { from: userA });
-    await cvxKgl.approve(cvxKglRewardsContract.address, startingcrv, { from: userA });
+    await cvxKgl.approve(cvxKglRewardsContract.address, startingkgl, { from: userA });
     console.log('stake approve');
     await cvxKglRewardsContract.stakeAll({ from: userA });
     console.log('staked');
 
-    //check balances, depositor should still have crv since no whitelist
+    //check balances, depositor should still have kgl since no whitelist
     await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
     await cvxKglRewardsContract.balanceOf(userA).then((a) => console.log('cvxKgl staked: ' + a));
-    await crv.balanceOf(crvDeposit.address).then((a) => console.log('crv on depositor: ' + a));
+    await kgl.balanceOf(kglDeposit.address).then((a) => console.log('kgl on depositor: ' + a));
     await cvxKgl.totalSupply().then((a) => console.log('cvxKgl supply: ' + a));
 
     //advance time
@@ -139,12 +139,12 @@ contract('cvxKgl Rewards', async (accounts) => {
     //distribute rewards
     await booster.earmarkRewards(0, { from: caller });
     console.log('earmark');
-    await crv.balanceOf(voteproxy.address).then((a) => console.log('proxy crv(==0): ' + a));
-    await crv.balanceOf(crvDeposit.address).then((a) => console.log('depositor crv(>0): ' + a));
-    await crv.balanceOf(userA).then((a) => console.log('userA crv(==0): ' + a));
-    await crv.balanceOf(caller).then((a) => console.log('caller crv(>0): ' + a));
-    await crv.balanceOf(cvxKglRewards).then((a) => console.log('crv at cvxKglRewards ' + a));
-    await crv.balanceOf(cvxRewards).then((a) => console.log('crv at cvxRewards ' + a));
+    await kgl.balanceOf(voteproxy.address).then((a) => console.log('proxy kgl(==0): ' + a));
+    await kgl.balanceOf(kglDeposit.address).then((a) => console.log('depositor kgl(>0): ' + a));
+    await kgl.balanceOf(userA).then((a) => console.log('userA kgl(==0): ' + a));
+    await kgl.balanceOf(caller).then((a) => console.log('caller kgl(>0): ' + a));
+    await kgl.balanceOf(cvxKglRewards).then((a) => console.log('kgl at cvxKglRewards ' + a));
+    await kgl.balanceOf(cvxRewards).then((a) => console.log('kgl at cvxRewards ' + a));
 
     //check earned(should be 0)
     await cvxKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
@@ -163,10 +163,10 @@ contract('cvxKgl Rewards', async (accounts) => {
     await cvxKglRewardsContract.getReward({ from: userA });
     console.log('getReward()');
 
-    await crv.balanceOf(cvxKglRewards).then((a) => console.log('crv at cvxKglRewards ' + a));
+    await kgl.balanceOf(cvxKglRewards).then((a) => console.log('kgl at cvxKglRewards ' + a));
     await cvxKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
     await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
-    await crv.balanceOf(userA).then((a) => console.log('crv on wallet: ' + a));
+    await kgl.balanceOf(userA).then((a) => console.log('kgl on wallet: ' + a));
     await cvx.balanceOf(userA).then((a) => console.log('cvx on wallet: ' + a));
 
     //advance time
@@ -180,17 +180,17 @@ contract('cvxKgl Rewards', async (accounts) => {
     await cvxKglRewardsContract.getReward({ from: userA });
     console.log('getReward()');
 
-    await crv.balanceOf(cvxKglRewards).then((a) => console.log('crv at cvxKglRewards ' + a));
+    await kgl.balanceOf(cvxKglRewards).then((a) => console.log('kgl at cvxKglRewards ' + a));
     await cvxKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
     await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
-    await crv.balanceOf(userA).then((a) => console.log('crv on wallet: ' + a));
+    await kgl.balanceOf(userA).then((a) => console.log('kgl on wallet: ' + a));
     await cvx.balanceOf(userA).then((a) => console.log('cvx on wallet: ' + a));
 
     //distribute again
     await booster.earmarkRewards(0);
     console.log('earmark 2');
-    await crv.balanceOf(cvxKglRewards).then((a) => console.log('crv at cvxKglRewards ' + a));
-    await crv.balanceOf(cvxRewards).then((a) => console.log('crv at cvxRewards ' + a));
+    await kgl.balanceOf(cvxKglRewards).then((a) => console.log('kgl at cvxKglRewards ' + a));
+    await kgl.balanceOf(cvxRewards).then((a) => console.log('kgl at cvxRewards ' + a));
 
     await time.increase(3 * 86400);
     await time.advanceBlock();
@@ -205,10 +205,10 @@ contract('cvxKgl Rewards', async (accounts) => {
     await cvxKglRewardsContract.getReward({ from: userA });
     console.log('getReward()');
 
-    await crv.balanceOf(cvxKglRewards).then((a) => console.log('crv at cvxKglRewards ' + a));
+    await kgl.balanceOf(cvxKglRewards).then((a) => console.log('kgl at cvxKglRewards ' + a));
     await cvxKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
     await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
-    await crv.balanceOf(userA).then((a) => console.log('crv on wallet: ' + a));
+    await kgl.balanceOf(userA).then((a) => console.log('kgl on wallet: ' + a));
     await cvx.balanceOf(userA).then((a) => console.log('cvx on wallet: ' + a));
   });
 });

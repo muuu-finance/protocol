@@ -46,10 +46,10 @@ contract('Test lock contract', async (accounts) => {
 
     //system
     let cvx = await IERC20.at(contractList.system.cvx);
-    let cvxcrv = await IERC20.at(contractList.system.cvxKgl);
+    let cvxkgl = await IERC20.at(contractList.system.cvxKgl);
     let cvxrewards = await cvxRewardPool.at(contractList.system.cvxRewards);
-    let cvxcrvrewards = await cvxRewardPool.at(contractList.system.cvxKglRewards);
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
+    let cvxkglrewards = await cvxRewardPool.at(contractList.system.cvxKglRewards);
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
@@ -89,7 +89,7 @@ contract('Test lock contract', async (accounts) => {
     // await oldLocker.methods['processExpiredLocks(bool,uint256,address)'](true,0,userA,{from:userZ});
     // await oldLocker.claimableRewards(userA).then(a=>console.log("userA claimableRewards: " +a));
     // await oldLocker.getReward(userA,false);
-    // await cvxcrv.balanceOf(userA).then(a=>console.log("cvxcrv userA: " +a));
+    // await cvxkgl.balanceOf(userA).then(a=>console.log("cvxkgl userA: " +a));
 
     //shutdown old locker
     var lockeradmin = await LockerAdmin.at(contractList.system.lockerAdmin);
@@ -108,7 +108,7 @@ contract('Test lock contract', async (accounts) => {
     await stakeproxy.setPendingOwner(multisig, { from: deployer });
     await stakeproxy.applyPendingOwner({ from: deployer });
     await stakeproxy.owner().then((a) => console.log('stake proxy owner: ' + a));
-    await locker.addReward(cvxcrv.address, stakeproxy.address, true, { from: deployer });
+    await locker.addReward(cvxkgl.address, stakeproxy.address, true, { from: deployer });
     await locker.setStakingContract(stakeproxy.address, { from: deployer });
     await locker.setApprovals();
     console.log('rewards and approvals set');
@@ -142,7 +142,7 @@ contract('Test lock contract', async (accounts) => {
       console.log('\t   totalSupply: ' + tsup);
       await locker.lockedSupply().then((a) => console.log('\t   lockedSupply: ' + a));
       await locker.boostedSupply().then((a) => console.log('\t   boostedSupply: ' + a));
-      await cvxcrv.balanceOf(locker.address).then((a) => console.log('\t   cvxcrv: ' + a));
+      await cvxkgl.balanceOf(locker.address).then((a) => console.log('\t   cvxkgl: ' + a));
       var epochs = await locker.epochCount();
       console.log('\t   epochs: ' + epochs);
       for (var i = 0; i < epochs; i++) {
@@ -196,8 +196,8 @@ contract('Test lock contract', async (accounts) => {
         .then((a) => console.log('\t   nextunlockIndex: ' + a.nextUnlockIndex));
       await locker.claimableRewards(_user).then((a) => console.log('\t   claimableRewards: ' + a));
       await cvx.balanceOf(_user).then((a) => console.log('\t   cvx wallet: ' + a));
-      await cvxcrv.balanceOf(_user).then((a) => console.log('\t   cvxcrv wallet: ' + a));
-      await cvxcrvrewards.balanceOf(_user).then((a) => console.log('\t   staked cvxcrv: ' + a));
+      await cvxkgl.balanceOf(_user).then((a) => console.log('\t   cvxkgl wallet: ' + a));
+      await cvxkglrewards.balanceOf(_user).then((a) => console.log('\t   staked cvxkgl: ' + a));
       var epochs = await locker.epochCount();
       for (var i = 0; i < epochs; i++) {
         var balAtE = await locker.balanceAtEpochOf(i, _user);
@@ -296,17 +296,17 @@ contract('Test lock contract', async (accounts) => {
     await lockerInfo();
 
     //rewards and distribute
-    //move cvxcrv from deployer for readability
-    var b = await cvxcrv.balanceOf(deployer);
-    await cvxcrv.transfer(userD, b, { from: deployer });
+    //move cvxkgl from deployer for readability
+    var b = await cvxkgl.balanceOf(deployer);
+    await cvxkgl.transfer(userD, b, { from: deployer });
 
     await cvxrewards.getReward(stakeproxy.address, true, true);
-    await cvxcrvrewards
+    await cvxkglrewards
       .balanceOf(stakeproxy.address)
-      .then((a) => console.log('staked cvxcrv on proxy: ' + a));
-    await cvxcrv.balanceOf(stakeproxy.address).then((a) => console.log('cvxcrv on proxy: ' + a));
-    await cvxcrv.balanceOf(locker.address).then((a) => console.log('cvxcrv on locker: ' + a));
-    await cvxcrv.balanceOf(deployer).then((a) => console.log('cvxcrv on deployer: ' + a));
+      .then((a) => console.log('staked cvxkgl on proxy: ' + a));
+    await cvxkgl.balanceOf(stakeproxy.address).then((a) => console.log('cvxkgl on proxy: ' + a));
+    await cvxkgl.balanceOf(locker.address).then((a) => console.log('cvxkgl on locker: ' + a));
+    await cvxkgl.balanceOf(deployer).then((a) => console.log('cvxkgl on deployer: ' + a));
 
     await stakeproxy
       .distribute({ from: userA })
@@ -317,12 +317,12 @@ contract('Test lock contract', async (accounts) => {
     console.log('set distributor user a');
     await stakeproxy.distribute({ from: userA });
     console.log('distribute() from user a');
-    await cvxcrvrewards
+    await cvxkglrewards
       .balanceOf(stakeproxy.address)
-      .then((a) => console.log('staked cvxcrv on proxy: ' + a));
-    await cvxcrv.balanceOf(stakeproxy.address).then((a) => console.log('cvxcrv on proxy: ' + a));
-    await cvxcrv.balanceOf(locker.address).then((a) => console.log('cvxcrv on locker: ' + a));
-    await cvxcrv.balanceOf(deployer).then((a) => console.log('cvxcrv on deployer(fees): ' + a));
+      .then((a) => console.log('staked cvxkgl on proxy: ' + a));
+    await cvxkgl.balanceOf(stakeproxy.address).then((a) => console.log('cvxkgl on proxy: ' + a));
+    await cvxkgl.balanceOf(locker.address).then((a) => console.log('cvxkgl on locker: ' + a));
+    await cvxkgl.balanceOf(deployer).then((a) => console.log('cvxkgl on deployer(fees): ' + a));
 
     await lockerInfo();
     await userInfo(userZ);

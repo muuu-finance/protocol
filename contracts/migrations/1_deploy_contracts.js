@@ -46,13 +46,13 @@ module.exports = function (deployer, network, accounts) {
   const merkleRoot = '0x632a2ad201c5b95d3f75c1332afdcf489d4e6b4b7480cf878d8eba2aa87d5f73';
 
   // TODO: replace this with mock token addrress
-  // const crv = "0xD533a949740bb3306d119CC777fa900bA034cd52";
+  // const kgl = "0xD533a949740bb3306d119CC777fa900bA034cd52";
 
   let admin = accounts[0];
   console.log('deploying from: ' + admin);
   var premine = new BN(0);
   premine.add(distroList.lpincentives);
-  premine.add(distroList.vecrv);
+  premine.add(distroList.vekgl);
   premine.add(distroList.teamcvxLpSeed);
   var vestedAddresses = distroList.vested.team.addresses.concat(
     distroList.vested.investor.addresses,
@@ -75,11 +75,11 @@ module.exports = function (deployer, network, accounts) {
   console.log('total cvx: ' + totaldistro.toString());
 
   var booster, voter, rFactory, sFactory, tFactory, cvx, cvxKgl, deposit, arb, pools;
-  var crvToken;
+  var kglToken;
   var cvxKglRewards, cvxRewards, airdrop, vesting;
   var pairToken;
-  var crvdepositAmt, crvbal, cvxKglBal;
-  var crv, weth, dai, threeKgl;
+  var kgldepositAmt, kglbal, cvxKglBal;
+  var kgl, weth, dai, threeKgl;
   var muuuVoterProxy;
   var cvxLockerV2;
 
@@ -111,10 +111,10 @@ module.exports = function (deployer, network, accounts) {
 
   deployer
     // ========================== Preparation start ==========================
-    .deploy(MintableERC20, 'crv', 'KGL', 18)
+    .deploy(MintableERC20, 'kgl', 'KGL', 18)
     .then((instance) => {
-      crv = instance;
-      addContract('mocks', 'KGL', crv.address);
+      kgl = instance;
+      addContract('mocks', 'KGL', kgl.address);
     })
     .then(() => deployer.deploy(MintableERC20, 'weth', 'WETH', 18))
     .then((instance) => {
@@ -156,7 +156,7 @@ module.exports = function (deployer, network, accounts) {
     .then(() =>
       deployer.deploy(
         KaglaVoterProxy,
-        crv.address,
+        kgl.address,
         mockVotingEscrow.address,
         ZERO_ADDRESS, // TODO:
         ZERO_ADDRESS // TODO:
@@ -173,7 +173,7 @@ module.exports = function (deployer, network, accounts) {
       addContract('system', 'cvx', cvx.address);
     })
     .then(() =>
-      deployer.deploy(Booster, voter.address, cvx.address, crv.address, mockAddressProvider.address)
+      deployer.deploy(Booster, voter.address, cvx.address, kgl.address, mockAddressProvider.address)
     )
     .then((instance) => {
       booster = instance;
@@ -211,13 +211,13 @@ module.exports = function (deployer, network, accounts) {
         KglDepositor,
         voter.address,
         cvxKgl.address,
-        crv.address,
+        kgl.address,
         mockVotingEscrow.address // TODO: replace
       );
     })
     .then((instance) => {
       deposit = instance;
-      addContract('system', 'crvDepositor', deposit.address);
+      addContract('system', 'kglDepositor', deposit.address);
       return cvxKgl.setOperator(deposit.address);
     })
     .then(() => voter.setDepositor(deposit.address))
@@ -228,7 +228,7 @@ module.exports = function (deployer, network, accounts) {
         BaseRewardPool,
         0,
         cvxKgl.address,
-        crv.address,
+        kgl.address,
         booster.address,
         rFactory.address
       )
@@ -240,7 +240,7 @@ module.exports = function (deployer, network, accounts) {
       return deployer.deploy(
         cvxRewardPool,
         cvx.address,
-        crv.address,
+        kgl.address,
         deposit.address,
         cvxKglRewards.address,
         cvxKgl.address,
@@ -281,7 +281,7 @@ module.exports = function (deployer, network, accounts) {
     .then(() => {
       return deployer.deploy(
         ClaimZap,
-        crv.address,
+        kgl.address,
         cvx.address,
         cvxKgl.address,
         deposit.address,
@@ -337,7 +337,7 @@ module.exports = function (deployer, network, accounts) {
       addContract('system', 'airdrop', airdrop.address);
       return airdrop.setRewardToken(cvx.address);
     })
-    .then(() => cvx.transfer(airdrop.address, distroList.vecrv))
+    .then(() => cvx.transfer(airdrop.address, distroList.vekgl))
     .then(() => cvx.balanceOf(airdrop.address))
     .then((dropBalance) => {
       console.log('airdrop balance: ' + dropBalance);
@@ -375,9 +375,9 @@ module.exports = function (deployer, network, accounts) {
         delete poolInfoList[i]['4'];
         delete poolInfoList[i]['5'];
         delete poolInfoList[i]['shutdown'];
-        var crvrewards = poolInfoList[i]['crvRewards'];
+        var kglrewards = poolInfoList[i]['kglRewards'];
         var rewardList = [];
-        rewardList.push({ rToken: crv.address, rAddress: crvrewards });
+        rewardList.push({ rToken: kgl.address, rAddress: kglrewards });
         poolInfoList[i].rewards = rewardList;
         poolInfoList[i].name = poolNames[i];
         poolInfoList[i].id = i;

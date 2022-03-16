@@ -48,10 +48,10 @@ contract ClaimZap is Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
-    address public crv;
+    address public kgl;
     address public cvx;
     address public cvxKgl;
-    address public crvDeposit;
+    address public kglDeposit;
     address public cvxKglRewards;
     address public cvxRewards;
     address public exchange; //Factory cvxKGL in kagla
@@ -68,11 +68,11 @@ contract ClaimZap is Ownable {
         LockMuuu //128
     }
 
-    constructor(address _crv, address _cvx, address _cvxKgl, address _crvDeposit, address _cvxKglRewards, address _cvxRewards, address _exchange, address _locker ) public {
-        crv = _crv;
+    constructor(address _kgl, address _cvx, address _cvxKgl, address _kglDeposit, address _cvxKglRewards, address _cvxRewards, address _exchange, address _locker ) public {
+        kgl = _kgl;
         cvx = _cvx;
         cvxKgl = _cvxKgl;
-        crvDeposit = _crvDeposit;
+        kglDeposit = _kglDeposit;
         cvxKglRewards = _cvxKglRewards;
         cvxRewards = _cvxRewards;
         exchange = _exchange;
@@ -84,10 +84,10 @@ contract ClaimZap is Ownable {
     }
 
     function setApprovals() external onlyOwner {
-        IERC20(crv).safeApprove(crvDeposit, 0);
-        IERC20(crv).safeApprove(crvDeposit, uint256(-1));
-        IERC20(crv).safeApprove(exchange, 0);
-        IERC20(crv).safeApprove(exchange, uint256(-1));
+        IERC20(kgl).safeApprove(kglDeposit, 0);
+        IERC20(kgl).safeApprove(kglDeposit, uint256(-1));
+        IERC20(kgl).safeApprove(exchange, 0);
+        IERC20(kgl).safeApprove(exchange, uint256(-1));
 
         IERC20(cvx).safeApprove(cvxRewards, 0);
         IERC20(cvx).safeApprove(cvxRewards, uint256(-1));
@@ -115,7 +115,7 @@ contract ClaimZap is Ownable {
         uint256 options
         ) external{
 
-        uint256 crvBalance = IERC20(crv).balanceOf(msg.sender);
+        uint256 kglBalance = IERC20(kgl).balanceOf(msg.sender);
         uint256 cvxBalance = IERC20(cvx).balanceOf(msg.sender);
 
         //claim from main kagla LP pools
@@ -132,7 +132,7 @@ contract ClaimZap is Ownable {
         }
 
         //claim others/deposit/lock/stake
-        _claimExtras(depositKglMaxAmount,minAmountOut,depositMuuuMaxAmount,spendMuuuAmount,crvBalance,cvxBalance,options);
+        _claimExtras(depositKglMaxAmount,minAmountOut,depositMuuuMaxAmount,spendMuuuAmount,kglBalance,cvxBalance,options);
     }
 
     function _claimExtras(
@@ -168,21 +168,21 @@ contract ClaimZap is Ownable {
             removeMuuuBalance = 0;
         }
 
-        //lock upto given amount of crv and stake
+        //lock upto given amount of kgl and stake
         if(depositKglMaxAmount > 0){
-            uint256 crvBalance = IERC20(crv).balanceOf(msg.sender).sub(removeKglBalance);
-            crvBalance = MathUtil.min(crvBalance, depositKglMaxAmount);
-            if(crvBalance > 0){
-                //pull crv
-                IERC20(crv).safeTransferFrom(msg.sender, address(this), crvBalance);
+            uint256 kglBalance = IERC20(kgl).balanceOf(msg.sender).sub(removeKglBalance);
+            kglBalance = MathUtil.min(kglBalance, depositKglMaxAmount);
+            if(kglBalance > 0){
+                //pull kgl
+                IERC20(kgl).safeTransferFrom(msg.sender, address(this), kglBalance);
                 if(minAmountOut > 0){
                     //swap
-                    ISwapExchange(exchange).exchange(0,1,crvBalance,minAmountOut);
+                    ISwapExchange(exchange).exchange(0,1,kglBalance,minAmountOut);
                 }else{
                     //deposit
-                    IMuuuKglDeposit(crvDeposit).deposit(crvBalance,CheckOption(options,uint256(Options.LockKglDeposit)));
+                    IMuuuKglDeposit(kglDeposit).deposit(kglBalance,CheckOption(options,uint256(Options.LockKglDeposit)));
                 }
-                //get cvxcrv amount
+                //get cvxkgl amount
                 uint256 cvxKglBalance = IERC20(cvxKgl).balanceOf(address(this));
                 //stake for msg.sender
                 IBasicRewards(cvxKglRewards).stakeFor(msg.sender, cvxKglBalance);

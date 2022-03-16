@@ -14,14 +14,14 @@ contract Booster is Ownable {
     using Address for address;
     using SafeMath for uint256;
 
-    address public crv;
+    address public kgl;
     // TODO: extract
     // address public constant registry = address(0x0000000022D53366457F9d5E68Ec105046FC4383);
     uint256 public constant distributionAddressId = 4;
     address public constant voteOwnership = address(0xE478de485ad2fe566d49342Cbd03E49ed7DB3356);
     address public constant voteParameter = address(0xBCfF8B0b9419b9A88c44546519b1e909cF330399);
 
-    uint256 public lockIncentive = 1000; //incentive to crv stakers
+    uint256 public lockIncentive = 1000; //incentive to kgl stakers
     uint256 public stakerIncentive = 450; //incentive to native token stakers
     uint256 public earmarkIncentive = 50; //incentive to users who spend gas to make calls
     uint256 public platformFee = 0; //possible fee to build treasury
@@ -39,8 +39,8 @@ contract Booster is Ownable {
     address public voteDelegate;
     address public treasury;
     address public stakerRewards; //cvx rewards
-    address public lockRewards; //cvxKgl rewards(crv)
-    address public lockFees; //cvxKgl vecrv fees
+    address public lockRewards; //cvxKgl rewards(kgl)
+    address public lockFees; //cvxKgl vekgl fees
     address public feeDistro;
     address public feeToken;
     address public registry;
@@ -51,7 +51,7 @@ contract Booster is Ownable {
         address lptoken;
         address token;
         address gauge;
-        address crvRewards;
+        address kglRewards;
         address stash;
         bool shutdown;
     }
@@ -63,7 +63,7 @@ contract Booster is Ownable {
     event Deposited(address indexed user, uint256 indexed poolid, uint256 amount);
     event Withdrawn(address indexed user, uint256 indexed poolid, uint256 amount);
 
-    constructor(address _staker, address _minter, address _crv, address _registry) public {
+    constructor(address _staker, address _minter, address _kgl, address _registry) public {
         isShutdown = false;
         staker = _staker;
         voteDelegate = msg.sender;
@@ -73,14 +73,14 @@ contract Booster is Ownable {
         feeToken = address(0); //address(0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490);
         treasury = address(0);
         minter = _minter;
-        crv = _crv;
+        kgl = _kgl;
         registry = _registry;
     }
 
 
     /// SETTER SECTION ///
-    function setKgl(address _crv) external onlyOwner {
-        crv = _crv;
+    function setKgl(address _kgl) external onlyOwner {
+        kgl = _kgl;
     }
 
     function setFeeManager(address _feeM) external {
@@ -188,7 +188,7 @@ contract Booster is Ownable {
 
         //create a tokenized deposit
         address token = ITokenFactory(tokenFactory).CreateDepositToken(_lptoken);
-        //create a reward contract for crv rewards
+        //create a reward contract for kgl rewards
         address newRewardPool = IRewardFactory(rewardFactory).CreateKglRewards(pid,token);
         //create a stash to handle extra incentives
         address stash = IStashFactory(stashFactory).CreateStash(pid,_gauge,staker,_stashVersion);
@@ -199,7 +199,7 @@ contract Booster is Ownable {
                 lptoken: _lptoken,
                 token: token,
                 gauge: _gauge,
-                crvRewards: newRewardPool,
+                kglRewards: newRewardPool,
                 stash: stash,
                 shutdown: false
             })
@@ -277,7 +277,7 @@ contract Booster is Ownable {
         if(_stake){
             //mint here and send to rewards on user behalf
             ITokenMinter(token).mint(address(this),_amount);
-            address rewardContract = pool.crvRewards;
+            address rewardContract = pool.kglRewards;
             IERC20(token).safeApprove(rewardContract,0);
             IERC20(token).safeApprove(rewardContract,_amount);
             IRewards(rewardContract).stakeFor(msg.sender,_amount);
@@ -344,7 +344,7 @@ contract Booster is Ownable {
 
     //allow reward contracts to send here and withdraw to user
     function withdrawTo(uint256 _pid, uint256 _amount, address _to) external returns(bool){
-        address rewardContract = poolInfo[_pid].crvRewards;
+        address rewardContract = poolInfo[_pid].kglRewards;
         require(msg.sender == rewardContract,"!auth");
 
         _withdraw(_pid,_amount,msg.sender,_to);
@@ -387,14 +387,14 @@ contract Booster is Ownable {
         return true;
     }
 
-    //claim crv and extra rewards and disperse to reward contracts
+    //claim kgl and extra rewards and disperse to reward contracts
     function _earmarkRewards(uint256 _pid) internal {
         PoolInfo storage pool = poolInfo[_pid];
         require(pool.shutdown == false, "pool is closed");
 
         address gauge = pool.gauge;
 
-        //claim crv
+        //claim kgl
         IStaker(staker).claimKgl(gauge);
 
         //check if there are extra rewards
@@ -406,39 +406,39 @@ contract Booster is Ownable {
             IStash(stash).processStash();
         }
 
-        //crv balance
-        uint256 crvBal = IERC20(crv).balanceOf(address(this));
+        //kgl balance
+        uint256 kglBal = IERC20(kgl).balanceOf(address(this));
 
-        if (crvBal > 0) {
-            uint256 _lockIncentive = crvBal.mul(lockIncentive).div(FEE_DENOMINATOR);
-            uint256 _stakerIncentive = crvBal.mul(stakerIncentive).div(FEE_DENOMINATOR);
-            uint256 _callIncentive = crvBal.mul(earmarkIncentive).div(FEE_DENOMINATOR);
+        if (kglBal > 0) {
+            uint256 _lockIncentive = kglBal.mul(lockIncentive).div(FEE_DENOMINATOR);
+            uint256 _stakerIncentive = kglBal.mul(stakerIncentive).div(FEE_DENOMINATOR);
+            uint256 _callIncentive = kglBal.mul(earmarkIncentive).div(FEE_DENOMINATOR);
 
             //send treasury
             if(treasury != address(0) && treasury != address(this) && platformFee > 0){
                 //only subtract after address condition check
-                uint256 _platform = crvBal.mul(platformFee).div(FEE_DENOMINATOR);
-                crvBal = crvBal.sub(_platform);
-                IERC20(crv).safeTransfer(treasury, _platform);
+                uint256 _platform = kglBal.mul(platformFee).div(FEE_DENOMINATOR);
+                kglBal = kglBal.sub(_platform);
+                IERC20(kgl).safeTransfer(treasury, _platform);
             }
 
             //remove incentives from balance
-            crvBal = crvBal.sub(_lockIncentive).sub(_callIncentive).sub(_stakerIncentive);
+            kglBal = kglBal.sub(_lockIncentive).sub(_callIncentive).sub(_stakerIncentive);
 
             //send incentives for calling
-            IERC20(crv).safeTransfer(msg.sender, _callIncentive);
+            IERC20(kgl).safeTransfer(msg.sender, _callIncentive);
 
-            //send crv to lp provider reward contract
-            address rewardContract = pool.crvRewards;
-            IERC20(crv).safeTransfer(rewardContract, crvBal);
-            IRewards(rewardContract).queueNewRewards(crvBal);
+            //send kgl to lp provider reward contract
+            address rewardContract = pool.kglRewards;
+            IERC20(kgl).safeTransfer(rewardContract, kglBal);
+            IRewards(rewardContract).queueNewRewards(kglBal);
 
-            //send lockers' share of crv to reward contract
-            IERC20(crv).safeTransfer(lockRewards, _lockIncentive);
+            //send lockers' share of kgl to reward contract
+            IERC20(kgl).safeTransfer(lockRewards, _lockIncentive);
             IRewards(lockRewards).queueNewRewards(_lockIncentive);
 
-            //send stakers's share of crv to reward contract
-            IERC20(crv).safeTransfer(stakerRewards, _stakerIncentive);
+            //send stakers's share of kgl to reward contract
+            IERC20(kgl).safeTransfer(stakerRewards, _stakerIncentive);
             IRewards(stakerRewards).queueNewRewards(_stakerIncentive);
         }
     }
@@ -460,9 +460,9 @@ contract Booster is Ownable {
         return true;
     }
 
-    //callback from reward contract when crv is received.
+    //callback from reward contract when kgl is received.
     function rewardClaimed(uint256 _pid, address _address, uint256 _amount) external returns(bool){
-        address rewardContract = poolInfo[_pid].crvRewards;
+        address rewardContract = poolInfo[_pid].kglRewards;
         require(msg.sender == rewardContract || msg.sender == lockRewards, "!auth");
 
         //mint reward tokens

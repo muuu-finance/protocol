@@ -48,9 +48,9 @@ contract('setup lock contract', async (accounts) => {
     let cvx = await IERC20.at(contractList.system.cvx);
     let stakeproxy = await MuuuStakingProxy.at(contractList.system.lockerStakeProxy);
     let locker = await MuuuLocker.at(contractList.system.locker);
-    let cvxcrv = await IERC20.at(contractList.system.cvxKgl);
+    let cvxkgl = await IERC20.at(contractList.system.cvxKgl);
     let cvxrewards = await cvxRewardPool.at(contractList.system.cvxRewards);
-    let cvxcrvrewards = await cvxRewardPool.at(contractList.system.cvxKglRewards);
+    let cvxkglrewards = await cvxRewardPool.at(contractList.system.cvxKglRewards);
 
     await booster.earmarkRewards(38);
     await stakeproxy.distribute();
@@ -65,7 +65,7 @@ contract('setup lock contract', async (accounts) => {
       console.log('\t   totalSupply: ' + tsup);
       await locker.lockedSupply().then((a) => console.log('\t   lockedSupply: ' + a));
       await locker.boostedSupply().then((a) => console.log('\t   boostedSupply: ' + a));
-      await cvxcrv.balanceOf(locker.address).then((a) => console.log('\t   cvxcrv: ' + a));
+      await cvxkgl.balanceOf(locker.address).then((a) => console.log('\t   cvxkgl: ' + a));
       var epochs = await locker.epochCount();
       console.log('\t   epochs: ' + epochs);
       for (var i = 0; i < epochs; i++) {
@@ -118,8 +118,8 @@ contract('setup lock contract', async (accounts) => {
         .then((a) => console.log('\t   nextunlockIndex: ' + a.nextUnlockIndex));
       await locker.claimableRewards(_user).then((a) => console.log('\t   claimableRewards: ' + a));
       await cvx.balanceOf(_user).then((a) => console.log('\t   cvx wallet: ' + a));
-      await cvxcrv.balanceOf(_user).then((a) => console.log('\t   cvxcrv wallet: ' + a));
-      await cvxcrvrewards.balanceOf(_user).then((a) => console.log('\t   staked cvxcrv: ' + a));
+      await cvxkgl.balanceOf(_user).then((a) => console.log('\t   cvxkgl wallet: ' + a));
+      await cvxkglrewards.balanceOf(_user).then((a) => console.log('\t   staked cvxkgl: ' + a));
       var epochs = await locker.epochCount();
       for (var i = 0; i < epochs; i++) {
         var balAtE = await locker.balanceAtEpochOf(i, _user);

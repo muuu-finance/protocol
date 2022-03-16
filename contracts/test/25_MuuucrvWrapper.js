@@ -17,8 +17,8 @@ const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01');
 const MuuuMining = artifacts.require('MuuuMining');
 const MuuuKglRari = artifacts.require('MuuuKglRari');
 
-contract('Test cvxcrv stake wrapper', async (accounts) => {
-  it('should deposit cvxcrv and earn rewards while being transferable', async () => {
+contract('Test cvxkgl stake wrapper', async (accounts) => {
+  it('should deposit cvxkgl and earn rewards while being transferable', async () => {
     let deployer = '0x947B7742C403f20e5FaCcDAc5E092C943E7D0277';
     let multisig = '0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB';
     let addressZero = '0x0000000000000000000000000000000000000000';
@@ -26,9 +26,9 @@ contract('Test cvxcrv stake wrapper', async (accounts) => {
     //system
     let booster = await Booster.at(contractList.system.booster);
     let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
-    let crvDeposit = await KglDepositor.at(contractList.system.crvDepositor);
+    let kglDeposit = await KglDepositor.at(contractList.system.kglDepositor);
     let cvx = await MuuuToken.at(contractList.system.cvx);
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
     let cvxKgl = await cvxKglToken.at(contractList.system.cvxKgl);
     let cvxKglLP = await IERC20.at(contractList.system.cvxKglKglSLP);
@@ -54,27 +54,27 @@ contract('Test cvxcrv stake wrapper', async (accounts) => {
     await exchange.swapExactTokensForTokens(
       web3.utils.toWei('10.0', 'ether'),
       0,
-      [weth.address, crv.address],
+      [weth.address, kgl.address],
       deployer,
       starttime + 3000,
       { from: deployer }
     );
-    var crvbalance = await crv.balanceOf(deployer);
-    console.log('swapped for crv: ' + crvbalance);
+    var kglbalance = await kgl.balanceOf(deployer);
+    console.log('swapped for kgl: ' + kglbalance);
 
-    // await crv.approve(crvDeposit.address,crvbalance,{from:deployer});
+    // await kgl.approve(kglDeposit.address,kglbalance,{from:deployer});
     // console.log("approved");
-    // await crvDeposit.deposit(crvbalance,false,addressZero,{from:deployer});
-    // console.log("crv deposited");
-    var crvbalance = await crv.balanceOf(deployer);
-    console.log('crvbalance: ' + crvbalance);
+    // await kglDeposit.deposit(kglbalance,false,addressZero,{from:deployer});
+    // console.log("kgl deposited");
+    var kglbalance = await kgl.balanceOf(deployer);
+    console.log('kglbalance: ' + kglbalance);
 
-    var touserB = crvbalance.div(new BN('3'));
-    await crv.transfer(userB, touserB, { from: deployer });
-    crvbalance = await crv.balanceOf(deployer);
-    await crv.transfer(userA, crvbalance, { from: deployer });
-    var userABalance = await crv.balanceOf(userA);
-    var userBBalance = await crv.balanceOf(userB);
+    var touserB = kglbalance.div(new BN('3'));
+    await kgl.transfer(userB, touserB, { from: deployer });
+    kglbalance = await kgl.balanceOf(deployer);
+    await kgl.transfer(userA, kglbalance, { from: deployer });
+    var userABalance = await kgl.balanceOf(userA);
+    var userBBalance = await kgl.balanceOf(userB);
     console.log('userA: ' + userABalance + ',  userB: ' + userBBalance);
 
     let lib = await MuuuMining.new();
@@ -97,11 +97,11 @@ contract('Test cvxcrv stake wrapper', async (accounts) => {
     }
 
     //user A will deposit kagla tokens and user B muuu
-    await crv.approve(staker.address, userABalance, { from: userA });
-    await crv.approve(crvDeposit.address, userBBalance, { from: userB });
+    await kgl.approve(staker.address, userABalance, { from: userA });
+    await kgl.approve(kglDeposit.address, userBBalance, { from: userB });
     await cvxKgl.approve(staker.address, userBBalance, { from: userB });
     console.log('approved booster and staker');
-    await crvDeposit.deposit(userBBalance, false, addressZero, { from: userB });
+    await kglDeposit.deposit(userBBalance, false, addressZero, { from: userB });
     console.log('deposited into muuu for user b');
 
     var depositTx = await staker.deposit(userABalance, userA, { from: userA });
@@ -123,19 +123,19 @@ contract('Test cvxcrv stake wrapper', async (accounts) => {
 
     console.log('======');
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a));
-    await crv.balanceOf(userA).then((a) => console.log('user a wallet crv: ' + a));
+    await kgl.balanceOf(userA).then((a) => console.log('user a wallet kgl: ' + a));
     await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
     await threeKgl.balanceOf(userA).then((a) => console.log('user a wallet threeKgl: ' + a));
     console.log('-----');
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
-    await crv.balanceOf(userB).then((a) => console.log('user b wallet crv: ' + a));
+    await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
     await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
     await threeKgl.balanceOf(userB).then((a) => console.log('user b wallet threeKgl: ' + a));
 
     console.log('checkpoint');
     await staker.user_checkpoint([userA, addressZero]);
     await staker.user_checkpoint([userB, addressZero]);
-    await crv.balanceOf(staker.address).then((a) => console.log('staker crv: ' + a));
+    await kgl.balanceOf(staker.address).then((a) => console.log('staker kgl: ' + a));
     await cvx.balanceOf(staker.address).then((a) => console.log('staker cvx: ' + a));
     await threeKgl.balanceOf(staker.address).then((a) => console.log('staker threeKgl: ' + a));
     for (var i = 0; i < rewardCount; i++) {
@@ -145,12 +145,12 @@ contract('Test cvxcrv stake wrapper', async (accounts) => {
 
     console.log('======');
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a));
-    await crv.balanceOf(userA).then((a) => console.log('user a wallet crv: ' + a));
+    await kgl.balanceOf(userA).then((a) => console.log('user a wallet kgl: ' + a));
     await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
     await threeKgl.balanceOf(userA).then((a) => console.log('user a wallet threeKgl: ' + a));
     console.log('-----');
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
-    await crv.balanceOf(userB).then((a) => console.log('user b wallet crv: ' + a));
+    await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
     await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
     await threeKgl.balanceOf(userB).then((a) => console.log('user b wallet threeKgl: ' + a));
 
@@ -158,12 +158,12 @@ contract('Test cvxcrv stake wrapper', async (accounts) => {
     await staker.transfer(userC, userBBalance, { from: userB });
     console.log('transfer to userC');
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
-    await crv.balanceOf(userB).then((a) => console.log('user b wallet crv: ' + a));
+    await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
     await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
     await threeKgl.balanceOf(userB).then((a) => console.log('user b wallet threeKgl: ' + a));
     console.log('-----');
     await staker.earned(userC).then((a) => console.log('user c earned: ' + a));
-    await crv.balanceOf(userC).then((a) => console.log('user c wallet crv: ' + a));
+    await kgl.balanceOf(userC).then((a) => console.log('user c wallet kgl: ' + a));
     await cvx.balanceOf(userC).then((a) => console.log('user c wallet cvx: ' + a));
     await threeKgl.balanceOf(userC).then((a) => console.log('user c wallet threeKgl: ' + a));
 
@@ -172,12 +172,12 @@ contract('Test cvxcrv stake wrapper', async (accounts) => {
     console.log('\nadvance time...\n');
 
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
-    await crv.balanceOf(userB).then((a) => console.log('user b wallet crv: ' + a));
+    await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
     await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
     await threeKgl.balanceOf(userB).then((a) => console.log('user b wallet threeKgl: ' + a));
     console.log('-----');
     await staker.earned(userC).then((a) => console.log('user c earned: ' + a));
-    await crv.balanceOf(userC).then((a) => console.log('user c wallet crv: ' + a));
+    await kgl.balanceOf(userC).then((a) => console.log('user c wallet kgl: ' + a));
     await cvx.balanceOf(userC).then((a) => console.log('user c wallet cvx: ' + a));
     await threeKgl.balanceOf(userC).then((a) => console.log('user c wallet threeKgl: ' + a));
 
@@ -195,17 +195,17 @@ contract('Test cvxcrv stake wrapper', async (accounts) => {
     await staker.getReward(userC, { from: userC });
 
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a));
-    await crv.balanceOf(userA).then((a) => console.log('user a wallet crv: ' + a));
+    await kgl.balanceOf(userA).then((a) => console.log('user a wallet kgl: ' + a));
     await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
     await threeKgl.balanceOf(userA).then((a) => console.log('user a wallet threeKgl: ' + a));
     console.log('-----');
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a));
-    await crv.balanceOf(userB).then((a) => console.log('user b wallet crv: ' + a));
+    await kgl.balanceOf(userB).then((a) => console.log('user b wallet kgl: ' + a));
     await cvx.balanceOf(userB).then((a) => console.log('user b wallet cvx: ' + a));
     await threeKgl.balanceOf(userB).then((a) => console.log('user b wallet threeKgl: ' + a));
     console.log('-----');
     await staker.earned(userC).then((a) => console.log('user c earned: ' + a));
-    await crv.balanceOf(userC).then((a) => console.log('user c wallet crv: ' + a));
+    await kgl.balanceOf(userC).then((a) => console.log('user c wallet kgl: ' + a));
     await cvx.balanceOf(userC).then((a) => console.log('user c wallet cvx: ' + a));
     await threeKgl.balanceOf(userC).then((a) => console.log('user c wallet threeKgl: ' + a));
 
@@ -215,7 +215,7 @@ contract('Test cvxcrv stake wrapper', async (accounts) => {
     await staker.balanceOf(userB).then((a) => console.log('user b staked: ' + a));
     await staker.balanceOf(userC).then((a) => console.log('user c staked: ' + a));
     await staker.totalSupply().then((a) => console.log('remaining supply: ' + a));
-    await crv.balanceOf(staker.address).then((a) => console.log('remaining crv: ' + a));
+    await kgl.balanceOf(staker.address).then((a) => console.log('remaining kgl: ' + a));
     await cvx.balanceOf(staker.address).then((a) => console.log('remaining cvx: ' + a));
     await threeKgl.balanceOf(staker.address).then((a) => console.log('remaining threeKgl: ' + a));
   });

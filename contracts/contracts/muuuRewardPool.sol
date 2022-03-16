@@ -57,7 +57,7 @@ contract cvxRewardPool{
     uint256 public constant FEE_DENOMINATOR = 10000;
 
     address public immutable operator;
-    address public immutable crvDeposits;
+    address public immutable kglDeposits;
     address public immutable cvxKglRewards;
     IERC20 public immutable cvxKglToken;
     address public immutable rewardManager;
@@ -85,7 +85,7 @@ contract cvxRewardPool{
     constructor(
         address stakingToken_,
         address rewardToken_,
-        address crvDeposits_,
+        address kglDeposits_,
         address cvxKglRewards_,
         address cvxKglToken_,
         address operator_,
@@ -95,7 +95,7 @@ contract cvxRewardPool{
         rewardToken = IERC20(rewardToken_);
         operator = operator_;
         rewardManager = rewardManager_;
-        crvDeposits = crvDeposits_;
+        kglDeposits = kglDeposits_;
         cvxKglRewards = cvxKglRewards_;
         cvxKglToken = IERC20(cvxKglToken_);
     }
@@ -161,12 +161,12 @@ contract cvxRewardPool{
     }
 
     function earned(address account) external view returns (uint256) {
-        uint256 depositFeeRate = IKglDeposit(crvDeposits).lockIncentive();
+        uint256 depositFeeRate = IKglDeposit(kglDeposits).lockIncentive();
 
         uint256 r = earnedReward(account);
         uint256 fees = r.mul(depositFeeRate).div(FEE_DENOMINATOR);
 
-        //fees dont apply until whitelist+vecrv lock begins so will report
+        //fees dont apply until whitelist+vekgl lock begins so will report
         //slightly less value than what is actually received.
         return r.sub(fees);
     }
@@ -250,9 +250,9 @@ contract cvxRewardPool{
         uint256 reward = earnedReward(_account);
         if (reward > 0) {
             rewards[_account] = 0;
-            rewardToken.safeApprove(crvDeposits,0);
-            rewardToken.safeApprove(crvDeposits,reward);
-            IKglDeposit(crvDeposits).deposit(reward,false);
+            rewardToken.safeApprove(kglDeposits,0);
+            rewardToken.safeApprove(kglDeposits,reward);
+            IKglDeposit(kglDeposits).deposit(reward,false);
 
             uint256 cvxKglBalance = cvxKglToken.balanceOf(address(this));
             if(_stake){
