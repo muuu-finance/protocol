@@ -20,7 +20,7 @@ contract muKglToken is ERC20 {
         public
         ERC20(
             "Muuu KGL",
-            "muuuKGL"
+            "muKGL"
         )
     {
         operator = msg.sender;

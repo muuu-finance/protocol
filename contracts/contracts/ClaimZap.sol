@@ -54,7 +54,7 @@ contract ClaimZap is Ownable {
     address public kglDeposit;
     address public muKglRewards;
     address public muuuRewards;
-    address public exchange; //Factory muuuKGL in kagla
+    address public exchange; //Factory muKGL in kagla
     address public locker;  //MuuuLockerV2
 
     enum Options{

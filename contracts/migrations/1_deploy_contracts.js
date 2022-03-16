@@ -293,7 +293,7 @@ module.exports = function (deployer, network, accounts) {
         deposit.address,
         muKglRewards.address,
         muuuRewards.address,
-        treasuryAddress, // TODO: replace. this is supposed to be Factory muuuKGL in kagla
+        treasuryAddress, // TODO: replace. this is supposed to be Factory muKGL in kagla
         muuuLockerV2.address
       );
     })
