@@ -149,7 +149,7 @@ contract('setup lock contract', async (accounts) => {
     var mukglRewards = await BaseRewardPool.at('0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e');
     var mukglBal = await mukglRewards.balanceOf(holder.address);
     console.log('staked mukgl: ' + mukglBal);
-    await holder.withdrawMuuuKgl(mukglBal, userA);
+    await holder.withdrawMuKgl(mukglBal, userA);
 
     await mukgl.balanceOf(userA).then((a) => console.log('withdraw mukgl to a: ' + a));
 

@@ -55,22 +55,22 @@ contract('Test masterchef rewards', async (accounts) => {
 
     // let dummyMuuu = await ChefToken.at(contractList.system.chefMuuuToken);
     // console.log("dummyMuuu: " +dummyMuuu.address);
-    // let dummyMuuuKgl = await ChefToken.at(contractList.system.chefmuKglToken);
-    // console.log("dummyMuuuKgl: " +dummyMuuuKgl.address);
+    // let dummyMuKgl = await ChefToken.at(contractList.system.chefmuKglToken);
+    // console.log("dummyMuKgl: " +dummyMuKgl.address);
 
     let rewardermuuu = await MuuuRewarder.at(contractList.system.muuuEthRewarder);
     let rewardermukgl = await MuuuRewarder.at(contractList.system.muKglKglRewarder);
 
     let dummyMuuu = await ChefToken.at(contractList.system.chefMuuuToken);
     console.log('dummyMuuu: ' + dummyMuuu.address);
-    let dummyMuuuKgl = await ChefToken.at(contractList.system.chefmuKglToken);
-    console.log('dummyMuuuKgl: ' + dummyMuuuKgl.address);
+    let dummyMuKgl = await ChefToken.at(contractList.system.chefmuKglToken);
+    console.log('dummyMuKgl: ' + dummyMuKgl.address);
     //call init(dummy.address)
     var dummybal = await dummyMuuu.balanceOf(deployer);
     await dummyMuuu.approve(rewardermuuu.address, dummybal, { from: deployer });
     console.log('approve dummyMuuu for ' + dummybal);
-    var dummybal = await dummyMuuuKgl.balanceOf(deployer);
-    await dummyMuuuKgl.approve(rewardermukgl.address, dummybal, { from: deployer });
+    var dummybal = await dummyMuKgl.balanceOf(deployer);
+    await dummyMuKgl.approve(rewardermukgl.address, dummybal, { from: deployer });
     console.log('approve dummyMuuu for ' + dummybal);
 
     // var muuubalance = await muuu.balanceOf(deployer);
@@ -89,7 +89,7 @@ contract('Test masterchef rewards', async (accounts) => {
     // console.log("send muuu to rewardermuuu: " +muuubalance)
     await rewardermuuu.init(dummyMuuu.address, { from: deployer });
     console.log('init rewardermuuu');
-    await rewardermukgl.init(dummyMuuuKgl.address, { from: deployer });
+    await rewardermukgl.init(dummyMuKgl.address, { from: deployer });
     console.log('init rewardermukgl');
 
     // return;

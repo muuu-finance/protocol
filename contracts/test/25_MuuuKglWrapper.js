@@ -9,13 +9,13 @@ const MuuuToken = artifacts.require('MuuuToken');
 const muKglToken = artifacts.require('muKglToken');
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
-const MuuuKglStakingWrapper = artifacts.require('MuuuKglStakingWrapper');
+const MuKglStakingWrapper = artifacts.require('MuKglStakingWrapper');
 const IERC20 = artifacts.require('IERC20');
 const IKaglaAavePool = artifacts.require('IKaglaAavePool');
 const IExchange = artifacts.require('IExchange');
 const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01');
 const MuuuMining = artifacts.require('MuuuMining');
-const MuuuKglRari = artifacts.require('MuuuKglRari');
+const MuKglRari = artifacts.require('MuKglRari');
 
 contract('Test mukgl stake wrapper', async (accounts) => {
   it('should deposit mukgl and earn rewards while being transferable', async () => {
@@ -79,10 +79,10 @@ contract('Test mukgl stake wrapper', async (accounts) => {
 
     let lib = await MuuuMining.new();
     console.log('mining lib at: ' + lib.address);
-    await MuuuKglStakingWrapper.link('MuuuMining', lib.address);
-    let staker = await MuuuKglStakingWrapper.new({ from: deployer });
+    await MuKglStakingWrapper.link('MuuuMining', lib.address);
+    let staker = await MuKglStakingWrapper.new({ from: deployer });
     await staker.initialize(addressZero, { from: deployer });
-    // let staker = await MuuuKglRari.new(addressZero,{from:deployer});
+    // let staker = await MuKglRari.new(addressZero,{from:deployer});
     console.log('staker token: ' + staker.address);
 
     await staker.name().then((a) => console.log('name: ' + a));

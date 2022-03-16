@@ -24,7 +24,7 @@ interface IChefRewards{
     function claim(uint256 _pid, address _account) external;
 }
 
-interface IMuuuKglDeposit{
+interface IMuKglDeposit{
     function deposit(uint256, bool) external;
 }
 
@@ -60,7 +60,7 @@ contract ClaimZap is Ownable {
     enum Options{
         ClaimMuuu, //1
         ClaimMuuuAndStake, //2
-        ClaimMuuuKgl, //4
+        ClaimMuKgl, //4
         ClaimLockedMuuu, //8
         ClaimLockedMuuuStake, //16
         LockKglDeposit, //32
@@ -153,7 +153,7 @@ contract ClaimZap is Ownable {
         }
 
         //claim from muKgl rewards
-        if(CheckOption(options,uint256(Options.ClaimMuuuKgl))){
+        if(CheckOption(options,uint256(Options.ClaimMuKgl))){
             IBasicRewards(muKglRewards).getReward(msg.sender,true);
         }
 
@@ -180,7 +180,7 @@ contract ClaimZap is Ownable {
                     ISwapExchange(exchange).exchange(0,1,kglBalance,minAmountOut);
                 }else{
                     //deposit
-                    IMuuuKglDeposit(kglDeposit).deposit(kglBalance,CheckOption(options,uint256(Options.LockKglDeposit)));
+                    IMuKglDeposit(kglDeposit).deposit(kglBalance,CheckOption(options,uint256(Options.LockKglDeposit)));
                 }
                 //get mukgl amount
                 uint256 muKglBalance = IERC20(muKgl).balanceOf(address(this));

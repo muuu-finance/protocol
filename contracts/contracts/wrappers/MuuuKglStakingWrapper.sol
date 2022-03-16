@@ -18,7 +18,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 //other considerations: might be worth refactoring to use earned() during checkpoints instead of claiming rewards each time
 
 //Based on Kagla.fi's gauge wrapper implementations at https://github.com/kaglafi/kagla-dao-contracts/tree/master/contracts/gauges/wrappers
-contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
+contract MuKglStakingWrapper is ERC20, ReentrancyGuard {
     using SafeERC20
     for IERC20;
     using SafeMath
@@ -71,8 +71,8 @@ contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
 
     constructor() public
         ERC20(
-            "Staked MuuuKgl",
-            "stkMuuuKgl"
+            "Staked MuKgl",
+            "stkMuKgl"
         ){
     }
 
@@ -82,8 +82,8 @@ contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
         owner = address(0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB); //default to muuu multisig
         emit OwnershipTransferred(address(0), owner);
 
-        _tokenname = "Staked MuuuKgl";
-        _tokensymbol = "stkMuuuKgl";
+        _tokenname = "Staked MuKgl";
+        _tokensymbol = "stkMuKgl";
         isShutdown = false;
         isInit = true;
         collateralVault = _vault;

@@ -6,7 +6,7 @@ import "../interfaces/IRewardStaking.sol";
 import "../interfaces/IMuuuDeposits.sol";
 import "../interfaces/MuuuMining.sol";
 import "../interfaces/IRariToken.sol";
-import "./MuuuKglStakingWrapper.sol";
+import "./MuKglStakingWrapper.sol";
 import '@openzeppelin/contracts/math/SafeMath.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/utils/Address.sol';
@@ -18,7 +18,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 //Tokenized muKgl staked position for Rari's Fuse platform
 //Based on Kagla.fi's gauge wrapper implementations at https://github.com/kaglafi/kagla-dao-contracts/tree/master/contracts/gauges/wrappers
-contract MuuuKglRari is MuuuKglStakingWrapper {
+contract MuKglRari is MuKglStakingWrapper {
     using SafeERC20
     for IERC20;
     using Address
@@ -34,8 +34,8 @@ contract MuuuKglRari is MuuuKglStakingWrapper {
         owner = address(0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB); //default to muuu multisig
         emit OwnershipTransferred(address(0), owner);
 
-        _tokenname = "Staked MuuuKgl Rari";
-        _tokensymbol = "stkMuuuKgl-rari";
+        _tokenname = "Staked MuKgl Rari";
+        _tokensymbol = "stkMuKgl-rari";
         isShutdown = false;
         isInit = true;
         collateralVault = _vault;

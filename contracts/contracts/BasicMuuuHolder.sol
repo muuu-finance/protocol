@@ -86,7 +86,7 @@ contract BasicMuuuHolder{
         }
     }
 
-    function withdrawMuuuKgl(uint256 _amount, address _withdrawTo) external{
+    function withdrawMuKgl(uint256 _amount, address _withdrawTo) external{
         require(msg.sender == operator, "!auth");
         require(_withdrawTo != address(0),"bad address");
 
