@@ -14,8 +14,7 @@ contract PoolManagerProxy{
     address public operator;
 
     constructor() public {
-        //default to multisig
-        owner = address(0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB);
+        owner = msg.sender;
         operator = msg.sender;
     }
 

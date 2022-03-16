@@ -6,52 +6,61 @@ import '@openzeppelin/contracts/math/SafeMath.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
 
 
-contract CurveVoterProxy {
+contract CurveVoterProxy is Ownable {
     using SafeERC20 for IERC20;
     using Address for address;
     using SafeMath for uint256;
 
-    address public constant mintr = address(0xd061D61a4d941c39E5453435B6345Dc261C2fcE0); // IMinter / Minter
-    address public constant crv = address(0xD533a949740bb3306d119CC777fa900bA034cd52); // IERC20 / CRV Token
+    address public crv; // IERC20 / CRV Token
+    address public votingEscrow; // for Specialize DEX
+    address public gaugeController; // IVoting / GaugeController
+    address public tokenMinter; // IMinter / Minter
 
-    // address public constant escrow = address(0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2); // VotingEscrow
-    address public constant gaugeController = address(0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB); // IVoting / GaugeController
-    
-    address public owner;
     address public operator;
     address public depositor;
 
-    // for Specialize DEX
-    address public votingEscrow;
-    
     mapping (address => bool) private stashPool;
     mapping (address => bool) private protectedTokens;
 
-    constructor(address _votingEscrow) public {
-        owner = msg.sender;
+    constructor(address _crv, address _votingEscrow, address _gaugeController, address _tokenMinter) public {
+        crv= _crv;
         votingEscrow = _votingEscrow;
+        gaugeController= _gaugeController;
+        tokenMinter = _tokenMinter;
     }
 
     function getName() external pure returns (string memory) {
         return "CurveVoterProxy";
     }
 
-    function setOwner(address _owner) external {
-        require(msg.sender == owner, "!auth");
-        owner = _owner;
+    function setCrv(address _crv) external onlyOwner {
+        crv = _crv;
+    }
+
+    function setVotingEscrow(address _votingEscrow) external onlyOwner {
+        votingEscrow = _votingEscrow;
+    }
+
+    function setGaugeController(address _gaugeController) external onlyOwner {
+        gaugeController = _gaugeController;
+    }
+
+    function setTokenMinter(address _tokenMinter) external onlyOwner {
+        tokenMinter = _tokenMinter;
     }
 
     function setOperator(address _operator) external {
-        require(msg.sender == owner, "!auth");
+        require(msg.sender == owner(), "!auth");
         require(operator == address(0) || IDeposit(operator).isShutdown() == true, "needs shutdown");
-        
+
         operator = _operator;
     }
 
     function setDepositor(address _depositor) external {
-        require(msg.sender == owner, "!auth");
+        require(msg.sender == owner(), "!auth");
 
         depositor = _depositor;
     }
@@ -164,9 +173,9 @@ contract CurveVoterProxy {
 
     function claimCrv(address _gauge) external returns (uint256){
         require(msg.sender == operator, "!auth");
-        
+
         uint256 _balance = 0;
-        try IMinter(mintr).mint(_gauge){
+        try IMinter(tokenMinter).mint(_gauge){
             _balance = IERC20(crv).balanceOf(address(this));
             IERC20(crv).safeTransfer(operator, _balance);
         }catch{}
@@ -186,7 +195,7 @@ contract CurveVoterProxy {
         uint256 _balance = IERC20(_token).balanceOf(address(this));
         IERC20(_token).safeTransfer(operator, _balance);
         return _balance;
-    }    
+    }
 
     function balanceOfPool(address _gauge) public view returns (uint256) {
         return ICurveGauge(_gauge).balanceOf(address(this));

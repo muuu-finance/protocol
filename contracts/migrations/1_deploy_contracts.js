@@ -2,6 +2,7 @@ const { time } = require('openzeppelin-test-helpers');
 var fs = require('fs');
 var jsonfile = require('jsonfile');
 var BN = require('big-number');
+const { ZERO_ADDRESS } = require('openzeppelin-test-helpers/src/constants');
 var distroList = jsonfile.readFileSync('./distro.json');
 
 const Booster = artifacts.require('Booster');
@@ -22,14 +23,13 @@ const VestedEscrow = artifacts.require('VestedEscrow');
 const MerkleAirdrop = artifacts.require('MerkleAirdrop');
 const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory');
 const MintableERC20 = artifacts.require('MintableERC20');
-const MockVotingEscrow = artifacts.require("MockCurveVoteEscrow");
+const MockVotingEscrow = artifacts.require('MockCurveVoteEscrow');
 
 module.exports = function (deployer, network, accounts) {
-  if (network === "skipMigration") {
+  if (network === 'skipMigration') {
     console.log(`Skip migration in ${network} network`);
     return;
   }
-  console.log('deployer:', deployer);
   // you need to prepare curveVoterProxy beforehand
   // const convexVoterProxy = "0xE7FDdA2a4Ba464A9F11a54A62B378E79c94d8332";
 
@@ -103,6 +103,7 @@ module.exports = function (deployer, network, accounts) {
   addContract('system', 'treasury', treasuryAddress);
 
   deployer
+    // ========================== Preparation start ==========================
     .deploy(MintableERC20, 'crv', 'CRV', 18)
     .then(function (instance) {
       crv = instance;
@@ -126,13 +127,23 @@ module.exports = function (deployer, network, accounts) {
       return deployer.deploy(MockVotingEscrow);
     })
     .then(function (instance) {
-      mockVotingEscrow = instance
-      return deployer.deploy(CurveVoterProxy, mockVotingEscrow.address);
+      mockVotingEscrow = instance;
+      addContract('mocks', 'mockVotingEscrow', mockVotingEscrow.address);
+    })
+    .then(function () {
+      return deployer.deploy(
+        CurveVoterProxy,
+        crv.address,
+        mockVotingEscrow.address,
+        ZERO_ADDRESS, // TODO:
+        ZERO_ADDRESS // TODO:
+      );
     })
     .then(function (instance) {
       voter = instance;
       addContract('system', 'voteProxy', voter.address);
     })
+    // ========================== Preparation end ==========================
     .then(function () {
       return deployer.deploy(ConvexToken, voter.address);
     })
@@ -141,7 +152,7 @@ module.exports = function (deployer, network, accounts) {
       addContract('system', 'cvx', cvx.address);
     })
     .then(function () {
-      return deployer.deploy(Booster, voter.address, cvx.address);
+      return deployer.deploy(Booster, voter.address, cvx.address, crv.address);
     })
     .then(function (instance) {
       booster = instance;
@@ -151,7 +162,7 @@ module.exports = function (deployer, network, accounts) {
     .then(function (currentOwner) {
       //if develop, change current owner to current deployer
       if (currentOwner != admin) {
-        return voter.setOwner(admin, { from: currentOwner });
+        return voter.transferOwnership(admin, { from: currentOwner });
       }
     })
     .then(function () {
@@ -183,7 +194,13 @@ module.exports = function (deployer, network, accounts) {
     .then(function (instance) {
       cvxCrv = instance;
       addContract('system', 'cvxCrv', cvxCrv.address);
-      return deployer.deploy(CrvDepositor, voter.address, cvxCrv.address);
+      return deployer.deploy(
+        CrvDepositor,
+        voter.address,
+        cvxCrv.address,
+        crv.address,
+        mockVotingEscrow.address // TODO: replace
+      );
     })
     .then(function (instance) {
       deposit = instance;
@@ -193,10 +210,9 @@ module.exports = function (deployer, network, accounts) {
     .then(function () {
       return voter.setDepositor(deposit.address);
     })
-    // TODO:
-    // .then(function () {
-    //   return deposit.initialLock();
-    // })
+    .then(function () {
+      return deposit.initialLock();
+    })
     .then(function () {
       return booster.setTreasury(deposit.address);
     })
@@ -236,14 +252,14 @@ module.exports = function (deployer, network, accounts) {
     .then(function (instance) {
       pools = instance;
       addContract('system', 'poolManager', pools.address);
-      // TODO:
-      // return booster.setPoolManager(pools.address)
+      return booster.setPoolManager(pools.address);
     })
     .then(function () {
       return booster.setFactories(rFactory.address, sFactory.address, tFactory.address);
-      // }).then(function() {
+    })
+    .then(function () {
       //  TODO:
-      // 	return booster.setFeeInfo()
+      // return booster.setFeeInfo();
     })
     .then(function () {
       return deployer.deploy(ArbitratorVault, booster.address);
@@ -309,9 +325,6 @@ module.exports = function (deployer, network, accounts) {
     .then(function () {
       return vesting.fund(vestedAddresses, vestedAmounts);
     })
-    // .then(function() {
-    // 	return vesting.fund(distroList.vested.investor.addresses,distroList.vested.investor.amounts);
-    // })
     .then(function () {
       return vesting.unallocatedSupply();
     })

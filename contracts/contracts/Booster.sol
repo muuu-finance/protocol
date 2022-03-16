@@ -6,14 +6,16 @@ import '@openzeppelin/contracts/math/SafeMath.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
 
 
-contract Booster{
+contract Booster is Ownable {
     using SafeERC20 for IERC20;
     using Address for address;
     using SafeMath for uint256;
 
-    address public constant crv = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
+    address public crv;
+    // TODO: extract
     address public constant registry = address(0x0000000022D53366457F9d5E68Ec105046FC4383);
     uint256 public constant distributionAddressId = 4;
     address public constant voteOwnership = address(0xE478de485ad2fe566d49342Cbd03E49ed7DB3356);
@@ -26,7 +28,6 @@ contract Booster{
     uint256 public constant MaxFees = 2000;
     uint256 public constant FEE_DENOMINATOR = 10000;
 
-    address public owner;
     address public feeManager;
     address public poolManager;
     address public immutable staker;
@@ -61,10 +62,9 @@ contract Booster{
     event Deposited(address indexed user, uint256 indexed poolid, uint256 amount);
     event Withdrawn(address indexed user, uint256 indexed poolid, uint256 amount);
 
-    constructor(address _staker, address _minter) public {
+    constructor(address _staker, address _minter, address _crv) public {
         isShutdown = false;
         staker = _staker;
-        owner = msg.sender;
         voteDelegate = msg.sender;
         feeManager = msg.sender;
         poolManager = msg.sender;
@@ -72,14 +72,13 @@ contract Booster{
         feeToken = address(0); //address(0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490);
         treasury = address(0);
         minter = _minter;
+        crv = _crv;
     }
 
 
     /// SETTER SECTION ///
-
-    function setOwner(address _owner) external {
-        require(msg.sender == owner, "!auth");
-        owner = _owner;
+    function setCrv(address _crv) external onlyOwner {
+        crv = _crv;
     }
 
     function setFeeManager(address _feeM) external {
@@ -93,8 +92,8 @@ contract Booster{
     }
 
     function setFactories(address _rfactory, address _sfactory, address _tfactory) external {
-        require(msg.sender == owner, "!auth");
-        
+        require(msg.sender == owner(), "!auth");
+
         //reward factory only allow this to be called once even if owner
         //removes ability to inject malicious staking contracts
         //token factory can also be immutable
@@ -109,7 +108,7 @@ contract Booster{
     }
 
     function setArbitrator(address _arb) external {
-        require(msg.sender==owner, "!auth");
+        require(msg.sender==owner(), "!auth");
         rewardArbitrator = _arb;
     }
 
@@ -119,8 +118,8 @@ contract Booster{
     }
 
     function setRewardContracts(address _rewards, address _stakerRewards) external {
-        require(msg.sender == owner, "!auth");
-        
+        require(msg.sender == owner(), "!auth");
+
         //reward contracts are immutable or else the owner
         //has a means to redeploy and mint cvx via rewardClaimed()
         if(lockRewards == address(0)){
@@ -132,7 +131,7 @@ contract Booster{
     // Set reward token and claim contract, get from Curve's registry
     function setFeeInfo() external {
         require(msg.sender==feeManager, "!auth");
-        
+
         feeDistro = IRegistry(registry).get_address(distributionAddressId);
         address _feeToken = IFeeDistro(feeDistro).token();
         if(feeToken != _feeToken){
@@ -148,7 +147,7 @@ contract Booster{
         uint256 total = _lockFees.add(_stakerFees).add(_callerFees).add(_platform);
         require(total <= MaxFees, ">MaxFees");
 
-        //values must be within certain ranges     
+        //values must be within certain ranges
         if(_lockFees >= 1000 && _lockFees <= 1500
             && _stakerFees >= 300 && _stakerFees <= 600
             && _callerFees >= 10 && _callerFees <= 100
@@ -228,7 +227,7 @@ contract Booster{
     //  unstake and pull all lp tokens to this address
     //  only allow withdrawals
     function shutdownSystem() external{
-        require(msg.sender == owner, "!auth");
+        require(msg.sender == owner(), "!auth");
         isShutdown = true;
 
         for(uint i=0; i < poolInfo.length; i++){
@@ -280,7 +279,7 @@ contract Booster{
             ITokenMinter(token).mint(msg.sender,_amount);
         }
 
-        
+
         emit Deposited(msg.sender, _pid, _amount);
         return true;
     }
@@ -315,7 +314,7 @@ contract Booster{
         if(stash != address(0) && !isShutdown && !pool.shutdown){
             IStash(stash).stashRewards();
         }
-        
+
         //return lp tokens
         IERC20(lptoken).safeTransfer(_to, _amount);
 
@@ -350,7 +349,7 @@ contract Booster{
     function vote(uint256 _voteId, address _votingAddress, bool _support) external returns(bool){
         require(msg.sender == voteDelegate, "!auth");
         require(_votingAddress == voteOwnership || _votingAddress == voteParameter, "!voteAddr");
-        
+
         IStaker(staker).vote(_voteId,_votingAddress,_support);
         return true;
     }
@@ -407,7 +406,7 @@ contract Booster{
             uint256 _lockIncentive = crvBal.mul(lockIncentive).div(FEE_DENOMINATOR);
             uint256 _stakerIncentive = crvBal.mul(stakerIncentive).div(FEE_DENOMINATOR);
             uint256 _callIncentive = crvBal.mul(earmarkIncentive).div(FEE_DENOMINATOR);
-            
+
             //send treasury
             if(treasury != address(0) && treasury != address(this) && platformFee > 0){
                 //only subtract after address condition check
@@ -420,7 +419,7 @@ contract Booster{
             crvBal = crvBal.sub(_lockIncentive).sub(_callIncentive).sub(_stakerIncentive);
 
             //send incentives for calling
-            IERC20(crv).safeTransfer(msg.sender, _callIncentive);          
+            IERC20(crv).safeTransfer(msg.sender, _callIncentive);
 
             //send crv to lp provider reward contract
             address rewardContract = pool.crvRewards;
@@ -461,7 +460,7 @@ contract Booster{
 
         //mint reward tokens
         ITokenMinter(minter).mint(_address,_amount);
-        
+
         return true;
     }
 

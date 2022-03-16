@@ -16,10 +16,9 @@ contract PoolManagerV3{
     address public immutable pools;
 
     address public operator;
-    
+
     constructor(address _pools) public {
-        //default to multisig
-        operator = address(0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB);
+        operator = msg.sender;
         pools = _pools;
     }
 
@@ -50,7 +49,7 @@ contract PoolManagerV3{
 
     function forceAddPool(address _lptoken, address _gauge, uint256 _stashVersion) external returns(bool){
         require(msg.sender==operator, "!auth");
-        
+
         //force add pool without weight checks (can only be used on new token and gauge addresses)
         return IPools(pools).forceAddPool(_lptoken, _gauge, _stashVersion);
     }
