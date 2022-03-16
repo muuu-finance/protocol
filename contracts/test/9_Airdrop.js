@@ -1,111 +1,129 @@
-const { BN, constants, expectEvent, expectRevert, time } = require('@openzeppelin/test-helpers');
+const {
+  BN,
+  constants,
+  expectEvent,
+  expectRevert,
+  time,
+} = require('@openzeppelin/test-helpers')
 
-const MerkleTree = require('./helpers/merkleTree');
-var jsonfile = require('jsonfile');
-var droplist = jsonfile.readFileSync('../airdrop/drop_proofs.json');
-var contractList = jsonfile.readFileSync('./contracts.json');
+const MerkleTree = require('./helpers/merkleTree')
+var jsonfile = require('jsonfile')
+var droplist = jsonfile.readFileSync('../airdrop/drop_proofs.json')
+var contractList = jsonfile.readFileSync('./contracts.json')
 
-const MuuuToken = artifacts.require('MuuuToken');
-const MerkleAirdrop = artifacts.require('MerkleAirdrop');
-const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory');
-const VestedEscrow = artifacts.require('VestedEscrow');
+const MuuuToken = artifacts.require('MuuuToken')
+const MerkleAirdrop = artifacts.require('MerkleAirdrop')
+const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory')
+const VestedEscrow = artifacts.require('VestedEscrow')
 
-const Multicaller = artifacts.require('Multicaller');
-const MulticallerView = artifacts.require('MulticallerView');
+const Multicaller = artifacts.require('Multicaller')
+const MulticallerView = artifacts.require('MulticallerView')
 
 contract('Airdrop Test', async (accounts) => {
   it('should claim airdrop for all users', async () => {
     //system
-    let muuu = await MuuuToken.at(contractList.system.muuu);
-    let airdrop = await MerkleAirdrop.at(contractList.system.airdrop);
-    console.log('airdrop at: ' + airdrop.address);
-    let mroot = await airdrop.merkleRoot();
-    console.log('airdrop root: ' + mroot);
-    let vekglVesting = await VestedEscrow.at(contractList.system.vestedEscrow);
-    let multicaller = await Multicaller.at('0x5e227AD1969Ea493B43F840cfF78d08a6fc17796');
-    let multicallerview = await MulticallerView.at('0x5e227AD1969Ea493B43F840cfF78d08a6fc17796');
+    let muuu = await MuuuToken.at(contractList.system.muuu)
+    let airdrop = await MerkleAirdrop.at(contractList.system.airdrop)
+    console.log('airdrop at: ' + airdrop.address)
+    let mroot = await airdrop.merkleRoot()
+    console.log('airdrop root: ' + mroot)
+    let vekglVesting = await VestedEscrow.at(contractList.system.vestedEscrow)
+    let multicaller = await Multicaller.at(
+      '0x5e227AD1969Ea493B43F840cfF78d08a6fc17796',
+    )
+    let multicallerview = await MulticallerView.at(
+      '0x5e227AD1969Ea493B43F840cfF78d08a6fc17796',
+    )
 
-    var dropAddresses = Object.keys(droplist.users);
-    var callDataList = [];
+    var dropAddresses = Object.keys(droplist.users)
+    var callDataList = []
     for (var i = 0; i < dropAddresses.length; i++) {
-      var info = droplist.users[dropAddresses[i]];
-      var amount = info.amount;
-      var proof = info.proof;
-      proof = proof.map((e) => Buffer.from(e, 'hex'));
+      var info = droplist.users[dropAddresses[i]]
+      var amount = info.amount
+      var proof = info.proof
+      proof = proof.map((e) => Buffer.from(e, 'hex'))
 
-      var calldata = airdrop.contract.methods.claim(proof, dropAddresses[i], amount).encodeABI();
-      callDataList.push([airdrop.address, calldata]);
+      var calldata = airdrop.contract.methods
+        .claim(proof, dropAddresses[i], amount)
+        .encodeABI()
+      callDataList.push([airdrop.address, calldata])
 
       if (callDataList.length == 30) {
-        console.log('call multi claim');
-        await multicaller.aggregate(callDataList);
-        callDataList = [];
+        console.log('call multi claim')
+        await multicaller.aggregate(callDataList)
+        callDataList = []
       }
     }
     if (callDataList.length > 0) {
-      console.log('call multi claim final');
-      await multicaller.aggregate(callDataList);
+      console.log('call multi claim final')
+      await multicaller.aggregate(callDataList)
     }
 
     //get balances
-    var totalClaimed = new BN(0);
-    callDataList = [];
-    var userbalances = [];
+    var totalClaimed = new BN(0)
+    callDataList = []
+    var userbalances = []
     for (var i = 0; i < dropAddresses.length; i++) {
-      var info = droplist.users[dropAddresses[i]];
-      var amount = info.amount;
-      var proof = info.proof;
-      proof = proof.map((e) => Buffer.from(e, 'hex'));
+      var info = droplist.users[dropAddresses[i]]
+      var amount = info.amount
+      var proof = info.proof
+      proof = proof.map((e) => Buffer.from(e, 'hex'))
       // await airdrop.claim(proof,dropAddresses[i],amount).catch(a=>console.log("--> could not claim"));
       // await muuu.balanceOf(dropAddresses[i]).then(a => console.log("claimed: " +a));
 
-      var calldata = muuu.contract.methods.balanceOf(dropAddresses[i]).encodeABI();
-      callDataList.push([muuu.address, calldata]);
+      var calldata = muuu.contract.methods
+        .balanceOf(dropAddresses[i])
+        .encodeABI()
+      callDataList.push([muuu.address, calldata])
 
       if (callDataList.length == 100) {
-        console.log('call multi balanceOf');
-        let retData = await multicallerview.aggregate(callDataList);
+        console.log('call multi balanceOf')
+        let retData = await multicallerview.aggregate(callDataList)
         for (var d = 0; d < retData[1].length; d++) {
           //console.log("add balance bn2: " +web3.utils.toBN(retData[1][d]).toString());
-          userbalances.push(web3.utils.toBN(retData[1][d]).toString());
+          userbalances.push(web3.utils.toBN(retData[1][d]).toString())
         }
-        callDataList = [];
+        callDataList = []
       }
     }
     if (callDataList.length > 0) {
-      console.log('call multi balanceOf final');
-      let retData = await multicallerview.aggregate(callDataList);
+      console.log('call multi balanceOf final')
+      let retData = await multicallerview.aggregate(callDataList)
       for (var d = 0; d < retData[1].length; d++) {
-        userbalances.push(web3.utils.toBN(retData[1][d]).toString());
+        userbalances.push(web3.utils.toBN(retData[1][d]).toString())
       }
-      callDataList = [];
+      callDataList = []
     }
 
     //check balances
     for (var i = 0; i < dropAddresses.length; i++) {
-      var info = droplist.users[dropAddresses[i]];
-      var amount = info.amount;
-      console.log('should claim: ' + amount + ', claimed: ' + userbalances[i]);
-      assert.equal(amount.toString(), userbalances[i].toString(), 'claimed amount doesnt match');
-      totalClaimed = totalClaimed.add(new BN(userbalances[i].toString()));
+      var info = droplist.users[dropAddresses[i]]
+      var amount = info.amount
+      console.log('should claim: ' + amount + ', claimed: ' + userbalances[i])
+      assert.equal(
+        amount.toString(),
+        userbalances[i].toString(),
+        'claimed amount doesnt match',
+      )
+      totalClaimed = totalClaimed.add(new BN(userbalances[i].toString()))
     }
-    console.log('total claimed: ' + totalClaimed.toString());
+    console.log('total claimed: ' + totalClaimed.toString())
 
     //remove to test double claims
-    return;
+    return
 
-    console.log('trying to claim again...');
+    console.log('trying to claim again...')
     for (var i = 0; i < dropAddresses.length; i++) {
-      var info = droplist.users[dropAddresses[i]];
-      var amount = info.amount;
-      var proof = info.proof;
-      proof = proof.map((e) => Buffer.from(e, 'hex'));
-      let hasClaimed = airdrop.hasClaimed(dropAddresses[i]);
-      console.log('has claimed? ' + hasClaimed);
-      assert.equal(hasClaimed == true, 'should have claimed but false');
+      var info = droplist.users[dropAddresses[i]]
+      var amount = info.amount
+      var proof = info.proof
+      proof = proof.map((e) => Buffer.from(e, 'hex'))
+      let hasClaimed = airdrop.hasClaimed(dropAddresses[i])
+      console.log('has claimed? ' + hasClaimed)
+      assert.equal(hasClaimed == true, 'should have claimed but false')
       await airdrop
         .claim(proof, dropAddresses[i], amount)
-        .catch((a) => console.log('--> could not claim'));
+        .catch((a) => console.log('--> could not claim'))
     }
 
     //If vested..
@@ -128,5 +146,5 @@ contract('Airdrop Test', async (accounts) => {
 
     // await vekglVesting.claim(lastaddress);
     // await muuu.balanceOf(lastaddress).then(a=>console.log("muuu balance in wallet: " +a))
-  });
-});
+  })
+})

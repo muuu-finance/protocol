@@ -2,5 +2,5 @@
 pragma solidity 0.6.12;
 
 interface IKglDepositor {
-    function deposit(uint256, bool) external;
+  function deposit(uint256, bool) external;
 }
