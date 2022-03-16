@@ -26,7 +26,12 @@ const mnemonic = fs.existsSync('.secret')
 const etherscanAPI = fs.existsSync('.etherscanApi')
   ? fs.readFileSync('.etherscanApi').toString().trim()
   : ''
-const infuraProjectId = ''
+
+const INFURA_PROJECT_ID = '' // if use Infura, set this parameter
+const BWARE_LABS_KEY = '' // if use BwareLabs for Astar, set this parameter
+const getAstarNetworkUrl = (networkName) => BWARE_LABS_KEY
+  ? `https://${networkName}-api.bwarelabs.com/${BWARE_LABS_KEY}`
+  : `https://rpc.${networkName === "astar" ? "astar" : `${networkName}.astar`}.network:8545`
 
 module.exports = {
   /**
@@ -71,11 +76,38 @@ module.exports = {
       provider: () =>
         new HDWalletProvider(
           mnemonic,
-          `https://mainnet.infura.io/v3/${infuraProjectId}`,
+          `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
         ),
       network_id: 1,
       gas: 6721975,
       gasPrice: 120000000000,
+    },
+    astar: {
+      provider: () =>
+        new HDWalletProvider(
+          mnemonic,
+          getAstarNetworkUrl("astar"),
+        ),
+      network_id: 592,
+      gasPrice: 102 * 1000 * 1000 * 1000
+    },
+    shiden: {
+      provider: () =>
+        new HDWalletProvider(
+          mnemonic,
+          getAstarNetworkUrl("shiden"),
+        ),
+      network_id: 336,
+      gasPrice: 102 * 1000 * 1000 * 1000
+    },
+    shibuya: {
+      provider: () =>
+        new HDWalletProvider(
+          mnemonic,
+          getAstarNetworkUrl("shibuya"),
+        ),
+      network_id: 81,
+      gasPrice: 102 * 1000 * 1000 * 1000
     },
     // Useful for private networks
     // private: {
