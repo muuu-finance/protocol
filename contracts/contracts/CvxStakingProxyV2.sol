@@ -9,7 +9,7 @@ import '@openzeppelin/contracts/math/SafeMath.sol';
 
 
 
-interface IConvexRewards {
+interface IMuuuRewards {
     function withdraw(uint256 _amount, bool _claim) external;
 
     function balanceOf(address _account) external view returns(uint256);
@@ -117,14 +117,14 @@ contract CvxStakingProxyV2 {
     }
 
     function getBalance() external view returns(uint256) {
-        return IConvexRewards(cvxStaking).balanceOf(address(this));
+        return IMuuuRewards(cvxStaking).balanceOf(address(this));
     }
 
     function withdraw(uint256 _amount) external {
         require(msg.sender == rewards, "!auth");
 
         //unstake
-        IConvexRewards(cvxStaking).withdraw(_amount, false);
+        IMuuuRewards(cvxStaking).withdraw(_amount, false);
 
         //withdraw cvx
         IERC20(cvx).safeTransfer(msg.sender, _amount);
@@ -134,7 +134,7 @@ contract CvxStakingProxyV2 {
     function stake() external {
         require(msg.sender == rewards, "!auth");
 
-        IConvexRewards(cvxStaking).stakeAll();
+        IMuuuRewards(cvxStaking).stakeAll();
     }
 
     function distribute() external {
@@ -143,7 +143,7 @@ contract CvxStakingProxyV2 {
         }
 
         //claim rewards
-        IConvexRewards(cvxStaking).getReward(false);
+        IMuuuRewards(cvxStaking).getReward(false);
 
         //convert any crv that was directly added
         uint256 crvBal = IERC20(crv).balanceOf(address(this));
@@ -152,9 +152,9 @@ contract CvxStakingProxyV2 {
         }
 
         //make sure nothing is in here
-        uint256 sCheck  = IConvexRewards(cvxCrvStaking).balanceOf(address(this));
+        uint256 sCheck  = IMuuuRewards(cvxCrvStaking).balanceOf(address(this));
         if(sCheck > 0){
-            IConvexRewards(cvxCrvStaking).withdraw(sCheck,false);
+            IMuuuRewards(cvxCrvStaking).withdraw(sCheck,false);
         }
 
         //distribute cvxcrv

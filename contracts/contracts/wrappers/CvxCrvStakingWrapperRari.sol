@@ -3,7 +3,7 @@ pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
 
 import "../interfaces/IRewardStaking.sol";
-import "../interfaces/IConvexDeposits.sol";
+import "../interfaces/IMuuuDeposits.sol";
 import "../interfaces/CvxMining.sol";
 import "../interfaces/IRariToken.sol";
 import "./CvxCrvStakingWrapper.sol";

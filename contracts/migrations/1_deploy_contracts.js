@@ -10,7 +10,7 @@ const CurveVoterProxy = artifacts.require('CurveVoterProxy');
 const RewardFactory = artifacts.require('RewardFactory');
 const StashFactory = artifacts.require('StashFactory');
 const TokenFactory = artifacts.require('TokenFactory');
-const ConvexToken = artifacts.require('ConvexToken');
+const MuuuToken = artifacts.require('MuuuToken');
 const cvxCrvToken = artifacts.require('cvxCrvToken');
 const CrvDepositor = artifacts.require('CrvDepositor');
 const PoolManager = artifacts.require('PoolManager');
@@ -18,7 +18,7 @@ const BaseRewardPool = artifacts.require('BaseRewardPool');
 const cvxRewardPool = artifacts.require('cvxRewardPool');
 const ArbitratorVault = artifacts.require('ArbitratorVault');
 const ClaimZap = artifacts.require('ClaimZap');
-const ConvexMasterChef = artifacts.require('ConvexMasterChef');
+const MuuuMasterChef = artifacts.require('MuuuMasterChef');
 const VestedEscrow = artifacts.require('VestedEscrow');
 const MerkleAirdrop = artifacts.require('MerkleAirdrop');
 const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory');
@@ -167,7 +167,7 @@ module.exports = function (deployer, network, accounts) {
       addContract('system', 'voteProxy', voter.address);
     })
     // ========================== Preparation end ==========================
-    .then(() => deployer.deploy(ConvexToken, voter.address))
+    .then(() => deployer.deploy(MuuuToken, voter.address))
     .then((instance) => {
       cvx = instance;
       addContract('system', 'cvx', cvx.address);

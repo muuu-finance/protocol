@@ -5,7 +5,7 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
 const CrvDepositor = artifacts.require('CrvDepositor');
-const ConvexToken = artifacts.require('ConvexToken');
+const MuuuToken = artifacts.require('MuuuToken');
 const cvxCrvToken = artifacts.require('cvxCrvToken');
 const CurveVoterProxy = artifacts.require('CurveVoterProxy');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
@@ -27,7 +27,7 @@ contract('Test cvxcrv stake wrapper', async (accounts) => {
     let booster = await Booster.at(contractList.system.booster);
     let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy);
     let crvDeposit = await CrvDepositor.at(contractList.system.crvDepositor);
-    let cvx = await ConvexToken.at(contractList.system.cvx);
+    let cvx = await MuuuToken.at(contractList.system.cvx);
     let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let threeCrv = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
     let cvxCrv = await cvxCrvToken.at(contractList.system.cvxCrv);

@@ -50,14 +50,14 @@ interface IMasterChefV2 {
     function lpToken(uint i) external view returns (IERC20);
 }
 
-interface IConvexChef{
+interface IMuuuChef{
     function userInfo(uint256 _pid, address _account) external view returns(uint256,uint256);
     function claim(uint256 _pid, address _account) external;
     function deposit(uint256 _pid, uint256 _amount) external;
 }
 
 
-contract ConvexRewarder is ISushiRewarder{
+contract MuuuRewarder is ISushiRewarder{
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
@@ -117,13 +117,13 @@ contract ConvexRewarder is ISushiRewarder{
         require(balance != 0, "Balance must exceed 0");
         dummyToken.safeTransferFrom(msg.sender, address(this), balance);
         dummyToken.approve(muuuMasterChef, balance);
-        IConvexChef(muuuMasterChef).deposit(chefPid, balance);
+        IMuuuChef(muuuMasterChef).deposit(chefPid, balance);
         initRewards();
     }
 
     //claim from muuu master chef and add to rewards
     function harvestFromMasterChef() public {
-        IConvexChef(muuuMasterChef).claim(chefPid, address(this));
+        IMuuuChef(muuuMasterChef).claim(chefPid, address(this));
         notifyRewardAmount();
     }
 
@@ -341,7 +341,7 @@ contract ConvexRewarder is ISushiRewarder{
         }
         //muuu chef allows anyone to claim, so we have to look at reward debt difference
         //so that we know how much we have claimed since previous notifyRewardAmount()
-        (,uint256 rewardDebt) = IConvexChef(muuuMasterChef).userInfo(chefPid, address(this));
+        (,uint256 rewardDebt) = IMuuuChef(muuuMasterChef).userInfo(chefPid, address(this));
         uint256 reward = rewardDebt.sub(previousRewardDebt);
         previousRewardDebt = rewardDebt;
         if(reward == 0) return;

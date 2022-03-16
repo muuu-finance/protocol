@@ -5,12 +5,12 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
 const CrvDepositor = artifacts.require('CrvDepositor');
-const ConvexToken = artifacts.require('ConvexToken');
+const MuuuToken = artifacts.require('MuuuToken');
 const cvxCrvToken = artifacts.require('cvxCrvToken');
 const CurveVoterProxy = artifacts.require('CurveVoterProxy');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
-const ConvexStakingWrapper = artifacts.require('ConvexStakingWrapper');
-const ConvexStakingWrapperAbra = artifacts.require('ConvexStakingWrapperAbra');
+const MuuuStakingWrapper = artifacts.require('MuuuStakingWrapper');
+const MuuuStakingWrapperAbra = artifacts.require('MuuuStakingWrapperAbra');
 const IERC20 = artifacts.require('IERC20');
 const ICurveAavePool = artifacts.require('ICurveAavePool');
 const IExchange = artifacts.require('IExchange');
@@ -31,7 +31,7 @@ contract('Test stake wrapper', async (accounts) => {
     //system
     let booster = await Booster.at(contractList.system.booster);
     let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy);
-    let cvx = await ConvexToken.at(contractList.system.cvx);
+    let cvx = await MuuuToken.at(contractList.system.cvx);
     let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let cvxCrv = await cvxCrvToken.at(contractList.system.cvxCrv);
     let cvxCrvLP = await IERC20.at(contractList.system.cvxCrvCrvSLP);
@@ -77,9 +77,9 @@ contract('Test stake wrapper', async (accounts) => {
 
     let lib = await CvxMining.at(contractList.system.cvxMining);
     console.log('mining lib at: ' + lib.address);
-    await ConvexStakingWrapperAbra.link('CvxMining', lib.address);
+    await MuuuStakingWrapperAbra.link('CvxMining', lib.address);
 
-    let master = await ConvexStakingWrapperAbra.new();
+    let master = await MuuuStakingWrapperAbra.new();
     let pfactory = await ProxyFactory.at(contractList.system.proxyFactory);
 
     //static call first to see what the next address will be
@@ -87,7 +87,7 @@ contract('Test stake wrapper', async (accounts) => {
     console.log('clone: ' + clone);
     let clonetx = await pfactory.clone(master.address);
 
-    let staker = await ConvexStakingWrapperAbra.at(clone);
+    let staker = await MuuuStakingWrapperAbra.at(clone);
     let pool = contractList.pools.find((a) => a.name == 'ren');
     await staker.initialize(pool.lptoken, pool.token, pool.crvRewards, pool.id, addressZero);
     console.log('staker token: ' + staker.address);

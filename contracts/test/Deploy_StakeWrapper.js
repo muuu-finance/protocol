@@ -5,17 +5,17 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
 const CrvDepositor = artifacts.require('CrvDepositor');
-const ConvexToken = artifacts.require('ConvexToken');
+const MuuuToken = artifacts.require('MuuuToken');
 const cvxCrvToken = artifacts.require('cvxCrvToken');
 const CurveVoterProxy = artifacts.require('CurveVoterProxy');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
-const ConvexStakingWrapper = artifacts.require('ConvexStakingWrapper');
+const MuuuStakingWrapper = artifacts.require('MuuuStakingWrapper');
 const IERC20 = artifacts.require('IERC20');
 const ICurveAavePool = artifacts.require('ICurveAavePool');
 const IExchange = artifacts.require('IExchange');
 const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01');
 const CvxMining = artifacts.require('CvxMining');
-const ConvexStakingWrapperAbra = artifacts.require('ConvexStakingWrapperAbra');
+const MuuuStakingWrapperAbra = artifacts.require('MuuuStakingWrapperAbra');
 const ProxyFactory = artifacts.require('ProxyFactory');
 
 contract('Deploy stake wrapper', async (accounts) => {
@@ -27,7 +27,7 @@ contract('Deploy stake wrapper', async (accounts) => {
     //system
     let booster = await Booster.at(contractList.system.booster);
     let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy);
-    let cvx = await ConvexToken.at(contractList.system.cvx);
+    let cvx = await MuuuToken.at(contractList.system.cvx);
     let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let stkaave = await IERC20.at('0x4da27a545c0c5B758a6BA100e3a049001de870f5');
     let cvxCrv = await cvxCrvToken.at(contractList.system.cvxCrv);
@@ -45,9 +45,9 @@ contract('Deploy stake wrapper', async (accounts) => {
     //master deploy
     // let lib = await CvxMining.at(contractList.system.cvxMining);
     // console.log("mining lib at: " +lib.address);
-    // await ConvexStakingWrapperAbra.link("CvxMining", lib.address);
+    // await MuuuStakingWrapperAbra.link("CvxMining", lib.address);
 
-    // let master = await ConvexStakingWrapperAbra.new();
+    // let master = await MuuuStakingWrapperAbra.new();
     // console.log("master abra wrapper: " +master.address);
     // return;
 
@@ -61,7 +61,7 @@ contract('Deploy stake wrapper', async (accounts) => {
     console.log('clone: ' + clone);
     let clonetx = await pfactory.clone(contractList.system.masterAbraWrapper);
 
-    let staker = await ConvexStakingWrapperAbra.at(clone);
+    let staker = await MuuuStakingWrapperAbra.at(clone);
     let pool = contractList.pools.find((a) => a.name == cloneName);
     await staker.initialize(pool.lptoken, pool.token, pool.crvRewards, pool.id, addressZero);
     console.log('staker token: ' + staker.address);

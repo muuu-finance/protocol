@@ -4,11 +4,11 @@ pragma experimental ABIEncoderV2;
 
 import "../interfaces/ICauldron.sol";
 import "../interfaces/IBentoBox.sol";
-import "./ConvexStakingWrapper.sol";
+import "./MuuuStakingWrapper.sol";
 
 //Staking wrapper for Abracadabra platform
 //use muuu LP positions as collateral while still receiving rewards
-contract ConvexStakingWrapperAbra is ConvexStakingWrapper {
+contract MuuuStakingWrapperAbra is MuuuStakingWrapper {
     using SafeERC20
     for IERC20;
     using Address

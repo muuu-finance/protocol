@@ -3,7 +3,7 @@ pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
 
 import "../interfaces/IRewardStaking.sol";
-import "../interfaces/IConvexDeposits.sol";
+import "../interfaces/IMuuuDeposits.sol";
 import "../interfaces/CvxMining.sol";
 import '@openzeppelin/contracts/math/SafeMath.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
@@ -18,7 +18,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 //if used as collateral some modifications will be needed to fit the specific platform
 
 //Based on Curve.fi's gauge wrapper implementations at https://github.com/curvefi/curve-dao-contracts/tree/master/contracts/gauges/wrappers
-contract ConvexStakingWrapper is ERC20, ReentrancyGuard {
+contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
     using SafeERC20
     for IERC20;
     using Address
@@ -70,7 +70,7 @@ contract ConvexStakingWrapper is ERC20, ReentrancyGuard {
 
     constructor() public
         ERC20(
-            "StakedConvexToken",
+            "StakedMuuuToken",
             "stkCvx"
         ){
     }
@@ -342,7 +342,7 @@ contract ConvexStakingWrapper is ERC20, ReentrancyGuard {
         if (_amount > 0) {
             _mint(_to, _amount);
             IERC20(curveToken).safeTransferFrom(msg.sender, address(this), _amount);
-            IConvexDeposits(muuuBooster).deposit(muuuPoolId, _amount, true);
+            IMuuuDeposits(muuuBooster).deposit(muuuPoolId, _amount, true);
         }
 
         emit Deposited(msg.sender, _to, _amount, true);

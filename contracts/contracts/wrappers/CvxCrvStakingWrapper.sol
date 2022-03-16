@@ -3,7 +3,7 @@ pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
 
 import "../interfaces/IRewardStaking.sol";
-import "../interfaces/IConvexDeposits.sol";
+import "../interfaces/IMuuuDeposits.sol";
 import "../interfaces/CvxMining.sol";
 import '@openzeppelin/contracts/math/SafeMath.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
@@ -347,7 +347,7 @@ contract CvxCrvStakingWrapper is ERC20, ReentrancyGuard {
         if (_amount > 0) {
             _mint(_to, _amount);
             IERC20(crv).safeTransferFrom(msg.sender, address(this), _amount);
-            IConvexDeposits(crvDepositor).deposit(_amount, false, cvxCrvStaking);
+            IMuuuDeposits(crvDepositor).deposit(_amount, false, cvxCrvStaking);
         }
 
         emit Deposited(msg.sender, _to, _amount, true);
