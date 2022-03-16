@@ -18,11 +18,15 @@
  *
  */
 
-const HDWalletProvider = require('@truffle/hdwallet-provider');
-const fs = require('fs');
-const mnemonic = fs.existsSync(".secret") ? fs.readFileSync(".secret").toString().trim() : ""
-const etherscanAPI = fs.existsSync(".etherscanApi") ? fs.readFileSync(".etherscanApi").toString().trim() : ""
-const infuraProjectId = ""
+const HDWalletProvider = require('@truffle/hdwallet-provider')
+const fs = require('fs')
+const mnemonic = fs.existsSync('.secret')
+  ? fs.readFileSync('.secret').toString().trim()
+  : ''
+const etherscanAPI = fs.existsSync('.etherscanApi')
+  ? fs.readFileSync('.etherscanApi').toString().trim()
+  : ''
+const infuraProjectId = ''
 
 module.exports = {
   /**
@@ -43,14 +47,14 @@ module.exports = {
     // options below to some value.
     //
     development: {
-      host: "127.0.0.1",     // Localhost (default: none)
-      port: 7545,            // Standard Ethereum port (default: none) -> use ganache
-      network_id: "*",       // Any network (default: none)
+      host: '127.0.0.1', // Localhost (default: none)
+      port: 7545, // Standard Ethereum port (default: none) -> use ganache
+      network_id: '*', // Any network (default: none)
     },
     skipMigration: {
-      host: "127.0.0.1",
+      host: '127.0.0.1',
       port: 7545,
-      network_id: "*",
+      network_id: '*',
     },
     // Another network with more advanced options...
     // advanced: {
@@ -64,10 +68,14 @@ module.exports = {
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
     mainnet: {
-	    provider: () => new HDWalletProvider(mnemonic, `https://mainnet.infura.io/v3/${infuraProjectId}`),
-	    network_id: 1, 
-		gas: 6721975,
-		gasPrice: 120000000000
+      provider: () =>
+        new HDWalletProvider(
+          mnemonic,
+          `https://mainnet.infura.io/v3/${infuraProjectId}`,
+        ),
+      network_id: 1,
+      gas: 6721975,
+      gasPrice: 120000000000,
     },
     // Useful for private networks
     // private: {
@@ -76,52 +84,51 @@ module.exports = {
     // production: true    // Treats this network as if it was a public net. (default: false)
     // }
     ganachecli: {
-      host: "127.0.0.1",
+      host: '127.0.0.1',
       port: 8545,
-      network_id: "1",
+      network_id: '*',
       gas: 6721975,
-      gasPrice: 120000000000
+      gasPrice: 120000000000,
     },
     uitest: {
-      host: "127.0.0.1",
+      host: '127.0.0.1',
       port: 8545,
-      network_id: "1",
+      network_id: '1',
       gas: 6721975,
-      gasPrice: 120000000000
+      gasPrice: 120000000000,
     },
     debug: {
-      host: "127.0.0.1",
+      host: '127.0.0.1',
       port: 8545,
-      network_id: "1",
+      network_id: '1',
       gas: 6721975,
-      gasPrice: 120000000000
+      gasPrice: 120000000000,
     },
   },
 
   // Set default mocha options here, use special reporters etc.
   mocha: {
     enableTimeouts: false,
-    timeout: 100000000
+    timeout: 100000000,
   },
 
   // Configure your compilers
   compilers: {
     solc: {
-       version: "0.6.12",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: '0.6.12', // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
-       settings: {          // See the solidity docs for advice about optimization and evmVersion
-         optimizer: {
-           enabled: true,
-           runs: 200
-         }
-      //  evmVersion: "byzantium"
-      }
-    }
+      settings: {
+        // See the solidity docs for advice about optimization and evmVersion
+        optimizer: {
+          enabled: true,
+          runs: 200,
+        },
+        //  evmVersion: "byzantium"
+      },
+    },
   },
-  plugins: [
-    'truffle-plugin-verify'
-  ],
+  plugins: ['truffle-plugin-verify'],
   api_keys: {
-    etherscan: etherscanAPI
-  }
-};
+    etherscan: etherscanAPI,
+  },
+}

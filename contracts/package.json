@@ -2,7 +2,9 @@
   "scripts": {
     "deploy": "truffle migrate --network ganachecli --skip-dry-run",
     "compile": "truffle compile",
-    "test": "truffle test"
+    "test": "truffle test",
+    "prettier:check": "prettier -c 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'",
+    "prettier:write": "prettier --write 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'"
   },
   "dependencies": {
     "@openzeppelin/contracts": "3.4.0",
@@ -13,6 +15,8 @@
   },
   "devDependencies": {
     "@openzeppelin/test-helpers": "^0.5.15",
+    "prettier": "^2.6.0",
+    "prettier-plugin-solidity": "^1.0.0-beta.19",
     "truffle-plugin-verify": "^0.5.21"
   }
 }
