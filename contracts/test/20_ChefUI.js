@@ -176,11 +176,11 @@ contract('Test masterchef rewards setup', async (accounts) => {
     cvxbalance = await cvx.balanceOf(deployer)
     console.log('cvx for init: ' + cvxbalance)
 
-    //add slot slot for dummy token on convex master chef
+    //add slot slot for dummy token on muuu master chef
     // await chef.add(8000000000,dummyCvx.address,addressZero,true,{from:multisig,gasPrice:0});
-    // console.log("add slot to convex chef");
+    // console.log("add slot to muuu chef");
     // await chef.add(12000000000,dummyCvxCrv.address,addressZero,true,{from:multisig,gasPrice:0});
-    // console.log("add slot to convex chef");
+    // console.log("add slot to muuu chef");
 
     //create rewarder for cvx/eth
     let rewardercvx = await ConvexRewarder.at(
