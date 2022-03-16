@@ -16,6 +16,7 @@ contract MockCurveVoteEscrow {
   function smart_wallet_checker() external view returns (address) {
     return 0x0000000000000000000000000000000000000000;
   }
+
   function balanceOf(address addr) external view returns (uint256) {
     return 0;
   }

@@ -17,15 +17,17 @@ contract MockCurveGauge {
 
   function claim_rewards() external {}
 
-  function reward_tokens(uint256 _amount) external view returns(address) { //v2
+  function reward_tokens(uint256 _amount) external view returns (address) {
+    //v2
     return 0x0000000000000000000000000000000000000000;
   }
 
-  function rewarded_token() external view returns(address) { //v1
+  function rewarded_token() external view returns (address) {
+    //v1
     return 0x0000000000000000000000000000000000000000;
   }
 
-  function lp_token() external view returns(address) {
+  function lp_token() external view returns (address) {
     return 0x0000000000000000000000000000000000000000;
   }
 }

@@ -8,7 +8,7 @@ pragma solidity 0.6.12;
 contract MockCurveFeeDistributor {
   address public token;
 
-  constructor (address _token) public {
+  constructor(address _token) public {
     token = _token;
   }
 

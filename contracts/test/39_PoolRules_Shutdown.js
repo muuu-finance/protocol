@@ -1,28 +1,30 @@
 // const { BN, constants, expectEvent, expectRevert, time } = require('@openzeppelin/test-helpers');
-const { BN, time } = require('@openzeppelin/test-helpers');
-const { keccak256: k256 } = require('ethereum-cryptography/keccak');
-var jsonfile = require('jsonfile');
-var contractList = jsonfile.readFileSync('./contracts.json');
+const { BN, time } = require('@openzeppelin/test-helpers')
+const { keccak256: k256 } = require('ethereum-cryptography/keccak')
+var jsonfile = require('jsonfile')
+var contractList = jsonfile.readFileSync('./contracts.json')
 
-const IERC20 = artifacts.require('IERC20');
-const IExchange = artifacts.require('IExchange');
-const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01');
+const IERC20 = artifacts.require('IERC20')
+const IExchange = artifacts.require('IExchange')
+const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01')
 
-const Booster = artifacts.require('Booster');
-const PoolManagerV2 = artifacts.require('PoolManagerV2');
-const PoolManagerProxy = artifacts.require('PoolManagerProxy');
-const PoolManagerSecondaryProxy = artifacts.require('PoolManagerSecondaryProxy');
-const ICurveGauge = artifacts.require('ICurveGauge');
-const PoolManagerV3 = artifacts.require('PoolManagerV3');
-const IVoteStarter = artifacts.require('IVoteStarter');
-const IVoting = artifacts.require('IVoting');
-const FakeGauge = artifacts.require('FakeGauge');
-const IGaugeController = artifacts.require('IGaugeController');
-const BoosterOwner = artifacts.require('BoosterOwner');
-const VoteDelegateExtension = artifacts.require('VoteDelegateExtension');
-const ExtraRewardStashTokenRescue = artifacts.require('ExtraRewardStashTokenRescue');
-const ExtraRewardStashV3 = artifacts.require('ExtraRewardStashV3');
-const StashFactoryV2 = artifacts.require('StashFactoryV2');
+const Booster = artifacts.require('Booster')
+const PoolManagerV2 = artifacts.require('PoolManagerV2')
+const PoolManagerProxy = artifacts.require('PoolManagerProxy')
+const PoolManagerSecondaryProxy = artifacts.require('PoolManagerSecondaryProxy')
+const ICurveGauge = artifacts.require('ICurveGauge')
+const PoolManagerV3 = artifacts.require('PoolManagerV3')
+const IVoteStarter = artifacts.require('IVoteStarter')
+const IVoting = artifacts.require('IVoting')
+const FakeGauge = artifacts.require('FakeGauge')
+const IGaugeController = artifacts.require('IGaugeController')
+const BoosterOwner = artifacts.require('BoosterOwner')
+const VoteDelegateExtension = artifacts.require('VoteDelegateExtension')
+const ExtraRewardStashTokenRescue = artifacts.require(
+  'ExtraRewardStashTokenRescue',
+)
+const ExtraRewardStashV3 = artifacts.require('ExtraRewardStashV3')
+const StashFactoryV2 = artifacts.require('StashFactoryV2')
 
 const unlockAccount = async (address) => {
   return new Promise((resolve, reject) => {
@@ -35,49 +37,53 @@ const unlockAccount = async (address) => {
       },
       (err, result) => {
         if (err) {
-          return reject(err);
+          return reject(err)
         }
-        return resolve(result);
-      }
-    );
-  });
-};
+        return resolve(result)
+      },
+    )
+  })
+}
 
 contract('deploy pool manager layer', async (accounts) => {
   it('should check that pool rules are properly enforced', async () => {
-    let deployer = '0x947B7742C403f20e5FaCcDAc5E092C943E7D0277';
-    let multisig = '0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB';
-    let treasury = '0x1389388d01708118b497f59521f6943Be2541bb7';
-    let addressZero = '0x0000000000000000000000000000000000000000';
+    let deployer = '0x947B7742C403f20e5FaCcDAc5E092C943E7D0277'
+    let multisig = '0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB'
+    let treasury = '0x1389388d01708118b497f59521f6943Be2541bb7'
+    let addressZero = '0x0000000000000000000000000000000000000000'
 
-    let userA = accounts[0];
-    let userB = accounts[1];
-    let userC = accounts[2];
-    let userD = accounts[3];
-    let userZ = '0xAAc0aa431c237C2C0B5f041c8e59B3f1a43aC78F';
-    var userNames = {};
-    userNames[userA] = 'A';
-    userNames[userB] = 'B';
-    userNames[userC] = 'C';
-    userNames[userD] = 'D';
-    userNames[userZ] = 'Z';
+    let userA = accounts[0]
+    let userB = accounts[1]
+    let userC = accounts[2]
+    let userD = accounts[3]
+    let userZ = '0xAAc0aa431c237C2C0B5f041c8e59B3f1a43aC78F'
+    var userNames = {}
+    userNames[userA] = 'A'
+    userNames[userB] = 'B'
+    userNames[userC] = 'C'
+    userNames[userD] = 'D'
+    userNames[userZ] = 'Z'
 
-    var isShutdown = false;
+    var isShutdown = false
 
-    let starttime = await time.latest();
+    let starttime = await time.latest()
 
     const advanceTime = async (secondsElaspse) => {
-      await time.increase(secondsElaspse);
-      await time.advanceBlock();
-      console.log('\n  >>>>  advance time ' + secondsElaspse / 86400 + ' days  >>>>\n');
-    };
-    const day = 86400;
+      await time.increase(secondsElaspse)
+      await time.advanceBlock()
+      console.log(
+        '\n  >>>>  advance time ' + secondsElaspse / 86400 + ' days  >>>>\n',
+      )
+    }
+    const day = 86400
 
     //let poolManager = await PoolManagerV3.at(contractList.system.poolManager);
-    let booster = await Booster.at(contractList.system.booster);
-    let poolProxy = await PoolManagerProxy.at(contractList.system.poolManagerProxy);
+    let booster = await Booster.at(contractList.system.booster)
+    let poolProxy = await PoolManagerProxy.at(
+      contractList.system.poolManagerProxy,
+    )
 
-    var usedList = [];
+    var usedList = []
 
     // var pooltotal = await booster.poolLength();
     // for( var i = 0; i < pooltotal; i++){
@@ -227,275 +233,433 @@ contract('deploy pool manager layer', async (accounts) => {
       '0x08380a4999Be1a958E2abbA07968d703C7A3027C',
       '0xCb08717451aaE9EF950a2524E33B6DCaBA60147B',
       '0x6070fBD4E608ee5391189E7205d70cc4A274c017',
-    ];
+    ]
 
-    console.log(usedList);
-    console.log('used address count: ' + usedList.length);
+    console.log(usedList)
+    console.log('used address count: ' + usedList.length)
 
     //deploy
-    let poolSecondary = await PoolManagerSecondaryProxy.new();
-    console.log('poolManagerSecondaryProxy: ' + poolSecondary.address);
-    await poolSecondary.setUsedAddress(usedList, { from: multisig, gasPrice: 0 });
-    let poolManager = await PoolManagerV3.new(poolSecondary.address);
-    console.log('poolManager: ' + poolManager.address);
+    let poolSecondary = await PoolManagerSecondaryProxy.new()
+    console.log('poolManagerSecondaryProxy: ' + poolSecondary.address)
+    await poolSecondary.setUsedAddress(usedList, {
+      from: multisig,
+      gasPrice: 0,
+    })
+    let poolManager = await PoolManagerV3.new(poolSecondary.address)
+    console.log('poolManager: ' + poolManager.address)
 
     //connect proxy to shutdown, and shutdown to new manager
-    console.log('set operators');
-    await poolProxy.setOperator(poolSecondary.address, { from: multisig, gasPrice: 0 });
-    await poolSecondary.setOperator(poolManager.address, { from: multisig, gasPrice: 0 });
+    console.log('set operators')
+    await poolProxy.setOperator(poolSecondary.address, {
+      from: multisig,
+      gasPrice: 0,
+    })
+    await poolSecondary.setOperator(poolManager.address, {
+      from: multisig,
+      gasPrice: 0,
+    })
 
     //revoke ownership
-    console.log('revoke ownership');
-    await poolProxy.setOwner(addressZero, { from: multisig, gasPrice: 0 });
-    await poolProxy.owner().then((a) => console.log('proxy owner: ' + a));
+    console.log('revoke ownership')
+    await poolProxy.setOwner(addressZero, { from: multisig, gasPrice: 0 })
+    await poolProxy.owner().then((a) => console.log('proxy owner: ' + a))
 
     //test roles
-    console.log('test roles for shutdown layer');
-    await poolSecondary.owner().then((a) => console.log('owner: ' + a));
-    await poolSecondary.operator().then((a) => console.log('operator: ' + a));
-    await poolSecondary.setOwner(deployer).catch((a) => console.log(' -> catch set owner attempt'));
+    console.log('test roles for shutdown layer')
+    await poolSecondary.owner().then((a) => console.log('owner: ' + a))
+    await poolSecondary.operator().then((a) => console.log('operator: ' + a))
+    await poolSecondary
+      .setOwner(deployer)
+      .catch((a) => console.log(' -> catch set owner attempt'))
     await poolSecondary
       .setOperator(deployer)
-      .catch((a) => console.log(' -> catch set operator attempt'));
-    await poolSecondary.setOwner(deployer, { from: multisig, gasPrice: 0 });
-    await poolSecondary.setOperator(addressZero, { from: deployer });
-    await poolSecondary.owner().then((a) => console.log('owner: ' + a));
-    await poolSecondary.operator().then((a) => console.log('operator: ' + a));
-    await poolSecondary.setOwner(multisig, { from: deployer });
-    await poolSecondary.setOperator(poolManager.address, { from: multisig, gasPrice: 0 });
-    await poolSecondary.owner().then((a) => console.log('owner: ' + a));
-    await poolSecondary.operator().then((a) => console.log('operator: ' + a));
+      .catch((a) => console.log(' -> catch set operator attempt'))
+    await poolSecondary.setOwner(deployer, { from: multisig, gasPrice: 0 })
+    await poolSecondary.setOperator(addressZero, { from: deployer })
+    await poolSecondary.owner().then((a) => console.log('owner: ' + a))
+    await poolSecondary.operator().then((a) => console.log('operator: ' + a))
+    await poolSecondary.setOwner(multisig, { from: deployer })
+    await poolSecondary.setOperator(poolManager.address, {
+      from: multisig,
+      gasPrice: 0,
+    })
+    await poolSecondary.owner().then((a) => console.log('owner: ' + a))
+    await poolSecondary.operator().then((a) => console.log('operator: ' + a))
 
-    let lpToken = await IERC20.at('0x3A283D9c08E8b55966afb64C515f5143cf907611'); //cvx lp
-    let depositToken = await IERC20.at('0x0bC857f97c0554d1d0D602b56F2EEcE682016fBA'); //cvx lp
-    let badlpToken = await IERC20.at('0x1cEBdB0856dd985fAe9b8fEa2262469360B8a3a6'); //crv lp
-    let gauge = await ICurveGauge.at('0x7E1444BA99dcdFfE8fBdb42C02F0005D14f13BE1'); //cvx lp gauge
-    let sVersion = 3;
+    let lpToken = await IERC20.at('0x3A283D9c08E8b55966afb64C515f5143cf907611') //cvx lp
+    let depositToken = await IERC20.at(
+      '0x0bC857f97c0554d1d0D602b56F2EEcE682016fBA',
+    ) //cvx lp
+    let badlpToken = await IERC20.at(
+      '0x1cEBdB0856dd985fAe9b8fEa2262469360B8a3a6',
+    ) //crv lp
+    let gauge = await ICurveGauge.at(
+      '0x7E1444BA99dcdFfE8fBdb42C02F0005D14f13BE1',
+    ) //cvx lp gauge
+    let sVersion = 3
 
     //shutdown individual pools
-    await lpToken.balanceOf(booster.address).then((a) => console.log('lp on booster: ' + a));
-    await depositToken.totalSupply().then((a) => console.log('deposit token supply: ' + a));
-    await poolManager.shutdownPool(64, { from: multisig, gasPrice: 0 });
-    console.log('shutdown cvx pool');
-    await lpToken.balanceOf(booster.address).then((a) => console.log('lp on booster: ' + a));
-    await depositToken.totalSupply().then((a) => console.log('deposit token supply: ' + a));
+    await lpToken
+      .balanceOf(booster.address)
+      .then((a) => console.log('lp on booster: ' + a))
+    await depositToken
+      .totalSupply()
+      .then((a) => console.log('deposit token supply: ' + a))
+    await poolManager.shutdownPool(64, { from: multisig, gasPrice: 0 })
+    console.log('shutdown cvx pool')
+    await lpToken
+      .balanceOf(booster.address)
+      .then((a) => console.log('lp on booster: ' + a))
+    await depositToken
+      .totalSupply()
+      .then((a) => console.log('deposit token supply: ' + a))
 
-    console.log('shutdown 3pool...');
-    var threepoolLP = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
-    var threepoolDeposit = await IERC20.at('0x30D9410ED1D5DA1F6C8391af5338C93ab8d4035C');
-    await threepoolLP.balanceOf(booster.address).then((a) => console.log('lp on booster: ' + a));
-    await threepoolDeposit.totalSupply().then((a) => console.log('deposit token supply: ' + a));
-    await poolManager.shutdownPool(9, { from: multisig, gasPrice: 0 });
-    console.log('shutdown 3pool pool');
-    await threepoolLP.balanceOf(booster.address).then((a) => console.log('lp on booster: ' + a));
-    await threepoolDeposit.totalSupply().then((a) => console.log('deposit token supply: ' + a));
+    console.log('shutdown 3pool...')
+    var threepoolLP = await IERC20.at(
+      '0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490',
+    )
+    var threepoolDeposit = await IERC20.at(
+      '0x30D9410ED1D5DA1F6C8391af5338C93ab8d4035C',
+    )
+    await threepoolLP
+      .balanceOf(booster.address)
+      .then((a) => console.log('lp on booster: ' + a))
+    await threepoolDeposit
+      .totalSupply()
+      .then((a) => console.log('deposit token supply: ' + a))
+    await poolManager.shutdownPool(9, { from: multisig, gasPrice: 0 })
+    console.log('shutdown 3pool pool')
+    await threepoolLP
+      .balanceOf(booster.address)
+      .then((a) => console.log('lp on booster: ' + a))
+    await threepoolDeposit
+      .totalSupply()
+      .then((a) => console.log('deposit token supply: ' + a))
 
-    console.log('do 3pool again..');
-    await threepoolLP.balanceOf(booster.address).then((a) => console.log('lp on booster: ' + a));
-    await threepoolDeposit.totalSupply().then((a) => console.log('deposit token supply: ' + a));
+    console.log('do 3pool again..')
+    await threepoolLP
+      .balanceOf(booster.address)
+      .then((a) => console.log('lp on booster: ' + a))
+    await threepoolDeposit
+      .totalSupply()
+      .then((a) => console.log('deposit token supply: ' + a))
     await poolManager
       .shutdownPool(9, { from: multisig, gasPrice: 0 })
-      .catch((a) => console.log('already shutdown, revert: ' + a));
-    console.log('shutdown 3pool pool(again)');
-    await threepoolLP.balanceOf(booster.address).then((a) => console.log('lp on booster: ' + a));
-    await threepoolDeposit.totalSupply().then((a) => console.log('deposit token supply: ' + a));
+      .catch((a) => console.log('already shutdown, revert: ' + a))
+    console.log('shutdown 3pool pool(again)')
+    await threepoolLP
+      .balanceOf(booster.address)
+      .then((a) => console.log('lp on booster: ' + a))
+    await threepoolDeposit
+      .totalSupply()
+      .then((a) => console.log('deposit token supply: ' + a))
 
     //re-add pool with fake gauge
-    var fgauge = await FakeGauge.new(lpToken.address);
-    await poolSecondary.setOperator(deployer, { from: multisig, gasPrice: 0 });
+    var fgauge = await FakeGauge.new(lpToken.address)
+    await poolSecondary.setOperator(deployer, { from: multisig, gasPrice: 0 })
     await poolSecondary
       .addPool(lpToken.address, fgauge.address, 3, { from: deployer })
-      .catch((a) => console.log(' revert -> add pool fail, no weight.  ' + a));
+      .catch((a) => console.log(' revert -> add pool fail, no weight.  ' + a))
     await poolSecondary
       .forceAddPool(lpToken.address, fgauge.address, 3, { from: deployer })
-      .catch((a) => console.log(' revert -> force add pool fail, old pool.  ' + a));
+      .catch((a) =>
+        console.log(' revert -> force add pool fail, old pool.  ' + a),
+      )
 
-    let gaugeAdmin = '0x40907540d8a6C65c637785e8f8B742ae6b0b9968';
-    await unlockAccount(gaugeAdmin);
-    var controller = await IGaugeController.at(contractList.curve.gaugeController);
-    await controller.add_gauge(fgauge.address, 0, 1000, { from: gaugeAdmin, gasPrice: 0 });
-    console.log('added to gauge controller');
+    let gaugeAdmin = '0x40907540d8a6C65c637785e8f8B742ae6b0b9968'
+    await unlockAccount(gaugeAdmin)
+    var controller = await IGaugeController.at(
+      contractList.curve.gaugeController,
+    )
+    await controller.add_gauge(fgauge.address, 0, 1000, {
+      from: gaugeAdmin,
+      gasPrice: 0,
+    })
+    console.log('added to gauge controller')
 
-    await poolSecondary.addPool(lpToken.address, fgauge.address, 3, { from: deployer });
-    console.log('added pool');
-    var poolcount = await booster.poolLength();
-    var info = await booster.poolInfo(poolcount - 1);
-    console.log(info);
+    await poolSecondary.addPool(lpToken.address, fgauge.address, 3, {
+      from: deployer,
+    })
+    console.log('added pool')
+    var poolcount = await booster.poolLength()
+    var info = await booster.poolInfo(poolcount - 1)
+    console.log(info)
 
     //get lp tokens
-    var lpholder = '0x7e1444ba99dcdffe8fbdb42c02f0005d14f13be1';
-    await unlockAccount(lpholder);
+    var lpholder = '0x7e1444ba99dcdffe8fbdb42c02f0005d14f13be1'
+    await unlockAccount(lpholder)
     await lpToken.transfer(deployer, web3.utils.toWei('1.0', 'ether'), {
       from: lpholder,
       gasPrice: 0,
-    });
-    await lpToken.balanceOf(deployer).then((a) => console.log('tokens on deployer: ' + a));
+    })
+    await lpToken
+      .balanceOf(deployer)
+      .then((a) => console.log('tokens on deployer: ' + a))
     //deposit in new pool
-    await lpToken.approve(booster.address, web3.utils.toWei('1.0', 'ether'), { from: deployer });
-    await booster.depositAll(poolcount - 1, false, { from: deployer });
-    console.log('deposited');
+    await lpToken.approve(booster.address, web3.utils.toWei('1.0', 'ether'), {
+      from: deployer,
+    })
+    await booster.depositAll(poolcount - 1, false, { from: deployer })
+    console.log('deposited')
 
     //try shutdown on all pools(except for the one we just made)
-    console.log('pool count: ' + (poolcount - 1));
+    console.log('pool count: ' + (poolcount - 1))
     for (var i = 0; i < poolcount - 1; i++) {
-      console.log('shutting down pool ' + i + '...');
-      var info = await booster.poolInfo(i);
+      console.log('shutting down pool ' + i + '...')
+      var info = await booster.poolInfo(i)
       if (info.shutdown) {
-        console.log('   -> already shutdown');
+        console.log('   -> already shutdown')
       } else {
-        await poolSecondary.shutdownPool(i, { from: deployer, gasPrice: 0 });
-        console.log('   -> done');
+        await poolSecondary.shutdownPool(i, { from: deployer, gasPrice: 0 })
+        console.log('   -> done')
       }
     }
 
-    console.log('try shutdown bad pool..');
+    console.log('try shutdown bad pool..')
     //try shutdown but the balance will not match and revert
     await poolSecondary
       .shutdownPool(poolcount - 1, { from: deployer })
-      .catch((a) => console.log('can not shutdown pool, balance mismatch: ' + a));
+      .catch((a) =>
+        console.log('can not shutdown pool, balance mismatch: ' + a),
+      )
 
-    let boosterowner = await BoosterOwner.new(poolSecondary.address);
-    await booster.setOwner(boosterowner.address, { from: multisig, gasPrice: 0 });
-    console.log('insert booster owner: ' + boosterowner.address);
+    let boosterowner = await BoosterOwner.new(poolSecondary.address)
+    await booster.setOwner(boosterowner.address, {
+      from: multisig,
+      gasPrice: 0,
+    })
+    console.log('insert booster owner: ' + boosterowner.address)
 
-    await boosterowner.transferOwnership(deployer, { from: multisig, gasPrice: 0 });
-    await boosterowner.pendingowner().then((a) => console.log('pendingowner: ' + a));
-    await boosterowner.acceptOwnership({ from: deployer });
-    await boosterowner.owner().then((a) => console.log('owner: ' + a));
-    await boosterowner.pendingowner().then((a) => console.log('pendingowner: ' + a));
+    await boosterowner.transferOwnership(deployer, {
+      from: multisig,
+      gasPrice: 0,
+    })
+    await boosterowner
+      .pendingowner()
+      .then((a) => console.log('pendingowner: ' + a))
+    await boosterowner.acceptOwnership({ from: deployer })
+    await boosterowner.owner().then((a) => console.log('owner: ' + a))
+    await boosterowner
+      .pendingowner()
+      .then((a) => console.log('pendingowner: ' + a))
     await boosterowner
       .transferOwnership(multisig, { from: multisig, gasPrice: 0 })
-      .catch((a) => console.log('not owner: ' + a));
-    await boosterowner.transferOwnership(multisig, { from: deployer, gasPrice: 0 });
-    await boosterowner.pendingowner().then((a) => console.log('pendingowner: ' + a));
+      .catch((a) => console.log('not owner: ' + a))
+    await boosterowner.transferOwnership(multisig, {
+      from: deployer,
+      gasPrice: 0,
+    })
+    await boosterowner
+      .pendingowner()
+      .then((a) => console.log('pendingowner: ' + a))
     await boosterowner
       .acceptOwnership({ from: deployer })
-      .catch((a) => console.log('wrong pending owner: ' + a));
-    await boosterowner.acceptOwnership({ from: multisig, gasPrice: 0 });
-    await boosterowner.owner().then((a) => console.log('owner: ' + a));
-    await boosterowner.pendingowner().then((a) => console.log('pendingowner: ' + a));
+      .catch((a) => console.log('wrong pending owner: ' + a))
+    await boosterowner.acceptOwnership({ from: multisig, gasPrice: 0 })
+    await boosterowner.owner().then((a) => console.log('owner: ' + a))
+    await boosterowner
+      .pendingowner()
+      .then((a) => console.log('pendingowner: ' + a))
 
-    await booster.stashFactory().then((a) => console.log('stash factory: ' + a));
+    await booster.stashFactory().then((a) => console.log('stash factory: ' + a))
     await boosterowner
       .setFactories(addressZero, addressZero, addressZero)
-      .catch((a) => console.log('not owner: ' + a));
+      .catch((a) => console.log('not owner: ' + a))
     await boosterowner.setFactories(addressZero, addressZero, addressZero, {
       from: multisig,
       gasPrice: 0,
-    });
-    await booster.stashFactory().then((a) => console.log('stash factory: ' + a));
+    })
+    await booster.stashFactory().then((a) => console.log('stash factory: ' + a))
 
-    await booster.rewardArbitrator().then((a) => console.log('rewardArbitrator: ' + a));
-    await boosterowner.setArbitrator(addressZero).catch((a) => console.log('not owner: ' + a));
-    await boosterowner.setArbitrator(addressZero, { from: multisig, gasPrice: 0 });
-    await booster.rewardArbitrator().then((a) => console.log('rewardArbitrator: ' + a));
+    await booster
+      .rewardArbitrator()
+      .then((a) => console.log('rewardArbitrator: ' + a))
+    await boosterowner
+      .setArbitrator(addressZero)
+      .catch((a) => console.log('not owner: ' + a))
+    await boosterowner.setArbitrator(addressZero, {
+      from: multisig,
+      gasPrice: 0,
+    })
+    await booster
+      .rewardArbitrator()
+      .then((a) => console.log('rewardArbitrator: ' + a))
 
-    await booster.feeManager().then((a) => console.log('feeManager: ' + a));
-    await booster.setFeeManager(boosterowner.address, { from: multisig, gasPrice: 0 });
-    await booster.feeManager().then((a) => console.log('feeManager set to boosterowner: ' + a));
-    await boosterowner.setFeeManager(addressZero).catch((a) => console.log('not owner: ' + a));
-    await boosterowner.setFeeManager(addressZero, { from: multisig, gasPrice: 0 });
-    await booster.feeManager().then((a) => console.log('feeManager: ' + a));
+    await booster.feeManager().then((a) => console.log('feeManager: ' + a))
+    await booster.setFeeManager(boosterowner.address, {
+      from: multisig,
+      gasPrice: 0,
+    })
+    await booster
+      .feeManager()
+      .then((a) => console.log('feeManager set to boosterowner: ' + a))
+    await boosterowner
+      .setFeeManager(addressZero)
+      .catch((a) => console.log('not owner: ' + a))
+    await boosterowner.setFeeManager(addressZero, {
+      from: multisig,
+      gasPrice: 0,
+    })
+    await booster.feeManager().then((a) => console.log('feeManager: ' + a))
 
-    await booster.voteDelegate().then((a) => console.log('voteDelegate: ' + a));
-    let votedel = await VoteDelegateExtension.at(contractList.system.voteExtension);
-    await votedel.revertControl({ from: multisig, gasPrice: 0 });
-    await booster.voteDelegate().then((a) => console.log('voteDelegate: ' + a));
-    await boosterowner.setVoteDelegate(addressZero).catch((a) => console.log('not owner: ' + a));
-    await boosterowner.setVoteDelegate(addressZero, { from: multisig, gasPrice: 0 });
-    await booster.voteDelegate().then((a) => console.log('voteDelegate: ' + a));
+    await booster.voteDelegate().then((a) => console.log('voteDelegate: ' + a))
+    let votedel = await VoteDelegateExtension.at(
+      contractList.system.voteExtension,
+    )
+    await votedel.revertControl({ from: multisig, gasPrice: 0 })
+    await booster.voteDelegate().then((a) => console.log('voteDelegate: ' + a))
+    await boosterowner
+      .setVoteDelegate(addressZero)
+      .catch((a) => console.log('not owner: ' + a))
+    await boosterowner.setVoteDelegate(addressZero, {
+      from: multisig,
+      gasPrice: 0,
+    })
+    await booster.voteDelegate().then((a) => console.log('voteDelegate: ' + a))
 
-    await booster.owner().then((a) => console.log('booster owner: ' + a));
-    await boosterowner.setBoosterOwner({ from: multisig, gasPrice: 0 });
-    await booster.owner().then((a) => console.log('booster owner: ' + a));
-    await booster.setOwner(boosterowner.address, { from: multisig, gasPrice: 0 });
-    await booster.owner().then((a) => console.log('booster owner: ' + a));
-    await boosterowner.sealOwnership({ from: multisig, gasPrice: 0 });
+    await booster.owner().then((a) => console.log('booster owner: ' + a))
+    await boosterowner.setBoosterOwner({ from: multisig, gasPrice: 0 })
+    await booster.owner().then((a) => console.log('booster owner: ' + a))
+    await booster.setOwner(boosterowner.address, {
+      from: multisig,
+      gasPrice: 0,
+    })
+    await booster.owner().then((a) => console.log('booster owner: ' + a))
+    await boosterowner.sealOwnership({ from: multisig, gasPrice: 0 })
     await boosterowner
       .setBoosterOwner({ from: multisig, gasPrice: 0 })
-      .catch((a) => console.log('ownership sealed: ' + a));
+      .catch((a) => console.log('ownership sealed: ' + a))
 
-    let rescue = await ExtraRewardStashTokenRescue.at(contractList.system.rescueStash);
+    let rescue = await ExtraRewardStashTokenRescue.at(
+      contractList.system.rescueStash,
+    )
 
-    await rescue.distributor().then((a) => console.log('distributor: ' + a));
-    await rescue.rewardDeposit().then((a) => console.log('rewardDeposit: ' + a));
-    await rescue.treasuryDeposit().then((a) => console.log('treasuryDeposit: ' + a));
+    await rescue.distributor().then((a) => console.log('distributor: ' + a))
+    await rescue.rewardDeposit().then((a) => console.log('rewardDeposit: ' + a))
+    await rescue
+      .treasuryDeposit()
+      .then((a) => console.log('treasuryDeposit: ' + a))
     await boosterowner
       .setRescueTokenDistribution(addressZero, addressZero, addressZero)
-      .catch((a) => console.log('ownership fail: ' + a));
-    await boosterowner.setRescueTokenDistribution(addressZero, addressZero, addressZero, {
-      from: multisig,
-      gasPrice: 0,
-    });
-    await rescue.distributor().then((a) => console.log('distributor: ' + a));
-    await rescue.rewardDeposit().then((a) => console.log('rewardDeposit: ' + a));
-    await rescue.treasuryDeposit().then((a) => console.log('treasuryDeposit: ' + a));
+      .catch((a) => console.log('ownership fail: ' + a))
+    await boosterowner.setRescueTokenDistribution(
+      addressZero,
+      addressZero,
+      addressZero,
+      {
+        from: multisig,
+        gasPrice: 0,
+      },
+    )
+    await rescue.distributor().then((a) => console.log('distributor: ' + a))
+    await rescue.rewardDeposit().then((a) => console.log('rewardDeposit: ' + a))
+    await rescue
+      .treasuryDeposit()
+      .then((a) => console.log('treasuryDeposit: ' + a))
 
-    let ldo = '0x5a98fcbea516cf06857215779fd812ca3bef1b32';
-    await rescue.activeTokens(ldo).then((a) => console.log('ldo settings: ' + a));
+    let ldo = '0x5a98fcbea516cf06857215779fd812ca3bef1b32'
+    await rescue
+      .activeTokens(ldo)
+      .then((a) => console.log('ldo settings: ' + a))
     await boosterowner
       .setRescueTokenReward(ldo, 2)
-      .catch((a) => console.log('ownership fail: ' + a));
-    await boosterowner.setRescueTokenReward(ldo, 2, { from: multisig, gasPrice: 0 });
-    await rescue.activeTokens(ldo).then((a) => console.log('ldo settings: ' + a));
-
-    let somestash = await ExtraRewardStashV3.at('0xb24Ea588066fBEB9610141d4b779d5D9F80A1180');
-    await somestash.tokenCount().then((a) => console.log('stash token count: ' + a));
-    await boosterowner
-      .setStashExtraReward(somestash.address, contractList.system.cvx)
-      .catch((a) => console.log('ownership fail: ' + a));
-    await boosterowner.setStashExtraReward(somestash.address, contractList.system.cvx, {
+      .catch((a) => console.log('ownership fail: ' + a))
+    await boosterowner.setRescueTokenReward(ldo, 2, {
       from: multisig,
       gasPrice: 0,
-    });
-    await somestash.tokenCount().then((a) => console.log('stash token count: ' + a));
+    })
+    await rescue
+      .activeTokens(ldo)
+      .then((a) => console.log('ldo settings: ' + a))
 
-    await somestash.rewardHook().then((a) => console.log('stash rewardHook: ' + a));
+    let somestash = await ExtraRewardStashV3.at(
+      '0xb24Ea588066fBEB9610141d4b779d5D9F80A1180',
+    )
+    await somestash
+      .tokenCount()
+      .then((a) => console.log('stash token count: ' + a))
+    await boosterowner
+      .setStashExtraReward(somestash.address, contractList.system.cvx)
+      .catch((a) => console.log('ownership fail: ' + a))
+    await boosterowner.setStashExtraReward(
+      somestash.address,
+      contractList.system.cvx,
+      {
+        from: multisig,
+        gasPrice: 0,
+      },
+    )
+    await somestash
+      .tokenCount()
+      .then((a) => console.log('stash token count: ' + a))
+
+    await somestash
+      .rewardHook()
+      .then((a) => console.log('stash rewardHook: ' + a))
     await boosterowner
       .setStashRewardHook(somestash.address, deployer)
-      .catch((a) => console.log('ownership fail: ' + a));
+      .catch((a) => console.log('ownership fail: ' + a))
     await boosterowner.setStashRewardHook(somestash.address, deployer, {
       from: multisig,
       gasPrice: 0,
-    });
-    await somestash.rewardHook().then((a) => console.log('stash rewardHook: ' + a));
+    })
+    await somestash
+      .rewardHook()
+      .then((a) => console.log('stash rewardHook: ' + a))
 
-    let sfactory = await StashFactoryV2.at(contractList.system.sFactory);
-    await sfactory.v3Implementation().then((a) => console.log('stash impl v3: ' + a));
+    let sfactory = await StashFactoryV2.at(contractList.system.sFactory)
+    await sfactory
+      .v3Implementation()
+      .then((a) => console.log('stash impl v3: ' + a))
     await boosterowner
       .setStashFactoryImplementation(addressZero, addressZero, addressZero)
-      .catch((a) => console.log('ownership fail: ' + a));
-    await boosterowner.setStashFactoryImplementation(addressZero, addressZero, addressZero, {
-      from: multisig,
-      gasPrice: 0,
-    });
-    await sfactory.v3Implementation().then((a) => console.log('stash impl v3: ' + a));
+      .catch((a) => console.log('ownership fail: ' + a))
+    await boosterowner.setStashFactoryImplementation(
+      addressZero,
+      addressZero,
+      addressZero,
+      {
+        from: multisig,
+        gasPrice: 0,
+      },
+    )
+    await sfactory
+      .v3Implementation()
+      .then((a) => console.log('stash impl v3: ' + a))
 
-    console.log('try full shutdown');
+    console.log('try full shutdown')
     await boosterowner
       .shutdownSystem({ from: multisig, gasPrice: 0 })
-      .catch((a) => console.log('revert shutdown -> pool mgr not shut down: ' + a));
+      .catch((a) =>
+        console.log('revert shutdown -> pool mgr not shut down: ' + a),
+      )
     await boosterowner
       .queueForceShutdown({ from: multisig, gasPrice: 0 })
-      .catch((a) => console.log('revert queue -> pool mgr not shut down: ' + a));
-    await poolSecondary.shutdownSystem({ from: multisig, gasPrice: 0 });
-    await poolSecondary.isShutdown().then((a) => console.log('is pool mgr shutdown? ' + a));
+      .catch((a) => console.log('revert queue -> pool mgr not shut down: ' + a))
+    await poolSecondary.shutdownSystem({ from: multisig, gasPrice: 0 })
+    await poolSecondary
+      .isShutdown()
+      .then((a) => console.log('is pool mgr shutdown? ' + a))
     await boosterowner
       .shutdownSystem({ from: multisig, gasPrice: 0 })
-      .catch((a) => console.log('revert -> not all poools shutdown: ' + a));
+      .catch((a) => console.log('revert -> not all poools shutdown: ' + a))
     await boosterowner
       .forceShutdownSystem({ from: multisig, gasPrice: 0 })
-      .catch((a) => console.log('revert force -> timer not started: ' + a));
+      .catch((a) => console.log('revert force -> timer not started: ' + a))
 
-    await boosterowner.queueForceShutdown({ from: multisig, gasPrice: 0 });
-    await boosterowner.isForceTimerStarted().then((a) => console.log('is forced started? ' + a));
-    await boosterowner.forceTimestamp().then((a) => console.log('forceTimestamp: ' + a));
-    await advanceTime(day * 10);
+    await boosterowner.queueForceShutdown({ from: multisig, gasPrice: 0 })
+    await boosterowner
+      .isForceTimerStarted()
+      .then((a) => console.log('is forced started? ' + a))
+    await boosterowner
+      .forceTimestamp()
+      .then((a) => console.log('forceTimestamp: ' + a))
+    await advanceTime(day * 10)
     await boosterowner
       .forceShutdownSystem({ from: multisig, gasPrice: 0 })
-      .catch((a) => console.log('revert force -> timer not complete: ' + a));
-    await advanceTime(day * 30);
-    await boosterowner.forceShutdownSystem({ from: multisig, gasPrice: 0 });
-    console.log('shutdown complete');
-  });
-});
+      .catch((a) => console.log('revert force -> timer not complete: ' + a))
+    await advanceTime(day * 30)
+    await boosterowner.forceShutdownSystem({ from: multisig, gasPrice: 0 })
+    console.log('shutdown complete')
+  })
+})
