@@ -134,7 +134,7 @@ contract Booster is Ownable {
     function setFeeInfo() external {
         require(msg.sender==feeManager, "!auth");
 
-        feeDistro = IRegistry(registry).get_address(distributionAddressId);
+        feeDistro = IAddressProvider(registry).get_address(distributionAddressId);
         address _feeToken = IFeeDistro(feeDistro).token();
         if(feeToken != _feeToken){
             //create a new reward contract for the new token
