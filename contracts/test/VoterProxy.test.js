@@ -6,16 +6,16 @@ contract('KaglaVoterProxy', async (accounts) => {
     const VotingEscrow = artifacts.require('MockKaglaVoteEscrow');
     const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
     const votingEscrow = await VotingEscrow.new();
-    const curveVoterProxy = await KaglaVoterProxy.new(votingEscrow.address);
+    const kaglaVoterProxy = await KaglaVoterProxy.new(votingEscrow.address);
 
     return {
       votingEscrow,
-      curveVoterProxy,
+      kaglaVoterProxy,
     };
   };
 
   it('constructor & initial parameters', async () => {
-    const { votingEscrow, curveVoterProxy: instance } = await setup();
+    const { votingEscrow, kaglaVoterProxy: instance } = await setup();
     assert.equal(await instance.operator(), ZERO_ADDRESS, 'Fail to check .operator');
     assert.equal(await instance.depositor(), ZERO_ADDRESS, 'Fail to check .depositor');
     assert.equal(
@@ -41,7 +41,7 @@ contract('KaglaVoterProxy', async (accounts) => {
   });
 
   it('#getName', async () => {
-    const { curveVoterProxy: instance } = await setup();
+    const { kaglaVoterProxy: instance } = await setup();
     assert.equal(await instance.getName(), 'KaglaVoterProxy');
   });
 

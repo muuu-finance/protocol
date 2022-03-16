@@ -100,7 +100,7 @@ contract('BasicDepositWithdraw', async (accounts) => {
     await depositToken.balanceOf(userA).then((a) => console.log('lp balance: ' + a));
     //should not be staked
     await rewardPool.balanceOf(userA).then((a) => console.log('staked balance: ' + a));
-    //should be staked on curve even if not staked in rewards
+    //should be staked on kagla even if not staked in rewards
     await voteproxy.balanceOfPool(threeCrvGauge).then((a) => console.log('gauge balance: ' + a));
 
     //deposit reset of funds
@@ -113,7 +113,7 @@ contract('BasicDepositWithdraw', async (accounts) => {
 
     //should not be staked
     await rewardPool.balanceOf(userA).then((a) => console.log('staked balance: ' + a));
-    //check if staked on curve
+    //check if staked on kagla
     await voteproxy.balanceOfPool(threeCrvGauge).then((a) => console.log('gauge balance: ' + a));
 
     //withdraw a portion

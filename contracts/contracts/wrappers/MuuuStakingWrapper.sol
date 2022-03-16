@@ -17,7 +17,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 //Example of a tokenize a muuu staked position.
 //if used as collateral some modifications will be needed to fit the specific platform
 
-//Based on Kagla.fi's gauge wrapper implementations at https://github.com/curvefi/curve-dao-contracts/tree/master/contracts/gauges/wrappers
+//Based on Kagla.fi's gauge wrapper implementations at https://github.com/kaglafi/kagla-dao-contracts/tree/master/contracts/gauges/wrappers
 contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
     using SafeERC20
     for IERC20;
@@ -44,7 +44,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
     address public constant muuuBooster = address(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
     address public constant crv = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
     address public constant cvx = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
-    address public curveToken;
+    address public kaglaToken;
     address public muuuToken;
     address public muuuPool;
     uint256 public muuuPoolId;
@@ -75,7 +75,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
         ){
     }
 
-    function initialize(address _curveToken, address _muuuToken, address _muuuPool, uint256 _poolId, address _vault)
+    function initialize(address _kaglaToken, address _muuuToken, address _muuuPool, uint256 _poolId, address _vault)
     virtual external {
         require(!isInit,"already init");
         owner = msg.sender;
@@ -85,7 +85,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
         _tokensymbol = string(abi.encodePacked("stk", ERC20(_muuuToken).symbol()));
         isShutdown = false;
         isInit = true;
-        curveToken = _curveToken;
+        kaglaToken = _kaglaToken;
         muuuToken = _muuuToken;
         muuuPool = _muuuPool;
         muuuPoolId = _poolId;
@@ -129,8 +129,8 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
     }
 
     function setApprovals() public {
-        IERC20(curveToken).safeApprove(muuuBooster, 0);
-        IERC20(curveToken).safeApprove(muuuBooster, uint256(-1));
+        IERC20(kaglaToken).safeApprove(muuuBooster, 0);
+        IERC20(kaglaToken).safeApprove(muuuBooster, uint256(-1));
         IERC20(muuuToken).safeApprove(muuuPool, 0);
         IERC20(muuuToken).safeApprove(muuuPool, uint256(-1));
     }
@@ -333,7 +333,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
         _checkpointAndClaim([_account, address(0)]);
     }
 
-    //deposit a curve token
+    //deposit a kagla token
     function deposit(uint256 _amount, address _to) external nonReentrant {
         require(!isShutdown, "shutdown");
 
@@ -341,7 +341,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
 
         if (_amount > 0) {
             _mint(_to, _amount);
-            IERC20(curveToken).safeTransferFrom(msg.sender, address(this), _amount);
+            IERC20(kaglaToken).safeTransferFrom(msg.sender, address(this), _amount);
             IMuuuDeposits(muuuBooster).deposit(muuuPoolId, _amount, true);
         }
 
@@ -377,7 +377,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
         emit Withdrawn(msg.sender, _amount, false);
     }
 
-    //withdraw to underlying curve lp token
+    //withdraw to underlying kagla lp token
     function withdrawAndUnwrap(uint256 _amount) external nonReentrant {
 
         //dont need to call checkpoint since _burn() will
@@ -385,7 +385,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
         if (_amount > 0) {
             _burn(msg.sender, _amount);
             IRewardStaking(muuuPool).withdrawAndUnwrap(_amount, false);
-            IERC20(curveToken).safeTransfer(msg.sender, _amount);
+            IERC20(kaglaToken).safeTransfer(msg.sender, _amount);
         }
 
         //events

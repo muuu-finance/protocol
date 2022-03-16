@@ -17,7 +17,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 //if used as collateral some modifications will be needed to fit the specific platform
 //other considerations: might be worth refactoring to use earned() during checkpoints instead of claiming rewards each time
 
-//Based on Kagla.fi's gauge wrapper implementations at https://github.com/curvefi/curve-dao-contracts/tree/master/contracts/gauges/wrappers
+//Based on Kagla.fi's gauge wrapper implementations at https://github.com/kaglafi/kagla-dao-contracts/tree/master/contracts/gauges/wrappers
 contract MuuuCrvStakingWrapper is ERC20, ReentrancyGuard {
     using SafeERC20
     for IERC20;
@@ -338,7 +338,7 @@ contract MuuuCrvStakingWrapper is ERC20, ReentrancyGuard {
         _checkpointAndClaim([_account, address(0)]);
     }
 
-    //deposit a curve token
+    //deposit a kagla token
     function deposit(uint256 _amount, address _to) external nonReentrant {
         require(!isShutdown, "shutdown");
 

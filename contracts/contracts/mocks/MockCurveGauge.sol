@@ -4,8 +4,8 @@ pragma solidity 0.6.12;
 import "../Interfaces.sol";
 
 // refs
-// - https://curve.readthedocs.io/dao-gauges.html?highlight=reward_tokens#liquiditygaugev2
-// - https://curve.readthedocs.io/dao-gauges.html?highlight=reward_tokens#liquiditygaugereward
+// - https://kagla.readthedocs.io/dao-gauges.html?highlight=reward_tokens#liquiditygaugev2
+// - https://kagla.readthedocs.io/dao-gauges.html?highlight=reward_tokens#liquiditygaugereward
 contract MockKaglaGauge {
   function deposit(uint256 _amount) external {}
 

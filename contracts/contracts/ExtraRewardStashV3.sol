@@ -9,7 +9,7 @@ import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
 
 
-//Stash v3: support for curve gauge reward redirect
+//Stash v3: support for kagla gauge reward redirect
 //v3.1: support for arbitrary token rewards outside of gauge rewards
 //      add reward hook to pull rewards during claims
 //v3.2: move constuctor to init function for proxy creation
@@ -107,7 +107,7 @@ contract ExtraRewardStashV3 {
     }
 
     //register an extra reward token to be handled
-    // (any new incentive that is not directly on curve gauges)
+    // (any new incentive that is not directly on kagla gauges)
     function setExtraReward(address _token) external{
         //owner of booster can set extra rewards
         require(IDeposit(operator).owner() == msg.sender, "!owner");

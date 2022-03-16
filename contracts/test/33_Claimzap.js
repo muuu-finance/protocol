@@ -82,13 +82,13 @@ contract('Test claim zap', async (accounts) => {
     var crvbalance = await crv.balanceOf(userZ);
     console.log('crv balance: ' + crvbalance);
 
-    // let curvepool = await ISwapExchange.at("0x9D0464996170c6B9e75eED71c68B99dDEDf279e8");
-    // await crv.approve(curvepool.address, 0,{from:userA});
-    // await crv.approve(curvepool.address, crvbalance,{from:userA});
+    // let kaglapool = await ISwapExchange.at("0x9D0464996170c6B9e75eED71c68B99dDEDf279e8");
+    // await crv.approve(kaglapool.address, 0,{from:userA});
+    // await crv.approve(kaglapool.address, crvbalance,{from:userA});
     // console.log("approved");
-    // var calldata = curvepool.contract.methods.exchange(0,1,1000,0).encodeABI();
+    // var calldata = kaglapool.contract.methods.exchange(0,1,1000,0).encodeABI();
     // console.log("calldata: " +calldata);
-    // await curvepool.exchange(0,1,crvbalance,0,{from:userA});
+    // await kaglapool.exchange(0,1,crvbalance,0,{from:userA});
     // await crv.balanceOf(userA).then(a=>console.log("wallet crv: " +a));
     // await cvxcrv.balanceOf(userA).then(a=>console.log("wallet cvxcrv: " +a));
 

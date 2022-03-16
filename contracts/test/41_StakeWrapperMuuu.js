@@ -66,15 +66,15 @@ contract('Test stake wrapper', async (accounts) => {
     let starttime = await time.latest();
     let gauge = '0x7E1444BA99dcdFfE8fBdb42C02F0005D14f13BE1';
     await unlockAccount(gauge);
-    let curveLP = await IERC20.at('0x3A283D9c08E8b55966afb64C515f5143cf907611');
+    let kaglaLP = await IERC20.at('0x3A283D9c08E8b55966afb64C515f5143cf907611');
     let muuuLP = await IERC20.at('0x0bC857f97c0554d1d0D602b56F2EEcE682016fBA');
     let muuuRewards = await BaseRewardPool.at('0xb1Fb0BA0676A1fFA83882c7F4805408bA232C1fA');
     let poolId = 64;
 
-    await curveLP.transfer(userA, web3.utils.toWei('10.0', 'ether'), { from: gauge, gasPrice: 0 });
-    await curveLP.transfer(userB, web3.utils.toWei('5.0', 'ether'), { from: gauge, gasPrice: 0 });
-    var userABalance = await curveLP.balanceOf(userA);
-    var userBBalance = await curveLP.balanceOf(userB);
+    await kaglaLP.transfer(userA, web3.utils.toWei('10.0', 'ether'), { from: gauge, gasPrice: 0 });
+    await kaglaLP.transfer(userB, web3.utils.toWei('5.0', 'ether'), { from: gauge, gasPrice: 0 });
+    var userABalance = await kaglaLP.balanceOf(userA);
+    var userBBalance = await kaglaLP.balanceOf(userB);
     console.log('userA: ' + userABalance + ',  userB: ' + userBBalance);
 
     let lib = await MuuuMining.at(contractList.system.cvxMining);
@@ -82,7 +82,7 @@ contract('Test stake wrapper', async (accounts) => {
     await MuuuStakingWrapper.link('MuuuMining', lib.address);
     let staker = await MuuuStakingWrapper.new();
     await staker.initialize(
-      curveLP.address,
+      kaglaLP.address,
       muuuLP.address,
       muuuRewards.address,
       poolId,
@@ -101,9 +101,9 @@ contract('Test stake wrapper', async (accounts) => {
       console.log('rewards ' + i + ': ' + JSON.stringify(rInfo));
     }
 
-    //user A will deposit curve tokens and user B muuu
-    await curveLP.approve(staker.address, userABalance, { from: userA });
-    await curveLP.approve(booster.address, userBBalance, { from: userB });
+    //user A will deposit kagla tokens and user B muuu
+    await kaglaLP.approve(staker.address, userABalance, { from: userA });
+    await kaglaLP.approve(booster.address, userBBalance, { from: userB });
     await muuuLP.approve(staker.address, userBBalance, { from: userB });
     console.log('approved booster and staker');
     await booster.depositAll(poolId, false, { from: userB });

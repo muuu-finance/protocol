@@ -33,7 +33,7 @@ contract('Test stake wrapper', async (accounts) => {
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
-    let curveAave = await IERC20.at('0xFd2a8fA60Abd58Efe3EeE34dd494cD491dC14900');
+    let kaglaAave = await IERC20.at('0xFd2a8fA60Abd58Efe3EeE34dd494cD491dC14900');
     let muuuAave = await IERC20.at('0x23F224C37C3A69A058d86a54D3f561295A93d542');
     let aavepool = 24;
     let aaveswap = await IKaglaAavePool.at('0xDeBF20617708857ebe4F679508E7b7863a8A8EeE');
@@ -70,15 +70,15 @@ contract('Test stake wrapper', async (accounts) => {
     console.log('approved');
     await aaveswap.add_liquidity([daibalance, 0, 0], 0, true, { from: deployer });
     console.log('liq added');
-    var lpbalance = await curveAave.balanceOf(deployer);
+    var lpbalance = await kaglaAave.balanceOf(deployer);
     console.log('lpbalance: ' + lpbalance);
 
     var touserB = lpbalance.div(new BN('3'));
-    await curveAave.transfer(userB, touserB, { from: deployer });
-    lpbalance = await curveAave.balanceOf(deployer);
-    await curveAave.transfer(userA, lpbalance, { from: deployer });
-    var userABalance = await curveAave.balanceOf(userA);
-    var userBBalance = await curveAave.balanceOf(userB);
+    await kaglaAave.transfer(userB, touserB, { from: deployer });
+    lpbalance = await kaglaAave.balanceOf(deployer);
+    await kaglaAave.transfer(userA, lpbalance, { from: deployer });
+    var userABalance = await kaglaAave.balanceOf(userA);
+    var userBBalance = await kaglaAave.balanceOf(userB);
     console.log('userA: ' + userABalance + ',  userB: ' + userBBalance);
 
     let lib = await MuuuMining.at(contractList.system.cvxMining);
@@ -86,7 +86,7 @@ contract('Test stake wrapper', async (accounts) => {
     await MuuuStakingWrapper.link('MuuuMining', lib.address);
     let staker = await MuuuStakingWrapper.new();
     await staker.initialize(
-      curveAave.address,
+      kaglaAave.address,
       muuuAave.address,
       muuuAaveRewards.address,
       aavepool,
@@ -105,9 +105,9 @@ contract('Test stake wrapper', async (accounts) => {
       console.log('rewards ' + i + ': ' + JSON.stringify(rInfo));
     }
 
-    //user A will deposit curve tokens and user B muuu
-    await curveAave.approve(staker.address, userABalance, { from: userA });
-    await curveAave.approve(booster.address, userBBalance, { from: userB });
+    //user A will deposit kagla tokens and user B muuu
+    await kaglaAave.approve(staker.address, userABalance, { from: userA });
+    await kaglaAave.approve(booster.address, userBBalance, { from: userB });
     await muuuAave.approve(staker.address, userBBalance, { from: userB });
     console.log('approved booster and staker');
     await booster.depositAll(aavepool, false, { from: userB });

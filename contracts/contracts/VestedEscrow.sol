@@ -3,7 +3,7 @@ pragma solidity 0.6.12;
 
 /*
 Rewrite of Kagla Finance's Vested Escrow
-found at https://github.com/curvefi/curve-dao-contracts/blob/master/contracts/VestingEscrow.vy
+found at https://github.com/kaglafi/kagla-dao-contracts/blob/master/contracts/VestingEscrow.vy
 
 Changes:
 - no disable methods

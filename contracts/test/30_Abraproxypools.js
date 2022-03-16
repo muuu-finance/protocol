@@ -38,8 +38,8 @@ contract('Test stake wrapper', async (accounts) => {
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
-    let curvetoken = await IERC20.at('0x49849C98ae39Fff122806C06791Fa73784FB3675');
-    let curveswap = await I2KaglaFi.at('0x93054188d876f558f4a66B2EF1d97d16eDf0895B');
+    let kaglatoken = await IERC20.at('0x49849C98ae39Fff122806C06791Fa73784FB3675');
+    let kaglaswap = await I2KaglaFi.at('0x93054188d876f558f4a66B2EF1d97d16eDf0895B');
     let underlying = await IERC20.at('0x2260fac5e5542a773aa44fbcfedf7c193bc2c599');
 
     let userA = accounts[0];
@@ -68,11 +68,11 @@ contract('Test stake wrapper', async (accounts) => {
     var underlyingbalance = await underlying.balanceOf(deployer);
     console.log('swapped for underlying: ' + underlyingbalance);
 
-    await underlying.approve(curveswap.address, underlyingbalance, { from: deployer });
+    await underlying.approve(kaglaswap.address, underlyingbalance, { from: deployer });
     console.log('approved');
-    await curveswap.add_liquidity([0, underlyingbalance], 0, { from: deployer });
+    await kaglaswap.add_liquidity([0, underlyingbalance], 0, { from: deployer });
     console.log('liq added');
-    var lpbalance = await curvetoken.balanceOf(deployer);
+    var lpbalance = await kaglatoken.balanceOf(deployer);
     console.log('lpbalance: ' + lpbalance);
 
     let lib = await MuuuMining.at(contractList.system.cvxMining);
@@ -93,7 +93,7 @@ contract('Test stake wrapper', async (accounts) => {
     console.log('staker token: ' + staker.address);
     await staker.name().then((a) => console.log('name: ' + a));
     await staker.symbol().then((a) => console.log('symbol: ' + a));
-    await staker.curveToken().then((a) => console.log('curve token: ' + a));
+    await staker.kaglaToken().then((a) => console.log('kagla token: ' + a));
     await staker.muuuToken().then((a) => console.log('muuu token: ' + a));
     // await staker.setCauldron("0x806e16ec797c69afa8590A55723CE4CC1b54050E",{from:deployer});
     // var cauldronaddress =  await staker.cauldrons(1)
@@ -105,10 +105,10 @@ contract('Test stake wrapper', async (accounts) => {
       console.log('rewards ' + i + ': ' + JSON.stringify(rInfo));
     }
 
-    var lpbalance = await curvetoken.balanceOf(deployer);
+    var lpbalance = await kaglatoken.balanceOf(deployer);
     console.log('lpbalance: ' + lpbalance);
 
-    await curvetoken.approve(staker.address, lpbalance, { from: deployer });
+    await kaglatoken.approve(staker.address, lpbalance, { from: deployer });
     console.log('approved staker');
 
     var tx = await staker.deposit(lpbalance, userA, { from: deployer });
@@ -258,7 +258,7 @@ contract('Test stake wrapper', async (accounts) => {
     console.log('-----');
     await crv.balanceOf(userA).then((a) => console.log('user a wallet crv: ' + a));
     await cvx.balanceOf(userA).then((a) => console.log('user a wallet cvx: ' + a));
-    await curvetoken.balanceOf(userA).then((a) => console.log('user a wallet lptoken: ' + a));
+    await kaglatoken.balanceOf(userA).then((a) => console.log('user a wallet lptoken: ' + a));
 
     //check whats left on the staker
     console.log('>>> remaining check <<<<');

@@ -62,7 +62,7 @@ contract('Claim vecrv fees', async (accounts) => {
     await time.advanceBlock();
     console.log('advance time...');
 
-    /// ----- burn fees to vecrv claim contracts (curve dao side) ----
+    /// ----- burn fees to vecrv claim contracts (kagla dao side) ----
     let burnerBalance = await threecrv.balanceOf('0xA464e6DCda8AC41e03616F95f4BC98a13b8922Dc');
     console.log('3crv on burner: ' + burnerBalance);
 

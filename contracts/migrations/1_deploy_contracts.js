@@ -36,7 +36,7 @@ module.exports = function (deployer, network, accounts) {
     console.log(`Skip migration in ${network} network`);
     return;
   }
-  // you need to prepare curveVoterProxy beforehand
+  // you need to prepare kaglaVoterProxy beforehand
   // const muuuVoterProxy = "0xE7FDdA2a4Ba464A9F11a54A62B378E79c94d8332";
 
   // tmp: team account
@@ -287,7 +287,7 @@ module.exports = function (deployer, network, accounts) {
         deposit.address,
         cvxCrvRewards.address,
         cvxRewards.address,
-        treasuryAddress, // TODO: replace. this is supposed to be Factory cvxCRV in curve
+        treasuryAddress, // TODO: replace. this is supposed to be Factory cvxCRV in kagla
         cvxLockerV2.address
       );
     })

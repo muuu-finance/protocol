@@ -40,7 +40,7 @@ interface ISwapExchange {
 
 //Claim zap to bundle various reward claims
 //v2:
-// - change exchange to use curve pool
+// - change exchange to use kagla pool
 // - add getReward(address,token) type
 // - add option to lock cvx
 // - add option use all funds in wallet
@@ -54,7 +54,7 @@ contract ClaimZap is Ownable {
     address public crvDeposit;
     address public cvxCrvRewards;
     address public cvxRewards;
-    address public exchange; //Factory cvxCRV in curve
+    address public exchange; //Factory cvxCRV in kagla
     address public locker;  //MuuuLockerV2
 
     enum Options{
@@ -118,7 +118,7 @@ contract ClaimZap is Ownable {
         uint256 crvBalance = IERC20(crv).balanceOf(msg.sender);
         uint256 cvxBalance = IERC20(cvx).balanceOf(msg.sender);
 
-        //claim from main curve LP pools
+        //claim from main kagla LP pools
         for(uint256 i = 0; i < rewardContracts.length; i++){
             IBasicRewards(rewardContracts[i]).getReward(msg.sender,true);
         }

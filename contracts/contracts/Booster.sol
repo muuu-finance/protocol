@@ -449,7 +449,7 @@ contract Booster is Ownable {
         return true;
     }
 
-    //claim fees from curve distro contract, put in lockers' reward contract
+    //claim fees from kagla distro contract, put in lockers' reward contract
     function earmarkFees() external returns(bool){
         //claim fee rewards
         IStaker(staker).claimFees(feeDistro, feeToken);

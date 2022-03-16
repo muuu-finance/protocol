@@ -312,7 +312,7 @@ contract('deploy pool manager layer', async (accounts) => {
 
     let gaugeAdmin = '0x40907540d8a6C65c637785e8f8B742ae6b0b9968';
     await unlockAccount(gaugeAdmin);
-    var controller = await IGaugeController.at(contractList.curve.gaugeController);
+    var controller = await IGaugeController.at(contractList.kagla.gaugeController);
     await controller.add_gauge(fgauge.address, 0, 1000, { from: gaugeAdmin, gasPrice: 0 });
     console.log('added to gauge controller');
 

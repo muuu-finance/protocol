@@ -18,8 +18,8 @@ contract('VestedEscrow Test', async (accounts) => {
   it('should claim unlock over time and claim', async () => {
     //system
     const votingEscrow = await VotingEscrow.new();
-    const curveVoterProxy = await KaglaVoterProxy.new(votingEscrow.address);
-    const cvx = await MuuuToken.new(curveVoterProxy.address);
+    const kaglaVoterProxy = await KaglaVoterProxy.new(votingEscrow.address);
+    const cvx = await MuuuToken.new(kaglaVoterProxy.address);
     let cvxRewards = await cvxRewardPool.new(
       cvx.address,
       ZERO_ADDRESS,

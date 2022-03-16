@@ -20,7 +20,7 @@ contract MuuuStakingWrapperAbra is MuuuStakingWrapper {
 
     constructor() public{}
 
-    function initialize(address _curveToken, address _muuuToken, address _muuuPool, uint256 _poolId, address _vault)
+    function initialize(address _kaglaToken, address _muuuToken, address _muuuPool, uint256 _poolId, address _vault)
     override external {
         require(!isInit,"already init");
         owner = msg.sender;
@@ -29,7 +29,7 @@ contract MuuuStakingWrapperAbra is MuuuStakingWrapper {
         _tokensymbol = string(abi.encodePacked("stk", ERC20(_muuuToken).symbol(), "-abra"));
         isShutdown = false;
         isInit = true;
-        curveToken = _curveToken;
+        kaglaToken = _kaglaToken;
         muuuToken = _muuuToken;
         muuuPool = _muuuPool;
         muuuPoolId = _poolId;

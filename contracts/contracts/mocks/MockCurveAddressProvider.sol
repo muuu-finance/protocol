@@ -3,8 +3,8 @@ pragma solidity 0.6.12;
 
 // Mock for Kagla AddressProvider
 // refs
-// - https://curve.readthedocs.io/registry-address-provider.html
-// - https://github.com/curvefi/curve-pool-registry/blob/master/contracts/AddressProvider.vy
+// - https://kagla.readthedocs.io/registry-address-provider.html
+// - https://github.com/kaglafi/kagla-pool-registry/blob/master/contracts/AddressProvider.vy
 contract MockKaglaAddressProvider {
   address public registry;
   address public feeDistributor;

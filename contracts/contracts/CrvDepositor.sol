@@ -75,7 +75,7 @@ contract CrvDepositor is Ownable {
         }
     }
 
-    //lock curve
+    //lock kagla
     function _lockKagla() internal {
         uint256 crvBalance = IERC20(crv).balanceOf(address(this));
         if(crvBalance > 0){
