@@ -2,6 +2,7 @@ const { time } = require('openzeppelin-test-helpers');
 var fs = require('fs');
 var jsonfile = require('jsonfile');
 var BN = require('big-number');
+const { ZERO_ADDRESS } = require('openzeppelin-test-helpers/src/constants');
 var distroList = jsonfile.readFileSync('./distro.json');
 
 const Booster = artifacts.require('Booster');
@@ -29,7 +30,6 @@ module.exports = function (deployer, network, accounts) {
     console.log(`Skip migration in ${network} network`);
     return;
   }
-  console.log('deployer:', deployer);
   // you need to prepare curveVoterProxy beforehand
   // const convexVoterProxy = "0xE7FDdA2a4Ba464A9F11a54A62B378E79c94d8332";
 
@@ -103,6 +103,7 @@ module.exports = function (deployer, network, accounts) {
   addContract('system', 'treasury', treasuryAddress);
 
   deployer
+    // ========================== Preparation start ==========================
     .deploy(MintableERC20, 'crv', 'CRV', 18)
     .then(function (instance) {
       crv = instance;
@@ -130,12 +131,19 @@ module.exports = function (deployer, network, accounts) {
       addContract('mocks', 'mockVotingEscrow', mockVotingEscrow.address);
     })
     .then(function () {
-      return deployer.deploy(CurveVoterProxy, mockVotingEscrow.address);
+      return deployer.deploy(
+        CurveVoterProxy,
+        crv.address,
+        mockCurveVoteEscrow.address,
+        ZERO_ADDRESS, // TODO:
+        ZERO_ADDRESS // TODO:
+      );
     })
     .then(function (instance) {
       voter = instance;
       addContract('system', 'voteProxy', voter.address);
     })
+    // ========================== Preparation end ==========================
     .then(function () {
       return deployer.deploy(ConvexToken, voter.address);
     })
@@ -144,7 +152,7 @@ module.exports = function (deployer, network, accounts) {
       addContract('system', 'cvx', cvx.address);
     })
     .then(function () {
-      return deployer.deploy(Booster, voter.address, cvx.address);
+      return deployer.deploy(Booster, voter.address, cvx.address, crv.address);
     })
     .then(function (instance) {
       booster = instance;
@@ -154,7 +162,7 @@ module.exports = function (deployer, network, accounts) {
     .then(function (currentOwner) {
       //if develop, change current owner to current deployer
       if (currentOwner != admin) {
-        return voter.setOwner(admin, { from: currentOwner });
+        return voter.transferOwnership(admin, { from: currentOwner });
       }
     })
     .then(function () {
@@ -186,7 +194,13 @@ module.exports = function (deployer, network, accounts) {
     .then(function (instance) {
       cvxCrv = instance;
       addContract('system', 'cvxCrv', cvxCrv.address);
-      return deployer.deploy(CrvDepositor, voter.address, cvxCrv.address);
+      return deployer.deploy(
+        CrvDepositor,
+        voter.address,
+        cvxCrv.address,
+        crv.address,
+        mockCurveVoteEscrow.address
+      );
     })
     .then(function (instance) {
       deposit = instance;
