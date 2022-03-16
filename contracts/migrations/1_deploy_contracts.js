@@ -132,7 +132,7 @@ module.exports = function (deployer, network, accounts) {
     })
     .then(function (instance) {
       threeCrv = instance;
-      addContract('mocks', 'DAI', threeCrv.address);
+      addContract('mocks', '3Crv', threeCrv.address);
     })
     .then(function () {
       return deployer.deploy(MockVotingEscrow);
@@ -142,7 +142,7 @@ module.exports = function (deployer, network, accounts) {
       addContract('mocks', 'mockVotingEscrow', mockVotingEscrow.address);
     })
     .then(function () {
-      return deployer.deploy(MockRegistry);
+      return deployer.deploy(MockRegistry, threeCrv.address);
     })
     .then(function (instance) {
       mockRegistry = instance;
@@ -288,7 +288,7 @@ module.exports = function (deployer, network, accounts) {
       return booster.setRewardContracts(cvxCrvRewards.address, cvxRewards.address);
     })
     .then(function () {
-      return deployer.deploy(PoolManager, booster.address);
+      return deployer.deploy(PoolManager, booster.address, mockAddressProvider.address);
     })
     .then(function (instance) {
       pools = instance;
@@ -403,12 +403,15 @@ module.exports = function (deployer, network, accounts) {
     })
 
     //Create convex pools
-    // TODO:
-    // .then(function() {
-    // 	poolNames.push("3pool");
-    // 	console.log("adding pool " +poolNames[poolNames.length-1]);
-    // 	return pools.addPool("0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7"/** 3Pool address */,"0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A"/** 3Pool Gauge address */,0)
-    // })
+    .then(function() {
+      poolNames.push("3pool");
+      console.log("adding pool " +poolNames[poolNames.length-1]);
+      return pools.addPool( // TODO: remove Curve address, use test or mock address
+        "0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7"/** 3Pool address */,
+        "0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A"/** 3Pool Gauge address */,
+        0
+      )
+    })
 
     .then(function () {
       return booster.poolLength();
