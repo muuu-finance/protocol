@@ -56,10 +56,10 @@ contract('Test masterchef rewards setup', async (accounts) => {
     let oldchefAdmin = '0x9a8541Ddf3a932a9A922B607e9CF7301f1d47bD1';
     let sushi = await IERC20.at('0x6B3595068778DD592e39A122f4f5a5cF09C90fE2');
 
-    let dummyCvx = await ChefToken.at(contractList.system.chefCvxToken);
-    console.log('dummyCvx: ' + dummyCvx.address);
-    let dummyCvxCrv = await ChefToken.at(contractList.system.chefcvxCrvToken);
-    console.log('dummyCvxCrv: ' + dummyCvxCrv.address);
+    let dummyMuuu = await ChefToken.at(contractList.system.chefMuuuToken);
+    console.log('dummyMuuu: ' + dummyMuuu.address);
+    let dummyMuuuCrv = await ChefToken.at(contractList.system.chefcvxCrvToken);
+    console.log('dummyMuuuCrv: ' + dummyMuuuCrv.address);
 
     //set points from v1 to v2
     await oldchef.set(oldchefPid, 50000, false, { from: oldchefAdmin, gasPrice: 0 });
@@ -157,9 +157,9 @@ contract('Test masterchef rewards setup', async (accounts) => {
     console.log('cvx for init: ' + cvxbalance);
 
     //add slot slot for dummy token on muuu master chef
-    // await chef.add(8000000000,dummyCvx.address,addressZero,true,{from:multisig,gasPrice:0});
+    // await chef.add(8000000000,dummyMuuu.address,addressZero,true,{from:multisig,gasPrice:0});
     // console.log("add slot to muuu chef");
-    // await chef.add(12000000000,dummyCvxCrv.address,addressZero,true,{from:multisig,gasPrice:0});
+    // await chef.add(12000000000,dummyMuuuCrv.address,addressZero,true,{from:multisig,gasPrice:0});
     // console.log("add slot to muuu chef");
 
     //create rewarder for cvx/eth
@@ -183,21 +183,21 @@ contract('Test masterchef rewards setup', async (accounts) => {
     await sushiChef.rewarder(2).then((a) => console.log('rewarder 2 on sushi pool: ' + a));
 
     //call init(dummy.address)
-    var dummybal = await dummyCvx.balanceOf(deployer);
-    await dummyCvx.approve(rewardercvx.address, dummybal, { from: deployer });
-    console.log('approve dummyCvx for ' + dummybal);
-    var dummybal = await dummyCvxCrv.balanceOf(deployer);
-    await dummyCvxCrv.approve(rewardercvxcrv.address, dummybal, { from: deployer });
-    console.log('approve dummyCvx for ' + dummybal);
+    var dummybal = await dummyMuuu.balanceOf(deployer);
+    await dummyMuuu.approve(rewardercvx.address, dummybal, { from: deployer });
+    console.log('approve dummyMuuu for ' + dummybal);
+    var dummybal = await dummyMuuuCrv.balanceOf(deployer);
+    await dummyMuuuCrv.approve(rewardercvxcrv.address, dummybal, { from: deployer });
+    console.log('approve dummyMuuu for ' + dummybal);
 
     var cvxbalance = await cvx.balanceOf(deployer);
     cvxbalance = cvxbalance.div(new BN('2'));
     await cvx.transfer(rewardercvx.address, cvxbalance, { from: deployer });
     await cvx.transfer(rewardercvxcrv.address, cvxbalance, { from: deployer });
     console.log('send cvx to rewardercvx: ' + cvxbalance);
-    await rewardercvx.init(dummyCvx.address, { from: deployer });
+    await rewardercvx.init(dummyMuuu.address, { from: deployer });
     console.log('init rewardercvx');
-    await rewardercvxcrv.init(dummyCvxCrv.address, { from: deployer });
+    await rewardercvxcrv.init(dummyMuuuCrv.address, { from: deployer });
     console.log('init rewardercvxcrv');
   });
 });

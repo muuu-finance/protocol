@@ -4,9 +4,9 @@ pragma experimental ABIEncoderV2;
 
 import "../interfaces/IRewardStaking.sol";
 import "../interfaces/IMuuuDeposits.sol";
-import "../interfaces/CvxMining.sol";
+import "../interfaces/MuuuMining.sol";
 import "../interfaces/IRariToken.sol";
-import "./CvxCrvStakingWrapper.sol";
+import "./MuuuCrvStakingWrapper.sol";
 import '@openzeppelin/contracts/math/SafeMath.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/utils/Address.sol';
@@ -18,7 +18,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 //Tokenized cvxCrv staked position for Rari's Fuse platform
 //Based on Curve.fi's gauge wrapper implementations at https://github.com/curvefi/curve-dao-contracts/tree/master/contracts/gauges/wrappers
-contract CvxCrvRari is CvxCrvStakingWrapper {
+contract MuuuCrvRari is MuuuCrvStakingWrapper {
     using SafeERC20
     for IERC20;
     using Address
@@ -34,8 +34,8 @@ contract CvxCrvRari is CvxCrvStakingWrapper {
         owner = address(0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB); //default to muuu multisig
         emit OwnershipTransferred(address(0), owner);
 
-        _tokenname = "Staked CvxCrv Rari";
-        _tokensymbol = "stkCvxCrv-rari";
+        _tokenname = "Staked MuuuCrv Rari";
+        _tokensymbol = "stkMuuuCrv-rari";
         isShutdown = false;
         isInit = true;
         collateralVault = _vault;

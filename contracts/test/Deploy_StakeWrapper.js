@@ -14,7 +14,7 @@ const IERC20 = artifacts.require('IERC20');
 const ICurveAavePool = artifacts.require('ICurveAavePool');
 const IExchange = artifacts.require('IExchange');
 const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01');
-const CvxMining = artifacts.require('CvxMining');
+const MuuuMining = artifacts.require('MuuuMining');
 const MuuuStakingWrapperAbra = artifacts.require('MuuuStakingWrapperAbra');
 const ProxyFactory = artifacts.require('ProxyFactory');
 
@@ -43,9 +43,9 @@ contract('Deploy stake wrapper', async (accounts) => {
     let dai = await IERC20.at('0x6B175474E89094C44Da98b954EedeAC495271d0F');
 
     //master deploy
-    // let lib = await CvxMining.at(contractList.system.cvxMining);
+    // let lib = await MuuuMining.at(contractList.system.cvxMining);
     // console.log("mining lib at: " +lib.address);
-    // await MuuuStakingWrapperAbra.link("CvxMining", lib.address);
+    // await MuuuStakingWrapperAbra.link("MuuuMining", lib.address);
 
     // let master = await MuuuStakingWrapperAbra.new();
     // console.log("master abra wrapper: " +master.address);

@@ -29,7 +29,7 @@ const MockRegistry = artifacts.require('MockCurveRegistry');
 const MockFeeDistributor = artifacts.require('MockCurveFeeDistributor');
 const MockAddressProvider = artifacts.require('MockCurveAddressProvider');
 
-const CvxLockerV2 = artifacts.require('CvxLockerV2');
+const MuuuLockerV2 = artifacts.require('MuuuLockerV2');
 
 module.exports = function (deployer, network, accounts) {
   if (network === 'skipMigration') {
@@ -271,7 +271,7 @@ module.exports = function (deployer, network, accounts) {
     // added MUUU LockerV2 ref: /contracts/test/UI_7_DeployLockerV2.js
     .then(() => {
       // TODO: constructor
-      return deployer.deploy(CvxLockerV2);
+      return deployer.deploy(MuuuLockerV2);
     })
     .then((instance) => {
       cvxLockerV2 = instance;

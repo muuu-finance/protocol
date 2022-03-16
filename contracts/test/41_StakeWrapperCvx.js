@@ -14,7 +14,7 @@ const IERC20 = artifacts.require('IERC20');
 const ICurveAavePool = artifacts.require('ICurveAavePool');
 const IExchange = artifacts.require('IExchange');
 const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01');
-const CvxMining = artifacts.require('CvxMining');
+const MuuuMining = artifacts.require('MuuuMining');
 
 const unlockAccount = async (address) => {
   return new Promise((resolve, reject) => {
@@ -77,9 +77,9 @@ contract('Test stake wrapper', async (accounts) => {
     var userBBalance = await curveLP.balanceOf(userB);
     console.log('userA: ' + userABalance + ',  userB: ' + userBBalance);
 
-    let lib = await CvxMining.at(contractList.system.cvxMining);
+    let lib = await MuuuMining.at(contractList.system.cvxMining);
     console.log('mining lib at: ' + lib.address);
-    await MuuuStakingWrapper.link('CvxMining', lib.address);
+    await MuuuStakingWrapper.link('MuuuMining', lib.address);
     let staker = await MuuuStakingWrapper.new();
     await staker.initialize(
       curveLP.address,

@@ -259,9 +259,9 @@ contract('RewardsTest', async (accounts) => {
 
     //withdraw from cvx
     await cvx.balanceOf(userB).then((a) => console.log('userB cvx on wallet: ' + a));
-    var stakedCvx = await cvxRewardsContract.balanceOf(userB);
-    console.log('staked cvx: ' + stakedCvx);
-    await cvxRewardsContract.withdraw(stakedCvx, true, { from: userB });
+    var stakedMuuu = await cvxRewardsContract.balanceOf(userB);
+    console.log('staked cvx: ' + stakedMuuu);
+    await cvxRewardsContract.withdraw(stakedMuuu, true, { from: userB });
     console.log('withdraw()');
     await cvx.balanceOf(userB).then((a) => console.log('userB cvx on wallet: ' + a));
     await cvxRewardsContract.balanceOf(userB).then((a) => console.log('userB staked cvx: ' + a));

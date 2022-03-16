@@ -26,7 +26,7 @@ V2:
 - balanceAtEpoch and supplyAtEpoch return proper values for future epochs
 - do not allow relocking directly to a new address
 */
-contract CvxLockerV2 is ReentrancyGuard, Ownable {
+contract MuuuLockerV2 is ReentrancyGuard, Ownable {
 
     using BoringMath for uint256;
     using BoringMath224 for uint224;

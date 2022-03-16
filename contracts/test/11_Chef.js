@@ -76,8 +76,8 @@ contract('Test masterchef rewards', async (accounts) => {
       .then((a) => console.log('user b cvxcrvcrvv: ' + JSON.stringify(a)));
     await time.increase(60);
     await time.advanceBlock();
-    await chef.pendingCvx(1, userA).then((a) => console.log('user a pending: ' + a));
-    await chef.pendingCvx(0, userB).then((a) => console.log('user b pending: ' + a));
+    await chef.pendingMuuu(1, userA).then((a) => console.log('user a pending: ' + a));
+    await chef.pendingMuuu(0, userB).then((a) => console.log('user b pending: ' + a));
 
     //advance time
     await time.increase(86400);
@@ -86,8 +86,8 @@ contract('Test masterchef rewards', async (accounts) => {
     await time.advanceBlock();
     console.log('advance time...');
 
-    await chef.pendingCvx(1, userA).then((a) => console.log('user a pending: ' + a));
-    await chef.pendingCvx(0, userB).then((a) => console.log('user b pending: ' + a));
+    await chef.pendingMuuu(1, userA).then((a) => console.log('user a pending: ' + a));
+    await chef.pendingMuuu(0, userB).then((a) => console.log('user b pending: ' + a));
 
     //advance time
     await time.increase(86400);
@@ -96,8 +96,8 @@ contract('Test masterchef rewards', async (accounts) => {
     await time.advanceBlock();
     console.log('advance time...');
 
-    await chef.pendingCvx(1, userA).then((a) => console.log('user a pending: ' + a));
-    await chef.pendingCvx(0, userB).then((a) => console.log('user b pending: ' + a));
+    await chef.pendingMuuu(1, userA).then((a) => console.log('user a pending: ' + a));
+    await chef.pendingMuuu(0, userB).then((a) => console.log('user b pending: ' + a));
 
     //advance time
     await time.increase(86400);
@@ -106,13 +106,13 @@ contract('Test masterchef rewards', async (accounts) => {
     await time.advanceBlock();
     console.log('advance time...');
 
-    await chef.pendingCvx(1, userA).then((a) => console.log('user a pending: ' + a));
-    await chef.pendingCvx(0, userB).then((a) => console.log('user b pending: ' + a));
+    await chef.pendingMuuu(1, userA).then((a) => console.log('user a pending: ' + a));
+    await chef.pendingMuuu(0, userB).then((a) => console.log('user b pending: ' + a));
 
     await chef.claim(1, userA);
     await chef.withdraw(0, cvxCrvlpBal, { from: userB });
-    await chef.pendingCvx(1, userA).then((a) => console.log('user a pending: ' + a));
-    await chef.pendingCvx(0, userB).then((a) => console.log('user b pending: ' + a));
+    await chef.pendingMuuu(1, userA).then((a) => console.log('user a pending: ' + a));
+    await chef.pendingMuuu(0, userB).then((a) => console.log('user b pending: ' + a));
     await chef.userInfo(1, userA).then((a) => console.log('user a cvxeth: ' + JSON.stringify(a)));
     await chef
       .userInfo(0, userB)

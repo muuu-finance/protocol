@@ -16,7 +16,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 // MUUU locked in this contract will be entitled to voting rights for the Muuu Finance platform
 // Based on EPS Staking contract for http://ellipsis.finance/
 // Based on SNX MultiRewards by iamdefinitelyahuman - https://github.com/iamdefinitelyahuman/multi-rewards
-contract CvxLocker is ReentrancyGuard, Ownable {
+contract MuuuLocker is ReentrancyGuard, Ownable {
 
     using BoringMath for uint256;
     using BoringMath224 for uint224;

@@ -23,8 +23,8 @@ const RewardHook = artifacts.require('RewardHook');
 const ExtraRewardStashTokenRescue = artifacts.require('ExtraRewardStashTokenRescue');
 const RescueToken = artifacts.require('RescueToken');
 const RewardDeposit = artifacts.require('RewardDeposit');
-const CvxLocker = artifacts.require('CvxLocker');
-const vlCvxExtraRewardDistribution = artifacts.require('vlCvxExtraRewardDistribution');
+const MuuuLocker = artifacts.require('MuuuLocker');
+const vlMuuuExtraRewardDistribution = artifacts.require('vlMuuuExtraRewardDistribution');
 
 contract('Extra rewards for vlcvx', async (accounts) => {
   it('should add and claim extra rewards', async () => {
@@ -34,7 +34,7 @@ contract('Extra rewards for vlcvx', async (accounts) => {
 
     //system
     let booster = await Booster.at(contractList.system.booster);
-    let locker = await CvxLocker.at(contractList.system.locker);
+    let locker = await MuuuLocker.at(contractList.system.locker);
     let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy);
     let cvx = await MuuuToken.at(contractList.system.cvx);
     let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
@@ -87,7 +87,7 @@ contract('Extra rewards for vlcvx', async (accounts) => {
     console.log('swapped for spell: ' + spellbalance);
 
     //deploy
-    let rewardDistro = await vlCvxExtraRewardDistribution.new();
+    let rewardDistro = await vlMuuuExtraRewardDistribution.new();
     console.log('distro at: ' + rewardDistro.address);
 
     //set starting rewards

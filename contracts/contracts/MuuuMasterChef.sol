@@ -22,10 +22,10 @@ contract MuuuMasterChef is Ownable {
         // We do some fancy math here. Basically, any point in time, the amount of MUUUs
         // entitled to a user but is pending to be distributed is:
         //
-        //   pending reward = (user.amount * pool.accCvxPerShare) - user.rewardDebt
+        //   pending reward = (user.amount * pool.accMuuuPerShare) - user.rewardDebt
         //
         // Whenever a user deposits or withdraws LP tokens to a pool. Here's what happens:
-        //   1. The pool's `accCvxPerShare` (and `lastRewardBlock`) gets updated.
+        //   1. The pool's `accMuuuPerShare` (and `lastRewardBlock`) gets updated.
         //   2. User receives the pending reward sent to his/her address.
         //   3. User's `amount` gets updated.
         //   4. User's `rewardDebt` gets updated.
@@ -36,7 +36,7 @@ contract MuuuMasterChef is Ownable {
         IERC20 lpToken; // Address of LP token contract.
         uint256 allocPoint; // How many allocation points assigned to this pool. MUUU to distribute per block.
         uint256 lastRewardBlock; // Last block number that MUUUs distribution occurs.
-        uint256 accCvxPerShare; // Accumulated MUUUs per share, times 1e12. See below.
+        uint256 accMuuuPerShare; // Accumulated MUUUs per share, times 1e12. See below.
         IRewarder rewarder;
     }
 
@@ -104,7 +104,7 @@ contract MuuuMasterChef is Ownable {
                 lpToken: _lpToken,
                 allocPoint: _allocPoint,
                 lastRewardBlock: lastRewardBlock,
-                accCvxPerShare: 0,
+                accMuuuPerShare: 0,
                 rewarder: _rewarder
             })
         );
@@ -149,14 +149,14 @@ contract MuuuMasterChef is Ownable {
     }
 
     // View function to see pending MUUUs on frontend.
-    function pendingCvx(uint256 _pid, address _user)
+    function pendingMuuu(uint256 _pid, address _user)
         external
         view
         returns (uint256)
     {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][_user];
-        uint256 accCvxPerShare = pool.accCvxPerShare;
+        uint256 accMuuuPerShare = pool.accMuuuPerShare;
         uint256 lpSupply = pool.lpToken.balanceOf(address(this));
         if (block.number > pool.lastRewardBlock && lpSupply != 0) {
             uint256 multiplier = getMultiplier(
@@ -167,11 +167,11 @@ contract MuuuMasterChef is Ownable {
                 .mul(rewardPerBlock)
                 .mul(pool.allocPoint)
                 .div(totalAllocPoint);
-            accCvxPerShare = accCvxPerShare.add(
+            accMuuuPerShare = accMuuuPerShare.add(
                 cvxReward.mul(1e12).div(lpSupply)
             );
         }
-        return user.amount.mul(accCvxPerShare).div(1e12).sub(user.rewardDebt);
+        return user.amount.mul(accMuuuPerShare).div(1e12).sub(user.rewardDebt);
     }
 
     // Update reward vairables for all pools. Be careful of gas spending!
@@ -199,7 +199,7 @@ contract MuuuMasterChef is Ownable {
             .mul(pool.allocPoint)
             .div(totalAllocPoint);
         //cvx.mint(address(this), cvxReward);
-        pool.accCvxPerShare = pool.accCvxPerShare.add(
+        pool.accMuuuPerShare = pool.accMuuuPerShare.add(
             cvxReward.mul(1e12).div(lpSupply)
         );
         pool.lastRewardBlock = block.number;
@@ -213,7 +213,7 @@ contract MuuuMasterChef is Ownable {
         if (user.amount > 0) {
             uint256 pending = user
                 .amount
-                .mul(pool.accCvxPerShare)
+                .mul(pool.accMuuuPerShare)
                 .div(1e12)
                 .sub(user.rewardDebt);
             safeRewardTransfer(msg.sender, pending);
@@ -224,7 +224,7 @@ contract MuuuMasterChef is Ownable {
             _amount
         );
         user.amount = user.amount.add(_amount);
-        user.rewardDebt = user.amount.mul(pool.accCvxPerShare).div(1e12);
+        user.rewardDebt = user.amount.mul(pool.accMuuuPerShare).div(1e12);
 
         //extra rewards
         IRewarder _rewarder = pool.rewarder;
@@ -241,12 +241,12 @@ contract MuuuMasterChef is Ownable {
         UserInfo storage user = userInfo[_pid][msg.sender];
         require(user.amount >= _amount, "withdraw: not good");
         updatePool(_pid);
-        uint256 pending = user.amount.mul(pool.accCvxPerShare).div(1e12).sub(
+        uint256 pending = user.amount.mul(pool.accMuuuPerShare).div(1e12).sub(
             user.rewardDebt
         );
         safeRewardTransfer(msg.sender, pending);
         user.amount = user.amount.sub(_amount);
-        user.rewardDebt = user.amount.mul(pool.accCvxPerShare).div(1e12);
+        user.rewardDebt = user.amount.mul(pool.accMuuuPerShare).div(1e12);
         pool.lpToken.safeTransfer(address(msg.sender), _amount);
 
         //extra rewards
@@ -264,11 +264,11 @@ contract MuuuMasterChef is Ownable {
         UserInfo storage user = userInfo[_pid][_account];
 
         updatePool(_pid);
-        uint256 pending = user.amount.mul(pool.accCvxPerShare).div(1e12).sub(
+        uint256 pending = user.amount.mul(pool.accMuuuPerShare).div(1e12).sub(
             user.rewardDebt
         );
         safeRewardTransfer(_account, pending);
-        user.rewardDebt = user.amount.mul(pool.accCvxPerShare).div(1e12);
+        user.rewardDebt = user.amount.mul(pool.accMuuuPerShare).div(1e12);
 
         //extra rewards
         IRewarder _rewarder = pool.rewarder;

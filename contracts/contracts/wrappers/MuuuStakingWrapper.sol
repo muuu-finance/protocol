@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import "../interfaces/IRewardStaking.sol";
 import "../interfaces/IMuuuDeposits.sol";
-import "../interfaces/CvxMining.sol";
+import "../interfaces/MuuuMining.sol";
 import '@openzeppelin/contracts/math/SafeMath.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/utils/Address.sol';
@@ -71,7 +71,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
     constructor() public
         ERC20(
             "StakedMuuuToken",
-            "stkCvx"
+            "stkMuuu"
         ){
     }
 
@@ -321,7 +321,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
                     I = I + IRewardStaking(reward.reward_pool).earned(address(this)).mul(1e20).div(supply);
                 }
                 newlyClaimable = _getDepositedBalance(_account).mul(I.sub(reward.reward_integral_for[_account])).div(1e20);
-                claimable[MUUU_INDEX].amount = CvxMining.ConvertCrvToCvx(newlyClaimable);
+                claimable[MUUU_INDEX].amount = MuuuMining.ConvertCrvToMuuu(newlyClaimable);
                 claimable[MUUU_INDEX].token = cvx;
             }
         }

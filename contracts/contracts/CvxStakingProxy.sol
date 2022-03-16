@@ -19,7 +19,7 @@ interface IMuuuRewards {
     function stakeAll() external;
 }
 
-interface ICvxLocker {
+interface IMuuuLocker {
     function notifyRewardAmount(address _rewardsToken, uint256 reward) external;
 }
 
@@ -30,7 +30,7 @@ interface ICvxLocker {
 // send rewards back to owner(cvx locker)
 // register token types that can be distributed
 
-contract CvxStakingProxy {
+contract MuuuStakingProxy {
     using SafeERC20
     for IERC20;
     using Address
@@ -148,7 +148,7 @@ contract CvxStakingProxy {
             IERC20(cvxCrv).safeTransfer(msg.sender,incentiveAmount);
 
             //update rewards
-            ICvxLocker(rewards).notifyRewardAmount(cvxCrv, cvxCrvBal);
+            IMuuuLocker(rewards).notifyRewardAmount(cvxCrv, cvxCrvBal);
 
             emit RewardsDistributed(cvxCrv, cvxCrvBal);
         }
@@ -172,7 +172,7 @@ contract CvxStakingProxy {
             _token.safeApprove(rewards, uint256(-1));
 
             //update rewards
-            ICvxLocker(rewards).notifyRewardAmount(address(_token), bal);
+            IMuuuLocker(rewards).notifyRewardAmount(address(_token), bal);
 
             emit RewardsDistributed(address(_token), bal);
         }

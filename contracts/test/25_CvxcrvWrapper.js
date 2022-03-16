@@ -9,13 +9,13 @@ const MuuuToken = artifacts.require('MuuuToken');
 const cvxCrvToken = artifacts.require('cvxCrvToken');
 const CurveVoterProxy = artifacts.require('CurveVoterProxy');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
-const CvxCrvStakingWrapper = artifacts.require('CvxCrvStakingWrapper');
+const MuuuCrvStakingWrapper = artifacts.require('MuuuCrvStakingWrapper');
 const IERC20 = artifacts.require('IERC20');
 const ICurveAavePool = artifacts.require('ICurveAavePool');
 const IExchange = artifacts.require('IExchange');
 const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01');
-const CvxMining = artifacts.require('CvxMining');
-const CvxCrvRari = artifacts.require('CvxCrvRari');
+const MuuuMining = artifacts.require('MuuuMining');
+const MuuuCrvRari = artifacts.require('MuuuCrvRari');
 
 contract('Test cvxcrv stake wrapper', async (accounts) => {
   it('should deposit cvxcrv and earn rewards while being transferable', async () => {
@@ -77,12 +77,12 @@ contract('Test cvxcrv stake wrapper', async (accounts) => {
     var userBBalance = await crv.balanceOf(userB);
     console.log('userA: ' + userABalance + ',  userB: ' + userBBalance);
 
-    let lib = await CvxMining.new();
+    let lib = await MuuuMining.new();
     console.log('mining lib at: ' + lib.address);
-    await CvxCrvStakingWrapper.link('CvxMining', lib.address);
-    let staker = await CvxCrvStakingWrapper.new({ from: deployer });
+    await MuuuCrvStakingWrapper.link('MuuuMining', lib.address);
+    let staker = await MuuuCrvStakingWrapper.new({ from: deployer });
     await staker.initialize(addressZero, { from: deployer });
-    // let staker = await CvxCrvRari.new(addressZero,{from:deployer});
+    // let staker = await MuuuCrvRari.new(addressZero,{from:deployer});
     console.log('staker token: ' + staker.address);
 
     await staker.name().then((a) => console.log('name: ' + a));

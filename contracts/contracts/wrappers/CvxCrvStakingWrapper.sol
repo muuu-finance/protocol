@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import "../interfaces/IRewardStaking.sol";
 import "../interfaces/IMuuuDeposits.sol";
-import "../interfaces/CvxMining.sol";
+import "../interfaces/MuuuMining.sol";
 import '@openzeppelin/contracts/math/SafeMath.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
@@ -18,7 +18,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 //other considerations: might be worth refactoring to use earned() during checkpoints instead of claiming rewards each time
 
 //Based on Curve.fi's gauge wrapper implementations at https://github.com/curvefi/curve-dao-contracts/tree/master/contracts/gauges/wrappers
-contract CvxCrvStakingWrapper is ERC20, ReentrancyGuard {
+contract MuuuCrvStakingWrapper is ERC20, ReentrancyGuard {
     using SafeERC20
     for IERC20;
     using SafeMath
@@ -71,8 +71,8 @@ contract CvxCrvStakingWrapper is ERC20, ReentrancyGuard {
 
     constructor() public
         ERC20(
-            "Staked CvxCrv",
-            "stkCvxCrv"
+            "Staked MuuuCrv",
+            "stkMuuuCrv"
         ){
     }
 
@@ -82,8 +82,8 @@ contract CvxCrvStakingWrapper is ERC20, ReentrancyGuard {
         owner = address(0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB); //default to muuu multisig
         emit OwnershipTransferred(address(0), owner);
 
-        _tokenname = "Staked CvxCrv";
-        _tokensymbol = "stkCvxCrv";
+        _tokenname = "Staked MuuuCrv";
+        _tokensymbol = "stkMuuuCrv";
         isShutdown = false;
         isInit = true;
         collateralVault = _vault;
@@ -181,7 +181,7 @@ contract CvxCrvStakingWrapper is ERC20, ReentrancyGuard {
         return totalSupply();
     }
 
-    function _calcCvxIntegral(address[2] memory _accounts, uint256[2] memory _balances, uint256 _supply, bool _isClaim) internal {
+    function _calcMuuuIntegral(address[2] memory _accounts, uint256[2] memory _balances, uint256 _supply, bool _isClaim) internal {
 
         uint256 bal = IERC20(cvx).balanceOf(address(this));
         uint256 d_cvxreward = bal.sub(cvx_reward_remaining);
@@ -274,7 +274,7 @@ contract CvxCrvStakingWrapper is ERC20, ReentrancyGuard {
         for (uint256 i = 0; i < rewardCount; i++) {
            _calcRewardIntegral(i,_accounts,depositedBalance,supply,false);
         }
-        _calcCvxIntegral(_accounts,depositedBalance,supply,false);
+        _calcMuuuIntegral(_accounts,depositedBalance,supply,false);
     }
 
     function _checkpointAndClaim(address[2] memory _accounts) internal {
@@ -289,7 +289,7 @@ contract CvxCrvStakingWrapper is ERC20, ReentrancyGuard {
         for (uint256 i = 0; i < rewardCount; i++) {
            _calcRewardIntegral(i,_accounts,depositedBalance,supply,true);
         }
-        _calcCvxIntegral(_accounts,depositedBalance,supply,true);
+        _calcMuuuIntegral(_accounts,depositedBalance,supply,true);
     }
 
     function user_checkpoint(address[2] calldata _accounts) external returns(bool) {
@@ -326,7 +326,7 @@ contract CvxCrvStakingWrapper is ERC20, ReentrancyGuard {
 
             //calc cvx here
             if(reward.reward_token == crv){
-                claimable[rewardCount].amount = cvx_claimable_reward[_account].add(CvxMining.ConvertCrvToCvx(newlyClaimable));
+                claimable[rewardCount].amount = cvx_claimable_reward[_account].add(MuuuMining.ConvertCrvToMuuu(newlyClaimable));
                 claimable[rewardCount].token = cvx;
             }
         }
