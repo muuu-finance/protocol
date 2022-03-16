@@ -39,8 +39,8 @@ contract Booster is Ownable {
     address public voteDelegate;
     address public treasury;
     address public stakerRewards; //cvx rewards
-    address public lockRewards; //cvxCrv rewards(crv)
-    address public lockFees; //cvxCrv vecrv fees
+    address public lockRewards; //cvxKgl rewards(crv)
+    address public lockFees; //cvxKgl vecrv fees
     address public feeDistro;
     address public feeToken;
     address public registry;
@@ -79,7 +79,7 @@ contract Booster is Ownable {
 
 
     /// SETTER SECTION ///
-    function setCrv(address _crv) external onlyOwner {
+    function setKgl(address _crv) external onlyOwner {
         crv = _crv;
     }
 
@@ -189,7 +189,7 @@ contract Booster is Ownable {
         //create a tokenized deposit
         address token = ITokenFactory(tokenFactory).CreateDepositToken(_lptoken);
         //create a reward contract for crv rewards
-        address newRewardPool = IRewardFactory(rewardFactory).CreateCrvRewards(pid,token);
+        address newRewardPool = IRewardFactory(rewardFactory).CreateKglRewards(pid,token);
         //create a stash to handle extra incentives
         address stash = IStashFactory(stashFactory).CreateStash(pid,_gauge,staker,_stashVersion);
 
@@ -395,7 +395,7 @@ contract Booster is Ownable {
         address gauge = pool.gauge;
 
         //claim crv
-        IStaker(staker).claimCrv(gauge);
+        IStaker(staker).claimKgl(gauge);
 
         //check if there are extra rewards
         address stash = pool.stash;

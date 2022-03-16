@@ -58,7 +58,7 @@ interface IStaker{
     function increaseAmount(uint256) external;
     function increaseTime(uint256) external;
     function release() external;
-    function claimCrv(address) external returns (uint256);
+    function claimKgl(address) external returns (uint256);
     function claimRewards(address) external;
     function claimFees(address,address) external;
     function setStashAccess(address, bool) external;
@@ -113,14 +113,14 @@ interface IDeposit{
     function owner() external returns(address);
 }
 
-interface ICrvDeposit{
+interface IKglDeposit{
     function deposit(uint256, bool) external;
     function lockIncentive() external view returns(uint256);
 }
 
 interface IRewardFactory{
     function setAccess(address,bool) external;
-    function CreateCrvRewards(uint256,address) external returns(address);
+    function CreateKglRewards(uint256,address) external returns(address);
     function CreateTokenRewards(address,address,address) external returns(address);
     function activeRewardCount(address) external view returns(uint256);
     function addActiveReward(address,uint256) external returns(bool);

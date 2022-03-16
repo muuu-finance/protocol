@@ -3,15 +3,15 @@ var jsonfile = require('jsonfile');
 var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
-const CrvDepositor = artifacts.require('CrvDepositor');
+const KglDepositor = artifacts.require('KglDepositor');
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
-//const cvxCrvRewardPool = artifacts.require("cvxCrvRewardPool");
+//const cvxKglRewardPool = artifacts.require("cvxKglRewardPool");
 const cvxRewardPool = artifacts.require('cvxRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const cvxCrvToken = artifacts.require('cvxCrvToken');
+const cvxKglToken = artifacts.require('cvxKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 
@@ -30,7 +30,7 @@ const IGaugeController = artifacts.require('IGaugeController');
 contract('Voting Test', async (accounts) => {
   it('should add to whitelist and test voting functions', async () => {
     let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
-    let threeCrv = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
+    let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
     let vecrv = await IERC20.at('0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2');
     let exchange = await IExchange.at('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D');
@@ -41,7 +41,7 @@ contract('Voting Test', async (accounts) => {
     let vote = await IVoting.at('0xE478de485ad2fe566d49342Cbd03E49ed7DB3356');
     let votestart = await IVoteStarter.at('0xE478de485ad2fe566d49342Cbd03E49ed7DB3356');
     let controller = await IGaugeController.at('0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB');
-    let threeCrvGauge = '0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A';
+    let threeKglGauge = '0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A';
 
     let admin = accounts[0];
     let userA = accounts[1];
@@ -54,11 +54,11 @@ contract('Voting Test', async (accounts) => {
     let rewardFactory = await RewardFactory.deployed();
     let stashFactory = await StashFactory.deployed();
     let cvx = await MuuuToken.deployed();
-    let cvxCrv = await cvxCrvToken.deployed();
-    let crvDeposit = await CrvDepositor.deployed();
-    let cvxCrvRewards = await booster.lockRewards();
+    let cvxKgl = await cvxKglToken.deployed();
+    let crvDeposit = await KglDepositor.deployed();
+    let cvxKglRewards = await booster.lockRewards();
     let cvxRewards = await booster.stakerRewards();
-    let cvxCrvRewardsContract = await BaseRewardPool.at(cvxCrvRewards);
+    let cvxKglRewardsContract = await BaseRewardPool.at(cvxKglRewards);
     let cvxRewardsContract = await cvxRewardPool.at(cvxRewards);
 
     var poolId = contractList.pools.find((pool) => pool.name == '3pool').id;
@@ -78,11 +78,11 @@ contract('Voting Test', async (accounts) => {
 
     //get crv
     await weth.sendTransaction({ value: web3.utils.toWei('1.0', 'ether'), from: userA });
-    let wethForCrv = await weth.balanceOf(userA);
+    let wethForKgl = await weth.balanceOf(userA);
     await weth.approve(exchange.address, 0, { from: userA });
-    await weth.approve(exchange.address, wethForCrv, { from: userA });
+    await weth.approve(exchange.address, wethForKgl, { from: userA });
     await exchange.swapExactTokensForTokens(
-      wethForCrv,
+      wethForKgl,
       0,
       [weth.address, crv.address],
       userA,
@@ -99,11 +99,11 @@ contract('Voting Test', async (accounts) => {
       from: userA,
     });
     console.log('crv deposited');
-    await cvxCrv.balanceOf(userA).then((a) => console.log('cvxCrv on wallet: ' + a));
-    await cvxCrv.totalSupply().then((a) => console.log('cvxCrv supply: ' + a));
+    await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
+    await cvxKgl.totalSupply().then((a) => console.log('cvxKgl supply: ' + a));
     await crv.balanceOf(crvDeposit.address).then((a) => console.log('depositor crv(>0): ' + a));
     await crv.balanceOf(voteproxy.address).then((a) => console.log('proxy crv(==0): ' + a));
-    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veCrv(==0): ' + a));
+    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(==0): ' + a));
 
     await time.increase(86400);
     await time.advanceBlock();
@@ -142,19 +142,19 @@ contract('Voting Test', async (accounts) => {
     //test gauge weight voting too
     console.log('gauge weight testing...');
 
-    var voteInfo = await controller.vote_user_slopes(voteproxy.address, threeCrvGauge);
+    var voteInfo = await controller.vote_user_slopes(voteproxy.address, threeKglGauge);
     console.log('gauge weight power before: ' + voteInfo[1]);
 
     //vote as non-delegate(revert)
     await booster
-      .voteGaugeWeight([threeCrvGauge], [10000], { from: userA })
+      .voteGaugeWeight([threeKglGauge], [10000], { from: userA })
       .catch((a) => console.log('->reverted non votedelgate tx'));
 
     //vote as delegate
-    await booster.voteGaugeWeight([threeCrvGauge], [10000]);
+    await booster.voteGaugeWeight([threeKglGauge], [10000]);
 
     //show that weight power has changed
-    voteInfo = await controller.vote_user_slopes(voteproxy.address, threeCrvGauge);
+    voteInfo = await controller.vote_user_slopes(voteproxy.address, threeKglGauge);
     console.log('gauge weight power after: ' + voteInfo[1]);
   });
 });

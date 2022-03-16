@@ -321,7 +321,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
                     I = I + IRewardStaking(reward.reward_pool).earned(address(this)).mul(1e20).div(supply);
                 }
                 newlyClaimable = _getDepositedBalance(_account).mul(I.sub(reward.reward_integral_for[_account])).div(1e20);
-                claimable[MUUU_INDEX].amount = MuuuMining.ConvertCrvToMuuu(newlyClaimable);
+                claimable[MUUU_INDEX].amount = MuuuMining.ConvertKglToMuuu(newlyClaimable);
                 claimable[MUUU_INDEX].token = cvx;
             }
         }

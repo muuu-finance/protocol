@@ -9,7 +9,7 @@ import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
 
-contract CrvDepositor is Ownable {
+contract KglDepositor is Ownable {
     using SafeERC20 for IERC20;
     using Address for address;
     using SafeMath for uint256;
@@ -26,7 +26,7 @@ contract CrvDepositor is Ownable {
     address public feeManager;
     address public immutable staker;
     address public immutable minter;
-    uint256 public incentiveCrv = 0;
+    uint256 public incentiveKgl = 0;
     uint256 public unlockTime;
 
     constructor(address _staker, address _minter, address _crv, address _votingEscrow) public {
@@ -37,7 +37,7 @@ contract CrvDepositor is Ownable {
         votingEscrow = _votingEscrow;
     }
 
-    function setCrv(address _crv) external onlyOwner {
+    function setKgl(address _crv) external onlyOwner {
         crv = _crv;
     }
 
@@ -106,13 +106,13 @@ contract CrvDepositor is Ownable {
         _lockKagla();
 
         //mint incentives
-        if(incentiveCrv > 0){
-            ITokenMinter(minter).mint(msg.sender,incentiveCrv);
-            incentiveCrv = 0;
+        if(incentiveKgl > 0){
+            ITokenMinter(minter).mint(msg.sender,incentiveKgl);
+            incentiveKgl = 0;
         }
     }
 
-    //deposit crv for cvxCrv
+    //deposit crv for cvxKgl
     //can locking immediately or defer locking to someone else by paying a fee.
     //while users can choose to lock or defer, this is mostly in place so that
     //the cvx reward contract isnt costly to claim rewards
@@ -123,10 +123,10 @@ contract CrvDepositor is Ownable {
             //lock immediately, transfer directly to staker to skip an erc20 transfer
             IERC20(crv).safeTransferFrom(msg.sender, staker, _amount);
             _lockKagla();
-            if(incentiveCrv > 0){
+            if(incentiveKgl > 0){
                 //add the incentive tokens here so they can be staked together
-                _amount = _amount.add(incentiveCrv);
-                incentiveCrv = 0;
+                _amount = _amount.add(incentiveKgl);
+                incentiveKgl = 0;
             }
         }else{
             //move tokens here
@@ -136,7 +136,7 @@ contract CrvDepositor is Ownable {
             _amount = _amount.sub(callIncentive);
 
             //add to a pool for lock caller
-            incentiveCrv = incentiveCrv.add(callIncentive);
+            incentiveKgl = incentiveKgl.add(callIncentive);
         }
 
         bool depositOnly = _stakeAddress == address(0);

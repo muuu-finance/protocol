@@ -3,15 +3,15 @@ var jsonfile = require('jsonfile');
 var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
-const CrvDepositor = artifacts.require('CrvDepositor');
+const KglDepositor = artifacts.require('KglDepositor');
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
-//const cvxCrvRewardPool = artifacts.require("cvxCrvRewardPool");
+//const cvxKglRewardPool = artifacts.require("cvxKglRewardPool");
 const cvxRewardPool = artifacts.require('cvxRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const cvxCrvToken = artifacts.require('cvxCrvToken');
+const cvxKglToken = artifacts.require('cvxKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 
@@ -22,7 +22,7 @@ const IKaglaGaugeDebug = artifacts.require('IKaglaGaugeDebug');
 const IWalletCheckerDebug = artifacts.require('IWalletCheckerDebug');
 const IBurner = artifacts.require('IBurner');
 
-contract('VeCrv Fees Test', async (accounts) => {
+contract('VeKgl Fees Test', async (accounts) => {
   it('should add to whitelist, lock crv, test vecrv fee distribution', async () => {
     let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
@@ -51,12 +51,12 @@ contract('VeCrv Fees Test', async (accounts) => {
     let rewardFactory = await RewardFactory.deployed();
     let stashFactory = await StashFactory.deployed();
     let cvx = await MuuuToken.deployed();
-    let cvxCrv = await cvxCrvToken.deployed();
-    let crvDeposit = await CrvDepositor.deployed();
-    let cvxCrvRewards = await booster.lockRewards();
+    let cvxKgl = await cvxKglToken.deployed();
+    let crvDeposit = await KglDepositor.deployed();
+    let cvxKglRewards = await booster.lockRewards();
     let cvxRewards = await booster.stakerRewards();
     let vecrvRewards = await booster.lockFees();
-    let cvxCrvRewardsContract = await BaseRewardPool.at(cvxCrvRewards);
+    let cvxKglRewardsContract = await BaseRewardPool.at(cvxKglRewards);
     let cvxRewardsContract = await cvxRewardPool.at(cvxRewards);
     let vecrvRewardsContract = await VirtualBalanceRewardPool.at(vecrvRewards);
 
@@ -72,11 +72,11 @@ contract('VeCrv Fees Test', async (accounts) => {
 
     //exchange for crv
     await weth.sendTransaction({ value: web3.utils.toWei('1.0', 'ether'), from: userA });
-    let wethForCrv = await weth.balanceOf(userA);
+    let wethForKgl = await weth.balanceOf(userA);
     await weth.approve(exchange.address, 0, { from: userA });
-    await weth.approve(exchange.address, wethForCrv, { from: userA });
+    await weth.approve(exchange.address, wethForKgl, { from: userA });
     await exchange.swapExactTokensForTokens(
-      wethForCrv,
+      wethForKgl,
       0,
       [weth.address, crv.address],
       userA,
@@ -93,18 +93,18 @@ contract('VeCrv Fees Test', async (accounts) => {
       from: userA,
     });
     console.log('crv deposited');
-    await cvxCrv.balanceOf(userA).then((a) => console.log('cvxCrv on wallet: ' + a));
-    await cvxCrv.totalSupply().then((a) => console.log('cvxCrv supply: ' + a));
+    await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
+    await cvxKgl.totalSupply().then((a) => console.log('cvxKgl supply: ' + a));
     await crv.balanceOf(crvDeposit.address).then((a) => console.log('depositor crv(>0): ' + a));
     await crv.balanceOf(voteproxy.address).then((a) => console.log('proxy crv(==0): ' + a));
-    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veCrv(==0): ' + a));
+    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(==0): ' + a));
     console.log('staking crv');
-    await cvxCrv.approve(cvxCrvRewardsContract.address, 0, { from: userA });
-    await cvxCrv.approve(cvxCrvRewardsContract.address, startingcrv, { from: userA });
-    await cvxCrvRewardsContract.stakeAll({ from: userA });
+    await cvxKgl.approve(cvxKglRewardsContract.address, 0, { from: userA });
+    await cvxKgl.approve(cvxKglRewardsContract.address, startingcrv, { from: userA });
+    await cvxKglRewardsContract.stakeAll({ from: userA });
     console.log('staked');
-    await cvxCrv.balanceOf(userA).then((a) => console.log('cvxCrv on wallet: ' + a));
-    await cvxCrvRewardsContract.balanceOf(userA).then((a) => console.log('cvxCrv staked: ' + a));
+    await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
+    await cvxKglRewardsContract.balanceOf(userA).then((a) => console.log('cvxKgl staked: ' + a));
 
     //voting
     console.log('fee claiming...');
@@ -200,7 +200,7 @@ contract('VeCrv Fees Test', async (accounts) => {
     //before balance
     await threecrv.balanceOf(userA).then((a) => console.log('3crv before claim: ' + a));
     //get reward from main contract which will also claim from children contracts(crv is main, vecrv fees is child)
-    await cvxCrvRewardsContract.getReward({ from: userA });
+    await cvxKglRewardsContract.getReward({ from: userA });
     await threecrv.balanceOf(userA).then((a) => console.log('3crv after claim: ' + a));
   });
 });

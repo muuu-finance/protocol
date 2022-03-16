@@ -3,7 +3,7 @@ const { BN, constants, expectEvent, expectRevert, time } = require('@openzeppeli
 var jsonfile = require('jsonfile');
 var contractList = jsonfile.readFileSync('./contracts.json');
 
-const CrvDepositor = artifacts.require('CrvDepositor');
+const KglDepositor = artifacts.require('KglDepositor');
 const Booster = artifacts.require('Booster');
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const IERC20 = artifacts.require('IERC20');
@@ -29,8 +29,8 @@ contract('Claim vecrv fees', async (accounts) => {
 
     let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let booster = await Booster.at(contractList.system.booster);
-    let crvDeposit = await CrvDepositor.at(contractList.system.crvDepositor);
-    let cvxCrv = await IERC20.at(contractList.system.cvxCrv);
+    let crvDeposit = await KglDepositor.at(contractList.system.crvDepositor);
+    let cvxKgl = await IERC20.at(contractList.system.cvxKgl);
     let vecrvRewardAddress = await booster.lockFees();
     let vecrvRewardsContract = await VirtualBalanceRewardPool.at(vecrvRewardAddress);
 
@@ -52,8 +52,8 @@ contract('Claim vecrv fees', async (accounts) => {
     // await crvDeposit.deposit(crvBal,false,"0x0000000000000000000000000000000000000000");
 
     await crvDeposit.lockKagla();
-    await cvxCrv.totalSupply().then((a) => console.log('cvxCrv supply: ' + a));
-    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veCrv: ' + a));
+    await cvxKgl.totalSupply().then((a) => console.log('cvxKgl supply: ' + a));
+    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl: ' + a));
 
     // -----------------------------///
 

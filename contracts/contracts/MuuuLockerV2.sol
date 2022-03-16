@@ -65,7 +65,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
 
     //token constants
     IERC20 public constant stakingToken = IERC20(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B); //cvx
-    address public constant cvxCrv = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
+    address public constant cvxKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
 
     //rewards
     address[] public rewardTokens;
@@ -220,8 +220,8 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
 
     //set approvals for staking cvx and cvxcrv
     function setApprovals() external {
-        IERC20(cvxCrv).safeApprove(cvxcrvStaking, 0);
-        IERC20(cvxCrv).safeApprove(cvxcrvStaking, uint256(-1));
+        IERC20(cvxKgl).safeApprove(cvxcrvStaking, 0);
+        IERC20(cvxKgl).safeApprove(cvxcrvStaking, uint256(-1));
 
         IERC20(stakingToken).safeApprove(stakingProxy, 0);
         IERC20(stakingToken).safeApprove(stakingProxy, uint256(-1));
@@ -797,7 +797,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
             uint256 reward = rewards[_account][_rewardsToken];
             if (reward > 0) {
                 rewards[_account][_rewardsToken] = 0;
-                if (_rewardsToken == cvxCrv && _stake) {
+                if (_rewardsToken == cvxKgl && _stake) {
                     IRewardStaking(cvxcrvStaking).stakeFor(_account, reward);
                 } else {
                     IERC20(_rewardsToken).safeTransfer(_account, reward);
@@ -842,7 +842,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
 
         emit RewardAdded(_rewardsToken, _reward);
 
-        if(_rewardsToken == cvxCrv){
+        if(_rewardsToken == cvxKgl){
             //update staking ratio if main reward
             updateStakeRatio(0);
         }

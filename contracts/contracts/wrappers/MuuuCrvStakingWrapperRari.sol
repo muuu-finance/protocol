@@ -6,7 +6,7 @@ import "../interfaces/IRewardStaking.sol";
 import "../interfaces/IMuuuDeposits.sol";
 import "../interfaces/MuuuMining.sol";
 import "../interfaces/IRariToken.sol";
-import "./MuuuCrvStakingWrapper.sol";
+import "./MuuuKglStakingWrapper.sol";
 import '@openzeppelin/contracts/math/SafeMath.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/utils/Address.sol';
@@ -16,9 +16,9 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 
-//Tokenized cvxCrv staked position for Rari's Fuse platform
+//Tokenized cvxKgl staked position for Rari's Fuse platform
 //Based on Kagla.fi's gauge wrapper implementations at https://github.com/kaglafi/kagla-dao-contracts/tree/master/contracts/gauges/wrappers
-contract MuuuCrvRari is MuuuCrvStakingWrapper {
+contract MuuuKglRari is MuuuKglStakingWrapper {
     using SafeERC20
     for IERC20;
     using Address
@@ -34,8 +34,8 @@ contract MuuuCrvRari is MuuuCrvStakingWrapper {
         owner = address(0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB); //default to muuu multisig
         emit OwnershipTransferred(address(0), owner);
 
-        _tokenname = "Staked MuuuCrv Rari";
-        _tokensymbol = "stkMuuuCrv-rari";
+        _tokenname = "Staked MuuuKgl Rari";
+        _tokensymbol = "stkMuuuKgl-rari";
         isShutdown = false;
         isInit = true;
         collateralVault = _vault;

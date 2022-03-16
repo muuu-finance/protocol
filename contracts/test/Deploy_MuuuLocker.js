@@ -19,9 +19,9 @@ contract('Deploy MUUU Locker', async (accounts) => {
     //system
     let booster = await Booster.at(contractList.system.booster);
     let cvx = await IERC20.at(contractList.system.cvx);
-    let cvxcrv = await IERC20.at(contractList.system.cvxCrv);
+    let cvxcrv = await IERC20.at(contractList.system.cvxKgl);
     let cvxrewards = await cvxRewardPool.at(contractList.system.cvxRewards);
-    let cvxcrvrewards = await cvxRewardPool.at(contractList.system.cvxCrvRewards);
+    let cvxcrvrewards = await cvxRewardPool.at(contractList.system.cvxKglRewards);
     let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
 
     //deploy

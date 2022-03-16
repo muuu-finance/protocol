@@ -18,7 +18,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 //other considerations: might be worth refactoring to use earned() during checkpoints instead of claiming rewards each time
 
 //Based on Kagla.fi's gauge wrapper implementations at https://github.com/kaglafi/kagla-dao-contracts/tree/master/contracts/gauges/wrappers
-contract MuuuCrvStakingWrapper is ERC20, ReentrancyGuard {
+contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
     using SafeERC20
     for IERC20;
     using SafeMath
@@ -45,10 +45,10 @@ contract MuuuCrvStakingWrapper is ERC20, ReentrancyGuard {
 
     //constants/immutables
     address public constant crvDepositor = address(0x8014595F2AB54cD7c604B00E9fb932176fDc86Ae);
-    address public constant cvxCrvStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
+    address public constant cvxKglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
     address public constant crv = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
     address public constant cvx = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
-    address public constant cvxCrv = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
+    address public constant cvxKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
 
     //collateral vault
     address public collateralVault;
@@ -71,8 +71,8 @@ contract MuuuCrvStakingWrapper is ERC20, ReentrancyGuard {
 
     constructor() public
         ERC20(
-            "Staked MuuuCrv",
-            "stkMuuuCrv"
+            "Staked MuuuKgl",
+            "stkMuuuKgl"
         ){
     }
 
@@ -82,8 +82,8 @@ contract MuuuCrvStakingWrapper is ERC20, ReentrancyGuard {
         owner = address(0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB); //default to muuu multisig
         emit OwnershipTransferred(address(0), owner);
 
-        _tokenname = "Staked MuuuCrv";
-        _tokensymbol = "stkMuuuCrv";
+        _tokenname = "Staked MuuuKgl";
+        _tokensymbol = "stkMuuuKgl";
         isShutdown = false;
         isInit = true;
         collateralVault = _vault;
@@ -128,8 +128,8 @@ contract MuuuCrvStakingWrapper is ERC20, ReentrancyGuard {
     function setApprovals() public {
         IERC20(crv).safeApprove(crvDepositor, 0);
         IERC20(crv).safeApprove(crvDepositor, uint256(-1));
-        IERC20(cvxCrv).safeApprove(cvxCrvStaking, 0);
-        IERC20(cvxCrv).safeApprove(cvxCrvStaking, uint256(-1));
+        IERC20(cvxKgl).safeApprove(cvxKglStaking, 0);
+        IERC20(cvxKgl).safeApprove(cvxKglStaking, uint256(-1));
     }
 
     function addRewards() public {
@@ -138,17 +138,17 @@ contract MuuuCrvStakingWrapper is ERC20, ReentrancyGuard {
             rewards.push(
                 RewardType({
                     reward_token: crv,
-                    reward_pool: cvxCrvStaking,
+                    reward_pool: cvxKglStaking,
                     reward_integral: 0,
                     reward_remaining: 0
                 })
             );
         }
 
-        uint256 extraCount = IRewardStaking(cvxCrvStaking).extraRewardsLength();
+        uint256 extraCount = IRewardStaking(cvxKglStaking).extraRewardsLength();
         uint256 startIndex = rewards.length - 1;
         for (uint256 i = startIndex; i < extraCount; i++) {
-            address extraPool = IRewardStaking(cvxCrvStaking).extraRewards(i);
+            address extraPool = IRewardStaking(cvxKglStaking).extraRewards(i);
             rewards.push(
                 RewardType({
                     reward_token: IRewardStaking(extraPool).rewardToken(),
@@ -268,7 +268,7 @@ contract MuuuCrvStakingWrapper is ERC20, ReentrancyGuard {
         depositedBalance[0] = _getDepositedBalance(_accounts[0]);
         depositedBalance[1] = _getDepositedBalance(_accounts[1]);
 
-        IRewardStaking(cvxCrvStaking).getReward(address(this), true);
+        IRewardStaking(cvxKglStaking).getReward(address(this), true);
 
         uint256 rewardCount = rewards.length;
         for (uint256 i = 0; i < rewardCount; i++) {
@@ -283,7 +283,7 @@ contract MuuuCrvStakingWrapper is ERC20, ReentrancyGuard {
         uint256[2] memory depositedBalance;
         depositedBalance[0] = _getDepositedBalance(_accounts[0]); //only do first slot
 
-        IRewardStaking(cvxCrvStaking).getReward(address(this), true);
+        IRewardStaking(cvxKglStaking).getReward(address(this), true);
 
         uint256 rewardCount = rewards.length;
         for (uint256 i = 0; i < rewardCount; i++) {
@@ -326,7 +326,7 @@ contract MuuuCrvStakingWrapper is ERC20, ReentrancyGuard {
 
             //calc cvx here
             if(reward.reward_token == crv){
-                claimable[rewardCount].amount = cvx_claimable_reward[_account].add(MuuuMining.ConvertCrvToMuuu(newlyClaimable));
+                claimable[rewardCount].amount = cvx_claimable_reward[_account].add(MuuuMining.ConvertKglToMuuu(newlyClaimable));
                 claimable[rewardCount].token = cvx;
             }
         }
@@ -347,7 +347,7 @@ contract MuuuCrvStakingWrapper is ERC20, ReentrancyGuard {
         if (_amount > 0) {
             _mint(_to, _amount);
             IERC20(crv).safeTransferFrom(msg.sender, address(this), _amount);
-            IMuuuDeposits(crvDepositor).deposit(_amount, false, cvxCrvStaking);
+            IMuuuDeposits(crvDepositor).deposit(_amount, false, cvxKglStaking);
         }
 
         emit Deposited(msg.sender, _to, _amount, true);
@@ -361,8 +361,8 @@ contract MuuuCrvStakingWrapper is ERC20, ReentrancyGuard {
 
         if (_amount > 0) {
             _mint(_to, _amount);
-            IERC20(cvxCrv).safeTransferFrom(msg.sender, address(this), _amount);
-            IRewardStaking(cvxCrvStaking).stake(_amount);
+            IERC20(cvxKgl).safeTransferFrom(msg.sender, address(this), _amount);
+            IRewardStaking(cvxKglStaking).stake(_amount);
         }
 
         emit Deposited(msg.sender, _to, _amount, false);
@@ -375,8 +375,8 @@ contract MuuuCrvStakingWrapper is ERC20, ReentrancyGuard {
 
         if (_amount > 0) {
             _burn(msg.sender, _amount);
-            IRewardStaking(cvxCrvStaking).withdraw(_amount, false);
-            IERC20(cvxCrv).safeTransfer(msg.sender, _amount);
+            IRewardStaking(cvxKglStaking).withdraw(_amount, false);
+            IERC20(cvxKgl).safeTransfer(msg.sender, _amount);
         }
 
         emit Withdrawn(msg.sender, _amount, false);

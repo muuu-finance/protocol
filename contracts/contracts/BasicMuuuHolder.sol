@@ -4,7 +4,7 @@ pragma solidity 0.6.12;
 import "./interfaces/IRewardStaking.sol";
 import "./interfaces/ILockedMuuu.sol";
 import "./interfaces/IDelegation.sol";
-import "./interfaces/ICrvDepositor.sol";
+import "./interfaces/IKglDepositor.sol";
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
@@ -16,7 +16,7 @@ contract BasicMuuuHolder{
     using Address for address;
 
 
-    address public constant cvxCrv = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
+    address public constant cvxKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
     address public constant cvxcrvStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
     address public constant cvx = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
     address public constant crv = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
@@ -31,8 +31,8 @@ contract BasicMuuuHolder{
     }
 
     function setApprovals() external {
-        IERC20(cvxCrv).safeApprove(cvxcrvStaking, 0);
-        IERC20(cvxCrv).safeApprove(cvxcrvStaking, uint256(-1));
+        IERC20(cvxKgl).safeApprove(cvxcrvStaking, 0);
+        IERC20(cvxKgl).safeApprove(cvxcrvStaking, uint256(-1));
 
         IERC20(cvx).safeApprove(address(cvxlocker), 0);
         IERC20(cvx).safeApprove(address(cvxlocker), uint256(-1));
@@ -77,23 +77,23 @@ contract BasicMuuuHolder{
 
         uint256 crvBal = IERC20(crv).balanceOf(address(this));
         if (crvBal > 0) {
-            ICrvDepositor(crvDeposit).deposit(crvBal, true);
+            IKglDepositor(crvDeposit).deposit(crvBal, true);
         }
 
-        uint cvxcrvBal = IERC20(cvxCrv).balanceOf(address(this));
+        uint cvxcrvBal = IERC20(cvxKgl).balanceOf(address(this));
         if(cvxcrvBal > 0){
             IRewardStaking(cvxcrvStaking).stake(cvxcrvBal);
         }
     }
 
-    function withdrawMuuuCrv(uint256 _amount, address _withdrawTo) external{
+    function withdrawMuuuKgl(uint256 _amount, address _withdrawTo) external{
         require(msg.sender == operator, "!auth");
         require(_withdrawTo != address(0),"bad address");
 
         IRewardStaking(cvxcrvStaking).withdraw(_amount, true);
-        uint cvxcrvBal = IERC20(cvxCrv).balanceOf(address(this));
+        uint cvxcrvBal = IERC20(cvxKgl).balanceOf(address(this));
         if(cvxcrvBal > 0){
-            IERC20(cvxCrv).safeTransfer(_withdrawTo, cvxcrvBal);
+            IERC20(cvxKgl).safeTransfer(_withdrawTo, cvxcrvBal);
         }
     }
 

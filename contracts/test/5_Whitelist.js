@@ -3,15 +3,15 @@ var jsonfile = require('jsonfile');
 var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
-const CrvDepositor = artifacts.require('CrvDepositor');
+const KglDepositor = artifacts.require('KglDepositor');
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
-//const cvxCrvRewardPool = artifacts.require("cvxCrvRewardPool");
+//const cvxKglRewardPool = artifacts.require("cvxKglRewardPool");
 const cvxRewardPool = artifacts.require('cvxRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const cvxCrvToken = artifacts.require('cvxCrvToken');
+const cvxKglToken = artifacts.require('cvxKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 
@@ -27,7 +27,7 @@ contract('Whitelist Test', async (accounts) => {
   it('should add to whitelist and test locking', async () => {
     let account = accounts[0];
     let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
-    let threeCrv = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
+    let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
     let vecrv = await IERC20.at('0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2');
     let exchange = await IExchange.at('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D');
@@ -46,11 +46,11 @@ contract('Whitelist Test', async (accounts) => {
     let rewardFactory = await RewardFactory.deployed();
     let stashFactory = await StashFactory.deployed();
     let cvx = await MuuuToken.deployed();
-    let cvxCrv = await cvxCrvToken.deployed();
-    let crvDeposit = await CrvDepositor.deployed();
-    let cvxCrvRewards = await booster.lockRewards();
+    let cvxKgl = await cvxKglToken.deployed();
+    let crvDeposit = await KglDepositor.deployed();
+    let cvxKglRewards = await booster.lockRewards();
     let cvxRewards = await booster.stakerRewards();
-    let cvxCrvRewardsContract = await BaseRewardPool.at(cvxCrvRewards);
+    let cvxKglRewardsContract = await BaseRewardPool.at(cvxKglRewards);
     let cvxRewardsContract = await cvxRewardPool.at(cvxRewards);
 
     var poolId = contractList.pools.find((pool) => pool.name == '3pool').id;
@@ -64,11 +64,11 @@ contract('Whitelist Test', async (accounts) => {
 
     //exchange for crv
     await weth.sendTransaction({ value: web3.utils.toWei('1.0', 'ether'), from: userA });
-    let wethForCrv = await weth.balanceOf(userA);
+    let wethForKgl = await weth.balanceOf(userA);
     await weth.approve(exchange.address, 0, { from: userA });
-    await weth.approve(exchange.address, wethForCrv, { from: userA });
+    await weth.approve(exchange.address, wethForKgl, { from: userA });
     await exchange.swapExactTokensForTokens(
-      wethForCrv,
+      wethForKgl,
       0,
       [weth.address, crv.address],
       userA,
@@ -88,18 +88,18 @@ contract('Whitelist Test', async (accounts) => {
 
     //check balances, crv should still be on depositor
     await crv.balanceOf(userA).then((a) => console.log('crv on wallet: ' + a));
-    await cvxCrv.balanceOf(userA).then((a) => console.log('cvxCrv on wallet: ' + a));
-    await cvxCrv.totalSupply().then((a) => console.log('cvxCrv supply: ' + a));
+    await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
+    await cvxKgl.totalSupply().then((a) => console.log('cvxKgl supply: ' + a));
     await crv.balanceOf(crvDeposit.address).then((a) => console.log('depositor crv(>0): ' + a));
     await crv.balanceOf(voteproxy.address).then((a) => console.log('proxy crv(==0): ' + a));
-    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veCrv(==0): ' + a));
+    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(==0): ' + a));
 
-    //try burning from cvxCrv to reclaim crv (only doable before lock made)
-    console.log('try burn 100 cvxCrv');
+    //try burning from cvxKgl to reclaim crv (only doable before lock made)
+    console.log('try burn 100 cvxKgl');
     await crvDeposit.burn(100, { from: userA });
     await crv.balanceOf(userA).then((a) => console.log('crv on wallet: ' + a));
-    await cvxCrv.balanceOf(userA).then((a) => console.log('cvxCrv on wallet: ' + a));
-    await cvxCrv.totalSupply().then((a) => console.log('cvxCrv supply: ' + a));
+    await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
+    await cvxKgl.totalSupply().then((a) => console.log('cvxKgl supply: ' + a));
 
     //add to whitelist
     await walletChecker.approveWallet(voteproxy.address, { from: checkerAdmin, gasPrice: 0 });
@@ -109,11 +109,11 @@ contract('Whitelist Test', async (accounts) => {
 
     //get more crv
     await weth.sendTransaction({ value: web3.utils.toWei('1.0', 'ether'), from: userA });
-    let wethForCrv2 = await weth.balanceOf(userA);
+    let wethForKgl2 = await weth.balanceOf(userA);
     await weth.approve(exchange.address, 0, { from: userA });
-    await weth.approve(exchange.address, wethForCrv2, { from: userA });
+    await weth.approve(exchange.address, wethForKgl2, { from: userA });
     await exchange.swapExactTokensForTokens(
-      wethForCrv2,
+      wethForKgl2,
       0,
       [weth.address, crv.address],
       userA,
@@ -137,23 +137,23 @@ contract('Whitelist Test', async (accounts) => {
     console.log('crv deposited (initial lock)');
 
     //check balances, crv should have moved to proxy and vecrv should be >0
-    await cvxCrv.balanceOf(userA).then((a) => console.log('cvxCrv on wallet: ' + a));
-    await cvxCrv.totalSupply().then((a) => console.log('cvxCrv supply: ' + a));
+    await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
+    await cvxKgl.totalSupply().then((a) => console.log('cvxKgl supply: ' + a));
     await crv.balanceOf(crvDeposit.address).then((a) => console.log('depositor crv(==0): ' + a));
     await crv.balanceOf(voteproxy.address).then((a) => console.log('proxy crv(==0): ' + a));
-    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veCrv(>0): ' + a));
+    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(>0): ' + a));
     await escrow.locked__end(voteproxy.address).then((a) => console.log('proxy unlock date: ' + a));
 
     //try burning again after lock, which will fail
     await crv.balanceOf(userA).then((a) => console.log('crv on wallet: ' + a));
-    await cvxCrv.balanceOf(userA).then((a) => console.log('cvxCrv on wallet: ' + a));
-    await cvxCrv.totalSupply().then((a) => console.log('cvxCrv supply: ' + a));
-    console.log('try burn 100 cvxCrv after whitelist(should catch error)');
+    await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
+    await cvxKgl.totalSupply().then((a) => console.log('cvxKgl supply: ' + a));
+    console.log('try burn 100 cvxKgl after whitelist(should catch error)');
     await crvDeposit.burn(100, { from: userA }).catch((a) => console.log('--> burn reverted'));
 
     await crv.balanceOf(userA).then((a) => console.log('crv on wallet: ' + a));
-    await cvxCrv.balanceOf(userA).then((a) => console.log('cvxCrv on wallet: ' + a));
-    await cvxCrv.totalSupply().then((a) => console.log('cvxCrv supply: ' + a));
+    await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
+    await cvxKgl.totalSupply().then((a) => console.log('cvxKgl supply: ' + a));
 
     //increase time a bit
     await time.increase(86400);
@@ -162,16 +162,16 @@ contract('Whitelist Test', async (accounts) => {
 
     //deposit more crv, this should trigger a amount increase only
     // vecrv should go up, unlock date should stay the same
-    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veCrv(>0): ' + a));
+    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(>0): ' + a));
     await crvDeposit.deposit(12345678900, true, '0x0000000000000000000000000000000000000000', {
       from: userA,
     });
     console.log('crv deposited (amount increase only)');
-    await cvxCrv.balanceOf(userA).then((a) => console.log('cvxCrv on wallet: ' + a));
-    await cvxCrv.totalSupply().then((a) => console.log('cvxCrv supply: ' + a));
+    await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
+    await cvxKgl.totalSupply().then((a) => console.log('cvxKgl supply: ' + a));
     await crv.balanceOf(crvDeposit.address).then((a) => console.log('depositor crv(==0): ' + a));
     await crv.balanceOf(voteproxy.address).then((a) => console.log('proxy crv(==0): ' + a));
-    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veCrv(>0): ' + a));
+    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(>0): ' + a));
     await escrow.locked__end(voteproxy.address).then((a) => console.log('proxy unlock date: ' + a));
 
     //increase by more than 2 weeks
@@ -186,11 +186,11 @@ contract('Whitelist Test', async (accounts) => {
       from: userA,
     });
     console.log('crv deposited (amount+time increase)');
-    await cvxCrv.balanceOf(userA).then((a) => console.log('cvxCrv on wallet: ' + a));
-    await cvxCrv.totalSupply().then((a) => console.log('cvxCrv supply: ' + a));
+    await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
+    await cvxKgl.totalSupply().then((a) => console.log('cvxKgl supply: ' + a));
     await crv.balanceOf(crvDeposit.address).then((a) => console.log('depositor crv(==0): ' + a));
     await crv.balanceOf(voteproxy.address).then((a) => console.log('proxy crv(==0): ' + a));
-    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veCrv(>0): ' + a));
+    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(>0): ' + a));
     await escrow.locked__end(voteproxy.address).then((a) => console.log('proxy unlock date: ' + a));
 
     //advance time by 1.5 months
@@ -202,15 +202,15 @@ contract('Whitelist Test', async (accounts) => {
     await time.advanceBlock();
     console.log('advance time....');
 
-    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veCrv(>0): ' + a));
+    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(>0): ' + a));
 
     //get more crv
     await weth.sendTransaction({ value: web3.utils.toWei('1.0', 'ether'), from: userA });
-    let wethForCrv3 = await weth.balanceOf(userA);
+    let wethForKgl3 = await weth.balanceOf(userA);
     await weth.approve(exchange.address, 0, { from: userA });
-    await weth.approve(exchange.address, wethForCrv3, { from: userA });
+    await weth.approve(exchange.address, wethForKgl3, { from: userA });
     await exchange.swapExactTokensForTokens(
-      wethForCrv3,
+      wethForKgl3,
       0,
       [weth.address, crv.address],
       userA,
@@ -227,24 +227,24 @@ contract('Whitelist Test', async (accounts) => {
       from: userA,
     });
     console.log('crv deposited but not locked');
-    await cvxCrv.balanceOf(userA).then((a) => console.log('cvxCrv on wallet: ' + a));
-    await cvxCrv.totalSupply().then((a) => console.log('cvxCrv supply: ' + a));
+    await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
+    await cvxKgl.totalSupply().then((a) => console.log('cvxKgl supply: ' + a));
     await crv.balanceOf(crvDeposit.address).then((a) => console.log('depositor crv(==0): ' + a));
     await crv.balanceOf(voteproxy.address).then((a) => console.log('proxy crv(==0): ' + a));
-    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veCrv: ' + a));
+    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl: ' + a));
 
     //NOTE: when testing for release and re creation of lock
     //this function timeouts in infura when trying to process 4 years.
     //to test release/createlock, the contract needs to be modified to only lock a month or so
 
-    //lock deposited crv, caller should get a bit of cvxCrv for compensation
+    //lock deposited crv, caller should get a bit of cvxKgl for compensation
     await crvDeposit.lockKagla({ from: caller });
     console.log('crv locked');
-    await cvxCrv.balanceOf(userA).then((a) => console.log('cvxCrv on wallet: ' + a));
-    await cvxCrv.balanceOf(caller).then((a) => console.log('cvxCrv on caller: ' + a));
-    await cvxCrv.totalSupply().then((a) => console.log('cvxCrv supply: ' + a));
+    await cvxKgl.balanceOf(userA).then((a) => console.log('cvxKgl on wallet: ' + a));
+    await cvxKgl.balanceOf(caller).then((a) => console.log('cvxKgl on caller: ' + a));
+    await cvxKgl.totalSupply().then((a) => console.log('cvxKgl supply: ' + a));
     await crv.balanceOf(crvDeposit.address).then((a) => console.log('depositor crv(==0): ' + a));
     await crv.balanceOf(voteproxy.address).then((a) => console.log('proxy crv(==0): ' + a));
-    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veCrv(>0): ' + a));
+    await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(>0): ' + a));
   });
 });

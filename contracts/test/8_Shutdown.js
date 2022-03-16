@@ -3,15 +3,15 @@ var jsonfile = require('jsonfile');
 var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
-const CrvDepositor = artifacts.require('CrvDepositor');
+const KglDepositor = artifacts.require('KglDepositor');
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
-//const cvxCrvRewardPool = artifacts.require("cvxCrvRewardPool");
+//const cvxKglRewardPool = artifacts.require("cvxKglRewardPool");
 const cvxRewardPool = artifacts.require('cvxRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const cvxCrvToken = artifacts.require('cvxCrvToken');
+const cvxKglToken = artifacts.require('cvxKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 const TokenFactory = artifacts.require('TokenFactory');
@@ -28,9 +28,9 @@ contract('Shutdown Test', async (accounts) => {
     let dai = await IERC20.at('0x6b175474e89094c44da98b954eedeac495271d0f');
     let exchange = await IExchange.at('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D');
     let threecrvswap = await IKaglaFi.at('0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7');
-    let threeCrv = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
-    let threeCrvGauge = '0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A';
-    let threeCrvSwap = '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7';
+    let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
+    let threeKglGauge = '0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A';
+    let threeKglSwap = '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7';
 
     let admin = accounts[0];
     let userA = accounts[1];
@@ -43,11 +43,11 @@ contract('Shutdown Test', async (accounts) => {
     let stashFactory = await StashFactory.deployed();
     let poolManager = await PoolManager.deployed();
     let cvx = await MuuuToken.deployed();
-    let cvxCrv = await cvxCrvToken.deployed();
-    let crvDeposit = await CrvDepositor.deployed();
-    let cvxCrvRewards = await booster.lockRewards();
+    let cvxKgl = await cvxKglToken.deployed();
+    let crvDeposit = await KglDepositor.deployed();
+    let cvxKglRewards = await booster.lockRewards();
     let cvxRewards = await booster.stakerRewards();
-    let cvxCrvRewardsContract = await BaseRewardPool.at(cvxCrvRewards);
+    let cvxKglRewardsContract = await BaseRewardPool.at(cvxKglRewards);
     let cvxRewardsContract = await cvxRewardPool.at(cvxRewards);
 
     var poolId = contractList.pools.find((pool) => pool.name == '3pool').id;
@@ -74,25 +74,25 @@ contract('Shutdown Test', async (accounts) => {
     let startingDai = await dai.balanceOf(userA);
     await dai.approve(threecrvswap.address, startingDai, { from: userA });
     await threecrvswap.add_liquidity([startingDai, 0, 0], 0, { from: userA });
-    let startingThreeCrv = await threeCrv.balanceOf(userA);
-    console.log('3crv: ' + startingThreeCrv);
+    let startingThreeKgl = await threeKgl.balanceOf(userA);
+    console.log('3crv: ' + startingThreeKgl);
 
     //deposit, funds move to gauge
-    await threeCrv.approve(booster.address, 0, { from: userA });
-    await threeCrv.approve(booster.address, startingThreeCrv, { from: userA });
+    await threeKgl.approve(booster.address, 0, { from: userA });
+    await threeKgl.approve(booster.address, startingThreeKgl, { from: userA });
     await booster.deposit(poolId, 10000, true, { from: userA });
-    await threeCrv.balanceOf(userA).then((a) => console.log('3crv on wallet: ' + a));
+    await threeKgl.balanceOf(userA).then((a) => console.log('3crv on wallet: ' + a));
     await rewardPool.balanceOf(userA).then((a) => console.log('deposited lp: ' + a));
-    await threeCrv.balanceOf(booster.address).then((a) => console.log('3crv at booster ' + a));
-    await voteproxy.balanceOfPool(threeCrvGauge).then((a) => console.log('3crv on gauge ' + a));
+    await threeKgl.balanceOf(booster.address).then((a) => console.log('3crv at booster ' + a));
+    await voteproxy.balanceOfPool(threeKglGauge).then((a) => console.log('3crv on gauge ' + a));
 
     //shutdown, funds move back to booster(depositor)
     await booster.shutdownSystem(false, { from: admin });
     console.log('system shutdown');
-    await threeCrv.balanceOf(userA).then((a) => console.log('3crv on wallet: ' + a));
+    await threeKgl.balanceOf(userA).then((a) => console.log('3crv on wallet: ' + a));
     await rewardPool.balanceOf(userA).then((a) => console.log('deposited lp: ' + a));
-    await threeCrv.balanceOf(booster.address).then((a) => console.log('3crv at booster ' + a));
-    await voteproxy.balanceOfPool(threeCrvGauge).then((a) => console.log('3crv on gauge ' + a));
+    await threeKgl.balanceOf(booster.address).then((a) => console.log('3crv at booster ' + a));
+    await voteproxy.balanceOfPool(threeKglGauge).then((a) => console.log('3crv on gauge ' + a));
 
     //try to deposit while in shutdown state, will revert
     console.log('try deposit again');
@@ -103,10 +103,10 @@ contract('Shutdown Test', async (accounts) => {
     //withdraw lp tokens from old booster
     console.log('withdraw');
     await booster.withdrawAll(poolId, { from: userA });
-    await threeCrv.balanceOf(userA).then((a) => console.log('3crv on wallet: ' + a));
+    await threeKgl.balanceOf(userA).then((a) => console.log('3crv on wallet: ' + a));
     await rewardPool.balanceOf(userA).then((a) => console.log('deposited lp: ' + a));
-    await threeCrv.balanceOf(booster.address).then((a) => console.log('3crv at booster ' + a));
-    await voteproxy.balanceOfPool(threeCrvGauge).then((a) => console.log('3crv on gauge ' + a));
+    await threeKgl.balanceOf(booster.address).then((a) => console.log('3crv at booster ' + a));
+    await voteproxy.balanceOfPool(threeKglGauge).then((a) => console.log('3crv on gauge ' + a));
 
     //relaunch the system and connect to voteproxy and cvx contracts
 
@@ -131,26 +131,26 @@ contract('Shutdown Test', async (accounts) => {
     await cvx.updateOperator();
     console.log('cvx operater updated');
 
-    //create new reward pools for staking cvxCrv and cvx
-    let cvxCrvRewardsContract2 = await BaseRewardPool.new(
+    //create new reward pools for staking cvxKgl and cvx
+    let cvxKglRewardsContract2 = await BaseRewardPool.new(
       0,
-      cvxCrv.address,
+      cvxKgl.address,
       crv.address,
       booster2.address,
       rewardFactory2.address
     );
-    console.log('create new cvxCrv reward pool');
+    console.log('create new cvxKgl reward pool');
     let cvxRewardsContract2 = await cvxRewardPool.new(
       cvx.address,
       crv.address,
       crvDeposit.address,
-      cvxCrvRewardsContract2.address,
-      cvxCrv.address,
+      cvxKglRewardsContract2.address,
+      cvxKgl.address,
       booster2.address,
       admin
     );
     console.log('create new cvx reward pool');
-    await booster2.setRewardContracts(cvxCrvRewardsContract2.address, cvxRewardsContract2.address);
+    await booster2.setRewardContracts(cvxKglRewardsContract2.address, cvxRewardsContract2.address);
     console.log('set stake reward contracts');
 
     //set vecrv info
@@ -161,7 +161,7 @@ contract('Shutdown Test', async (accounts) => {
     await booster2.setPoolManager(poolManager2.address);
 
     //add 3crv pool
-    await poolManager2.addPool(threeCrvSwap, threeCrvGauge, 0);
+    await poolManager2.addPool(threeKglSwap, threeKglGauge, 0);
     console.log('3crv pool added');
 
     poolinfo = await booster2.poolInfo(0);
@@ -172,14 +172,14 @@ contract('Shutdown Test', async (accounts) => {
     console.log('pool reward contract at ' + rewardPool.address);
 
     //deposit to new booster, tokens move to gauge
-    let threeCrvbalance = await threeCrv.balanceOf(userA);
-    await threeCrv.approve(booster2.address, 0, { from: userA });
-    await threeCrv.approve(booster2.address, threeCrvbalance, { from: userA });
+    let threeKglbalance = await threeKgl.balanceOf(userA);
+    await threeKgl.approve(booster2.address, 0, { from: userA });
+    await threeKgl.approve(booster2.address, threeKglbalance, { from: userA });
     await booster2.depositAll(0, true, { from: userA });
-    await threeCrv.balanceOf(userA).then((a) => console.log('3crv on wallet: ' + a));
+    await threeKgl.balanceOf(userA).then((a) => console.log('3crv on wallet: ' + a));
     await rewardPool.balanceOf(userA).then((a) => console.log('deposited lp: ' + a));
-    await threeCrv.balanceOf(booster2.address).then((a) => console.log('3crv at booster2 ' + a));
-    await voteproxy.balanceOfPool(threeCrvGauge).then((a) => console.log('3crv on gauge ' + a));
+    await threeKgl.balanceOf(booster2.address).then((a) => console.log('3crv at booster2 ' + a));
+    await voteproxy.balanceOfPool(threeKglGauge).then((a) => console.log('3crv on gauge ' + a));
 
     //increase time
     await time.increase(15 * 86400);

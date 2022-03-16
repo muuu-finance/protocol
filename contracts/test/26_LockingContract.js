@@ -24,9 +24,9 @@ contract('setup lock contract', async (accounts) => {
 
     //system
     let cvx = await IERC20.at(contractList.system.cvx);
-    let cvxcrv = await IERC20.at(contractList.system.cvxCrv);
+    let cvxcrv = await IERC20.at(contractList.system.cvxKgl);
     let cvxrewards = await cvxRewardPool.at(contractList.system.cvxRewards);
-    let cvxcrvrewards = await cvxRewardPool.at(contractList.system.cvxCrvRewards);
+    let cvxcrvrewards = await cvxRewardPool.at(contractList.system.cvxKglRewards);
     let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
@@ -149,7 +149,7 @@ contract('setup lock contract', async (accounts) => {
     var cvxcrvRewards = await BaseRewardPool.at('0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e');
     var cvxcrvBal = await cvxcrvRewards.balanceOf(holder.address);
     console.log('staked cvxcrv: ' + cvxcrvBal);
-    await holder.withdrawMuuuCrv(cvxcrvBal, userA);
+    await holder.withdrawMuuuKgl(cvxcrvBal, userA);
 
     await cvxcrv.balanceOf(userA).then((a) => console.log('withdraw cvxcrv to a: ' + a));
 

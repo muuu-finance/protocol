@@ -24,7 +24,7 @@ interface IChefRewards{
     function claim(uint256 _pid, address _account) external;
 }
 
-interface IMuuuCrvDeposit{
+interface IMuuuKglDeposit{
     function deposit(uint256, bool) external;
 }
 
@@ -50,9 +50,9 @@ contract ClaimZap is Ownable {
 
     address public crv;
     address public cvx;
-    address public cvxCrv;
+    address public cvxKgl;
     address public crvDeposit;
-    address public cvxCrvRewards;
+    address public cvxKglRewards;
     address public cvxRewards;
     address public exchange; //Factory cvxKGL in kagla
     address public locker;  //MuuuLockerV2
@@ -60,20 +60,20 @@ contract ClaimZap is Ownable {
     enum Options{
         ClaimMuuu, //1
         ClaimMuuuAndStake, //2
-        ClaimMuuuCrv, //4
+        ClaimMuuuKgl, //4
         ClaimLockedMuuu, //8
         ClaimLockedMuuuStake, //16
-        LockCrvDeposit, //32
+        LockKglDeposit, //32
         UseAllWalletFunds, //64
         LockMuuu //128
     }
 
-    constructor(address _crv, address _cvx, address _cvxCrv, address _crvDeposit, address _cvxCrvRewards, address _cvxRewards, address _exchange, address _locker ) public {
+    constructor(address _crv, address _cvx, address _cvxKgl, address _crvDeposit, address _cvxKglRewards, address _cvxRewards, address _exchange, address _locker ) public {
         crv = _crv;
         cvx = _cvx;
-        cvxCrv = _cvxCrv;
+        cvxKgl = _cvxKgl;
         crvDeposit = _crvDeposit;
-        cvxCrvRewards = _cvxCrvRewards;
+        cvxKglRewards = _cvxKglRewards;
         cvxRewards = _cvxRewards;
         exchange = _exchange;
         locker = _locker;
@@ -92,8 +92,8 @@ contract ClaimZap is Ownable {
         IERC20(cvx).safeApprove(cvxRewards, 0);
         IERC20(cvx).safeApprove(cvxRewards, uint256(-1));
 
-        IERC20(cvxCrv).safeApprove(cvxCrvRewards, 0);
-        IERC20(cvxCrv).safeApprove(cvxCrvRewards, uint256(-1));
+        IERC20(cvxKgl).safeApprove(cvxKglRewards, 0);
+        IERC20(cvxKgl).safeApprove(cvxKglRewards, uint256(-1));
 
         IERC20(cvx).safeApprove(locker, 0);
         IERC20(cvx).safeApprove(locker, uint256(-1));
@@ -108,7 +108,7 @@ contract ClaimZap is Ownable {
         address[] calldata extraRewardContracts,
         address[] calldata tokenRewardContracts,
         address[] calldata tokenRewardTokens,
-        uint256 depositCrvMaxAmount,
+        uint256 depositKglMaxAmount,
         uint256 minAmountOut,
         uint256 depositMuuuMaxAmount,
         uint256 spendMuuuAmount,
@@ -132,15 +132,15 @@ contract ClaimZap is Ownable {
         }
 
         //claim others/deposit/lock/stake
-        _claimExtras(depositCrvMaxAmount,minAmountOut,depositMuuuMaxAmount,spendMuuuAmount,crvBalance,cvxBalance,options);
+        _claimExtras(depositKglMaxAmount,minAmountOut,depositMuuuMaxAmount,spendMuuuAmount,crvBalance,cvxBalance,options);
     }
 
     function _claimExtras(
-        uint256 depositCrvMaxAmount,
+        uint256 depositKglMaxAmount,
         uint256 minAmountOut,
         uint256 depositMuuuMaxAmount,
         uint256 spendMuuuAmount,
-        uint256 removeCrvBalance,
+        uint256 removeKglBalance,
         uint256 removeMuuuBalance,
         uint256 options
         ) internal{
@@ -152,9 +152,9 @@ contract ClaimZap is Ownable {
             IMuuuRewards(cvxRewards).getReward(msg.sender,true,false);
         }
 
-        //claim from cvxCrv rewards
-        if(CheckOption(options,uint256(Options.ClaimMuuuCrv))){
-            IBasicRewards(cvxCrvRewards).getReward(msg.sender,true);
+        //claim from cvxKgl rewards
+        if(CheckOption(options,uint256(Options.ClaimMuuuKgl))){
+            IBasicRewards(cvxKglRewards).getReward(msg.sender,true);
         }
 
         //claim from locker
@@ -164,14 +164,14 @@ contract ClaimZap is Ownable {
 
         //reset remove balances if we want to also stake/lock funds already in our wallet
         if(CheckOption(options,uint256(Options.UseAllWalletFunds))){
-            removeCrvBalance = 0;
+            removeKglBalance = 0;
             removeMuuuBalance = 0;
         }
 
         //lock upto given amount of crv and stake
-        if(depositCrvMaxAmount > 0){
-            uint256 crvBalance = IERC20(crv).balanceOf(msg.sender).sub(removeCrvBalance);
-            crvBalance = MathUtil.min(crvBalance, depositCrvMaxAmount);
+        if(depositKglMaxAmount > 0){
+            uint256 crvBalance = IERC20(crv).balanceOf(msg.sender).sub(removeKglBalance);
+            crvBalance = MathUtil.min(crvBalance, depositKglMaxAmount);
             if(crvBalance > 0){
                 //pull crv
                 IERC20(crv).safeTransferFrom(msg.sender, address(this), crvBalance);
@@ -180,12 +180,12 @@ contract ClaimZap is Ownable {
                     ISwapExchange(exchange).exchange(0,1,crvBalance,minAmountOut);
                 }else{
                     //deposit
-                    IMuuuCrvDeposit(crvDeposit).deposit(crvBalance,CheckOption(options,uint256(Options.LockCrvDeposit)));
+                    IMuuuKglDeposit(crvDeposit).deposit(crvBalance,CheckOption(options,uint256(Options.LockKglDeposit)));
                 }
                 //get cvxcrv amount
-                uint256 cvxCrvBalance = IERC20(cvxCrv).balanceOf(address(this));
+                uint256 cvxKglBalance = IERC20(cvxKgl).balanceOf(address(this));
                 //stake for msg.sender
-                IBasicRewards(cvxCrvRewards).stakeFor(msg.sender, cvxCrvBalance);
+                IBasicRewards(cvxKglRewards).stakeFor(msg.sender, cvxKglBalance);
             }
         }
 

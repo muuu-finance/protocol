@@ -38,7 +38,7 @@ contract('Test Deploy locker for UI testing', async (accounts) => {
 
     //system
     let cvx = await IERC20.at(contractList.system.cvx);
-    let cvxcrv = await IERC20.at(contractList.system.cvxCrv);
+    let cvxcrv = await IERC20.at(contractList.system.cvxKgl);
 
     let userA = accounts[0];
     let userB = accounts[1];

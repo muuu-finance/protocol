@@ -4,7 +4,7 @@ var jsonfile = require('jsonfile');
 var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
-const CrvDepositor = artifacts.require('CrvDepositor');
+const KglDepositor = artifacts.require('KglDepositor');
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV1 = artifacts.require('ExtraRewardStashV1');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
@@ -12,7 +12,7 @@ const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
 const cvxRewardPool = artifacts.require('cvxRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const cvxCrvToken = artifacts.require('cvxCrvToken');
+const cvxKglToken = artifacts.require('cvxKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 const ArbitratorVault = artifacts.require('ArbitratorVault');
@@ -41,21 +41,21 @@ contract('Test masterchef rewards', async (accounts) => {
     let poolManager = await PoolManager.deployed();
     let chef = await MuuuMasterChef.deployed();
     let cvx = await MuuuToken.deployed();
-    let cvxCrv = await cvxCrvToken.deployed();
-    let crvDeposit = await CrvDepositor.deployed();
-    let cvxCrvRewards = await booster.lockRewards();
+    let cvxKgl = await cvxKglToken.deployed();
+    let crvDeposit = await KglDepositor.deployed();
+    let cvxKglRewards = await booster.lockRewards();
     let cvxRewards = await booster.stakerRewards();
-    let cvxCrvRewardsContract = await BaseRewardPool.at(cvxCrvRewards);
+    let cvxKglRewardsContract = await BaseRewardPool.at(cvxKglRewards);
     let cvxRewardsContract = await cvxRewardPool.at(cvxRewards);
 
     let cvxLP = await IERC20.at(contractList.system.cvxEthSLP);
-    let cvxCrvLP = await IERC20.at(contractList.system.cvxCrvCrvSLP);
+    let cvxKglLP = await IERC20.at(contractList.system.cvxKglKglSLP);
 
     //give to different accounts
     var cvxlpBal = await cvxLP.balanceOf(admin);
     await cvxLP.transfer(userA, cvxlpBal);
-    var cvxCrvlpBal = await cvxCrvLP.balanceOf(admin);
-    await cvxCrvLP.transfer(userB, cvxCrvlpBal);
+    var cvxKgllpBal = await cvxKglLP.balanceOf(admin);
+    await cvxKglLP.transfer(userB, cvxKgllpBal);
 
     //add extra rewards
     await weth.sendTransaction({ value: web3.utils.toWei('5.0', 'ether') });
@@ -65,10 +65,10 @@ contract('Test masterchef rewards', async (accounts) => {
     await chef.set(0, 10000, extraRewards.address, true, true);
 
     await cvxLP.approve(chef.address, cvxlpBal, { from: userA });
-    await cvxCrvLP.approve(chef.address, cvxCrvlpBal, { from: userB });
+    await cvxKglLP.approve(chef.address, cvxKgllpBal, { from: userB });
 
     await chef.deposit(1, cvxlpBal, { from: userA });
-    await chef.deposit(0, cvxCrvlpBal, { from: userB });
+    await chef.deposit(0, cvxKgllpBal, { from: userB });
 
     await chef.userInfo(1, userA).then((a) => console.log('user a cvxeth: ' + JSON.stringify(a)));
     await chef
@@ -110,7 +110,7 @@ contract('Test masterchef rewards', async (accounts) => {
     await chef.pendingMuuu(0, userB).then((a) => console.log('user b pending: ' + a));
 
     await chef.claim(1, userA);
-    await chef.withdraw(0, cvxCrvlpBal, { from: userB });
+    await chef.withdraw(0, cvxKgllpBal, { from: userB });
     await chef.pendingMuuu(1, userA).then((a) => console.log('user a pending: ' + a));
     await chef.pendingMuuu(0, userB).then((a) => console.log('user b pending: ' + a));
     await chef.userInfo(1, userA).then((a) => console.log('user a cvxeth: ' + JSON.stringify(a)));
@@ -119,7 +119,7 @@ contract('Test masterchef rewards', async (accounts) => {
       .then((a) => console.log('user b cvxcrvcrvv: ' + JSON.stringify(a)));
 
     await cvxLP.balanceOf(userA).then((a) => console.log('user a lp on wallet: ' + a));
-    await cvxCrvLP.balanceOf(userB).then((a) => console.log('user b lp on wallet: ' + a));
+    await cvxKglLP.balanceOf(userB).then((a) => console.log('user b lp on wallet: ' + a));
     await cvx.balanceOf(userA).then((a) => console.log('user a cvx on wallet: ' + a));
     await cvx.balanceOf(userB).then((a) => console.log('user b cvx on wallet: ' + a));
     await weth.balanceOf(userA).then((a) => console.log('user a weth on wallet: ' + a));

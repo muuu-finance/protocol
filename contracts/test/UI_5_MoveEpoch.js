@@ -48,9 +48,9 @@ contract('setup lock contract', async (accounts) => {
     let cvx = await IERC20.at(contractList.system.cvx);
     let stakeproxy = await MuuuStakingProxy.at(contractList.system.lockerStakeProxy);
     let locker = await MuuuLocker.at(contractList.system.locker);
-    let cvxcrv = await IERC20.at(contractList.system.cvxCrv);
+    let cvxcrv = await IERC20.at(contractList.system.cvxKgl);
     let cvxrewards = await cvxRewardPool.at(contractList.system.cvxRewards);
-    let cvxcrvrewards = await cvxRewardPool.at(contractList.system.cvxCrvRewards);
+    let cvxcrvrewards = await cvxRewardPool.at(contractList.system.cvxKglRewards);
 
     await booster.earmarkRewards(38);
     await stakeproxy.distribute();

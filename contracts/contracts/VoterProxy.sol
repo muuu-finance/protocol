@@ -36,7 +36,7 @@ contract KaglaVoterProxy is Ownable {
         return "KaglaVoterProxy";
     }
 
-    function setCrv(address _crv) external onlyOwner {
+    function setKgl(address _crv) external onlyOwner {
         crv = _crv;
     }
 
@@ -171,7 +171,7 @@ contract KaglaVoterProxy is Ownable {
         return true;
     }
 
-    function claimCrv(address _gauge) external returns (uint256){
+    function claimKgl(address _gauge) external returns (uint256){
         require(msg.sender == operator, "!auth");
 
         uint256 _balance = 0;

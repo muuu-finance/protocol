@@ -11,8 +11,8 @@ const RewardFactory = artifacts.require('RewardFactory');
 const StashFactory = artifacts.require('StashFactory');
 const TokenFactory = artifacts.require('TokenFactory');
 const MuuuToken = artifacts.require('MuuuToken');
-const cvxCrvToken = artifacts.require('cvxCrvToken');
-const CrvDepositor = artifacts.require('CrvDepositor');
+const cvxKglToken = artifacts.require('cvxKglToken');
+const KglDepositor = artifacts.require('KglDepositor');
 const PoolManager = artifacts.require('PoolManager');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const cvxRewardPool = artifacts.require('cvxRewardPool');
@@ -74,12 +74,12 @@ module.exports = function (deployer, network, accounts) {
   var totaldistro = new BN(premine).add(distroList.miningRewards);
   console.log('total cvx: ' + totaldistro.toString());
 
-  var booster, voter, rFactory, sFactory, tFactory, cvx, cvxCrv, deposit, arb, pools;
+  var booster, voter, rFactory, sFactory, tFactory, cvx, cvxKgl, deposit, arb, pools;
   var crvToken;
-  var cvxCrvRewards, cvxRewards, airdrop, vesting;
+  var cvxKglRewards, cvxRewards, airdrop, vesting;
   var pairToken;
-  var crvdepositAmt, crvbal, cvxCrvBal;
-  var crv, weth, dai, threeCrv;
+  var crvdepositAmt, crvbal, cvxKglBal;
+  var crv, weth, dai, threeKgl;
   var muuuVoterProxy;
   var cvxLockerV2;
 
@@ -126,22 +126,22 @@ module.exports = function (deployer, network, accounts) {
       dai = instance;
       addContract('mocks', 'DAI', dai.address);
     })
-    .then(() => deployer.deploy(MintableERC20, '3Crv', 'Kagla.fi DAI/USDC/USDT', 18))
+    .then(() => deployer.deploy(MintableERC20, '3Kgl', 'Kagla.fi DAI/USDC/USDT', 18))
     .then((instance) => {
-      threeCrv = instance;
-      addContract('mocks', '3Crv', threeCrv.address);
+      threeKgl = instance;
+      addContract('mocks', '3Kgl', threeKgl.address);
     })
     .then(() => deployer.deploy(MockVotingEscrow))
     .then((instance) => {
       mockVotingEscrow = instance;
       addContract('mocks', 'mockVotingEscrow', mockVotingEscrow.address);
     })
-    .then(() => deployer.deploy(MockRegistry, threeCrv.address))
+    .then(() => deployer.deploy(MockRegistry, threeKgl.address))
     .then((instance) => {
       mockRegistry = instance;
       addContract('mocks', 'mockRegistry', mockRegistry.address);
     })
-    .then(() => deployer.deploy(MockFeeDistributor, threeCrv.address))
+    .then(() => deployer.deploy(MockFeeDistributor, threeKgl.address))
     .then((instance) => {
       mockFeeDistributor = instance;
       addContract('mocks', 'mockFeeDistributor', mockFeeDistributor.address);
@@ -202,15 +202,15 @@ module.exports = function (deployer, network, accounts) {
     .then((instance) => {
       sFactory = instance;
       addContract('system', 'sFactory', sFactory.address);
-      return deployer.deploy(cvxCrvToken);
+      return deployer.deploy(cvxKglToken);
     })
     .then((instance) => {
-      cvxCrv = instance;
-      addContract('system', 'cvxCrv', cvxCrv.address);
+      cvxKgl = instance;
+      addContract('system', 'cvxKgl', cvxKgl.address);
       return deployer.deploy(
-        CrvDepositor,
+        KglDepositor,
         voter.address,
-        cvxCrv.address,
+        cvxKgl.address,
         crv.address,
         mockVotingEscrow.address // TODO: replace
       );
@@ -218,7 +218,7 @@ module.exports = function (deployer, network, accounts) {
     .then((instance) => {
       deposit = instance;
       addContract('system', 'crvDepositor', deposit.address);
-      return cvxCrv.setOperator(deposit.address);
+      return cvxKgl.setOperator(deposit.address);
     })
     .then(() => voter.setDepositor(deposit.address))
     .then(() => deposit.initialLock())
@@ -227,23 +227,23 @@ module.exports = function (deployer, network, accounts) {
       deployer.deploy(
         BaseRewardPool,
         0,
-        cvxCrv.address,
+        cvxKgl.address,
         crv.address,
         booster.address,
         rFactory.address
       )
     )
     .then((instance) => {
-      cvxCrvRewards = instance;
-      addContract('system', 'cvxCrvRewards', cvxCrvRewards.address);
+      cvxKglRewards = instance;
+      addContract('system', 'cvxKglRewards', cvxKglRewards.address);
       // reward manager is admin to add any new incentive programs
       return deployer.deploy(
         cvxRewardPool,
         cvx.address,
         crv.address,
         deposit.address,
-        cvxCrvRewards.address,
-        cvxCrv.address,
+        cvxKglRewards.address,
+        cvxKgl.address,
         booster.address,
         admin
       );
@@ -251,7 +251,7 @@ module.exports = function (deployer, network, accounts) {
     .then((instance) => {
       cvxRewards = instance;
       addContract('system', 'cvxRewards', cvxRewards.address);
-      return booster.setRewardContracts(cvxCrvRewards.address, cvxRewards.address);
+      return booster.setRewardContracts(cvxKglRewards.address, cvxRewards.address);
     })
     .then(() => deployer.deploy(PoolManager, booster.address, mockAddressProvider.address))
     .then((instance) => {
@@ -283,9 +283,9 @@ module.exports = function (deployer, network, accounts) {
         ClaimZap,
         crv.address,
         cvx.address,
-        cvxCrv.address,
+        cvxKgl.address,
         deposit.address,
-        cvxCrvRewards.address,
+        cvxKglRewards.address,
         cvxRewards.address,
         treasuryAddress, // TODO: replace. this is supposed to be Factory cvxKGL in kagla
         cvxLockerV2.address

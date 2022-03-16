@@ -17,7 +17,7 @@ contract('Voting Test', async (accounts) => {
     let addressZero = '0x0000000000000000000000000000000000000000';
 
     let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
-    let threeCrv = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
+    let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
     let vecrv = await IERC20.at('0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2');
     let vote = await IVoting.at('0xE478de485ad2fe566d49342Cbd03E49ed7DB3356');

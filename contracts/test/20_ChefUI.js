@@ -4,7 +4,7 @@ var jsonfile = require('jsonfile');
 var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
-const CrvDepositor = artifacts.require('CrvDepositor');
+const KglDepositor = artifacts.require('KglDepositor');
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV1 = artifacts.require('ExtraRewardStashV1');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
@@ -12,7 +12,7 @@ const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
 const cvxRewardPool = artifacts.require('cvxRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const cvxCrvToken = artifacts.require('cvxCrvToken');
+const cvxKglToken = artifacts.require('cvxKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 const ArbitratorVault = artifacts.require('ArbitratorVault');
@@ -41,10 +41,10 @@ contract('Test masterchef rewards setup', async (accounts) => {
     let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let chef = await MuuuMasterChef.at(contractList.system.chef);
     let cvx = await MuuuToken.at(contractList.system.cvx);
-    let cvxCrv = await cvxCrvToken.at(contractList.system.cvxCrv);
+    let cvxKgl = await cvxKglToken.at(contractList.system.cvxKgl);
     let cvxLP = await IERC20.at(contractList.system.cvxEthSLP);
-    let cvxCrvLP = await IERC20.at(contractList.system.cvxCrvCrvSLP);
-    let crvDeposit = await CrvDepositor.at(contractList.system.crvDepositor);
+    let cvxKglLP = await IERC20.at(contractList.system.cvxKglKglSLP);
+    let crvDeposit = await KglDepositor.at(contractList.system.crvDepositor);
     let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
@@ -58,8 +58,8 @@ contract('Test masterchef rewards setup', async (accounts) => {
 
     let dummyMuuu = await ChefToken.at(contractList.system.chefMuuuToken);
     console.log('dummyMuuu: ' + dummyMuuu.address);
-    let dummyMuuuCrv = await ChefToken.at(contractList.system.chefcvxCrvToken);
-    console.log('dummyMuuuCrv: ' + dummyMuuuCrv.address);
+    let dummyMuuuKgl = await ChefToken.at(contractList.system.chefcvxKglToken);
+    console.log('dummyMuuuKgl: ' + dummyMuuuKgl.address);
 
     //set points from v1 to v2
     await oldchef.set(oldchefPid, 50000, false, { from: oldchefAdmin, gasPrice: 0 });
@@ -126,16 +126,16 @@ contract('Test masterchef rewards setup', async (accounts) => {
     var depositamount = crvbalance.div(new BN('2'));
     await crv.approve(crvDeposit.address, crvbalance, { from: deployer });
     await crvDeposit.deposit(depositamount, false, addressZero, { from: deployer });
-    var cvxcrvBal = await cvxCrv.balanceOf(deployer);
+    var cvxcrvBal = await cvxKgl.balanceOf(deployer);
     crvbalance = await crv.balanceOf(deployer);
     console.log('cvxcrv bal: ' + cvxcrvBal);
     console.log('crv bal: ' + crvbalance);
     await crv.approve(exchange.address, crvbalance, { from: deployer });
-    await cvxCrv.approve(exchange.address, crvbalance, { from: deployer });
+    await cvxKgl.approve(exchange.address, crvbalance, { from: deployer });
     console.log('approved crv and cvxcrv');
     await exchangerouter.addLiquidity(
       crv.address,
-      cvxCrv.address,
+      cvxKgl.address,
       crvbalance,
       cvxcrvBal,
       0,
@@ -144,12 +144,12 @@ contract('Test masterchef rewards setup', async (accounts) => {
       starttime + 3000,
       { from: deployer }
     );
-    var cvxCrvlpbalance = await cvxCrvLP.balanceOf(deployer);
+    var cvxKgllpbalance = await cvxKglLP.balanceOf(deployer);
     // console.log("cvxcrv lpbalance: " +lpbalance);
 
     //send to test account
-    await cvxCrvLP.transfer(accounts[0], cvxCrvlpbalance, { from: deployer });
-    await cvxCrvLP.balanceOf(accounts[0]).then((a) => console.log('cvxcrvCrv lp balance: ' + a));
+    await cvxKglLP.transfer(accounts[0], cvxKgllpbalance, { from: deployer });
+    await cvxKglLP.balanceOf(accounts[0]).then((a) => console.log('cvxcrvKgl lp balance: ' + a));
 
     //get more cvx
     // await exchange.swapExactTokensForTokens(web3.utils.toWei("6.0", "ether"),0,[weth.address,cvx.address],deployer,starttime+3000,{from:deployer});
@@ -159,7 +159,7 @@ contract('Test masterchef rewards setup', async (accounts) => {
     //add slot slot for dummy token on muuu master chef
     // await chef.add(8000000000,dummyMuuu.address,addressZero,true,{from:multisig,gasPrice:0});
     // console.log("add slot to muuu chef");
-    // await chef.add(12000000000,dummyMuuuCrv.address,addressZero,true,{from:multisig,gasPrice:0});
+    // await chef.add(12000000000,dummyMuuuKgl.address,addressZero,true,{from:multisig,gasPrice:0});
     // console.log("add slot to muuu chef");
 
     //create rewarder for cvx/eth
@@ -167,15 +167,15 @@ contract('Test masterchef rewards setup', async (accounts) => {
     // let rewardercvx = await MuuuRewarder.new(cvxLP.address,cvx.address,multisig,sushiChef.address,chef.address,2);
     console.log('created cvxeth rewarder at ' + rewardercvx.address);
 
-    let rewardercvxcrv = await MuuuRewarder.at(contractList.system.cvxCrvCrvRewarder);
-    //let rewardercvxcrv = await MuuuRewarder.new(cvxCrvLP.address,cvx.address,multisig,sushiChef.address,chef.address,3);
+    let rewardercvxcrv = await MuuuRewarder.at(contractList.system.cvxKglKglRewarder);
+    //let rewardercvxcrv = await MuuuRewarder.new(cvxKglLP.address,cvx.address,multisig,sushiChef.address,chef.address,3);
     console.log('created cvxcrvcrv rewarder at ' + rewardercvxcrv.address);
 
     //add to sushi chef pool
     //await sushiChef.add(10000,cvxLP.address,rewardercvx.address,{from:sushiAdmin,gasPrice:0});
     await sushiChef.set(1, 10000, rewardercvx.address, false, { from: sushiAdmin, gasPrice: 0 });
     console.log('added slot to sushi chef');
-    //await sushiChef.add(10000,cvxCrvLP.address,rewardercvxcrv.address,{from:sushiAdmin,gasPrice:0});
+    //await sushiChef.add(10000,cvxKglLP.address,rewardercvxcrv.address,{from:sushiAdmin,gasPrice:0});
     await sushiChef.set(2, 10000, rewardercvxcrv.address, false, { from: sushiAdmin, gasPrice: 0 });
     console.log('added slot to sushi chef');
 
@@ -186,8 +186,8 @@ contract('Test masterchef rewards setup', async (accounts) => {
     var dummybal = await dummyMuuu.balanceOf(deployer);
     await dummyMuuu.approve(rewardercvx.address, dummybal, { from: deployer });
     console.log('approve dummyMuuu for ' + dummybal);
-    var dummybal = await dummyMuuuCrv.balanceOf(deployer);
-    await dummyMuuuCrv.approve(rewardercvxcrv.address, dummybal, { from: deployer });
+    var dummybal = await dummyMuuuKgl.balanceOf(deployer);
+    await dummyMuuuKgl.approve(rewardercvxcrv.address, dummybal, { from: deployer });
     console.log('approve dummyMuuu for ' + dummybal);
 
     var cvxbalance = await cvx.balanceOf(deployer);
@@ -197,7 +197,7 @@ contract('Test masterchef rewards setup', async (accounts) => {
     console.log('send cvx to rewardercvx: ' + cvxbalance);
     await rewardercvx.init(dummyMuuu.address, { from: deployer });
     console.log('init rewardercvx');
-    await rewardercvxcrv.init(dummyMuuuCrv.address, { from: deployer });
+    await rewardercvxcrv.init(dummyMuuuKgl.address, { from: deployer });
     console.log('init rewardercvxcrv');
   });
 });

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.6 .12;
 
-import "./interfaces/ICrvDepositor.sol";
+import "./interfaces/IKglDepositor.sol";
 import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
@@ -41,11 +41,11 @@ contract MuuuStakingProxy {
     //tokens
     address public constant crv = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
     address public constant cvx = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
-    address public constant cvxCrv = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
+    address public constant cvxKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
 
     //muuu addresses
     address public constant cvxStaking = address(0xCF50b810E57Ac33B91dCF525C6ddd9881B139332);
-    address public constant cvxCrvStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
+    address public constant cvxKglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
     address public constant crvDeposit = address(0x8014595F2AB54cD7c604B00E9fb932176fDc86Ae);
     uint256 public constant denominator = 10000;
 
@@ -88,13 +88,13 @@ contract MuuuStakingProxy {
         IERC20(crv).safeApprove(crvDeposit, 0);
         IERC20(crv).safeApprove(crvDeposit, uint256(-1));
 
-        IERC20(cvxCrv).safeApprove(rewards, 0);
-        IERC20(cvxCrv).safeApprove(rewards, uint256(-1));
+        IERC20(cvxKgl).safeApprove(rewards, 0);
+        IERC20(cvxKgl).safeApprove(rewards, uint256(-1));
     }
 
     function rescueToken(address _token, address _to) external {
         require(msg.sender == owner, "!auth");
-        require(_token != crv && _token != cvx && _token != cvxCrv, "not allowed");
+        require(_token != crv && _token != cvx && _token != cvxKgl, "not allowed");
 
         uint256 bal = IERC20(_token).balanceOf(address(this));
         IERC20(_token).safeTransfer(_to, bal);
@@ -128,35 +128,35 @@ contract MuuuStakingProxy {
         //convert any crv that was directly added
         uint256 crvBal = IERC20(crv).balanceOf(address(this));
         if (crvBal > 0) {
-            ICrvDepositor(crvDeposit).deposit(crvBal, true);
+            IKglDepositor(crvDeposit).deposit(crvBal, true);
         }
 
         //make sure nothing is in here
-        uint256 sCheck  = IMuuuRewards(cvxCrvStaking).balanceOf(address(this));
+        uint256 sCheck  = IMuuuRewards(cvxKglStaking).balanceOf(address(this));
         if(sCheck > 0){
-            IMuuuRewards(cvxCrvStaking).withdraw(sCheck,false);
+            IMuuuRewards(cvxKglStaking).withdraw(sCheck,false);
         }
 
         //distribute cvxcrv
-        uint256 cvxCrvBal = IERC20(cvxCrv).balanceOf(address(this));
+        uint256 cvxKglBal = IERC20(cvxKgl).balanceOf(address(this));
 
-        if (cvxCrvBal > 0) {
-            uint256 incentiveAmount = cvxCrvBal.mul(callIncentive).div(denominator);
-            cvxCrvBal = cvxCrvBal.sub(incentiveAmount);
+        if (cvxKglBal > 0) {
+            uint256 incentiveAmount = cvxKglBal.mul(callIncentive).div(denominator);
+            cvxKglBal = cvxKglBal.sub(incentiveAmount);
 
             //send incentives
-            IERC20(cvxCrv).safeTransfer(msg.sender,incentiveAmount);
+            IERC20(cvxKgl).safeTransfer(msg.sender,incentiveAmount);
 
             //update rewards
-            IMuuuLocker(rewards).notifyRewardAmount(cvxCrv, cvxCrvBal);
+            IMuuuLocker(rewards).notifyRewardAmount(cvxKgl, cvxKglBal);
 
-            emit RewardsDistributed(cvxCrv, cvxCrvBal);
+            emit RewardsDistributed(cvxKgl, cvxKglBal);
         }
     }
 
     //in case a new reward is ever added, allow generic distribution
     function distributeOther(IERC20 _token) external {
-        require( address(_token) != crv && address(_token) != cvxCrv, "not allowed");
+        require( address(_token) != crv && address(_token) != cvxKgl, "not allowed");
 
         uint256 bal = _token.balanceOf(address(this));
 

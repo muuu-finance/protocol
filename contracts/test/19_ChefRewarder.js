@@ -4,7 +4,7 @@ var jsonfile = require('jsonfile');
 var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
-const CrvDepositor = artifacts.require('CrvDepositor');
+const KglDepositor = artifacts.require('KglDepositor');
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV1 = artifacts.require('ExtraRewardStashV1');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
@@ -12,7 +12,7 @@ const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
 const cvxRewardPool = artifacts.require('cvxRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const cvxCrvToken = artifacts.require('cvxCrvToken');
+const cvxKglToken = artifacts.require('cvxKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 const ArbitratorVault = artifacts.require('ArbitratorVault');
@@ -41,8 +41,8 @@ contract('Test masterchef rewards', async (accounts) => {
     let chef = await MuuuMasterChef.at(contractList.system.chef);
     let cvx = await MuuuToken.at(contractList.system.cvx);
     let cvxLP = await IERC20.at(contractList.system.cvxEthSLP);
-    let cvxCrv = await cvxCrvToken.at(contractList.system.cvxCrv);
-    let cvxCrvLP = await IERC20.at(contractList.system.cvxCrvCrvSLP);
+    let cvxKgl = await cvxKglToken.at(contractList.system.cvxKgl);
+    let cvxKglLP = await IERC20.at(contractList.system.cvxKglKglSLP);
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
@@ -55,22 +55,22 @@ contract('Test masterchef rewards', async (accounts) => {
 
     // let dummyMuuu = await ChefToken.at(contractList.system.chefMuuuToken);
     // console.log("dummyMuuu: " +dummyMuuu.address);
-    // let dummyMuuuCrv = await ChefToken.at(contractList.system.chefcvxCrvToken);
-    // console.log("dummyMuuuCrv: " +dummyMuuuCrv.address);
+    // let dummyMuuuKgl = await ChefToken.at(contractList.system.chefcvxKglToken);
+    // console.log("dummyMuuuKgl: " +dummyMuuuKgl.address);
 
     let rewardercvx = await MuuuRewarder.at(contractList.system.cvxEthRewarder);
-    let rewardercvxcrv = await MuuuRewarder.at(contractList.system.cvxCrvCrvRewarder);
+    let rewardercvxcrv = await MuuuRewarder.at(contractList.system.cvxKglKglRewarder);
 
     let dummyMuuu = await ChefToken.at(contractList.system.chefMuuuToken);
     console.log('dummyMuuu: ' + dummyMuuu.address);
-    let dummyMuuuCrv = await ChefToken.at(contractList.system.chefcvxCrvToken);
-    console.log('dummyMuuuCrv: ' + dummyMuuuCrv.address);
+    let dummyMuuuKgl = await ChefToken.at(contractList.system.chefcvxKglToken);
+    console.log('dummyMuuuKgl: ' + dummyMuuuKgl.address);
     //call init(dummy.address)
     var dummybal = await dummyMuuu.balanceOf(deployer);
     await dummyMuuu.approve(rewardercvx.address, dummybal, { from: deployer });
     console.log('approve dummyMuuu for ' + dummybal);
-    var dummybal = await dummyMuuuCrv.balanceOf(deployer);
-    await dummyMuuuCrv.approve(rewardercvxcrv.address, dummybal, { from: deployer });
+    var dummybal = await dummyMuuuKgl.balanceOf(deployer);
+    await dummyMuuuKgl.approve(rewardercvxcrv.address, dummybal, { from: deployer });
     console.log('approve dummyMuuu for ' + dummybal);
 
     // var cvxbalance = await cvx.balanceOf(deployer);
@@ -89,7 +89,7 @@ contract('Test masterchef rewards', async (accounts) => {
     // console.log("send cvx to rewardercvx: " +cvxbalance)
     await rewardercvx.init(dummyMuuu.address, { from: deployer });
     console.log('init rewardercvx');
-    await rewardercvxcrv.init(dummyMuuuCrv.address, { from: deployer });
+    await rewardercvxcrv.init(dummyMuuuKgl.address, { from: deployer });
     console.log('init rewardercvxcrv');
 
     // return;
