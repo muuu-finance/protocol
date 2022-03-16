@@ -59,7 +59,7 @@ contract('Test masterchef rewards', async (accounts) => {
     // console.log("dummyMuuuKgl: " +dummyMuuuKgl.address);
 
     let rewardermuuu = await MuuuRewarder.at(contractList.system.muuuEthRewarder);
-    let rewardermuuukgl = await MuuuRewarder.at(contractList.system.muuuKglKglRewarder);
+    let rewardermukgl = await MuuuRewarder.at(contractList.system.muuuKglKglRewarder);
 
     let dummyMuuu = await ChefToken.at(contractList.system.chefMuuuToken);
     console.log('dummyMuuu: ' + dummyMuuu.address);
@@ -70,27 +70,27 @@ contract('Test masterchef rewards', async (accounts) => {
     await dummyMuuu.approve(rewardermuuu.address, dummybal, { from: deployer });
     console.log('approve dummyMuuu for ' + dummybal);
     var dummybal = await dummyMuuuKgl.balanceOf(deployer);
-    await dummyMuuuKgl.approve(rewardermuuukgl.address, dummybal, { from: deployer });
+    await dummyMuuuKgl.approve(rewardermukgl.address, dummybal, { from: deployer });
     console.log('approve dummyMuuu for ' + dummybal);
 
     // var muuubalance = await muuu.balanceOf(deployer);
     // muuubalance = muuubalance.div(new BN("2"));
-    var muuukglAmount = '54000000000000000000000';
+    var mukglAmount = '54000000000000000000000';
     var muuuAmount = '36000000000000000000000';
     await muuu.transfer(rewardermuuu.address, muuuAmount, { from: deployer });
-    await muuu.transfer(rewardermuuukgl.address, muuukglAmount, { from: deployer });
+    await muuu.transfer(rewardermukgl.address, mukglAmount, { from: deployer });
     await muuu.balanceOf(deployer).then((a) => console.log('balance on deployer:' + a));
     await muuu
       .balanceOf(rewardermuuu.address)
       .then((a) => console.log('balance on rewardermuuu:' + a));
     await muuu
-      .balanceOf(rewardermuuukgl.address)
-      .then((a) => console.log('balance on rewardermuuukgl:' + a));
+      .balanceOf(rewardermukgl.address)
+      .then((a) => console.log('balance on rewardermukgl:' + a));
     // console.log("send muuu to rewardermuuu: " +muuubalance)
     await rewardermuuu.init(dummyMuuu.address, { from: deployer });
     console.log('init rewardermuuu');
-    await rewardermuuukgl.init(dummyMuuuKgl.address, { from: deployer });
-    console.log('init rewardermuuukgl');
+    await rewardermukgl.init(dummyMuuuKgl.address, { from: deployer });
+    console.log('init rewardermukgl');
 
     // return;
 

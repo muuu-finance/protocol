@@ -137,7 +137,7 @@ contract MuuuStakingProxy {
             IMuuuRewards(muuuKglStaking).withdraw(sCheck,false);
         }
 
-        //distribute muuukgl
+        //distribute mukgl
         uint256 muuuKglBal = IERC20(muuuKgl).balanceOf(address(this));
 
         if (muuuKglBal > 0) {

@@ -37,7 +37,7 @@ contract('Deploy muuu pool hook', async (accounts) => {
 
     var newmuuupid = 6;
     var oldmuuuPid = 2;
-    var muuukglPid = 4;
+    var mukglPid = 4;
     var treasuryPid = 5;
 
     //create a reward hook
@@ -58,7 +58,7 @@ contract('Deploy muuu pool hook', async (accounts) => {
 
     await chef.add(1000, cheftoken.address, addressZero, false, { from: multisig, gasPrice: 0 });
     await chef.set(oldmuuuPid, 0, addressZero, true, false, { from: multisig, gasPrice: 0 });
-    await chef.set(muuukglPid, 1000, addressZero, true, false, { from: multisig, gasPrice: 0 });
+    await chef.set(mukglPid, 1000, addressZero, true, false, { from: multisig, gasPrice: 0 });
     await chef.set(treasuryPid, 8000, addressZero, true, false, { from: multisig, gasPrice: 0 });
     await stash.setRewardHook(hook.address, { from: multisig, gasPrice: 0 });
 

@@ -33,7 +33,7 @@ contract('Rescue tokens from voteProxy', async (accounts) => {
     //system
     let booster = await Booster.at(contractList.system.booster);
     let muuu = await IERC20.at(contractList.system.muuu);
-    let muuukgl = await IERC20.at(contractList.system.muuuKgl);
+    let mukgl = await IERC20.at(contractList.system.muuuKgl);
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');

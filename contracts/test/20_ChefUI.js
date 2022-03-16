@@ -112,7 +112,7 @@ contract('Test masterchef rewards setup', async (accounts) => {
     await muuuLP.transfer(accounts[0], lpbalance, { from: deployer });
     await muuuLP.balanceOf(accounts[0]).then((a) => console.log('muuuEth lp balance: ' + a));
 
-    //get muuukgl slp
+    //get mukgl slp
     await exchange.swapExactTokensForTokens(
       web3.utils.toWei('1.0', 'ether'),
       0,
@@ -126,18 +126,18 @@ contract('Test masterchef rewards setup', async (accounts) => {
     var depositamount = kglbalance.div(new BN('2'));
     await kgl.approve(kglDeposit.address, kglbalance, { from: deployer });
     await kglDeposit.deposit(depositamount, false, addressZero, { from: deployer });
-    var muuukglBal = await muuuKgl.balanceOf(deployer);
+    var mukglBal = await muuuKgl.balanceOf(deployer);
     kglbalance = await kgl.balanceOf(deployer);
-    console.log('muuukgl bal: ' + muuukglBal);
+    console.log('mukgl bal: ' + mukglBal);
     console.log('kgl bal: ' + kglbalance);
     await kgl.approve(exchange.address, kglbalance, { from: deployer });
     await muuuKgl.approve(exchange.address, kglbalance, { from: deployer });
-    console.log('approved kgl and muuukgl');
+    console.log('approved kgl and mukgl');
     await exchangerouter.addLiquidity(
       kgl.address,
       muuuKgl.address,
       kglbalance,
-      muuukglBal,
+      mukglBal,
       0,
       0,
       deployer,
@@ -145,11 +145,11 @@ contract('Test masterchef rewards setup', async (accounts) => {
       { from: deployer }
     );
     var muuuKgllpbalance = await muuuKglLP.balanceOf(deployer);
-    // console.log("muuukgl lpbalance: " +lpbalance);
+    // console.log("mukgl lpbalance: " +lpbalance);
 
     //send to test account
     await muuuKglLP.transfer(accounts[0], muuuKgllpbalance, { from: deployer });
-    await muuuKglLP.balanceOf(accounts[0]).then((a) => console.log('muuukglKgl lp balance: ' + a));
+    await muuuKglLP.balanceOf(accounts[0]).then((a) => console.log('mukglKgl lp balance: ' + a));
 
     //get more muuu
     // await exchange.swapExactTokensForTokens(web3.utils.toWei("6.0", "ether"),0,[weth.address,muuu.address],deployer,starttime+3000,{from:deployer});
@@ -167,16 +167,16 @@ contract('Test masterchef rewards setup', async (accounts) => {
     // let rewardermuuu = await MuuuRewarder.new(muuuLP.address,muuu.address,multisig,sushiChef.address,chef.address,2);
     console.log('created muuueth rewarder at ' + rewardermuuu.address);
 
-    let rewardermuuukgl = await MuuuRewarder.at(contractList.system.muuuKglKglRewarder);
-    //let rewardermuuukgl = await MuuuRewarder.new(muuuKglLP.address,muuu.address,multisig,sushiChef.address,chef.address,3);
-    console.log('created muuukglkgl rewarder at ' + rewardermuuukgl.address);
+    let rewardermukgl = await MuuuRewarder.at(contractList.system.muuuKglKglRewarder);
+    //let rewardermukgl = await MuuuRewarder.new(muuuKglLP.address,muuu.address,multisig,sushiChef.address,chef.address,3);
+    console.log('created mukglkgl rewarder at ' + rewardermukgl.address);
 
     //add to sushi chef pool
     //await sushiChef.add(10000,muuuLP.address,rewardermuuu.address,{from:sushiAdmin,gasPrice:0});
     await sushiChef.set(1, 10000, rewardermuuu.address, false, { from: sushiAdmin, gasPrice: 0 });
     console.log('added slot to sushi chef');
-    //await sushiChef.add(10000,muuuKglLP.address,rewardermuuukgl.address,{from:sushiAdmin,gasPrice:0});
-    await sushiChef.set(2, 10000, rewardermuuukgl.address, false, {
+    //await sushiChef.add(10000,muuuKglLP.address,rewardermukgl.address,{from:sushiAdmin,gasPrice:0});
+    await sushiChef.set(2, 10000, rewardermukgl.address, false, {
       from: sushiAdmin,
       gasPrice: 0,
     });
@@ -190,17 +190,17 @@ contract('Test masterchef rewards setup', async (accounts) => {
     await dummyMuuu.approve(rewardermuuu.address, dummybal, { from: deployer });
     console.log('approve dummyMuuu for ' + dummybal);
     var dummybal = await dummyMuuuKgl.balanceOf(deployer);
-    await dummyMuuuKgl.approve(rewardermuuukgl.address, dummybal, { from: deployer });
+    await dummyMuuuKgl.approve(rewardermukgl.address, dummybal, { from: deployer });
     console.log('approve dummyMuuu for ' + dummybal);
 
     var muuubalance = await muuu.balanceOf(deployer);
     muuubalance = muuubalance.div(new BN('2'));
     await muuu.transfer(rewardermuuu.address, muuubalance, { from: deployer });
-    await muuu.transfer(rewardermuuukgl.address, muuubalance, { from: deployer });
+    await muuu.transfer(rewardermukgl.address, muuubalance, { from: deployer });
     console.log('send muuu to rewardermuuu: ' + muuubalance);
     await rewardermuuu.init(dummyMuuu.address, { from: deployer });
     console.log('init rewardermuuu');
-    await rewardermuuukgl.init(dummyMuuuKgl.address, { from: deployer });
-    console.log('init rewardermuuukgl');
+    await rewardermukgl.init(dummyMuuuKgl.address, { from: deployer });
+    console.log('init rewardermukgl');
   });
 });

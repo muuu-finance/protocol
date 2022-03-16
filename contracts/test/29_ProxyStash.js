@@ -28,7 +28,7 @@ contract('setup stash proxies', async (accounts) => {
     //system
     let booster = await Booster.at(contractList.system.booster);
     let muuu = await IERC20.at(contractList.system.muuu);
-    let muuukgl = await IERC20.at(contractList.system.muuuKgl);
+    let mukgl = await IERC20.at(contractList.system.muuuKgl);
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
@@ -94,23 +94,23 @@ contract('setup stash proxies', async (accounts) => {
     // await voter.executeVote(73);
     // console.log("vote executed");
 
-    var muuukglLP = await IERC20.at('0x9D0464996170c6B9e75eED71c68B99dDEDf279e8');
-    var muuukglGauge = '0x903dA6213a5A12B61c821598154EfAd98C3B20E4';
+    var mukglLP = await IERC20.at('0x9D0464996170c6B9e75eED71c68B99dDEDf279e8');
+    var mukglGauge = '0x903dA6213a5A12B61c821598154EfAd98C3B20E4';
     var trigauge = '0xDeFd8FdD20e0f34115C7018CCfb655796F6B2168';
 
     //add weight
-    // await booster.voteGaugeWeight([trigauge,muuukglGauge],[0,1500],{from:multisig,gasPrice:0});
+    // await booster.voteGaugeWeight([trigauge,mukglGauge],[0,1500],{from:multisig,gasPrice:0});
     // console.log("weight added");
 
     // await advanceTime(day*7);
 
     await pools.revertControl({ from: multisig, gasPrice: 0 });
     console.log('reverted pool control');
-    var tx = await booster.addPool(muuukglLP.address, muuukglGauge, 3, {
+    var tx = await booster.addPool(mukglLP.address, mukglGauge, 3, {
       from: multisig,
       gasPrice: 0,
     });
-    console.log('muuukgl pool added, gas: ' + tx.receipt.gasUsed);
+    console.log('mukgl pool added, gas: ' + tx.receipt.gasUsed);
 
     var poolLength = await booster.poolLength();
     var poolInfo = await booster.poolInfo(poolLength - 1);
@@ -133,16 +133,16 @@ contract('setup stash proxies', async (accounts) => {
     console.log('swapped for kgl(userA): ' + kglbalance);
 
     //deposit into pool
-    var pool = await I2KaglaFi.at(muuukglLP.address);
+    var pool = await I2KaglaFi.at(mukglLP.address);
     await kgl.approve(pool.address, kglbalance);
     await pool.add_liquidity([kglbalance, 0], 0);
     console.log('added liquidity');
 
-    var lptokens = await muuukglLP.balanceOf(userA);
+    var lptokens = await mukglLP.balanceOf(userA);
     console.log('lp tokens: ' + lptokens);
 
     //deposit
-    await muuukglLP.approve(booster.address, lptokens);
+    await mukglLP.approve(booster.address, lptokens);
     await booster.depositAll(poolLength - 1, true);
     console.log('deposited');
 

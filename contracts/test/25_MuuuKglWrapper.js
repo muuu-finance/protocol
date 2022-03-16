@@ -17,8 +17,8 @@ const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01');
 const MuuuMining = artifacts.require('MuuuMining');
 const MuuuKglRari = artifacts.require('MuuuKglRari');
 
-contract('Test muuukgl stake wrapper', async (accounts) => {
-  it('should deposit muuukgl and earn rewards while being transferable', async () => {
+contract('Test mukgl stake wrapper', async (accounts) => {
+  it('should deposit mukgl and earn rewards while being transferable', async () => {
     let deployer = '0x947B7742C403f20e5FaCcDAc5E092C943E7D0277';
     let multisig = '0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB';
     let addressZero = '0x0000000000000000000000000000000000000000';

@@ -17,7 +17,7 @@ contract BasicMuuuHolder{
 
 
     address public constant muuuKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
-    address public constant muuukglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
+    address public constant mukglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
     address public constant muuu = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
     address public constant kgl = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
     address public constant kglDeposit = address(0x8014595F2AB54cD7c604B00E9fb932176fDc86Ae);
@@ -31,8 +31,8 @@ contract BasicMuuuHolder{
     }
 
     function setApprovals() external {
-        IERC20(muuuKgl).safeApprove(muuukglStaking, 0);
-        IERC20(muuuKgl).safeApprove(muuukglStaking, uint256(-1));
+        IERC20(muuuKgl).safeApprove(mukglStaking, 0);
+        IERC20(muuuKgl).safeApprove(mukglStaking, uint256(-1));
 
         IERC20(muuu).safeApprove(address(muuulocker), 0);
         IERC20(muuu).safeApprove(address(muuulocker), uint256(-1));
@@ -73,16 +73,16 @@ contract BasicMuuuHolder{
         require(msg.sender == operator, "!auth");
 
         muuulocker.getReward(address(this), true);
-        IRewardStaking(muuukglStaking).getReward(address(this), true);
+        IRewardStaking(mukglStaking).getReward(address(this), true);
 
         uint256 kglBal = IERC20(kgl).balanceOf(address(this));
         if (kglBal > 0) {
             IKglDepositor(kglDeposit).deposit(kglBal, true);
         }
 
-        uint muuukglBal = IERC20(muuuKgl).balanceOf(address(this));
-        if(muuukglBal > 0){
-            IRewardStaking(muuukglStaking).stake(muuukglBal);
+        uint mukglBal = IERC20(muuuKgl).balanceOf(address(this));
+        if(mukglBal > 0){
+            IRewardStaking(mukglStaking).stake(mukglBal);
         }
     }
 
@@ -90,10 +90,10 @@ contract BasicMuuuHolder{
         require(msg.sender == operator, "!auth");
         require(_withdrawTo != address(0),"bad address");
 
-        IRewardStaking(muuukglStaking).withdraw(_amount, true);
-        uint muuukglBal = IERC20(muuuKgl).balanceOf(address(this));
-        if(muuukglBal > 0){
-            IERC20(muuuKgl).safeTransfer(_withdrawTo, muuukglBal);
+        IRewardStaking(mukglStaking).withdraw(_amount, true);
+        uint mukglBal = IERC20(muuuKgl).balanceOf(address(this));
+        if(mukglBal > 0){
+            IERC20(muuuKgl).safeTransfer(_withdrawTo, mukglBal);
         }
     }
 

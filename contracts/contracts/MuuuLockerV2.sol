@@ -105,7 +105,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
     uint256 public minimumStake = 10000;
     uint256 public maximumStake = 10000;
     address public stakingProxy;
-    address public constant muuukglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
+    address public constant mukglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
     uint256 public constant stakeOffsetOnLock = 500; //allow broader range for staking when depositing
 
     //management
@@ -218,10 +218,10 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
         isShutdown = true;
     }
 
-    //set approvals for staking muuu and muuukgl
+    //set approvals for staking muuu and mukgl
     function setApprovals() external {
-        IERC20(muuuKgl).safeApprove(muuukglStaking, 0);
-        IERC20(muuuKgl).safeApprove(muuukglStaking, uint256(-1));
+        IERC20(muuuKgl).safeApprove(mukglStaking, 0);
+        IERC20(muuuKgl).safeApprove(mukglStaking, uint256(-1));
 
         IERC20(stakingToken).safeApprove(stakingProxy, 0);
         IERC20(stakingToken).safeApprove(stakingProxy, uint256(-1));
@@ -798,7 +798,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
             if (reward > 0) {
                 rewards[_account][_rewardsToken] = 0;
                 if (_rewardsToken == muuuKgl && _stake) {
-                    IRewardStaking(muuukglStaking).stakeFor(_account, reward);
+                    IRewardStaking(mukglStaking).stakeFor(_account, reward);
                 } else {
                     IERC20(_rewardsToken).safeTransfer(_account, reward);
                 }

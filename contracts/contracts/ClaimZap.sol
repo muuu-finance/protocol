@@ -182,7 +182,7 @@ contract ClaimZap is Ownable {
                     //deposit
                     IMuuuKglDeposit(kglDeposit).deposit(kglBalance,CheckOption(options,uint256(Options.LockKglDeposit)));
                 }
-                //get muuukgl amount
+                //get mukgl amount
                 uint256 muuuKglBalance = IERC20(muuuKgl).balanceOf(address(this));
                 //stake for msg.sender
                 IBasicRewards(muuuKglRewards).stakeFor(msg.sender, muuuKglBalance);

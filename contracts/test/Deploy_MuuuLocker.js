@@ -19,9 +19,9 @@ contract('Deploy MUUU Locker', async (accounts) => {
     //system
     let booster = await Booster.at(contractList.system.booster);
     let muuu = await IERC20.at(contractList.system.muuu);
-    let muuukgl = await IERC20.at(contractList.system.muuuKgl);
+    let mukgl = await IERC20.at(contractList.system.muuuKgl);
     let muuurewards = await muuuRewardPool.at(contractList.system.muuuRewards);
-    let muuukglrewards = await muuuRewardPool.at(contractList.system.muuuKglRewards);
+    let mukglrewards = await muuuRewardPool.at(contractList.system.muuuKglRewards);
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
 
     //deploy
@@ -34,7 +34,7 @@ contract('Deploy MUUU Locker', async (accounts) => {
     contractList.system.lockerStakeProxy = stakeproxy.address;
     jsonfile.writeFileSync('./contracts.json', contractList, { spaces: 4 });
     await stakeproxy.setApprovals();
-    await locker.addReward(muuukgl.address, stakeproxy.address, true, { from: deployer });
+    await locker.addReward(mukgl.address, stakeproxy.address, true, { from: deployer });
     await locker.setStakingContract(stakeproxy.address, { from: deployer });
     await locker.setApprovals();
     await locker.transferOwnership(multisig, { from: deployer });
@@ -55,12 +55,12 @@ contract('Deploy MUUU Locker', async (accounts) => {
     // await booster.earmarkRewards(38);
 
     // await kgl.balanceOf(stakeproxy.address).then(a=>console.log("extra incentive on stakeproxy: " +a))
-    // await muuukgl.balanceOf(locker.address).then(a=>console.log("muuukgl on locker: " +a))
+    // await mukgl.balanceOf(locker.address).then(a=>console.log("mukgl on locker: " +a))
 
     // await stakeproxy.distribute();
     // await kgl.balanceOf(stakeproxy.address).then(a=>console.log("kgl on stakeproxy: " +a))
     // await kgl.balanceOf(locker.address).then(a=>console.log("kgl incentive on locker: " +a))
-    // await muuukgl.balanceOf(locker.address).then(a=>console.log("muuukgl on locker: " +a))
+    // await mukgl.balanceOf(locker.address).then(a=>console.log("mukgl on locker: " +a))
 
     console.log('setup complete');
   });

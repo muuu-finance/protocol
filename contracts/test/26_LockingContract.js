@@ -24,9 +24,9 @@ contract('setup lock contract', async (accounts) => {
 
     //system
     let muuu = await IERC20.at(contractList.system.muuu);
-    let muuukgl = await IERC20.at(contractList.system.muuuKgl);
+    let mukgl = await IERC20.at(contractList.system.muuuKgl);
     let muuurewards = await muuuRewardPool.at(contractList.system.muuuRewards);
-    let muuukglrewards = await muuuRewardPool.at(contractList.system.muuuKglRewards);
+    let mukglrewards = await muuuRewardPool.at(contractList.system.muuuKglRewards);
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
@@ -80,7 +80,7 @@ contract('setup lock contract', async (accounts) => {
     contractList.system.lockerStakeProxy = stakeproxy.address;
     // jsonfile.writeFileSync("./contracts.json", contractList, { spaces: 4 });
     await stakeproxy.setApprovals();
-    await locker.addReward(muuukgl.address, stakeproxy.address, true, { from: deployer });
+    await locker.addReward(mukgl.address, stakeproxy.address, true, { from: deployer });
     await locker.setStakingContract(stakeproxy.address, { from: deployer });
     await locker.setApprovals();
     console.log('setup complete');
@@ -146,12 +146,12 @@ contract('setup lock contract', async (accounts) => {
 
     await holder.processExpiredLocks(false, 0);
     console.log('locks processed');
-    var muuukglRewards = await BaseRewardPool.at('0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e');
-    var muuukglBal = await muuukglRewards.balanceOf(holder.address);
-    console.log('staked muuukgl: ' + muuukglBal);
-    await holder.withdrawMuuuKgl(muuukglBal, userA);
+    var mukglRewards = await BaseRewardPool.at('0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e');
+    var mukglBal = await mukglRewards.balanceOf(holder.address);
+    console.log('staked mukgl: ' + mukglBal);
+    await holder.withdrawMuuuKgl(mukglBal, userA);
 
-    await muuukgl.balanceOf(userA).then((a) => console.log('withdraw muuukgl to a: ' + a));
+    await mukgl.balanceOf(userA).then((a) => console.log('withdraw mukgl to a: ' + a));
 
     await holder.withdrawTo(muuu.address, muuubalance, userA);
 

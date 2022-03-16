@@ -38,7 +38,7 @@ contract('Test Deploy locker for UI testing', async (accounts) => {
 
     //system
     let muuu = await IERC20.at(contractList.system.muuu);
-    let muuukgl = await IERC20.at(contractList.system.muuuKgl);
+    let mukgl = await IERC20.at(contractList.system.muuuKgl);
 
     let userA = accounts[0];
     let userB = accounts[1];
@@ -86,7 +86,7 @@ contract('Test Deploy locker for UI testing', async (accounts) => {
     let stakeproxy = await MuuuStakingProxyV2.new(locker.address, { from: deployer });
     console.log('deployed v2: ' + locker.address);
     await stakeproxy.setApprovals();
-    await locker.addReward(muuukgl.address, stakeproxy.address, true, { from: deployer });
+    await locker.addReward(mukgl.address, stakeproxy.address, true, { from: deployer });
     await locker.setStakingContract(stakeproxy.address, { from: deployer });
     await locker.setApprovals();
     await locker.checkpointEpoch();

@@ -46,9 +46,9 @@ contract('Test lock contract', async (accounts) => {
 
     //system
     let muuu = await IERC20.at(contractList.system.muuu);
-    let muuukgl = await IERC20.at(contractList.system.muuuKgl);
+    let mukgl = await IERC20.at(contractList.system.muuuKgl);
     let muuurewards = await muuuRewardPool.at(contractList.system.muuuRewards);
-    let muuukglrewards = await muuuRewardPool.at(contractList.system.muuuKglRewards);
+    let mukglrewards = await muuuRewardPool.at(contractList.system.muuuKglRewards);
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
@@ -89,7 +89,7 @@ contract('Test lock contract', async (accounts) => {
     // await oldLocker.methods['processExpiredLocks(bool,uint256,address)'](true,0,userA,{from:userZ});
     // await oldLocker.claimableRewards(userA).then(a=>console.log("userA claimableRewards: " +a));
     // await oldLocker.getReward(userA,false);
-    // await muuukgl.balanceOf(userA).then(a=>console.log("muuukgl userA: " +a));
+    // await mukgl.balanceOf(userA).then(a=>console.log("mukgl userA: " +a));
 
     //shutdown old locker
     var lockeradmin = await LockerAdmin.at(contractList.system.lockerAdmin);
@@ -108,7 +108,7 @@ contract('Test lock contract', async (accounts) => {
     await stakeproxy.setPendingOwner(multisig, { from: deployer });
     await stakeproxy.applyPendingOwner({ from: deployer });
     await stakeproxy.owner().then((a) => console.log('stake proxy owner: ' + a));
-    await locker.addReward(muuukgl.address, stakeproxy.address, true, { from: deployer });
+    await locker.addReward(mukgl.address, stakeproxy.address, true, { from: deployer });
     await locker.setStakingContract(stakeproxy.address, { from: deployer });
     await locker.setApprovals();
     console.log('rewards and approvals set');
@@ -142,7 +142,7 @@ contract('Test lock contract', async (accounts) => {
       console.log('\t   totalSupply: ' + tsup);
       await locker.lockedSupply().then((a) => console.log('\t   lockedSupply: ' + a));
       await locker.boostedSupply().then((a) => console.log('\t   boostedSupply: ' + a));
-      await muuukgl.balanceOf(locker.address).then((a) => console.log('\t   muuukgl: ' + a));
+      await mukgl.balanceOf(locker.address).then((a) => console.log('\t   mukgl: ' + a));
       var epochs = await locker.epochCount();
       console.log('\t   epochs: ' + epochs);
       for (var i = 0; i < epochs; i++) {
@@ -196,8 +196,8 @@ contract('Test lock contract', async (accounts) => {
         .then((a) => console.log('\t   nextunlockIndex: ' + a.nextUnlockIndex));
       await locker.claimableRewards(_user).then((a) => console.log('\t   claimableRewards: ' + a));
       await muuu.balanceOf(_user).then((a) => console.log('\t   muuu wallet: ' + a));
-      await muuukgl.balanceOf(_user).then((a) => console.log('\t   muuukgl wallet: ' + a));
-      await muuukglrewards.balanceOf(_user).then((a) => console.log('\t   staked muuukgl: ' + a));
+      await mukgl.balanceOf(_user).then((a) => console.log('\t   mukgl wallet: ' + a));
+      await mukglrewards.balanceOf(_user).then((a) => console.log('\t   staked mukgl: ' + a));
       var epochs = await locker.epochCount();
       for (var i = 0; i < epochs; i++) {
         var balAtE = await locker.balanceAtEpochOf(i, _user);
@@ -296,17 +296,17 @@ contract('Test lock contract', async (accounts) => {
     await lockerInfo();
 
     //rewards and distribute
-    //move muuukgl from deployer for readability
-    var b = await muuukgl.balanceOf(deployer);
-    await muuukgl.transfer(userD, b, { from: deployer });
+    //move mukgl from deployer for readability
+    var b = await mukgl.balanceOf(deployer);
+    await mukgl.transfer(userD, b, { from: deployer });
 
     await muuurewards.getReward(stakeproxy.address, true, true);
-    await muuukglrewards
+    await mukglrewards
       .balanceOf(stakeproxy.address)
-      .then((a) => console.log('staked muuukgl on proxy: ' + a));
-    await muuukgl.balanceOf(stakeproxy.address).then((a) => console.log('muuukgl on proxy: ' + a));
-    await muuukgl.balanceOf(locker.address).then((a) => console.log('muuukgl on locker: ' + a));
-    await muuukgl.balanceOf(deployer).then((a) => console.log('muuukgl on deployer: ' + a));
+      .then((a) => console.log('staked mukgl on proxy: ' + a));
+    await mukgl.balanceOf(stakeproxy.address).then((a) => console.log('mukgl on proxy: ' + a));
+    await mukgl.balanceOf(locker.address).then((a) => console.log('mukgl on locker: ' + a));
+    await mukgl.balanceOf(deployer).then((a) => console.log('mukgl on deployer: ' + a));
 
     await stakeproxy
       .distribute({ from: userA })
@@ -317,12 +317,12 @@ contract('Test lock contract', async (accounts) => {
     console.log('set distributor user a');
     await stakeproxy.distribute({ from: userA });
     console.log('distribute() from user a');
-    await muuukglrewards
+    await mukglrewards
       .balanceOf(stakeproxy.address)
-      .then((a) => console.log('staked muuukgl on proxy: ' + a));
-    await muuukgl.balanceOf(stakeproxy.address).then((a) => console.log('muuukgl on proxy: ' + a));
-    await muuukgl.balanceOf(locker.address).then((a) => console.log('muuukgl on locker: ' + a));
-    await muuukgl.balanceOf(deployer).then((a) => console.log('muuukgl on deployer(fees): ' + a));
+      .then((a) => console.log('staked mukgl on proxy: ' + a));
+    await mukgl.balanceOf(stakeproxy.address).then((a) => console.log('mukgl on proxy: ' + a));
+    await mukgl.balanceOf(locker.address).then((a) => console.log('mukgl on locker: ' + a));
+    await mukgl.balanceOf(deployer).then((a) => console.log('mukgl on deployer(fees): ' + a));
 
     await lockerInfo();
     await userInfo(userZ);

@@ -73,7 +73,7 @@ contract('Test masterchef rewards', async (accounts) => {
     await chef.userInfo(1, userA).then((a) => console.log('user a muuueth: ' + JSON.stringify(a)));
     await chef
       .userInfo(0, userB)
-      .then((a) => console.log('user b muuukglkglv: ' + JSON.stringify(a)));
+      .then((a) => console.log('user b mukglkglv: ' + JSON.stringify(a)));
     await time.increase(60);
     await time.advanceBlock();
     await chef.pendingMuuu(1, userA).then((a) => console.log('user a pending: ' + a));
@@ -116,7 +116,7 @@ contract('Test masterchef rewards', async (accounts) => {
     await chef.userInfo(1, userA).then((a) => console.log('user a muuueth: ' + JSON.stringify(a)));
     await chef
       .userInfo(0, userB)
-      .then((a) => console.log('user b muuukglkglv: ' + JSON.stringify(a)));
+      .then((a) => console.log('user b mukglkglv: ' + JSON.stringify(a)));
 
     await muuuLP.balanceOf(userA).then((a) => console.log('user a lp on wallet: ' + a));
     await muuuKglLP.balanceOf(userB).then((a) => console.log('user b lp on wallet: ' + a));

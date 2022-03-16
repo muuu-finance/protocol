@@ -48,9 +48,9 @@ contract('setup lock contract', async (accounts) => {
     let muuu = await IERC20.at(contractList.system.muuu);
     let stakeproxy = await MuuuStakingProxy.at(contractList.system.lockerStakeProxy);
     let locker = await MuuuLocker.at(contractList.system.locker);
-    let muuukgl = await IERC20.at(contractList.system.muuuKgl);
+    let mukgl = await IERC20.at(contractList.system.muuuKgl);
     let muuurewards = await muuuRewardPool.at(contractList.system.muuuRewards);
-    let muuukglrewards = await muuuRewardPool.at(contractList.system.muuuKglRewards);
+    let mukglrewards = await muuuRewardPool.at(contractList.system.muuuKglRewards);
 
     await booster.earmarkRewards(38);
     await stakeproxy.distribute();
@@ -65,7 +65,7 @@ contract('setup lock contract', async (accounts) => {
       console.log('\t   totalSupply: ' + tsup);
       await locker.lockedSupply().then((a) => console.log('\t   lockedSupply: ' + a));
       await locker.boostedSupply().then((a) => console.log('\t   boostedSupply: ' + a));
-      await muuukgl.balanceOf(locker.address).then((a) => console.log('\t   muuukgl: ' + a));
+      await mukgl.balanceOf(locker.address).then((a) => console.log('\t   mukgl: ' + a));
       var epochs = await locker.epochCount();
       console.log('\t   epochs: ' + epochs);
       for (var i = 0; i < epochs; i++) {
@@ -118,8 +118,8 @@ contract('setup lock contract', async (accounts) => {
         .then((a) => console.log('\t   nextunlockIndex: ' + a.nextUnlockIndex));
       await locker.claimableRewards(_user).then((a) => console.log('\t   claimableRewards: ' + a));
       await muuu.balanceOf(_user).then((a) => console.log('\t   muuu wallet: ' + a));
-      await muuukgl.balanceOf(_user).then((a) => console.log('\t   muuukgl wallet: ' + a));
-      await muuukglrewards.balanceOf(_user).then((a) => console.log('\t   staked muuukgl: ' + a));
+      await mukgl.balanceOf(_user).then((a) => console.log('\t   mukgl wallet: ' + a));
+      await mukglrewards.balanceOf(_user).then((a) => console.log('\t   staked mukgl: ' + a));
       var epochs = await locker.epochCount();
       for (var i = 0; i < epochs; i++) {
         var balAtE = await locker.balanceAtEpochOf(i, _user);
