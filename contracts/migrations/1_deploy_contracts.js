@@ -199,7 +199,7 @@ module.exports = function (deployer, network, accounts) {
         voter.address,
         cvxCrv.address,
         crv.address,
-        mockCurveVoteEscrow.address
+        mockCurveVoteEscrow.address // TODO: replace
       );
     })
     .then(function (instance) {
