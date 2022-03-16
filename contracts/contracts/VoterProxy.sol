@@ -14,7 +14,7 @@ contract KaglaVoterProxy is Ownable {
     using Address for address;
     using SafeMath for uint256;
 
-    address public crv; // IERC20 / CRV Token
+    address public crv; // IERC20 / KGL Token
     address public votingEscrow; // for Specialize DEX
     address public gaugeController; // IVoting / GaugeController
     address public tokenMinter; // IMinter / Minter

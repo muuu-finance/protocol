@@ -49,7 +49,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
     address public muuuPool;
     uint256 public muuuPoolId;
     address public collateralVault;
-    uint256 private constant CRV_INDEX = 0;
+    uint256 private constant KGL_INDEX = 0;
     uint256 private constant MUUU_INDEX = 1;
 
     //rewards
@@ -155,7 +155,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
                     reward_remaining: 0
                 })
             );
-            registeredRewards[crv] = CRV_INDEX+1; //mark registered at index+1
+            registeredRewards[crv] = KGL_INDEX+1; //mark registered at index+1
             registeredRewards[cvx] = MUUU_INDEX+1; //mark registered at index+1
         }
 
@@ -314,7 +314,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
 
             //calc cvx minted from crv and add to cvx claimables
             //note: crv is always index 0 so will always run before cvx
-            if(i == CRV_INDEX){
+            if(i == KGL_INDEX){
                 //because someone can call claim for the pool outside of checkpoints, need to recalculate crv without the local balance
                 I = reward.reward_integral;
                 if (supply > 0) {

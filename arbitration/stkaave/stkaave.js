@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { ethers } = require('ethers');
 const jsonfile = require('jsonfile');
-const { CRV_ABI, ARB_ABI } = require('./abi');
+const { KGL_ABI, ARB_ABI } = require('./abi');
 var BN = require('big-number');
 
 const config = jsonfile.readFileSync('./config.json');
@@ -27,7 +27,7 @@ const saaveRewards = '0x20165075174b51a2f9Efbf7d6D8F3c72BBc63064';
 const aaveStash = '0x5D4CF00939aa5F7C2cEb10c88615E9bcb0dd67fa';
 const saaveStash = '0xd2D46004b981FdE1e4D39d0C24E1Be1e93689DD9';
 
-const stkaaveContract = new ethers.Contract(stkaave, CRV_ABI, provider);
+const stkaaveContract = new ethers.Contract(stkaave, KGL_ABI, provider);
 const stkaaveInstance = stkaaveContract.connect(provider);
 
 const vaultContract = new ethers.Contract(arbVault, ARB_ABI, provider);

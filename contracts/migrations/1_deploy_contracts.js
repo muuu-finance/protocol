@@ -111,10 +111,10 @@ module.exports = function (deployer, network, accounts) {
 
   deployer
     // ========================== Preparation start ==========================
-    .deploy(MintableERC20, 'crv', 'CRV', 18)
+    .deploy(MintableERC20, 'crv', 'KGL', 18)
     .then((instance) => {
       crv = instance;
-      addContract('mocks', 'CRV', crv.address);
+      addContract('mocks', 'KGL', crv.address);
     })
     .then(() => deployer.deploy(MintableERC20, 'weth', 'WETH', 18))
     .then((instance) => {
@@ -287,7 +287,7 @@ module.exports = function (deployer, network, accounts) {
         deposit.address,
         cvxCrvRewards.address,
         cvxRewards.address,
-        treasuryAddress, // TODO: replace. this is supposed to be Factory cvxCRV in kagla
+        treasuryAddress, // TODO: replace. this is supposed to be Factory cvxKGL in kagla
         cvxLockerV2.address
       );
     })

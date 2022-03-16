@@ -54,7 +54,7 @@ contract ClaimZap is Ownable {
     address public crvDeposit;
     address public cvxCrvRewards;
     address public cvxRewards;
-    address public exchange; //Factory cvxCRV in kagla
+    address public exchange; //Factory cvxKGL in kagla
     address public locker;  //MuuuLockerV2
 
     enum Options{

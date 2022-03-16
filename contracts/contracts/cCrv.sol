@@ -19,8 +19,8 @@ contract cvxCrvToken is ERC20 {
     constructor()
         public
         ERC20(
-            "Muuu CRV",
-            "cvxCRV"
+            "Muuu KGL",
+            "cvxKGL"
         )
     {
         operator = msg.sender;
