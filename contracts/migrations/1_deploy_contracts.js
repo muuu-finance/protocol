@@ -134,7 +134,7 @@ module.exports = function (deployer, network, accounts) {
       return deployer.deploy(
         CurveVoterProxy,
         crv.address,
-        mockCurveVoteEscrow.address,
+        mockVotingEscrow.address,
         ZERO_ADDRESS, // TODO:
         ZERO_ADDRESS // TODO:
       );
@@ -199,7 +199,7 @@ module.exports = function (deployer, network, accounts) {
         voter.address,
         cvxCrv.address,
         crv.address,
-        mockCurveVoteEscrow.address // TODO: replace
+        mockVotingEscrow.address // TODO: replace
       );
     })
     .then(function (instance) {
