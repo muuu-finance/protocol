@@ -210,10 +210,9 @@ module.exports = function (deployer, network, accounts) {
     .then(function () {
       return voter.setDepositor(deposit.address);
     })
-    // TODO:
-    // .then(function () {
-    //   return deposit.initialLock();
-    // })
+    .then(function () {
+      return deposit.initialLock();
+    })
     .then(function () {
       return booster.setTreasury(deposit.address);
     })
@@ -253,14 +252,14 @@ module.exports = function (deployer, network, accounts) {
     .then(function (instance) {
       pools = instance;
       addContract('system', 'poolManager', pools.address);
-      // TODO:
-      // return booster.setPoolManager(pools.address)
+      return booster.setPoolManager(pools.address);
     })
     .then(function () {
       return booster.setFactories(rFactory.address, sFactory.address, tFactory.address);
-      // }).then(function() {
+    })
+    .then(function () {
       //  TODO:
-      // 	return booster.setFeeInfo()
+      // return booster.setFeeInfo();
     })
     .then(function () {
       return deployer.deploy(ArbitratorVault, booster.address);
