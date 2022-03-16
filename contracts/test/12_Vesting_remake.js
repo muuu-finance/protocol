@@ -12,12 +12,14 @@ const VestedEscrow = artifacts.require("VestedEscrow");
 const cvxRewardPool = artifacts.require("cvxRewardPool");
 const ConvexToken = artifacts.require("ConvexToken");
 
+const VotingEscrow = artifacts.require("MockCurveVoteEscrow");
 
 contract("VestedEscrow Test", async accounts => {
   it("should claim unlock over time and claim", async () => {
 
     //system
-    const curveVoterProxy = await CurveVoterProxy.new();
+    const votingEscrow = await VotingEscrow.new();
+    const curveVoterProxy = await CurveVoterProxy.new(votingEscrow.address);
     const cvx = await ConvexToken.new(curveVoterProxy.address)
     let cvxRewards = await cvxRewardPool.new(
       cvx.address,

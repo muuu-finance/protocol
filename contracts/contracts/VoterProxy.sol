@@ -13,21 +13,25 @@ contract CurveVoterProxy {
     using Address for address;
     using SafeMath for uint256;
 
-    address public constant mintr = address(0xd061D61a4d941c39E5453435B6345Dc261C2fcE0);
-    address public constant crv = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
+    address public constant mintr = address(0xd061D61a4d941c39E5453435B6345Dc261C2fcE0); // IMinter / Minter
+    address public constant crv = address(0xD533a949740bb3306d119CC777fa900bA034cd52); // IERC20 / CRV Token
 
-    address public constant escrow = address(0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2);
-    address public constant gaugeController = address(0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB);
+    // address public constant escrow = address(0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2); // VotingEscrow
+    address public constant gaugeController = address(0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB); // IVoting / GaugeController
     
     address public owner;
     address public operator;
     address public depositor;
+
+    // for Specialize DEX
+    address public votingEscrow;
     
     mapping (address => bool) private stashPool;
     mapping (address => bool) private protectedTokens;
 
-    constructor() public {
+    constructor(address _votingEscrow) public {
         owner = msg.sender;
+        votingEscrow = _votingEscrow;
     }
 
     function getName() external pure returns (string memory) {
@@ -118,29 +122,29 @@ contract CurveVoterProxy {
 
     function createLock(uint256 _value, uint256 _unlockTime) external returns(bool){
         require(msg.sender == depositor, "!auth");
-        IERC20(crv).safeApprove(escrow, 0);
-        IERC20(crv).safeApprove(escrow, _value);
-        ICurveVoteEscrow(escrow).create_lock(_value, _unlockTime);
+        IERC20(crv).safeApprove(votingEscrow, 0);
+        IERC20(crv).safeApprove(votingEscrow, _value);
+        ICurveVoteEscrow(votingEscrow).create_lock(_value, _unlockTime);
         return true;
     }
 
     function increaseAmount(uint256 _value) external returns(bool){
         require(msg.sender == depositor, "!auth");
-        IERC20(crv).safeApprove(escrow, 0);
-        IERC20(crv).safeApprove(escrow, _value);
-        ICurveVoteEscrow(escrow).increase_amount(_value);
+        IERC20(crv).safeApprove(votingEscrow, 0);
+        IERC20(crv).safeApprove(votingEscrow, _value);
+        ICurveVoteEscrow(votingEscrow).increase_amount(_value);
         return true;
     }
 
     function increaseTime(uint256 _value) external returns(bool){
         require(msg.sender == depositor, "!auth");
-        ICurveVoteEscrow(escrow).increase_unlock_time(_value);
+        ICurveVoteEscrow(votingEscrow).increase_unlock_time(_value);
         return true;
     }
 
     function release() external returns(bool){
         require(msg.sender == depositor, "!auth");
-        ICurveVoteEscrow(escrow).withdraw();
+        ICurveVoteEscrow(votingEscrow).withdraw();
         return true;
     }
 

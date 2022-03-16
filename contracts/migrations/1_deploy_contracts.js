@@ -22,8 +22,13 @@ const VestedEscrow = artifacts.require('VestedEscrow');
 const MerkleAirdrop = artifacts.require('MerkleAirdrop');
 const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory');
 const MintableERC20 = artifacts.require('MintableERC20');
+const MockVotingEscrow = artifacts.require("MockCurveVoteEscrow");
 
 module.exports = function (deployer, network, accounts) {
+  if (network === "skipMigration") {
+    console.log(`Skip migration in ${network} network`);
+    return;
+  }
   console.log('deployer:', deployer);
   // you need to prepare curveVoterProxy beforehand
   // const convexVoterProxy = "0xE7FDdA2a4Ba464A9F11a54A62B378E79c94d8332";
@@ -71,6 +76,8 @@ module.exports = function (deployer, network, accounts) {
   var crv, weth, dai;
   var convexVoterProxy;
 
+  let mockVotingEscrow;
+
   var rewardsStart = Math.floor(Date.now() / 1000) + 3600;
   var rewardsEnd = rewardsStart + 1 * 364 * 86400;
 
@@ -116,7 +123,11 @@ module.exports = function (deployer, network, accounts) {
       addContract('mocks', 'DAI', dai.address);
     })
     .then(function () {
-      return deployer.deploy(CurveVoterProxy);
+      return deployer.deploy(MockVotingEscrow);
+    })
+    .then(function (instance) {
+      mockVotingEscrow = instance
+      return deployer.deploy(CurveVoterProxy, mockVotingEscrow.address);
     })
     .then(function (instance) {
       voter = instance;
