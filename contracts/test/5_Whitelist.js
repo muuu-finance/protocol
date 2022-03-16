@@ -8,10 +8,10 @@ const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
-//const muuuKglRewardPool = artifacts.require("muuuKglRewardPool");
+//const muKglRewardPool = artifacts.require("muKglRewardPool");
 const muuuRewardPool = artifacts.require('muuuRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const muuuKglToken = artifacts.require('muuuKglToken');
+const muKglToken = artifacts.require('muKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 
@@ -46,11 +46,11 @@ contract('Whitelist Test', async (accounts) => {
     let rewardFactory = await RewardFactory.deployed();
     let stashFactory = await StashFactory.deployed();
     let muuu = await MuuuToken.deployed();
-    let muuuKgl = await muuuKglToken.deployed();
+    let muKgl = await muKglToken.deployed();
     let kglDeposit = await KglDepositor.deployed();
-    let muuuKglRewards = await booster.lockRewards();
+    let muKglRewards = await booster.lockRewards();
     let muuuRewards = await booster.stakerRewards();
-    let muuuKglRewardsContract = await BaseRewardPool.at(muuuKglRewards);
+    let muKglRewardsContract = await BaseRewardPool.at(muKglRewards);
     let muuuRewardsContract = await muuuRewardPool.at(muuuRewards);
 
     var poolId = contractList.pools.find((pool) => pool.name == '3pool').id;
@@ -88,18 +88,18 @@ contract('Whitelist Test', async (accounts) => {
 
     //check balances, kgl should still be on depositor
     await kgl.balanceOf(userA).then((a) => console.log('kgl on wallet: ' + a));
-    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
-    await muuuKgl.totalSupply().then((a) => console.log('muuuKgl supply: ' + a));
+    await muKgl.balanceOf(userA).then((a) => console.log('muKgl on wallet: ' + a));
+    await muKgl.totalSupply().then((a) => console.log('muKgl supply: ' + a));
     await kgl.balanceOf(kglDeposit.address).then((a) => console.log('depositor kgl(>0): ' + a));
     await kgl.balanceOf(voteproxy.address).then((a) => console.log('proxy kgl(==0): ' + a));
     await vekgl.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(==0): ' + a));
 
-    //try burning from muuuKgl to reclaim kgl (only doable before lock made)
-    console.log('try burn 100 muuuKgl');
+    //try burning from muKgl to reclaim kgl (only doable before lock made)
+    console.log('try burn 100 muKgl');
     await kglDeposit.burn(100, { from: userA });
     await kgl.balanceOf(userA).then((a) => console.log('kgl on wallet: ' + a));
-    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
-    await muuuKgl.totalSupply().then((a) => console.log('muuuKgl supply: ' + a));
+    await muKgl.balanceOf(userA).then((a) => console.log('muKgl on wallet: ' + a));
+    await muKgl.totalSupply().then((a) => console.log('muKgl supply: ' + a));
 
     //add to whitelist
     await walletChecker.approveWallet(voteproxy.address, { from: checkerAdmin, gasPrice: 0 });
@@ -137,8 +137,8 @@ contract('Whitelist Test', async (accounts) => {
     console.log('kgl deposited (initial lock)');
 
     //check balances, kgl should have moved to proxy and vekgl should be >0
-    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
-    await muuuKgl.totalSupply().then((a) => console.log('muuuKgl supply: ' + a));
+    await muKgl.balanceOf(userA).then((a) => console.log('muKgl on wallet: ' + a));
+    await muKgl.totalSupply().then((a) => console.log('muKgl supply: ' + a));
     await kgl.balanceOf(kglDeposit.address).then((a) => console.log('depositor kgl(==0): ' + a));
     await kgl.balanceOf(voteproxy.address).then((a) => console.log('proxy kgl(==0): ' + a));
     await vekgl.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(>0): ' + a));
@@ -146,14 +146,14 @@ contract('Whitelist Test', async (accounts) => {
 
     //try burning again after lock, which will fail
     await kgl.balanceOf(userA).then((a) => console.log('kgl on wallet: ' + a));
-    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
-    await muuuKgl.totalSupply().then((a) => console.log('muuuKgl supply: ' + a));
-    console.log('try burn 100 muuuKgl after whitelist(should catch error)');
+    await muKgl.balanceOf(userA).then((a) => console.log('muKgl on wallet: ' + a));
+    await muKgl.totalSupply().then((a) => console.log('muKgl supply: ' + a));
+    console.log('try burn 100 muKgl after whitelist(should catch error)');
     await kglDeposit.burn(100, { from: userA }).catch((a) => console.log('--> burn reverted'));
 
     await kgl.balanceOf(userA).then((a) => console.log('kgl on wallet: ' + a));
-    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
-    await muuuKgl.totalSupply().then((a) => console.log('muuuKgl supply: ' + a));
+    await muKgl.balanceOf(userA).then((a) => console.log('muKgl on wallet: ' + a));
+    await muKgl.totalSupply().then((a) => console.log('muKgl supply: ' + a));
 
     //increase time a bit
     await time.increase(86400);
@@ -167,8 +167,8 @@ contract('Whitelist Test', async (accounts) => {
       from: userA,
     });
     console.log('kgl deposited (amount increase only)');
-    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
-    await muuuKgl.totalSupply().then((a) => console.log('muuuKgl supply: ' + a));
+    await muKgl.balanceOf(userA).then((a) => console.log('muKgl on wallet: ' + a));
+    await muKgl.totalSupply().then((a) => console.log('muKgl supply: ' + a));
     await kgl.balanceOf(kglDeposit.address).then((a) => console.log('depositor kgl(==0): ' + a));
     await kgl.balanceOf(voteproxy.address).then((a) => console.log('proxy kgl(==0): ' + a));
     await vekgl.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(>0): ' + a));
@@ -186,8 +186,8 @@ contract('Whitelist Test', async (accounts) => {
       from: userA,
     });
     console.log('kgl deposited (amount+time increase)');
-    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
-    await muuuKgl.totalSupply().then((a) => console.log('muuuKgl supply: ' + a));
+    await muKgl.balanceOf(userA).then((a) => console.log('muKgl on wallet: ' + a));
+    await muKgl.totalSupply().then((a) => console.log('muKgl supply: ' + a));
     await kgl.balanceOf(kglDeposit.address).then((a) => console.log('depositor kgl(==0): ' + a));
     await kgl.balanceOf(voteproxy.address).then((a) => console.log('proxy kgl(==0): ' + a));
     await vekgl.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(>0): ' + a));
@@ -227,8 +227,8 @@ contract('Whitelist Test', async (accounts) => {
       from: userA,
     });
     console.log('kgl deposited but not locked');
-    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
-    await muuuKgl.totalSupply().then((a) => console.log('muuuKgl supply: ' + a));
+    await muKgl.balanceOf(userA).then((a) => console.log('muKgl on wallet: ' + a));
+    await muKgl.totalSupply().then((a) => console.log('muKgl supply: ' + a));
     await kgl.balanceOf(kglDeposit.address).then((a) => console.log('depositor kgl(==0): ' + a));
     await kgl.balanceOf(voteproxy.address).then((a) => console.log('proxy kgl(==0): ' + a));
     await vekgl.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl: ' + a));
@@ -237,12 +237,12 @@ contract('Whitelist Test', async (accounts) => {
     //this function timeouts in infura when trying to process 4 years.
     //to test release/createlock, the contract needs to be modified to only lock a month or so
 
-    //lock deposited kgl, caller should get a bit of muuuKgl for compensation
+    //lock deposited kgl, caller should get a bit of muKgl for compensation
     await kglDeposit.lockKagla({ from: caller });
     console.log('kgl locked');
-    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
-    await muuuKgl.balanceOf(caller).then((a) => console.log('muuuKgl on caller: ' + a));
-    await muuuKgl.totalSupply().then((a) => console.log('muuuKgl supply: ' + a));
+    await muKgl.balanceOf(userA).then((a) => console.log('muKgl on wallet: ' + a));
+    await muKgl.balanceOf(caller).then((a) => console.log('muKgl on caller: ' + a));
+    await muKgl.totalSupply().then((a) => console.log('muKgl supply: ' + a));
     await kgl.balanceOf(kglDeposit.address).then((a) => console.log('depositor kgl(==0): ' + a));
     await kgl.balanceOf(voteproxy.address).then((a) => console.log('proxy kgl(==0): ' + a));
     await vekgl.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(>0): ' + a));

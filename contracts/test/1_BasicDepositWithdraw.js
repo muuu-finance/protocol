@@ -11,7 +11,7 @@ const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
 const muuuRewardPool = artifacts.require('muuuRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const muuuKglToken = artifacts.require('muuuKglToken');
+const muKglToken = artifacts.require('muKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 
@@ -42,9 +42,9 @@ contract('BasicDepositWithdraw', async (accounts) => {
     let voterewardFactoryproxy = await RewardFactory.deployed();
     let stashFactory = await StashFactory.deployed();
     let muuu = await MuuuToken.deployed();
-    let muuuKgl = await muuuKglToken.deployed();
+    let muKgl = await muKglToken.deployed();
     let kglDeposit = await KglDepositor.deployed();
-    let muuuKglRewards = await booster.lockRewards();
+    let muKglRewards = await booster.lockRewards();
     let muuuRewards = await booster.stakerRewards();
 
     var poolId = contractList.pools.find((pool) => pool.name == '3pool').id;

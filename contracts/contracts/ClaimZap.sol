@@ -50,9 +50,9 @@ contract ClaimZap is Ownable {
 
     address public kgl;
     address public muuu;
-    address public muuuKgl;
+    address public muKgl;
     address public kglDeposit;
-    address public muuuKglRewards;
+    address public muKglRewards;
     address public muuuRewards;
     address public exchange; //Factory muuuKGL in kagla
     address public locker;  //MuuuLockerV2
@@ -68,12 +68,12 @@ contract ClaimZap is Ownable {
         LockMuuu //128
     }
 
-    constructor(address _kgl, address _muuu, address _muuuKgl, address _kglDeposit, address _muuuKglRewards, address _muuuRewards, address _exchange, address _locker ) public {
+    constructor(address _kgl, address _muuu, address _muKgl, address _kglDeposit, address _muKglRewards, address _muuuRewards, address _exchange, address _locker ) public {
         kgl = _kgl;
         muuu = _muuu;
-        muuuKgl = _muuuKgl;
+        muKgl = _muKgl;
         kglDeposit = _kglDeposit;
-        muuuKglRewards = _muuuKglRewards;
+        muKglRewards = _muKglRewards;
         muuuRewards = _muuuRewards;
         exchange = _exchange;
         locker = _locker;
@@ -92,8 +92,8 @@ contract ClaimZap is Ownable {
         IERC20(muuu).safeApprove(muuuRewards, 0);
         IERC20(muuu).safeApprove(muuuRewards, uint256(-1));
 
-        IERC20(muuuKgl).safeApprove(muuuKglRewards, 0);
-        IERC20(muuuKgl).safeApprove(muuuKglRewards, uint256(-1));
+        IERC20(muKgl).safeApprove(muKglRewards, 0);
+        IERC20(muKgl).safeApprove(muKglRewards, uint256(-1));
 
         IERC20(muuu).safeApprove(locker, 0);
         IERC20(muuu).safeApprove(locker, uint256(-1));
@@ -152,9 +152,9 @@ contract ClaimZap is Ownable {
             IMuuuRewards(muuuRewards).getReward(msg.sender,true,false);
         }
 
-        //claim from muuuKgl rewards
+        //claim from muKgl rewards
         if(CheckOption(options,uint256(Options.ClaimMuuuKgl))){
-            IBasicRewards(muuuKglRewards).getReward(msg.sender,true);
+            IBasicRewards(muKglRewards).getReward(msg.sender,true);
         }
 
         //claim from locker
@@ -183,9 +183,9 @@ contract ClaimZap is Ownable {
                     IMuuuKglDeposit(kglDeposit).deposit(kglBalance,CheckOption(options,uint256(Options.LockKglDeposit)));
                 }
                 //get mukgl amount
-                uint256 muuuKglBalance = IERC20(muuuKgl).balanceOf(address(this));
+                uint256 muKglBalance = IERC20(muKgl).balanceOf(address(this));
                 //stake for msg.sender
-                IBasicRewards(muuuKglRewards).stakeFor(msg.sender, muuuKglBalance);
+                IBasicRewards(muKglRewards).stakeFor(msg.sender, muKglBalance);
             }
         }
 

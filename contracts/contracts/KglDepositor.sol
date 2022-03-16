@@ -112,7 +112,7 @@ contract KglDepositor is Ownable {
         }
     }
 
-    //deposit kgl for muuuKgl
+    //deposit kgl for muKgl
     //can locking immediately or defer locking to someone else by paying a fee.
     //while users can choose to lock or defer, this is mostly in place so that
     //the muuu reward contract isnt costly to claim rewards

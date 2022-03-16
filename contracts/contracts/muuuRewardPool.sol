@@ -58,8 +58,8 @@ contract muuuRewardPool{
 
     address public immutable operator;
     address public immutable kglDeposits;
-    address public immutable muuuKglRewards;
-    IERC20 public immutable muuuKglToken;
+    address public immutable muKglRewards;
+    IERC20 public immutable muKglToken;
     address public immutable rewardManager;
 
     uint256 public periodFinish = 0;
@@ -86,8 +86,8 @@ contract muuuRewardPool{
         address stakingToken_,
         address rewardToken_,
         address kglDeposits_,
-        address muuuKglRewards_,
-        address muuuKglToken_,
+        address muKglRewards_,
+        address muKglToken_,
         address operator_,
         address rewardManager_
     ) public {
@@ -96,8 +96,8 @@ contract muuuRewardPool{
         operator = operator_;
         rewardManager = rewardManager_;
         kglDeposits = kglDeposits_;
-        muuuKglRewards = muuuKglRewards_;
-        muuuKglToken = IERC20(muuuKglToken_);
+        muKglRewards = muKglRewards_;
+        muKglToken = IERC20(muKglToken_);
     }
 
     function totalSupply() public view returns (uint256) {
@@ -254,15 +254,15 @@ contract muuuRewardPool{
             rewardToken.safeApprove(kglDeposits,reward);
             IKglDeposit(kglDeposits).deposit(reward,false);
 
-            uint256 muuuKglBalance = muuuKglToken.balanceOf(address(this));
+            uint256 muKglBalance = muKglToken.balanceOf(address(this));
             if(_stake){
-                IERC20(muuuKglToken).safeApprove(muuuKglRewards,0);
-                IERC20(muuuKglToken).safeApprove(muuuKglRewards,muuuKglBalance);
-                IRewards(muuuKglRewards).stakeFor(_account,muuuKglBalance);
+                IERC20(muKglToken).safeApprove(muKglRewards,0);
+                IERC20(muKglToken).safeApprove(muKglRewards,muKglBalance);
+                IRewards(muKglRewards).stakeFor(_account,muKglBalance);
             }else{
-                muuuKglToken.safeTransfer(_account, muuuKglBalance);
+                muKglToken.safeTransfer(_account, muKglBalance);
             }
-            emit RewardPaid(_account, muuuKglBalance);
+            emit RewardPaid(_account, muKglBalance);
         }
 
         //also get rewards from linked rewards

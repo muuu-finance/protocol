@@ -16,7 +16,7 @@ contract BasicMuuuHolder{
     using Address for address;
 
 
-    address public constant muuuKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
+    address public constant muKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
     address public constant mukglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
     address public constant muuu = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
     address public constant kgl = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
@@ -31,8 +31,8 @@ contract BasicMuuuHolder{
     }
 
     function setApprovals() external {
-        IERC20(muuuKgl).safeApprove(mukglStaking, 0);
-        IERC20(muuuKgl).safeApprove(mukglStaking, uint256(-1));
+        IERC20(muKgl).safeApprove(mukglStaking, 0);
+        IERC20(muKgl).safeApprove(mukglStaking, uint256(-1));
 
         IERC20(muuu).safeApprove(address(muuulocker), 0);
         IERC20(muuu).safeApprove(address(muuulocker), uint256(-1));
@@ -80,7 +80,7 @@ contract BasicMuuuHolder{
             IKglDepositor(kglDeposit).deposit(kglBal, true);
         }
 
-        uint mukglBal = IERC20(muuuKgl).balanceOf(address(this));
+        uint mukglBal = IERC20(muKgl).balanceOf(address(this));
         if(mukglBal > 0){
             IRewardStaking(mukglStaking).stake(mukglBal);
         }
@@ -91,9 +91,9 @@ contract BasicMuuuHolder{
         require(_withdrawTo != address(0),"bad address");
 
         IRewardStaking(mukglStaking).withdraw(_amount, true);
-        uint mukglBal = IERC20(muuuKgl).balanceOf(address(this));
+        uint mukglBal = IERC20(muKgl).balanceOf(address(this));
         if(mukglBal > 0){
-            IERC20(muuuKgl).safeTransfer(_withdrawTo, mukglBal);
+            IERC20(muKgl).safeTransfer(_withdrawTo, mukglBal);
         }
     }
 

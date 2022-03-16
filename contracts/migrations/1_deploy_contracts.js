@@ -11,7 +11,7 @@ const RewardFactory = artifacts.require('RewardFactory');
 const StashFactory = artifacts.require('StashFactory');
 const TokenFactory = artifacts.require('TokenFactory');
 const MuuuToken = artifacts.require('MuuuToken');
-const muuuKglToken = artifacts.require('muuuKglToken');
+const muKglToken = artifacts.require('muKglToken');
 const KglDepositor = artifacts.require('KglDepositor');
 const PoolManager = artifacts.require('PoolManager');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
@@ -74,11 +74,11 @@ module.exports = function (deployer, network, accounts) {
   var totaldistro = new BN(premine).add(distroList.miningRewards);
   console.log('total muuu: ' + totaldistro.toString());
 
-  var booster, voter, rFactory, sFactory, tFactory, muuu, muuuKgl, deposit, arb, pools;
+  var booster, voter, rFactory, sFactory, tFactory, muuu, muKgl, deposit, arb, pools;
   var kglToken;
-  var muuuKglRewards, muuuRewards, airdrop, vesting;
+  var muKglRewards, muuuRewards, airdrop, vesting;
   var pairToken;
-  var kgldepositAmt, kglbal, muuuKglBal;
+  var kgldepositAmt, kglbal, muKglBal;
   var kgl, weth, dai, threeKgl;
   var muuuVoterProxy;
   var muuuLockerV2;
@@ -208,15 +208,15 @@ module.exports = function (deployer, network, accounts) {
     .then((instance) => {
       sFactory = instance;
       addContract('system', 'sFactory', sFactory.address);
-      return deployer.deploy(muuuKglToken);
+      return deployer.deploy(muKglToken);
     })
     .then((instance) => {
-      muuuKgl = instance;
-      addContract('system', 'muuuKgl', muuuKgl.address);
+      muKgl = instance;
+      addContract('system', 'muKgl', muKgl.address);
       return deployer.deploy(
         KglDepositor,
         voter.address,
-        muuuKgl.address,
+        muKgl.address,
         kgl.address,
         mockVotingEscrow.address // TODO: replace
       );
@@ -224,7 +224,7 @@ module.exports = function (deployer, network, accounts) {
     .then((instance) => {
       deposit = instance;
       addContract('system', 'kglDepositor', deposit.address);
-      return muuuKgl.setOperator(deposit.address);
+      return muKgl.setOperator(deposit.address);
     })
     .then(() => voter.setDepositor(deposit.address))
     .then(() => deposit.initialLock())
@@ -233,23 +233,23 @@ module.exports = function (deployer, network, accounts) {
       deployer.deploy(
         BaseRewardPool,
         0,
-        muuuKgl.address,
+        muKgl.address,
         kgl.address,
         booster.address,
         rFactory.address
       )
     )
     .then((instance) => {
-      muuuKglRewards = instance;
-      addContract('system', 'muuuKglRewards', muuuKglRewards.address);
+      muKglRewards = instance;
+      addContract('system', 'muKglRewards', muKglRewards.address);
       // reward manager is admin to add any new incentive programs
       return deployer.deploy(
         muuuRewardPool,
         muuu.address,
         kgl.address,
         deposit.address,
-        muuuKglRewards.address,
-        muuuKgl.address,
+        muKglRewards.address,
+        muKgl.address,
         booster.address,
         admin
       );
@@ -257,7 +257,7 @@ module.exports = function (deployer, network, accounts) {
     .then((instance) => {
       muuuRewards = instance;
       addContract('system', 'muuuRewards', muuuRewards.address);
-      return booster.setRewardContracts(muuuKglRewards.address, muuuRewards.address);
+      return booster.setRewardContracts(muKglRewards.address, muuuRewards.address);
     })
     .then(() => deployer.deploy(PoolManager, booster.address, mockAddressProvider.address))
     .then((instance) => {
@@ -289,9 +289,9 @@ module.exports = function (deployer, network, accounts) {
         ClaimZap,
         kgl.address,
         muuu.address,
-        muuuKgl.address,
+        muKgl.address,
         deposit.address,
-        muuuKglRewards.address,
+        muKglRewards.address,
         muuuRewards.address,
         treasuryAddress, // TODO: replace. this is supposed to be Factory muuuKGL in kagla
         muuuLockerV2.address

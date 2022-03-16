@@ -12,7 +12,7 @@ const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
 const muuuRewardPool = artifacts.require('muuuRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const muuuKglToken = artifacts.require('muuuKglToken');
+const muKglToken = artifacts.require('muKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 const ArbitratorVault = artifacts.require('ArbitratorVault');
@@ -41,8 +41,8 @@ contract('Test masterchef rewards', async (accounts) => {
     let chef = await MuuuMasterChef.at(contractList.system.chef);
     let muuu = await MuuuToken.at(contractList.system.muuu);
     let muuuLP = await IERC20.at(contractList.system.muuuEthSLP);
-    let muuuKgl = await muuuKglToken.at(contractList.system.muuuKgl);
-    let muuuKglLP = await IERC20.at(contractList.system.muuuKglKglSLP);
+    let muKgl = await muKglToken.at(contractList.system.muKgl);
+    let muKglLP = await IERC20.at(contractList.system.muKglKglSLP);
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
@@ -55,15 +55,15 @@ contract('Test masterchef rewards', async (accounts) => {
 
     // let dummyMuuu = await ChefToken.at(contractList.system.chefMuuuToken);
     // console.log("dummyMuuu: " +dummyMuuu.address);
-    // let dummyMuuuKgl = await ChefToken.at(contractList.system.chefmuuuKglToken);
+    // let dummyMuuuKgl = await ChefToken.at(contractList.system.chefmuKglToken);
     // console.log("dummyMuuuKgl: " +dummyMuuuKgl.address);
 
     let rewardermuuu = await MuuuRewarder.at(contractList.system.muuuEthRewarder);
-    let rewardermukgl = await MuuuRewarder.at(contractList.system.muuuKglKglRewarder);
+    let rewardermukgl = await MuuuRewarder.at(contractList.system.muKglKglRewarder);
 
     let dummyMuuu = await ChefToken.at(contractList.system.chefMuuuToken);
     console.log('dummyMuuu: ' + dummyMuuu.address);
-    let dummyMuuuKgl = await ChefToken.at(contractList.system.chefmuuuKglToken);
+    let dummyMuuuKgl = await ChefToken.at(contractList.system.chefmuKglToken);
     console.log('dummyMuuuKgl: ' + dummyMuuuKgl.address);
     //call init(dummy.address)
     var dummybal = await dummyMuuu.balanceOf(deployer);

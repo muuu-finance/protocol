@@ -30,7 +30,7 @@ contract('Claim vekgl fees', async (accounts) => {
     let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let booster = await Booster.at(contractList.system.booster);
     let kglDeposit = await KglDepositor.at(contractList.system.kglDepositor);
-    let muuuKgl = await IERC20.at(contractList.system.muuuKgl);
+    let muKgl = await IERC20.at(contractList.system.muKgl);
     let vekglRewardAddress = await booster.lockFees();
     let vekglRewardsContract = await VirtualBalanceRewardPool.at(vekglRewardAddress);
 
@@ -52,7 +52,7 @@ contract('Claim vekgl fees', async (accounts) => {
     // await kglDeposit.deposit(kglBal,false,"0x0000000000000000000000000000000000000000");
 
     await kglDeposit.lockKagla();
-    await muuuKgl.totalSupply().then((a) => console.log('muuuKgl supply: ' + a));
+    await muKgl.totalSupply().then((a) => console.log('muKgl supply: ' + a));
     await vekgl.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl: ' + a));
 
     // -----------------------------///

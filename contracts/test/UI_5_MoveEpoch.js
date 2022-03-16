@@ -48,9 +48,9 @@ contract('setup lock contract', async (accounts) => {
     let muuu = await IERC20.at(contractList.system.muuu);
     let stakeproxy = await MuuuStakingProxy.at(contractList.system.lockerStakeProxy);
     let locker = await MuuuLocker.at(contractList.system.locker);
-    let mukgl = await IERC20.at(contractList.system.muuuKgl);
+    let mukgl = await IERC20.at(contractList.system.muKgl);
     let muuurewards = await muuuRewardPool.at(contractList.system.muuuRewards);
-    let mukglrewards = await muuuRewardPool.at(contractList.system.muuuKglRewards);
+    let mukglrewards = await muuuRewardPool.at(contractList.system.muKglRewards);
 
     await booster.earmarkRewards(38);
     await stakeproxy.distribute();

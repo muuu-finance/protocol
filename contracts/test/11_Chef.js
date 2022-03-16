@@ -12,7 +12,7 @@ const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
 const muuuRewardPool = artifacts.require('muuuRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const muuuKglToken = artifacts.require('muuuKglToken');
+const muKglToken = artifacts.require('muKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 const ArbitratorVault = artifacts.require('ArbitratorVault');
@@ -41,21 +41,21 @@ contract('Test masterchef rewards', async (accounts) => {
     let poolManager = await PoolManager.deployed();
     let chef = await MuuuMasterChef.deployed();
     let muuu = await MuuuToken.deployed();
-    let muuuKgl = await muuuKglToken.deployed();
+    let muKgl = await muKglToken.deployed();
     let kglDeposit = await KglDepositor.deployed();
-    let muuuKglRewards = await booster.lockRewards();
+    let muKglRewards = await booster.lockRewards();
     let muuuRewards = await booster.stakerRewards();
-    let muuuKglRewardsContract = await BaseRewardPool.at(muuuKglRewards);
+    let muKglRewardsContract = await BaseRewardPool.at(muKglRewards);
     let muuuRewardsContract = await muuuRewardPool.at(muuuRewards);
 
     let muuuLP = await IERC20.at(contractList.system.muuuEthSLP);
-    let muuuKglLP = await IERC20.at(contractList.system.muuuKglKglSLP);
+    let muKglLP = await IERC20.at(contractList.system.muKglKglSLP);
 
     //give to different accounts
     var muuulpBal = await muuuLP.balanceOf(admin);
     await muuuLP.transfer(userA, muuulpBal);
-    var muuuKgllpBal = await muuuKglLP.balanceOf(admin);
-    await muuuKglLP.transfer(userB, muuuKgllpBal);
+    var muKgllpBal = await muKglLP.balanceOf(admin);
+    await muKglLP.transfer(userB, muKgllpBal);
 
     //add extra rewards
     await weth.sendTransaction({ value: web3.utils.toWei('5.0', 'ether') });
@@ -65,10 +65,10 @@ contract('Test masterchef rewards', async (accounts) => {
     await chef.set(0, 10000, extraRewards.address, true, true);
 
     await muuuLP.approve(chef.address, muuulpBal, { from: userA });
-    await muuuKglLP.approve(chef.address, muuuKgllpBal, { from: userB });
+    await muKglLP.approve(chef.address, muKgllpBal, { from: userB });
 
     await chef.deposit(1, muuulpBal, { from: userA });
-    await chef.deposit(0, muuuKgllpBal, { from: userB });
+    await chef.deposit(0, muKgllpBal, { from: userB });
 
     await chef.userInfo(1, userA).then((a) => console.log('user a muuueth: ' + JSON.stringify(a)));
     await chef
@@ -110,7 +110,7 @@ contract('Test masterchef rewards', async (accounts) => {
     await chef.pendingMuuu(0, userB).then((a) => console.log('user b pending: ' + a));
 
     await chef.claim(1, userA);
-    await chef.withdraw(0, muuuKgllpBal, { from: userB });
+    await chef.withdraw(0, muKgllpBal, { from: userB });
     await chef.pendingMuuu(1, userA).then((a) => console.log('user a pending: ' + a));
     await chef.pendingMuuu(0, userB).then((a) => console.log('user b pending: ' + a));
     await chef.userInfo(1, userA).then((a) => console.log('user a muuueth: ' + JSON.stringify(a)));
@@ -119,7 +119,7 @@ contract('Test masterchef rewards', async (accounts) => {
       .then((a) => console.log('user b mukglkglv: ' + JSON.stringify(a)));
 
     await muuuLP.balanceOf(userA).then((a) => console.log('user a lp on wallet: ' + a));
-    await muuuKglLP.balanceOf(userB).then((a) => console.log('user b lp on wallet: ' + a));
+    await muKglLP.balanceOf(userB).then((a) => console.log('user b lp on wallet: ' + a));
     await muuu.balanceOf(userA).then((a) => console.log('user a muuu on wallet: ' + a));
     await muuu.balanceOf(userB).then((a) => console.log('user b muuu on wallet: ' + a));
     await weth.balanceOf(userA).then((a) => console.log('user a weth on wallet: ' + a));

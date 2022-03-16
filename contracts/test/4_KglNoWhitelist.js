@@ -8,10 +8,10 @@ const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
-//const muuuKglRewardPool = artifacts.require("muuuKglRewardPool");
+//const muKglRewardPool = artifacts.require("muKglRewardPool");
 const muuuRewardPool = artifacts.require('muuuRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const muuuKglToken = artifacts.require('muuuKglToken');
+const muKglToken = artifacts.require('muKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 
@@ -19,8 +19,8 @@ const IExchange = artifacts.require('IExchange');
 const IKaglaFi = artifacts.require('I3KaglaFi');
 const IERC20 = artifacts.require('IERC20');
 
-contract('muuuKgl Rewards', async (accounts) => {
-  it('should deposit and gain rewrds with muuuKgl', async () => {
+contract('muKgl Rewards', async (accounts) => {
+  it('should deposit and gain rewrds with muKgl', async () => {
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
     let dai = await IERC20.at('0x6b175474e89094c44da98b954eedeac495271d0f');
@@ -41,11 +41,11 @@ contract('muuuKgl Rewards', async (accounts) => {
     let rewardFactory = await RewardFactory.deployed();
     let stashFactory = await StashFactory.deployed();
     let muuu = await MuuuToken.deployed();
-    let muuuKgl = await muuuKglToken.deployed();
+    let muKgl = await muKglToken.deployed();
     let kglDeposit = await KglDepositor.deployed();
-    let muuuKglRewards = await booster.lockRewards();
+    let muKglRewards = await booster.lockRewards();
     let muuuRewards = await booster.stakerRewards();
-    let muuuKglRewardsContract = await BaseRewardPool.at(muuuKglRewards);
+    let muKglRewardsContract = await BaseRewardPool.at(muKglRewards);
     let muuuRewardsContract = await muuuRewardPool.at(muuuRewards);
 
     var poolId = contractList.pools.find((pool) => pool.name == '3pool').id;
@@ -113,20 +113,20 @@ contract('muuuKgl Rewards', async (accounts) => {
       from: userA,
     });
     console.log('kgl deposited');
-    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
-    //stake muuuKgl
-    console.log('stake at ' + muuuKglRewardsContract.address);
-    await muuuKgl.approve(muuuKglRewardsContract.address, 0, { from: userA });
-    await muuuKgl.approve(muuuKglRewardsContract.address, startingkgl, { from: userA });
+    await muKgl.balanceOf(userA).then((a) => console.log('muKgl on wallet: ' + a));
+    //stake muKgl
+    console.log('stake at ' + muKglRewardsContract.address);
+    await muKgl.approve(muKglRewardsContract.address, 0, { from: userA });
+    await muKgl.approve(muKglRewardsContract.address, startingkgl, { from: userA });
     console.log('stake approve');
-    await muuuKglRewardsContract.stakeAll({ from: userA });
+    await muKglRewardsContract.stakeAll({ from: userA });
     console.log('staked');
 
     //check balances, depositor should still have kgl since no whitelist
-    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
-    await muuuKglRewardsContract.balanceOf(userA).then((a) => console.log('muuuKgl staked: ' + a));
+    await muKgl.balanceOf(userA).then((a) => console.log('muKgl on wallet: ' + a));
+    await muKglRewardsContract.balanceOf(userA).then((a) => console.log('muKgl staked: ' + a));
     await kgl.balanceOf(kglDeposit.address).then((a) => console.log('kgl on depositor: ' + a));
-    await muuuKgl.totalSupply().then((a) => console.log('muuuKgl supply: ' + a));
+    await muKgl.totalSupply().then((a) => console.log('muKgl supply: ' + a));
 
     //advance time
     await time.increase(86400);
@@ -143,11 +143,11 @@ contract('muuuKgl Rewards', async (accounts) => {
     await kgl.balanceOf(kglDeposit.address).then((a) => console.log('depositor kgl(>0): ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('userA kgl(==0): ' + a));
     await kgl.balanceOf(caller).then((a) => console.log('caller kgl(>0): ' + a));
-    await kgl.balanceOf(muuuKglRewards).then((a) => console.log('kgl at muuuKglRewards ' + a));
+    await kgl.balanceOf(muKglRewards).then((a) => console.log('kgl at muKglRewards ' + a));
     await kgl.balanceOf(muuuRewards).then((a) => console.log('kgl at muuuRewards ' + a));
 
     //check earned(should be 0)
-    await muuuKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
+    await muKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
 
     await time.increase(3 * 86400);
     await time.advanceBlock();
@@ -158,14 +158,14 @@ contract('muuuKgl Rewards', async (accounts) => {
     console.log('advance time....');
 
     //check earned
-    await muuuKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
+    await muKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
     //claim
-    await muuuKglRewardsContract.getReward({ from: userA });
+    await muKglRewardsContract.getReward({ from: userA });
     console.log('getReward()');
 
-    await kgl.balanceOf(muuuKglRewards).then((a) => console.log('kgl at muuuKglRewards ' + a));
-    await muuuKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
-    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
+    await kgl.balanceOf(muKglRewards).then((a) => console.log('kgl at muKglRewards ' + a));
+    await muKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
+    await muKgl.balanceOf(userA).then((a) => console.log('muKgl on wallet: ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('kgl on wallet: ' + a));
     await muuu.balanceOf(userA).then((a) => console.log('muuu on wallet: ' + a));
 
@@ -176,20 +176,20 @@ contract('muuuKgl Rewards', async (accounts) => {
     console.log('advance time....');
 
     //claim rewards again
-    await muuuKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
-    await muuuKglRewardsContract.getReward({ from: userA });
+    await muKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
+    await muKglRewardsContract.getReward({ from: userA });
     console.log('getReward()');
 
-    await kgl.balanceOf(muuuKglRewards).then((a) => console.log('kgl at muuuKglRewards ' + a));
-    await muuuKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
-    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
+    await kgl.balanceOf(muKglRewards).then((a) => console.log('kgl at muKglRewards ' + a));
+    await muKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
+    await muKgl.balanceOf(userA).then((a) => console.log('muKgl on wallet: ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('kgl on wallet: ' + a));
     await muuu.balanceOf(userA).then((a) => console.log('muuu on wallet: ' + a));
 
     //distribute again
     await booster.earmarkRewards(0);
     console.log('earmark 2');
-    await kgl.balanceOf(muuuKglRewards).then((a) => console.log('kgl at muuuKglRewards ' + a));
+    await kgl.balanceOf(muKglRewards).then((a) => console.log('kgl at muKglRewards ' + a));
     await kgl.balanceOf(muuuRewards).then((a) => console.log('kgl at muuuRewards ' + a));
 
     await time.increase(3 * 86400);
@@ -201,13 +201,13 @@ contract('muuuKgl Rewards', async (accounts) => {
     console.log('advance time....');
 
     //rewards should be earning again
-    await muuuKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
-    await muuuKglRewardsContract.getReward({ from: userA });
+    await muKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
+    await muKglRewardsContract.getReward({ from: userA });
     console.log('getReward()');
 
-    await kgl.balanceOf(muuuKglRewards).then((a) => console.log('kgl at muuuKglRewards ' + a));
-    await muuuKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
-    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
+    await kgl.balanceOf(muKglRewards).then((a) => console.log('kgl at muKglRewards ' + a));
+    await muKglRewardsContract.earned(userA).then((a) => console.log('current earned: ' + a));
+    await muKgl.balanceOf(userA).then((a) => console.log('muKgl on wallet: ' + a));
     await kgl.balanceOf(userA).then((a) => console.log('kgl on wallet: ' + a));
     await muuu.balanceOf(userA).then((a) => console.log('muuu on wallet: ' + a));
   });

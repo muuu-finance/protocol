@@ -6,7 +6,7 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 const Booster = artifacts.require('Booster');
 const KglDepositor = artifacts.require('KglDepositor');
 const MuuuToken = artifacts.require('MuuuToken');
-const muuuKglToken = artifacts.require('muuuKglToken');
+const muKglToken = artifacts.require('muKglToken');
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const MuuuKglStakingWrapper = artifacts.require('MuuuKglStakingWrapper');
@@ -30,8 +30,8 @@ contract('Test mukgl stake wrapper', async (accounts) => {
     let muuu = await MuuuToken.at(contractList.system.muuu);
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
-    let muuuKgl = await muuuKglToken.at(contractList.system.muuuKgl);
-    let muuuKglLP = await IERC20.at(contractList.system.muuuKglKglSLP);
+    let muKgl = await muKglToken.at(contractList.system.muKgl);
+    let muKglLP = await IERC20.at(contractList.system.muKglKglSLP);
     let exchange = await IExchange.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let exchangerouter = await IUniswapV2Router01.at('0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
@@ -99,14 +99,14 @@ contract('Test mukgl stake wrapper', async (accounts) => {
     //user A will deposit kagla tokens and user B muuu
     await kgl.approve(staker.address, userABalance, { from: userA });
     await kgl.approve(kglDeposit.address, userBBalance, { from: userB });
-    await muuuKgl.approve(staker.address, userBBalance, { from: userB });
+    await muKgl.approve(staker.address, userBBalance, { from: userB });
     console.log('approved booster and staker');
     await kglDeposit.deposit(userBBalance, false, addressZero, { from: userB });
     console.log('deposited into muuu for user b');
 
     var depositTx = await staker.deposit(userABalance, userA, { from: userA });
     console.log('user A deposited, gas: ' + depositTx.receipt.gasUsed);
-    await muuuKgl.balanceOf(userB).then((a) => console.log('user b muuuKgl: ' + a));
+    await muKgl.balanceOf(userB).then((a) => console.log('user b muKgl: ' + a));
     var stakeTx = await staker.stake(userBBalance, userB, { from: userB });
     console.log('user b staked, gas: ' + stakeTx.receipt.gasUsed);
     await staker.totalSupply().then((a) => console.log('staker supply: ' + a));

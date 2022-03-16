@@ -45,10 +45,10 @@ contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
 
     //constants/immutables
     address public constant kglDepositor = address(0x8014595F2AB54cD7c604B00E9fb932176fDc86Ae);
-    address public constant muuuKglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
+    address public constant muKglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
     address public constant kgl = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
     address public constant muuu = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
-    address public constant muuuKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
+    address public constant muKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
 
     //collateral vault
     address public collateralVault;
@@ -128,8 +128,8 @@ contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
     function setApprovals() public {
         IERC20(kgl).safeApprove(kglDepositor, 0);
         IERC20(kgl).safeApprove(kglDepositor, uint256(-1));
-        IERC20(muuuKgl).safeApprove(muuuKglStaking, 0);
-        IERC20(muuuKgl).safeApprove(muuuKglStaking, uint256(-1));
+        IERC20(muKgl).safeApprove(muKglStaking, 0);
+        IERC20(muKgl).safeApprove(muKglStaking, uint256(-1));
     }
 
     function addRewards() public {
@@ -138,17 +138,17 @@ contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
             rewards.push(
                 RewardType({
                     reward_token: kgl,
-                    reward_pool: muuuKglStaking,
+                    reward_pool: muKglStaking,
                     reward_integral: 0,
                     reward_remaining: 0
                 })
             );
         }
 
-        uint256 extraCount = IRewardStaking(muuuKglStaking).extraRewardsLength();
+        uint256 extraCount = IRewardStaking(muKglStaking).extraRewardsLength();
         uint256 startIndex = rewards.length - 1;
         for (uint256 i = startIndex; i < extraCount; i++) {
-            address extraPool = IRewardStaking(muuuKglStaking).extraRewards(i);
+            address extraPool = IRewardStaking(muKglStaking).extraRewards(i);
             rewards.push(
                 RewardType({
                     reward_token: IRewardStaking(extraPool).rewardToken(),
@@ -268,7 +268,7 @@ contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
         depositedBalance[0] = _getDepositedBalance(_accounts[0]);
         depositedBalance[1] = _getDepositedBalance(_accounts[1]);
 
-        IRewardStaking(muuuKglStaking).getReward(address(this), true);
+        IRewardStaking(muKglStaking).getReward(address(this), true);
 
         uint256 rewardCount = rewards.length;
         for (uint256 i = 0; i < rewardCount; i++) {
@@ -283,7 +283,7 @@ contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
         uint256[2] memory depositedBalance;
         depositedBalance[0] = _getDepositedBalance(_accounts[0]); //only do first slot
 
-        IRewardStaking(muuuKglStaking).getReward(address(this), true);
+        IRewardStaking(muKglStaking).getReward(address(this), true);
 
         uint256 rewardCount = rewards.length;
         for (uint256 i = 0; i < rewardCount; i++) {
@@ -347,7 +347,7 @@ contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
         if (_amount > 0) {
             _mint(_to, _amount);
             IERC20(kgl).safeTransferFrom(msg.sender, address(this), _amount);
-            IMuuuDeposits(kglDepositor).deposit(_amount, false, muuuKglStaking);
+            IMuuuDeposits(kglDepositor).deposit(_amount, false, muKglStaking);
         }
 
         emit Deposited(msg.sender, _to, _amount, true);
@@ -361,8 +361,8 @@ contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
 
         if (_amount > 0) {
             _mint(_to, _amount);
-            IERC20(muuuKgl).safeTransferFrom(msg.sender, address(this), _amount);
-            IRewardStaking(muuuKglStaking).stake(_amount);
+            IERC20(muKgl).safeTransferFrom(msg.sender, address(this), _amount);
+            IRewardStaking(muKglStaking).stake(_amount);
         }
 
         emit Deposited(msg.sender, _to, _amount, false);
@@ -375,8 +375,8 @@ contract MuuuKglStakingWrapper is ERC20, ReentrancyGuard {
 
         if (_amount > 0) {
             _burn(msg.sender, _amount);
-            IRewardStaking(muuuKglStaking).withdraw(_amount, false);
-            IERC20(muuuKgl).safeTransfer(msg.sender, _amount);
+            IRewardStaking(muKglStaking).withdraw(_amount, false);
+            IERC20(muKgl).safeTransfer(msg.sender, _amount);
         }
 
         emit Withdrawn(msg.sender, _amount, false);

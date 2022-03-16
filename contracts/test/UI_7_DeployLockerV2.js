@@ -38,7 +38,7 @@ contract('Test Deploy locker for UI testing', async (accounts) => {
 
     //system
     let muuu = await IERC20.at(contractList.system.muuu);
-    let mukgl = await IERC20.at(contractList.system.muuuKgl);
+    let mukgl = await IERC20.at(contractList.system.muKgl);
 
     let userA = accounts[0];
     let userB = accounts[1];

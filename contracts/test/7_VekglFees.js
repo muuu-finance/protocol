@@ -8,10 +8,10 @@ const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
-//const muuuKglRewardPool = artifacts.require("muuuKglRewardPool");
+//const muKglRewardPool = artifacts.require("muKglRewardPool");
 const muuuRewardPool = artifacts.require('muuuRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const muuuKglToken = artifacts.require('muuuKglToken');
+const muKglToken = artifacts.require('muKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 
@@ -51,12 +51,12 @@ contract('VeKgl Fees Test', async (accounts) => {
     let rewardFactory = await RewardFactory.deployed();
     let stashFactory = await StashFactory.deployed();
     let muuu = await MuuuToken.deployed();
-    let muuuKgl = await muuuKglToken.deployed();
+    let muKgl = await muKglToken.deployed();
     let kglDeposit = await KglDepositor.deployed();
-    let muuuKglRewards = await booster.lockRewards();
+    let muKglRewards = await booster.lockRewards();
     let muuuRewards = await booster.stakerRewards();
     let vekglRewards = await booster.lockFees();
-    let muuuKglRewardsContract = await BaseRewardPool.at(muuuKglRewards);
+    let muKglRewardsContract = await BaseRewardPool.at(muKglRewards);
     let muuuRewardsContract = await muuuRewardPool.at(muuuRewards);
     let vekglRewardsContract = await VirtualBalanceRewardPool.at(vekglRewards);
 
@@ -93,18 +93,18 @@ contract('VeKgl Fees Test', async (accounts) => {
       from: userA,
     });
     console.log('kgl deposited');
-    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
-    await muuuKgl.totalSupply().then((a) => console.log('muuuKgl supply: ' + a));
+    await muKgl.balanceOf(userA).then((a) => console.log('muKgl on wallet: ' + a));
+    await muKgl.totalSupply().then((a) => console.log('muKgl supply: ' + a));
     await kgl.balanceOf(kglDeposit.address).then((a) => console.log('depositor kgl(>0): ' + a));
     await kgl.balanceOf(voteproxy.address).then((a) => console.log('proxy kgl(==0): ' + a));
     await vekgl.balanceOf(voteproxy.address).then((a) => console.log('proxy veKgl(==0): ' + a));
     console.log('staking kgl');
-    await muuuKgl.approve(muuuKglRewardsContract.address, 0, { from: userA });
-    await muuuKgl.approve(muuuKglRewardsContract.address, startingkgl, { from: userA });
-    await muuuKglRewardsContract.stakeAll({ from: userA });
+    await muKgl.approve(muKglRewardsContract.address, 0, { from: userA });
+    await muKgl.approve(muKglRewardsContract.address, startingkgl, { from: userA });
+    await muKglRewardsContract.stakeAll({ from: userA });
     console.log('staked');
-    await muuuKgl.balanceOf(userA).then((a) => console.log('muuuKgl on wallet: ' + a));
-    await muuuKglRewardsContract.balanceOf(userA).then((a) => console.log('muuuKgl staked: ' + a));
+    await muKgl.balanceOf(userA).then((a) => console.log('muKgl on wallet: ' + a));
+    await muKglRewardsContract.balanceOf(userA).then((a) => console.log('muKgl staked: ' + a));
 
     //voting
     console.log('fee claiming...');
@@ -200,7 +200,7 @@ contract('VeKgl Fees Test', async (accounts) => {
     //before balance
     await threekgl.balanceOf(userA).then((a) => console.log('3kgl before claim: ' + a));
     //get reward from main contract which will also claim from children contracts(kgl is main, vekgl fees is child)
-    await muuuKglRewardsContract.getReward({ from: userA });
+    await muKglRewardsContract.getReward({ from: userA });
     await threekgl.balanceOf(userA).then((a) => console.log('3kgl after claim: ' + a));
   });
 });

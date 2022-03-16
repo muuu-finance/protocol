@@ -8,10 +8,10 @@ const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
-//const muuuKglRewardPool = artifacts.require("muuuKglRewardPool");
+//const muKglRewardPool = artifacts.require("muKglRewardPool");
 const muuuRewardPool = artifacts.require('muuuRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
-const muuuKglToken = artifacts.require('muuuKglToken');
+const muKglToken = artifacts.require('muKglToken');
 const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 const TokenFactory = artifacts.require('TokenFactory');
@@ -43,11 +43,11 @@ contract('Shutdown Test', async (accounts) => {
     let stashFactory = await StashFactory.deployed();
     let poolManager = await PoolManager.deployed();
     let muuu = await MuuuToken.deployed();
-    let muuuKgl = await muuuKglToken.deployed();
+    let muKgl = await muKglToken.deployed();
     let kglDeposit = await KglDepositor.deployed();
-    let muuuKglRewards = await booster.lockRewards();
+    let muKglRewards = await booster.lockRewards();
     let muuuRewards = await booster.stakerRewards();
-    let muuuKglRewardsContract = await BaseRewardPool.at(muuuKglRewards);
+    let muKglRewardsContract = await BaseRewardPool.at(muKglRewards);
     let muuuRewardsContract = await muuuRewardPool.at(muuuRewards);
 
     var poolId = contractList.pools.find((pool) => pool.name == '3pool').id;
@@ -131,29 +131,26 @@ contract('Shutdown Test', async (accounts) => {
     await muuu.updateOperator();
     console.log('muuu operater updated');
 
-    //create new reward pools for staking muuuKgl and muuu
-    let muuuKglRewardsContract2 = await BaseRewardPool.new(
+    //create new reward pools for staking muKgl and muuu
+    let muKglRewardsContract2 = await BaseRewardPool.new(
       0,
-      muuuKgl.address,
+      muKgl.address,
       kgl.address,
       booster2.address,
       rewardFactory2.address
     );
-    console.log('create new muuuKgl reward pool');
+    console.log('create new muKgl reward pool');
     let muuuRewardsContract2 = await muuuRewardPool.new(
       muuu.address,
       kgl.address,
       kglDeposit.address,
-      muuuKglRewardsContract2.address,
-      muuuKgl.address,
+      muKglRewardsContract2.address,
+      muKgl.address,
       booster2.address,
       admin
     );
     console.log('create new muuu reward pool');
-    await booster2.setRewardContracts(
-      muuuKglRewardsContract2.address,
-      muuuRewardsContract2.address
-    );
+    await booster2.setRewardContracts(muKglRewardsContract2.address, muuuRewardsContract2.address);
     console.log('set stake reward contracts');
 
     //set vekgl info

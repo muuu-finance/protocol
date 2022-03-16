@@ -41,11 +41,11 @@ contract MuuuStakingProxy {
     //tokens
     address public constant kgl = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
     address public constant muuu = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
-    address public constant muuuKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
+    address public constant muKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
 
     //muuu addresses
     address public constant muuuStaking = address(0xCF50b810E57Ac33B91dCF525C6ddd9881B139332);
-    address public constant muuuKglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
+    address public constant muKglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
     address public constant kglDeposit = address(0x8014595F2AB54cD7c604B00E9fb932176fDc86Ae);
     uint256 public constant denominator = 10000;
 
@@ -88,13 +88,13 @@ contract MuuuStakingProxy {
         IERC20(kgl).safeApprove(kglDeposit, 0);
         IERC20(kgl).safeApprove(kglDeposit, uint256(-1));
 
-        IERC20(muuuKgl).safeApprove(rewards, 0);
-        IERC20(muuuKgl).safeApprove(rewards, uint256(-1));
+        IERC20(muKgl).safeApprove(rewards, 0);
+        IERC20(muKgl).safeApprove(rewards, uint256(-1));
     }
 
     function rescueToken(address _token, address _to) external {
         require(msg.sender == owner, "!auth");
-        require(_token != kgl && _token != muuu && _token != muuuKgl, "not allowed");
+        require(_token != kgl && _token != muuu && _token != muKgl, "not allowed");
 
         uint256 bal = IERC20(_token).balanceOf(address(this));
         IERC20(_token).safeTransfer(_to, bal);
@@ -132,31 +132,31 @@ contract MuuuStakingProxy {
         }
 
         //make sure nothing is in here
-        uint256 sCheck  = IMuuuRewards(muuuKglStaking).balanceOf(address(this));
+        uint256 sCheck  = IMuuuRewards(muKglStaking).balanceOf(address(this));
         if(sCheck > 0){
-            IMuuuRewards(muuuKglStaking).withdraw(sCheck,false);
+            IMuuuRewards(muKglStaking).withdraw(sCheck,false);
         }
 
         //distribute mukgl
-        uint256 muuuKglBal = IERC20(muuuKgl).balanceOf(address(this));
+        uint256 muKglBal = IERC20(muKgl).balanceOf(address(this));
 
-        if (muuuKglBal > 0) {
-            uint256 incentiveAmount = muuuKglBal.mul(callIncentive).div(denominator);
-            muuuKglBal = muuuKglBal.sub(incentiveAmount);
+        if (muKglBal > 0) {
+            uint256 incentiveAmount = muKglBal.mul(callIncentive).div(denominator);
+            muKglBal = muKglBal.sub(incentiveAmount);
 
             //send incentives
-            IERC20(muuuKgl).safeTransfer(msg.sender,incentiveAmount);
+            IERC20(muKgl).safeTransfer(msg.sender,incentiveAmount);
 
             //update rewards
-            IMuuuLocker(rewards).notifyRewardAmount(muuuKgl, muuuKglBal);
+            IMuuuLocker(rewards).notifyRewardAmount(muKgl, muKglBal);
 
-            emit RewardsDistributed(muuuKgl, muuuKglBal);
+            emit RewardsDistributed(muKgl, muKglBal);
         }
     }
 
     //in case a new reward is ever added, allow generic distribution
     function distributeOther(IERC20 _token) external {
-        require( address(_token) != kgl && address(_token) != muuuKgl, "not allowed");
+        require( address(_token) != kgl && address(_token) != muKgl, "not allowed");
 
         uint256 bal = _token.balanceOf(address(this));
 

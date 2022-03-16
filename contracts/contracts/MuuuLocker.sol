@@ -55,7 +55,7 @@ contract MuuuLocker is ReentrancyGuard, Ownable {
 
     //token constants
     IERC20 public constant stakingToken = IERC20(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B); //muuu
-    address public constant muuuKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
+    address public constant muKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
 
     //rewards
     address[] public rewardTokens;
@@ -206,8 +206,8 @@ contract MuuuLocker is ReentrancyGuard, Ownable {
 
     //set approvals for staking muuu and mukgl
     function setApprovals() external {
-        IERC20(muuuKgl).safeApprove(mukglStaking, 0);
-        IERC20(muuuKgl).safeApprove(mukglStaking, uint256(-1));
+        IERC20(muKgl).safeApprove(mukglStaking, 0);
+        IERC20(muKgl).safeApprove(mukglStaking, uint256(-1));
 
         IERC20(stakingToken).safeApprove(stakingProxy, 0);
         IERC20(stakingToken).safeApprove(stakingProxy, uint256(-1));
@@ -706,7 +706,7 @@ contract MuuuLocker is ReentrancyGuard, Ownable {
             uint256 reward = rewards[_account][_rewardsToken];
             if (reward > 0) {
                 rewards[_account][_rewardsToken] = 0;
-                if (_rewardsToken == muuuKgl && _stake) {
+                if (_rewardsToken == muKgl && _stake) {
                     IRewardStaking(mukglStaking).stakeFor(_account, reward);
                 } else {
                     IERC20(_rewardsToken).safeTransfer(_account, reward);
@@ -751,7 +751,7 @@ contract MuuuLocker is ReentrancyGuard, Ownable {
 
         emit RewardAdded(_rewardsToken, _reward);
 
-        if(_rewardsToken == muuuKgl){
+        if(_rewardsToken == muKgl){
             //update staking ratio if main reward
             updateStakeRatio(0);
         }

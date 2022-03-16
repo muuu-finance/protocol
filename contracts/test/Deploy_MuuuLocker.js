@@ -19,9 +19,9 @@ contract('Deploy MUUU Locker', async (accounts) => {
     //system
     let booster = await Booster.at(contractList.system.booster);
     let muuu = await IERC20.at(contractList.system.muuu);
-    let mukgl = await IERC20.at(contractList.system.muuuKgl);
+    let mukgl = await IERC20.at(contractList.system.muKgl);
     let muuurewards = await muuuRewardPool.at(contractList.system.muuuRewards);
-    let mukglrewards = await muuuRewardPool.at(contractList.system.muuuKglRewards);
+    let mukglrewards = await muuuRewardPool.at(contractList.system.muKglRewards);
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
 
     //deploy

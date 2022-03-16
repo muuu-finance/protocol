@@ -39,8 +39,8 @@ contract Booster is Ownable {
     address public voteDelegate;
     address public treasury;
     address public stakerRewards; //muuu rewards
-    address public lockRewards; //muuuKgl rewards(kgl)
-    address public lockFees; //muuuKgl vekgl fees
+    address public lockRewards; //muKgl rewards(kgl)
+    address public lockFees; //muKgl vekgl fees
     address public feeDistro;
     address public feeToken;
     address public registry;
