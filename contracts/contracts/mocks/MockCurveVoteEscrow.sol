@@ -4,7 +4,7 @@ pragma solidity 0.6.12;
 import "../Interfaces.sol";
 
 // ref: https://curve.readthedocs.io/dao-vecrv.html?highlight=CRV#curve-dao-vote-escrowed-crv
-contract MockCurveVoteEscrow {
+contract MockKaglaVoteEscrow {
   function create_lock(uint256 _value, uint256 _unlock_time) external {}
 
   function increase_amount(uint256 _amount) external {}

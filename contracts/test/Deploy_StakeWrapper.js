@@ -7,11 +7,11 @@ const Booster = artifacts.require('Booster');
 const CrvDepositor = artifacts.require('CrvDepositor');
 const MuuuToken = artifacts.require('MuuuToken');
 const cvxCrvToken = artifacts.require('cvxCrvToken');
-const CurveVoterProxy = artifacts.require('CurveVoterProxy');
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const MuuuStakingWrapper = artifacts.require('MuuuStakingWrapper');
 const IERC20 = artifacts.require('IERC20');
-const ICurveAavePool = artifacts.require('ICurveAavePool');
+const IKaglaAavePool = artifacts.require('IKaglaAavePool');
 const IExchange = artifacts.require('IExchange');
 const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01');
 const MuuuMining = artifacts.require('MuuuMining');
@@ -26,7 +26,7 @@ contract('Deploy stake wrapper', async (accounts) => {
 
     //system
     let booster = await Booster.at(contractList.system.booster);
-    let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy);
+    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let cvx = await MuuuToken.at(contractList.system.cvx);
     let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let stkaave = await IERC20.at('0x4da27a545c0c5B758a6BA100e3a049001de870f5');
@@ -38,7 +38,7 @@ contract('Deploy stake wrapper', async (accounts) => {
     let curveAave = await IERC20.at('0xFd2a8fA60Abd58Efe3EeE34dd494cD491dC14900');
     let muuuAave = await IERC20.at('0x23F224C37C3A69A058d86a54D3f561295A93d542');
     let aavepool = 24;
-    let aaveswap = await ICurveAavePool.at('0xDeBF20617708857ebe4F679508E7b7863a8A8EeE');
+    let aaveswap = await IKaglaAavePool.at('0xDeBF20617708857ebe4F679508E7b7863a8A8EeE');
     let muuuAaveRewards = await BaseRewardPool.at('0xE82c1eB4BC6F92f85BF7EB6421ab3b882C3F5a7B');
     let dai = await IERC20.at('0x6B175474E89094C44Da98b954EedeAC495271d0F');
 

@@ -6,7 +6,7 @@ import "../Interfaces.sol";
 // refs
 // - https://curve.readthedocs.io/dao-gauges.html?highlight=reward_tokens#liquiditygaugev2
 // - https://curve.readthedocs.io/dao-gauges.html?highlight=reward_tokens#liquiditygaugereward
-contract MockCurveGauge {
+contract MockKaglaGauge {
   function deposit(uint256 _amount) external {}
 
   function balanceOf(address _address) external view returns (uint256) {

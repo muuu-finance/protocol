@@ -5,7 +5,7 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
 const CrvDepositor = artifacts.require('CrvDepositor');
-const CurveVoterProxy = artifacts.require('CurveVoterProxy');
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV1 = artifacts.require('ExtraRewardStashV1');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
@@ -20,9 +20,9 @@ const PoolManager = artifacts.require('PoolManager');
 
 const IExchange = artifacts.require('IExchange');
 const ISPool = artifacts.require('ISPool');
-const I2CurveFi = artifacts.require('I2CurveFi');
+const I2KaglaFi = artifacts.require('I2KaglaFi');
 const IERC20 = artifacts.require('IERC20');
-const ICurveGauge = artifacts.require('ICurveGauge');
+const IKaglaGauge = artifacts.require('IKaglaGauge');
 const ISnxRewards = artifacts.require('ISnxRewards');
 
 //3. extra rewards, but with v1 gauges
@@ -37,11 +37,11 @@ contract('Arbitrator Test', async (accounts) => {
     let snx = await IERC20.at('0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f');
     let exchange = await IExchange.at('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D');
     let susdswap = await ISPool.at('0xA5407eAE9Ba41422680e2e00537571bcC53efBfD');
-    let eursswap = await I2CurveFi.at('0x0Ce6a5fF5217e38315f87032CF90686C96627CAA');
+    let eursswap = await I2KaglaFi.at('0x0Ce6a5fF5217e38315f87032CF90686C96627CAA');
     let susdlp = await IERC20.at('0xC25a3A3b969415c80451098fa907EC722572917F');
     let eurslp = await IERC20.at('0x194eBd173F6cDacE046C53eACcE9B953F28411d1');
-    let susdGauge = await ICurveGauge.at('0xA90996896660DEcC6E997655E065b23788857849');
-    let eursGauge = await ICurveGauge.at('0x90Bb609649E0451E5aD952683D64BD2d1f245840');
+    let susdGauge = await IKaglaGauge.at('0xA90996896660DEcC6E997655E065b23788857849');
+    let eursGauge = await IKaglaGauge.at('0x90Bb609649E0451E5aD952683D64BD2d1f245840');
     let susdGaugeDebug = await ISPool.at('0xA90996896660DEcC6E997655E065b23788857849');
 
     let admin = accounts[0];
@@ -50,7 +50,7 @@ contract('Arbitrator Test', async (accounts) => {
     let caller = accounts[3];
 
     //system
-    let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy);
+    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let booster = await Booster.deployed();
     let rewardFactory = await RewardFactory.deployed();
     let stashFactory = await StashFactory.deployed();

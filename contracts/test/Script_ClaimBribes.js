@@ -7,7 +7,7 @@ const Booster = artifacts.require('Booster');
 const CrvDepositor = artifacts.require('CrvDepositor');
 const MuuuToken = artifacts.require('MuuuToken');
 const cvxCrvToken = artifacts.require('cvxCrvToken');
-const CurveVoterProxy = artifacts.require('CurveVoterProxy');
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const IERC20 = artifacts.require('IERC20');
 const ERC20 = artifacts.require('ERC20');
@@ -16,7 +16,7 @@ const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01');
 const Multicaller = artifacts.require('Multicaller');
 const ICrvBribe = artifacts.require('ICrvBribe');
 const IVoting = artifacts.require('IVoting');
-const ICurveGaugeController = artifacts.require('ICurveGaugeController');
+const IKaglaGaugeController = artifacts.require('IKaglaGaugeController');
 
 contract('check for rewards and claim', async (accounts) => {
   it('should check for rewards and claim', async () => {
@@ -26,7 +26,7 @@ contract('check for rewards and claim', async (accounts) => {
 
     //system
     let booster = await Booster.at(contractList.system.booster);
-    let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy);
+    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let cvx = await MuuuToken.at(contractList.system.cvx);
     let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let cvxCrv = await cvxCrvToken.at(contractList.system.cvxCrv);
@@ -48,7 +48,7 @@ contract('check for rewards and claim', async (accounts) => {
     // var poolList = contractList.pools;
     var gaugeList = [];
 
-    let gaugeController = await ICurveGaugeController.at(
+    let gaugeController = await IKaglaGaugeController.at(
       '0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB'
     );
     let gaugeCount = await gaugeController.n_gauges();

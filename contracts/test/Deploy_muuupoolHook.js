@@ -7,7 +7,7 @@ const Booster = artifacts.require('Booster');
 const CrvDepositor = artifacts.require('CrvDepositor');
 const MuuuToken = artifacts.require('MuuuToken');
 const cvxCrvToken = artifacts.require('cvxCrvToken');
-const CurveVoterProxy = artifacts.require('CurveVoterProxy');
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const MuuuStakingWrapper = artifacts.require('MuuuStakingWrapper');
 const IERC20 = artifacts.require('IERC20');
@@ -26,7 +26,7 @@ contract('Deploy cvx pool hook', async (accounts) => {
 
     //system
     let booster = await Booster.at(contractList.system.booster);
-    let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy);
+    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let cvx = await MuuuToken.at(contractList.system.cvx);
     let crv = await IERC20.at(contractList.curve.crv);
     let cvxCrv = await cvxCrvToken.at(contractList.system.cvxCrv);

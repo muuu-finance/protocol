@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.6.12;
 
-// Mock for Curve Registry
+// Mock for Kagla Registry
 // refs
 // - https://curve.readthedocs.io/registry-registry.html
 // - https://github.com/curvefi/curve-pool-registry/blob/master/contracts/Registry.vy
-contract MockCurveRegistry {
+contract MockKaglaRegistry {
   address public lpToken; // TODO: lpTokens for each pool
   mapping(address => address[10]) public gauges;
 

@@ -6,7 +6,7 @@ const { ZERO_ADDRESS } = require('@openzeppelin/test-helpers/src/constants');
 var distroList = jsonfile.readFileSync('./distro.json');
 
 const Booster = artifacts.require('Booster');
-const CurveVoterProxy = artifacts.require('CurveVoterProxy');
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const RewardFactory = artifacts.require('RewardFactory');
 const StashFactory = artifacts.require('StashFactory');
 const TokenFactory = artifacts.require('TokenFactory');
@@ -24,10 +24,10 @@ const MerkleAirdrop = artifacts.require('MerkleAirdrop');
 const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory');
 // define Mocks
 const MintableERC20 = artifacts.require('MintableERC20');
-const MockVotingEscrow = artifacts.require('MockCurveVoteEscrow');
-const MockRegistry = artifacts.require('MockCurveRegistry');
-const MockFeeDistributor = artifacts.require('MockCurveFeeDistributor');
-const MockAddressProvider = artifacts.require('MockCurveAddressProvider');
+const MockVotingEscrow = artifacts.require('MockKaglaVoteEscrow');
+const MockRegistry = artifacts.require('MockKaglaRegistry');
+const MockFeeDistributor = artifacts.require('MockKaglaFeeDistributor');
+const MockAddressProvider = artifacts.require('MockKaglaAddressProvider');
 
 const MuuuLockerV2 = artifacts.require('MuuuLockerV2');
 
@@ -126,7 +126,7 @@ module.exports = function (deployer, network, accounts) {
       dai = instance;
       addContract('mocks', 'DAI', dai.address);
     })
-    .then(() => deployer.deploy(MintableERC20, '3Crv', 'Curve.fi DAI/USDC/USDT', 18))
+    .then(() => deployer.deploy(MintableERC20, '3Crv', 'Kagla.fi DAI/USDC/USDT', 18))
     .then((instance) => {
       threeCrv = instance;
       addContract('mocks', '3Crv', threeCrv.address);
@@ -155,7 +155,7 @@ module.exports = function (deployer, network, accounts) {
     })
     .then(() =>
       deployer.deploy(
-        CurveVoterProxy,
+        KaglaVoterProxy,
         crv.address,
         mockVotingEscrow.address,
         ZERO_ADDRESS, // TODO:
@@ -349,7 +349,7 @@ module.exports = function (deployer, network, accounts) {
       poolNames.push('3pool');
       console.log('adding pool ' + poolNames[poolNames.length - 1]);
       return pools.addPool(
-        // TODO: remove Curve address, use test or mock address
+        // TODO: remove Kagla address, use test or mock address
         '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7' /** 3Pool address */,
         '0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A' /** 3Pool Gauge address */,
         0

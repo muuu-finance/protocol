@@ -4,7 +4,7 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
 const CrvDepositor = artifacts.require('CrvDepositor');
-const CurveVoterProxy = artifacts.require('CurveVoterProxy');
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
@@ -16,11 +16,11 @@ const RewardFactory = artifacts.require('RewardFactory');
 const PoolManager = artifacts.require('PoolManager');
 
 const IExchange = artifacts.require('IExchange');
-const I2CurveFi = artifacts.require('I2CurveFi');
-const I3CurveFi = artifacts.require('I3CurveFi');
+const I2KaglaFi = artifacts.require('I2KaglaFi');
+const I3KaglaFi = artifacts.require('I3KaglaFi');
 const IERC20 = artifacts.require('IERC20');
-const ICurveGauge = artifacts.require('ICurveGauge');
-const ICurveGaugeDebug = artifacts.require('ICurveGaugeDebug');
+const IKaglaGauge = artifacts.require('IKaglaGauge');
+const IKaglaGaugeDebug = artifacts.require('IKaglaGaugeDebug');
 
 contract('ExtraRewardsTest v2', async (accounts) => {
   it('should deposit and claim crv/cvx as well as extra incentives', async () => {
@@ -30,12 +30,12 @@ contract('ExtraRewardsTest v2', async (accounts) => {
     let wbtc = await IERC20.at('0x2260fac5e5542a773aa44fbcfedf7c193bc2c599');
     let bor = await IERC20.at('0x89Ab32156e46F46D02ade3FEcbe5Fc4243B9AAeD');
     let exchange = await IExchange.at('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D');
-    let sbtcswap = await I3CurveFi.at('0x7fC77b5c7614E1533320Ea6DDc2Eb61fa00A9714');
+    let sbtcswap = await I3KaglaFi.at('0x7fC77b5c7614E1533320Ea6DDc2Eb61fa00A9714');
     let sbtc = await IERC20.at('0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3');
-    let obtcswap = await I2CurveFi.at('0x7F55DDe206dbAD629C080068923b36fe9D6bDBeF');
+    let obtcswap = await I2KaglaFi.at('0x7F55DDe206dbAD629C080068923b36fe9D6bDBeF');
     let obtc = await IERC20.at('0xDE5331AC4B3630f94853Ff322B66407e0D6331E8');
-    let obtcGauge = await ICurveGauge.at('0xd7d147c6Bb90A718c3De8C0568F9B560C79fa416');
-    let obtcGaugeDebug = await ICurveGaugeDebug.at('0xd7d147c6Bb90A718c3De8C0568F9B560C79fa416');
+    let obtcGauge = await IKaglaGauge.at('0xd7d147c6Bb90A718c3De8C0568F9B560C79fa416');
+    let obtcGaugeDebug = await IKaglaGaugeDebug.at('0xd7d147c6Bb90A718c3De8C0568F9B560C79fa416');
     let obtcSwap = '0x7F55DDe206dbAD629C080068923b36fe9D6bDBeF';
 
     let admin = accounts[0];
@@ -44,7 +44,7 @@ contract('ExtraRewardsTest v2', async (accounts) => {
     let caller = accounts[3];
 
     //system setup
-    let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy);
+    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let booster = await Booster.deployed();
     let rewardFactory = await RewardFactory.deployed();
     let stashFactory = await StashFactory.deployed();

@@ -5,7 +5,7 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
 const CrvDepositor = artifacts.require('CrvDepositor');
-const CurveVoterProxy = artifacts.require('CurveVoterProxy');
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
@@ -16,7 +16,7 @@ const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 
 const IExchange = artifacts.require('IExchange');
-const ICurveFi = artifacts.require('I3CurveFi');
+const IKaglaFi = artifacts.require('I3KaglaFi');
 const IERC20 = artifacts.require('IERC20');
 
 contract('BasicDepositWithdraw', async (accounts) => {
@@ -25,7 +25,7 @@ contract('BasicDepositWithdraw', async (accounts) => {
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
     let dai = await IERC20.at('0x6b175474e89094c44da98b954eedeac495271d0f');
     let exchange = await IExchange.at('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D');
-    let threecrvswap = await ICurveFi.at('0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7');
+    let threecrvswap = await IKaglaFi.at('0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7');
     let threeCrv = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490');
     let threeCrvGauge = '0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A';
     let threeCrvSwap = '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7';
@@ -37,7 +37,7 @@ contract('BasicDepositWithdraw', async (accounts) => {
     let caller = accounts[3];
 
     //system setup
-    let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy);
+    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let booster = await Booster.deployed();
     let voterewardFactoryproxy = await RewardFactory.deployed();
     let stashFactory = await StashFactory.deployed();

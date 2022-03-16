@@ -17,7 +17,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 //Example of a tokenize a muuu staked position.
 //if used as collateral some modifications will be needed to fit the specific platform
 
-//Based on Curve.fi's gauge wrapper implementations at https://github.com/curvefi/curve-dao-contracts/tree/master/contracts/gauges/wrappers
+//Based on Kagla.fi's gauge wrapper implementations at https://github.com/curvefi/curve-dao-contracts/tree/master/contracts/gauges/wrappers
 contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
     using SafeERC20
     for IERC20;

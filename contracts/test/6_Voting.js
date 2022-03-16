@@ -4,7 +4,7 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
 const CrvDepositor = artifacts.require('CrvDepositor');
-const CurveVoterProxy = artifacts.require('CurveVoterProxy');
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
@@ -18,11 +18,11 @@ const RewardFactory = artifacts.require('RewardFactory');
 const IExchange = artifacts.require('IExchange');
 const IVoting = artifacts.require('IVoting');
 const IVoteStarter = artifacts.require('IVoteStarter');
-const I2CurveFi = artifacts.require('I2CurveFi');
-const I3CurveFi = artifacts.require('I3CurveFi');
+const I2KaglaFi = artifacts.require('I2KaglaFi');
+const I3KaglaFi = artifacts.require('I3KaglaFi');
 const IERC20 = artifacts.require('IERC20');
-const ICurveGauge = artifacts.require('ICurveGauge');
-const ICurveGaugeDebug = artifacts.require('ICurveGaugeDebug');
+const IKaglaGauge = artifacts.require('IKaglaGauge');
+const IKaglaGaugeDebug = artifacts.require('IKaglaGaugeDebug');
 const IWalletCheckerDebug = artifacts.require('IWalletCheckerDebug');
 const IEscro = artifacts.require('IEscro');
 const IGaugeController = artifacts.require('IGaugeController');
@@ -49,7 +49,7 @@ contract('Voting Test', async (accounts) => {
     let caller = accounts[3];
 
     //system
-    let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy);
+    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let booster = await Booster.deployed();
     let rewardFactory = await RewardFactory.deployed();
     let stashFactory = await StashFactory.deployed();

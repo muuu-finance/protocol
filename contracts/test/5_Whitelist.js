@@ -4,7 +4,7 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
 const CrvDepositor = artifacts.require('CrvDepositor');
-const CurveVoterProxy = artifacts.require('CurveVoterProxy');
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool');
@@ -16,7 +16,7 @@ const StashFactory = artifacts.require('StashFactory');
 const RewardFactory = artifacts.require('RewardFactory');
 
 const IExchange = artifacts.require('IExchange');
-const ICurveFi = artifacts.require('I3CurveFi');
+const IKaglaFi = artifacts.require('I3KaglaFi');
 const IERC20 = artifacts.require('IERC20');
 const IVoting = artifacts.require('IVoting');
 const IVoteStarter = artifacts.require('IVoteStarter');
@@ -41,7 +41,7 @@ contract('Whitelist Test', async (accounts) => {
     let caller = accounts[3];
 
     //system
-    let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy);
+    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let booster = await Booster.deployed();
     let rewardFactory = await RewardFactory.deployed();
     let stashFactory = await StashFactory.deployed();
@@ -238,7 +238,7 @@ contract('Whitelist Test', async (accounts) => {
     //to test release/createlock, the contract needs to be modified to only lock a month or so
 
     //lock deposited crv, caller should get a bit of cvxCrv for compensation
-    await crvDeposit.lockCurve({ from: caller });
+    await crvDeposit.lockKagla({ from: caller });
     console.log('crv locked');
     await cvxCrv.balanceOf(userA).then((a) => console.log('cvxCrv on wallet: ' + a));
     await cvxCrv.balanceOf(caller).then((a) => console.log('cvxCrv on caller: ' + a));

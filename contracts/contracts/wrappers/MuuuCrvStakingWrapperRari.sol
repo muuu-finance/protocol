@@ -17,7 +17,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 
 //Tokenized cvxCrv staked position for Rari's Fuse platform
-//Based on Curve.fi's gauge wrapper implementations at https://github.com/curvefi/curve-dao-contracts/tree/master/contracts/gauges/wrappers
+//Based on Kagla.fi's gauge wrapper implementations at https://github.com/curvefi/curve-dao-contracts/tree/master/contracts/gauges/wrappers
 contract MuuuCrvRari is MuuuCrvStakingWrapper {
     using SafeERC20
     for IERC20;

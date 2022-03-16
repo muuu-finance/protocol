@@ -5,7 +5,7 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
 const CrvDepositor = artifacts.require('CrvDepositor');
-const CurveVoterProxy = artifacts.require('CurveVoterProxy');
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const ExtraRewardStashV1 = artifacts.require('ExtraRewardStashV1');
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2');
 const BaseRewardPool = artifacts.require('BaseRewardPool');
@@ -38,7 +38,7 @@ contract('Test masterchef rewards setup', async (accounts) => {
 
     //system
     let booster = await Booster.at(contractList.system.booster);
-    let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy);
+    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let chef = await MuuuMasterChef.at(contractList.system.chef);
     let cvx = await MuuuToken.at(contractList.system.cvx);
     let cvxCrv = await cvxCrvToken.at(contractList.system.cvxCrv);

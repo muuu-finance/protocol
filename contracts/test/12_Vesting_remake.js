@@ -7,18 +7,18 @@ var droplist = jsonfile.readFileSync('../airdrop/drop_proofs.json');
 var contractList = jsonfile.readFileSync('./contracts.json');
 var distroList = jsonfile.readFileSync('./migrations/distro.json');
 
-const CurveVoterProxy = artifacts.require('CurveVoterProxy');
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const VestedEscrow = artifacts.require('VestedEscrow');
 const cvxRewardPool = artifacts.require('cvxRewardPool');
 const MuuuToken = artifacts.require('MuuuToken');
 
-const VotingEscrow = artifacts.require('MockCurveVoteEscrow');
+const VotingEscrow = artifacts.require('MockKaglaVoteEscrow');
 
 contract('VestedEscrow Test', async (accounts) => {
   it('should claim unlock over time and claim', async () => {
     //system
     const votingEscrow = await VotingEscrow.new();
-    const curveVoterProxy = await CurveVoterProxy.new(votingEscrow.address);
+    const curveVoterProxy = await KaglaVoterProxy.new(votingEscrow.address);
     const cvx = await MuuuToken.new(curveVoterProxy.address);
     let cvxRewards = await cvxRewardPool.new(
       cvx.address,

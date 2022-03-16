@@ -17,7 +17,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 //if used as collateral some modifications will be needed to fit the specific platform
 //other considerations: might be worth refactoring to use earned() during checkpoints instead of claiming rewards each time
 
-//Based on Curve.fi's gauge wrapper implementations at https://github.com/curvefi/curve-dao-contracts/tree/master/contracts/gauges/wrappers
+//Based on Kagla.fi's gauge wrapper implementations at https://github.com/curvefi/curve-dao-contracts/tree/master/contracts/gauges/wrappers
 contract MuuuCrvStakingWrapper is ERC20, ReentrancyGuard {
     using SafeERC20
     for IERC20;

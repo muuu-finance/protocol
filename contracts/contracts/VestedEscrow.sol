@@ -2,7 +2,7 @@
 pragma solidity 0.6.12;
 
 /*
-Rewrite of Curve Finance's Vested Escrow
+Rewrite of Kagla Finance's Vested Escrow
 found at https://github.com/curvefi/curve-dao-contracts/blob/master/contracts/VestingEscrow.vy
 
 Changes:
@@ -12,166 +12,163 @@ Changes:
 */
 import "./Interfaces.sol";
 import "./interfaces/MathUtil.sol";
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+import '@openzeppelin/contracts/math/SafeMath.sol';
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+import '@openzeppelin/contracts/utils/Address.sol';
+import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract VestedEscrow is ReentrancyGuard {
-  using SafeMath for uint256;
-  using SafeERC20 for IERC20;
 
-  IERC20 public rewardToken;
-  address public admin;
-  address public fundAdmin;
-  address public stakeContract;
+contract VestedEscrow is ReentrancyGuard{
+    using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
-  uint256 public startTime;
-  uint256 public endTime;
-  uint256 public totalTime;
-  uint256 public initialLockedSupply;
-  uint256 public unallocatedSupply;
+    IERC20 public rewardToken;
+    address public admin;
+    address public fundAdmin;
+    address public stakeContract;
 
-  mapping(address => uint256) public initialLocked;
-  mapping(address => uint256) public totalClaimed;
+    uint256 public startTime;
+    uint256 public endTime;
+    uint256 public totalTime;
+    uint256 public initialLockedSupply;
+    uint256 public unallocatedSupply;
 
-  address[] public extraRewards;
+    mapping(address => uint256) public initialLocked;
+    mapping(address => uint256) public totalClaimed;
 
-  event Fund(address indexed recipient, uint256 reward);
-  event Claim(address indexed user, uint256 amount);
+    address[] public extraRewards;
 
-  constructor(
-    address rewardToken_,
-    uint256 starttime_,
-    uint256 endtime_,
-    address stakeContract_,
-    address fundAdmin_
-  ) public {
-    require(starttime_ >= block.timestamp, "start must be future");
-    require(endtime_ > starttime_, "end must be greater");
+    event Fund(address indexed recipient, uint256 reward);
+    event Claim(address indexed user, uint256 amount);
 
-    rewardToken = IERC20(rewardToken_);
-    startTime = starttime_;
-    endTime = endtime_;
-    totalTime = endTime.sub(startTime);
-    admin = msg.sender;
-    fundAdmin = fundAdmin_;
-    stakeContract = stakeContract_;
-  }
+    constructor(
+        address rewardToken_,
+        uint256 starttime_,
+        uint256 endtime_,
+        address stakeContract_,
+        address fundAdmin_
+    ) public {
+        require(starttime_ >= block.timestamp,"start must be future");
+        require(endtime_ > starttime_,"end must be greater");
 
-  function setAdmin(address _admin) external {
-    require(msg.sender == admin, "!auth");
-    admin = _admin;
-  }
-
-  function setFundAdmin(address _fundadmin) external {
-    require(msg.sender == admin, "!auth");
-    fundAdmin = _fundadmin;
-  }
-
-  function addTokens(uint256 _amount) external returns (bool) {
-    require(msg.sender == admin, "!auth");
-
-    rewardToken.safeTransferFrom(msg.sender, address(this), _amount);
-    unallocatedSupply = unallocatedSupply.add(_amount);
-    return true;
-  }
-
-  function fund(address[] calldata _recipient, uint256[] calldata _amount)
-    external
-    nonReentrant
-    returns (bool)
-  {
-    require(msg.sender == fundAdmin || msg.sender == admin, "!auth");
-
-    uint256 totalAmount = 0;
-    for (uint256 i = 0; i < _recipient.length; i++) {
-      uint256 amount = _amount[i];
-      initialLocked[_recipient[i]] = initialLocked[_recipient[i]].add(amount);
-      totalAmount = totalAmount.add(amount);
-      emit Fund(_recipient[i], amount);
+        rewardToken = IERC20(rewardToken_);
+        startTime = starttime_;
+        endTime = endtime_;
+        totalTime = endTime.sub(startTime);
+        admin = msg.sender;
+        fundAdmin = fundAdmin_;
+        stakeContract = stakeContract_;
     }
 
-    initialLockedSupply = initialLockedSupply.add(totalAmount);
-    unallocatedSupply = unallocatedSupply.sub(totalAmount);
-    return true;
-  }
-
-  function _totalVestedOf(address _recipient, uint256 _time) internal view returns (uint256) {
-    if (_time < startTime) {
-      return 0;
+    function setAdmin(address _admin) external {
+        require(msg.sender == admin, "!auth");
+        admin = _admin;
     }
-    uint256 locked = initialLocked[_recipient];
-    uint256 elapsed = _time.sub(startTime);
-    uint256 total = MathUtil.min((locked * elapsed) / totalTime, locked);
-    return total;
-  }
 
-  function _totalVested() internal view returns (uint256) {
-    uint256 _time = block.timestamp;
-    if (_time < startTime) {
-      return 0;
+    function setFundAdmin(address _fundadmin) external {
+        require(msg.sender == admin, "!auth");
+        fundAdmin = _fundadmin;
     }
-    uint256 locked = initialLockedSupply;
-    uint256 elapsed = _time.sub(startTime);
-    uint256 total = MathUtil.min((locked * elapsed) / totalTime, locked);
-    return total;
-  }
 
-  function vestedSupply() external view returns (uint256) {
-    return _totalVested();
-  }
+    function addTokens(uint256 _amount) external returns(bool){
+        require(msg.sender == admin, "!auth");
 
-  function lockedSupply() external view returns (uint256) {
-    return initialLockedSupply.sub(_totalVested());
-  }
+        rewardToken.safeTransferFrom(msg.sender, address(this), _amount);
+        unallocatedSupply = unallocatedSupply.add(_amount);
+        return true;
+    }
 
-  function vestedOf(address _recipient) external view returns (uint256) {
-    return _totalVestedOf(_recipient, block.timestamp);
-  }
+    function fund(address[] calldata _recipient, uint256[] calldata _amount) external nonReentrant returns(bool){
+        require(msg.sender == fundAdmin || msg.sender == admin, "!auth");
 
-  function balanceOf(address _recipient) external view returns (uint256) {
-    uint256 vested = _totalVestedOf(_recipient, block.timestamp);
-    return vested.sub(totalClaimed[_recipient]);
-  }
+        uint256 totalAmount = 0;
+        for(uint256 i = 0; i < _recipient.length; i++){
+            uint256 amount = _amount[i];
+            initialLocked[_recipient[i]] = initialLocked[_recipient[i]].add(amount);
+            totalAmount = totalAmount.add(amount);
+            emit Fund(_recipient[i],amount);
+        }
 
-  function lockedOf(address _recipient) external view returns (uint256) {
-    uint256 vested = _totalVestedOf(_recipient, block.timestamp);
-    return initialLocked[_recipient].sub(vested);
-  }
+        initialLockedSupply = initialLockedSupply.add(totalAmount);
+        unallocatedSupply = unallocatedSupply.sub(totalAmount);
+        return true;
+    }
 
-  function claim(address _recipient) public nonReentrant {
-    uint256 vested = _totalVestedOf(_recipient, block.timestamp);
-    uint256 claimable = vested.sub(totalClaimed[_recipient]);
+    function _totalVestedOf(address _recipient, uint256 _time) internal view returns(uint256){
+        if(_time < startTime){
+            return 0;
+        }
+        uint256 locked = initialLocked[_recipient];
+        uint256 elapsed = _time.sub(startTime);
+        uint256 total = MathUtil.min(locked * elapsed / totalTime, locked );
+        return total;
+    }
 
-    totalClaimed[_recipient] = totalClaimed[_recipient].add(claimable);
-    rewardToken.safeTransfer(_recipient, claimable);
+    function _totalVested() internal view returns(uint256){
+        uint256 _time = block.timestamp;
+        if(_time < startTime){
+            return 0;
+        }
+        uint256 locked = initialLockedSupply;
+        uint256 elapsed = _time.sub(startTime);
+        uint256 total = MathUtil.min(locked * elapsed / totalTime, locked );
+        return total;
+    }
 
-    emit Claim(msg.sender, claimable);
-  }
+    function vestedSupply() external view returns(uint256){
+        return _totalVested();
+    }
 
-  function claim() external {
-    claim(msg.sender);
-  }
+    function lockedSupply() external view returns(uint256){
+        return initialLockedSupply.sub(_totalVested());
+    }
 
-  function claimAndStake(address _recipient) internal nonReentrant {
-    require(stakeContract != address(0), "no staking contract");
-    require(IRewards(stakeContract).stakingToken() == address(rewardToken), "stake token mismatch");
+    function vestedOf(address _recipient) external view returns(uint256){
+        return _totalVestedOf(_recipient, block.timestamp);
+    }
 
-    uint256 vested = _totalVestedOf(_recipient, block.timestamp);
-    uint256 claimable = vested.sub(totalClaimed[_recipient]);
+    function balanceOf(address _recipient) external view returns(uint256){
+        uint256 vested = _totalVestedOf(_recipient, block.timestamp);
+        return vested.sub(totalClaimed[_recipient]);
+    }
 
-    totalClaimed[_recipient] = totalClaimed[_recipient].add(claimable);
+    function lockedOf(address _recipient) external view returns(uint256){
+        uint256 vested = _totalVestedOf(_recipient, block.timestamp);
+        return initialLocked[_recipient].sub(vested);
+    }
 
-    rewardToken.safeApprove(stakeContract, 0);
-    rewardToken.safeApprove(stakeContract, claimable);
-    IRewards(stakeContract).stakeFor(_recipient, claimable);
+    function claim(address _recipient) public nonReentrant{
+        uint256 vested = _totalVestedOf(_recipient, block.timestamp);
+        uint256 claimable = vested.sub(totalClaimed[_recipient]);
 
-    emit Claim(_recipient, claimable);
-  }
+        totalClaimed[_recipient] = totalClaimed[_recipient].add(claimable);
+        rewardToken.safeTransfer(_recipient, claimable);
 
-  function claimAndStake() external {
-    claimAndStake(msg.sender);
-  }
+        emit Claim(msg.sender, claimable);
+    }
+
+    function claim() external{
+        claim(msg.sender);
+    }
+
+    function claimAndStake(address _recipient) internal nonReentrant{
+        require(stakeContract != address(0),"no staking contract");
+        require(IRewards(stakeContract).stakingToken() == address(rewardToken),"stake token mismatch");
+
+        uint256 vested = _totalVestedOf(_recipient, block.timestamp);
+        uint256 claimable = vested.sub(totalClaimed[_recipient]);
+
+        totalClaimed[_recipient] = totalClaimed[_recipient].add(claimable);
+
+        rewardToken.safeApprove(stakeContract,0);
+        rewardToken.safeApprove(stakeContract,claimable);
+        IRewards(stakeContract).stakeFor(_recipient, claimable);
+
+        emit Claim(_recipient, claimable);
+    }
+
+    function claimAndStake() external{
+        claimAndStake(msg.sender);
+    }
 }

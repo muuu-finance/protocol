@@ -5,7 +5,7 @@ var jsonfile = require('jsonfile');
 var contractList = jsonfile.readFileSync('./contracts.json');
 
 const Booster = artifacts.require('Booster');
-const CurveVoterProxy = artifacts.require('CurveVoterProxy');
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const MuuuToken = artifacts.require('MuuuToken');
 const cvxCrvToken = artifacts.require('cvxCrvToken');
 const IERC20 = artifacts.require('IERC20');
@@ -17,7 +17,7 @@ const ProxyFactory = artifacts.require('ProxyFactory');
 const StashFactoryV2 = artifacts.require('StashFactoryV2');
 const IVoteStarter = artifacts.require('IVoteStarter');
 const PoolManager = artifacts.require('PoolManager');
-const I2CurveFi = artifacts.require('I2CurveFi');
+const I2KaglaFi = artifacts.require('I2KaglaFi');
 const ExtraRewardStashV3 = artifacts.require('ExtraRewardStashV3');
 const RewardHook = artifacts.require('RewardHook');
 const ExtraRewardStashTokenRescue = artifacts.require('ExtraRewardStashTokenRescue');
@@ -35,7 +35,7 @@ contract('Extra rewards for vlcvx', async (accounts) => {
     //system
     let booster = await Booster.at(contractList.system.booster);
     let locker = await MuuuLocker.at(contractList.system.locker);
-    let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy);
+    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let cvx = await MuuuToken.at(contractList.system.cvx);
     let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52');
     let cvxCrv = await cvxCrvToken.at(contractList.system.cvxCrv);

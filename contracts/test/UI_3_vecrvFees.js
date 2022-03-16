@@ -5,7 +5,7 @@ var contractList = jsonfile.readFileSync('./contracts.json');
 
 const CrvDepositor = artifacts.require('CrvDepositor');
 const Booster = artifacts.require('Booster');
-const CurveVoterProxy = artifacts.require('CurveVoterProxy');
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy');
 const IERC20 = artifacts.require('IERC20');
 const IWalletCheckerDebug = artifacts.require('IWalletCheckerDebug');
 const IBurner = artifacts.require('IBurner');
@@ -27,7 +27,7 @@ contract('Claim vecrv fees', async (accounts) => {
     let underlyingburner = await IBurner.at('0x786B374B5eef874279f4B7b4de16940e57301A58');
     ///////
 
-    let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy);
+    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy);
     let booster = await Booster.at(contractList.system.booster);
     let crvDeposit = await CrvDepositor.at(contractList.system.crvDepositor);
     let cvxCrv = await IERC20.at(contractList.system.cvxCrv);
@@ -51,7 +51,7 @@ contract('Claim vecrv fees', async (accounts) => {
     // await crv.approve(crvDeposit.address,crvBal);
     // await crvDeposit.deposit(crvBal,false,"0x0000000000000000000000000000000000000000");
 
-    await crvDeposit.lockCurve();
+    await crvDeposit.lockKagla();
     await cvxCrv.totalSupply().then((a) => console.log('cvxCrv supply: ' + a));
     await vecrv.balanceOf(voteproxy.address).then((a) => console.log('proxy veCrv: ' + a));
 

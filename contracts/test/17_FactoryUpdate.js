@@ -10,9 +10,9 @@ const StashFactory = artifacts.require('StashFactory');
 const ExtraRewardStashV3 = artifacts.require('ExtraRewardStashV3');
 const PoolManager = artifacts.require('PoolManager');
 const IExchange = artifacts.require('IExchange');
-const I2CurveFi = artifacts.require('I2CurveFi');
-const ICurveFi = artifacts.require('I3CurveFi');
-const ICurveGaugeDebug = artifacts.require('ICurveGaugeDebug');
+const I2KaglaFi = artifacts.require('I2KaglaFi');
+const IKaglaFi = artifacts.require('I3KaglaFi');
+const IKaglaGaugeDebug = artifacts.require('IKaglaGaugeDebug');
 const IBaseRewards = artifacts.require('IBaseRewards');
 const TreasuryFunds = artifacts.require('TreasuryFunds');
 const MuuuToken = artifacts.require('MuuuToken');
@@ -46,14 +46,14 @@ contract('Factory Update', async (accounts) => {
     var fac = await booster.stashFactory();
     console.log('check if set -> set factory: ' + fac);
 
-    let rEthSwap = await I2CurveFi.at('0xF9440930043eb3997fc70e1339dBb11F341de7A8');
+    let rEthSwap = await I2KaglaFi.at('0xF9440930043eb3997fc70e1339dBb11F341de7A8');
     let exchange = await IExchange.at('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D');
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
     let dai = await IERC20.at('0x6b175474e89094c44da98b954eedeac495271d0f');
     let reth = await IERC20.at('0x9559aaa82d9649c7a7b220e7c461d2e74c9a3593');
     let rethLP = await IERC20.at('0x53a901d48795C58f485cBB38df08FA96a24669D5');
     let stafi = await IERC20.at('0xef3A930e1FfFFAcd2fc13434aC81bD278B0ecC8d');
-    let rethGauge = await ICurveGaugeDebug.at('0x824F13f1a2F29cFEEa81154b46C0fc820677A637');
+    let rethGauge = await IKaglaGaugeDebug.at('0x824F13f1a2F29cFEEa81154b46C0fc820677A637');
     let userA = accounts[1];
 
     await pools.revertControl({ from: multisig, gasPrice: 0 });
