@@ -25,6 +25,8 @@ const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory');
 const MintableERC20 = artifacts.require('MintableERC20');
 const MockVotingEscrow = artifacts.require('MockCurveVoteEscrow');
 
+const CvxLockerV2 = artifacts.require('CvxLockerV2');
+
 module.exports = function (deployer, network, accounts) {
   if (network === 'skipMigration') {
     console.log(`Skip migration in ${network} network`);
@@ -70,11 +72,12 @@ module.exports = function (deployer, network, accounts) {
 
   var booster, voter, rFactory, sFactory, tFactory, cvx, cvxCrv, deposit, arb, pools;
   var crvToken;
-  var cvxCrvRewards, cvxRewards, airdrop, vesting, chef;
+  var cvxCrvRewards, cvxRewards, airdrop, vesting;
   var pairToken;
   var crvdepositAmt, crvbal, cvxCrvBal;
   var crv, weth, dai;
   var convexVoterProxy;
+  var cvxLockerV2;
 
   let mockVotingEscrow;
 
@@ -269,38 +272,34 @@ module.exports = function (deployer, network, accounts) {
       addContract('system', 'arbitratorVault', arb.address);
       return booster.setArbitrator(arb.address);
     })
-    // TODO:
-    // .then(function(){
-    // 	return time.latestBlock();
-    // })
-    // .then(function(block) {
-    // 	var chefCvx = new BN(distroList.lpincentives);
-    // 	var numberOfBlocks = new BN(6000*365*4);
-    // 	var rewardPerBlock = new BN(chefCvx).div(numberOfBlocks)
-    // 	console.log("chef rewards per block: " +rewardPerBlock.toString());
-    // 	var startblock = Number(block) + 500;//start with small delay
-    // 	var endbonusblock = Number(startblock) + (2*7*6400);//about 2 weeks
-    // 	console.log("current block: " +block);
-    // 	console.log("chef rewards start on: " +startblock);
-    // 	console.log("chef reward bonus end on: " +endbonusblock);
-    // 	return deployer.deploy(ConvexMasterChef,cvx.address,rewardPerBlock, startblock, endbonusblock )
-    // }).then(function(instance) {
-    // 	chef = instance;
-    // 	addContract("system","chef",chef.address);
-    // 	return cvx.transfer(chef.address, distroList.lpincentives);
-    // })
-    // .then(function(){
-    // 	return cvx.balanceOf(chef.address);
-    // })
-    // .then(function(_cvx){
-    // 	console.log("cvx on chef: " +_cvx);
-    // })
-    // .then(function() {
-    // 	return deployer.deploy(ClaimZap,cvxRewards.address, cvxCrvRewards.address, chef.address, cvx.address, cvxCrv.address, deposit.address)
-    // }).then(function(instance) {
-    // 	addContract("system","claimZap",instance.address);
-    // 	return instance.setApprovals();
-    // })
+
+    // added CVX LockerV2 ref: /contracts/test/UI_7_DeployLockerV2.js
+    .then(function () {
+      // TODO: constructor
+      return deployer.deploy(CvxLockerV2);
+    })
+    .then(function (instance) {
+      cvxLockerV2 = instance;
+      addContract('system', 'cvxLockerV2', cvxLockerV2.address);
+    })
+
+    .then(function () {
+      return deployer.deploy(
+        ClaimZap,
+        crv.address,
+        cvx.address,
+        cvxCrv.address,
+        deposit.address,
+        cvxCrvRewards.address,
+        cvxRewards.address,
+        treasuryAddress, // TODO: replace. this is supposed to be Factory cvxCRV in curve
+        cvxLockerV2.address
+      );
+    })
+    .then(function (instance) {
+      addContract('system', 'claimZap', instance.address);
+      return instance.setApprovals();
+    })
 
     //Fund vested escrow
     .then(function () {
