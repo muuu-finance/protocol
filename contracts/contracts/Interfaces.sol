@@ -2,7 +2,6 @@
 pragma solidity 0.6.12;
 
 
-
 interface ICurveGauge {
     function deposit(uint256) external;
     function balanceOf(address) external view returns (uint256);
@@ -26,8 +25,10 @@ interface IWalletChecker {
 }
 
 interface IVoting{
+    // for Voting in aragon-apps
     function vote(uint256, bool, bool) external; //voteId, support, executeIfDecided
     function getVote(uint256) external view returns(bool,bool,uint64,uint64,uint64,uint64,uint256,uint256,uint256,bytes memory); 
+    // for GaugeController
     function vote_for_gauge_weights(address,uint256) external;
 }
 
@@ -41,6 +42,11 @@ interface IRegistry{
     function gauge_controller() external view returns(address);
     function get_lp_token(address) external view returns(address);
     function get_gauges(address) external view returns(address[10] memory,uint128[10] memory);
+}
+
+interface IAddressProvider {
+    function get_registry() external view returns(address);
+    function get_address(uint256 _id) external view returns(address);
 }
 
 interface IStaker{

@@ -16,7 +16,7 @@ contract Booster is Ownable {
 
     address public crv;
     // TODO: extract
-    address public constant registry = address(0x0000000022D53366457F9d5E68Ec105046FC4383);
+    // address public constant registry = address(0x0000000022D53366457F9d5E68Ec105046FC4383);
     uint256 public constant distributionAddressId = 4;
     address public constant voteOwnership = address(0xE478de485ad2fe566d49342Cbd03E49ed7DB3356);
     address public constant voteParameter = address(0xBCfF8B0b9419b9A88c44546519b1e909cF330399);
@@ -43,6 +43,7 @@ contract Booster is Ownable {
     address public lockFees; //cvxCrv vecrv fees
     address public feeDistro;
     address public feeToken;
+    address public registry;
 
     bool public isShutdown;
 
@@ -62,7 +63,7 @@ contract Booster is Ownable {
     event Deposited(address indexed user, uint256 indexed poolid, uint256 amount);
     event Withdrawn(address indexed user, uint256 indexed poolid, uint256 amount);
 
-    constructor(address _staker, address _minter, address _crv) public {
+    constructor(address _staker, address _minter, address _crv, address _registry) public {
         isShutdown = false;
         staker = _staker;
         voteDelegate = msg.sender;
@@ -73,6 +74,7 @@ contract Booster is Ownable {
         treasury = address(0);
         minter = _minter;
         crv = _crv;
+        registry = _registry;
     }
 
 
@@ -132,7 +134,7 @@ contract Booster is Ownable {
     function setFeeInfo() external {
         require(msg.sender==feeManager, "!auth");
 
-        feeDistro = IRegistry(registry).get_address(distributionAddressId);
+        feeDistro = IAddressProvider(registry).get_address(distributionAddressId);
         address _feeToken = IFeeDistro(feeDistro).token();
         if(feeToken != _feeToken){
             //create a new reward contract for the new token
@@ -162,6 +164,11 @@ contract Booster is Ownable {
     function setTreasury(address _treasury) external {
         require(msg.sender==feeManager, "!auth");
         treasury = _treasury;
+    }
+
+    function setRegistry(address _registry) external {
+        require(msg.sender == owner(), "!auth");
+        registry = _registry;
     }
 
     /// END SETTER SECTION ///

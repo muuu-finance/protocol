@@ -14,20 +14,26 @@ contract PoolManager{
     using Address for address;
     using SafeMath for uint256;
 
-    address public constant registry = address(0x0000000022D53366457F9d5E68Ec105046FC4383);
+    // address public constant registry = address(0x0000000022D53366457F9d5E68Ec105046FC4383);
 
     address public operator;
     address public pools;
+    address public addressProvider;
 
-
-    constructor(address _pools) public {
+    constructor(address _pools, address _addressProvider) public {
         operator = msg.sender;
         pools = _pools;
+        addressProvider = _addressProvider;
     }
 
     function setOperator(address _operator) external {
         require(msg.sender == operator, "!auth");
         operator = _operator;
+    }
+
+    function setRegistryAddressProvider(address _addressProvider) external {
+        require(msg.sender == operator, "!auth");
+        addressProvider = _addressProvider;
     }
 
     //revert control of adding  pools back to operator
@@ -43,7 +49,7 @@ contract PoolManager{
         require(_swap != address(0),"swap is 0");
 
         //get curve's registery
-        address mainReg = IRegistry(registry).get_registry();
+        address mainReg = IRegistry(addressProvider).get_registry();
         
         //get lp token and gauge list from swap address
         address lptoken = IRegistry(mainReg).get_lp_token(_swap);
