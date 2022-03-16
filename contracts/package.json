@@ -1,8 +1,9 @@
 {
   "scripts": {
+    "generate-types": "typechain --target=truffle-v5 'build/contracts/*.json'",
+    "postinstall": "truffle compile && npm run generate-types",
     "deploy": "truffle migrate --network ganachecli --skip-dry-run",
-    "compile": "truffle compile",
-    "test": "truffle test",
+    "test": "npm run postinstall && truffle test",
     "prettier:check": "prettier -c 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'",
     "prettier:write": "prettier --write 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'"
   },
