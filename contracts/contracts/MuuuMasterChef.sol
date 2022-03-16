@@ -19,7 +19,7 @@ contract MuuuMasterChef is Ownable {
         uint256 amount; // How many LP tokens the user has provided.
         uint256 rewardDebt; // Reward debt. See explanation below.
         //
-        // We do some fancy math here. Basically, any point in time, the amount of CVXs
+        // We do some fancy math here. Basically, any point in time, the amount of MUUUs
         // entitled to a user but is pending to be distributed is:
         //
         //   pending reward = (user.amount * pool.accCvxPerShare) - user.rewardDebt
@@ -34,17 +34,17 @@ contract MuuuMasterChef is Ownable {
     // Info of each pool.
     struct PoolInfo {
         IERC20 lpToken; // Address of LP token contract.
-        uint256 allocPoint; // How many allocation points assigned to this pool. CVX to distribute per block.
-        uint256 lastRewardBlock; // Last block number that CVXs distribution occurs.
-        uint256 accCvxPerShare; // Accumulated CVXs per share, times 1e12. See below.
+        uint256 allocPoint; // How many allocation points assigned to this pool. MUUU to distribute per block.
+        uint256 lastRewardBlock; // Last block number that MUUUs distribution occurs.
+        uint256 accCvxPerShare; // Accumulated MUUUs per share, times 1e12. See below.
         IRewarder rewarder;
     }
 
     //cvx
     IERC20 public cvx;
-    // Block number when bonus CVX period ends.
+    // Block number when bonus MUUU period ends.
     uint256 public bonusEndBlock;
-    // CVX tokens created per block.
+    // MUUU tokens created per block.
     uint256 public rewardPerBlock;
     // Bonus muliplier for early cvx makers.
     uint256 public constant BONUS_MULTIPLIER = 2;
@@ -55,7 +55,7 @@ contract MuuuMasterChef is Ownable {
     mapping(uint256 => mapping(address => UserInfo)) public userInfo;
     // Total allocation points. Must be the sum of all allocation points in all pools.
     uint256 public totalAllocPoint = 0;
-    // The block number when CVX mining starts.
+    // The block number when MUUU mining starts.
     uint256 public startBlock;
 
     // Events
@@ -110,7 +110,7 @@ contract MuuuMasterChef is Ownable {
         );
     }
 
-    // Update the given pool's CVX allocation point. Can only be called by the owner.
+    // Update the given pool's MUUU allocation point. Can only be called by the owner.
     function set(
         uint256 _pid,
         uint256 _allocPoint,
@@ -148,7 +148,7 @@ contract MuuuMasterChef is Ownable {
         }
     }
 
-    // View function to see pending CVXs on frontend.
+    // View function to see pending MUUUs on frontend.
     function pendingCvx(uint256 _pid, address _user)
         external
         view
@@ -205,7 +205,7 @@ contract MuuuMasterChef is Ownable {
         pool.lastRewardBlock = block.number;
     }
 
-    // Deposit LP tokens to MasterChef for CVX allocation.
+    // Deposit LP tokens to MasterChef for MUUU allocation.
     function deposit(uint256 _pid, uint256 _amount) public {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
@@ -295,7 +295,7 @@ contract MuuuMasterChef is Ownable {
         }
     }
 
-    // Safe cvx transfer function, just in case if rounding error causes pool to not have enough CVXs.
+    // Safe cvx transfer function, just in case if rounding error causes pool to not have enough MUUUs.
     function safeRewardTransfer(address _to, uint256 _amount) internal {
         uint256 cvxBal = cvx.balanceOf(address(this));
         if (_amount > cvxBal) {

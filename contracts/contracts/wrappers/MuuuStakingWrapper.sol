@@ -50,7 +50,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
     uint256 public muuuPoolId;
     address public collateralVault;
     uint256 private constant CRV_INDEX = 0;
-    uint256 private constant CVX_INDEX = 1;
+    uint256 private constant MUUU_INDEX = 1;
 
     //rewards
     RewardType[] public rewards;
@@ -156,7 +156,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
                 })
             );
             registeredRewards[crv] = CRV_INDEX+1; //mark registered at index+1
-            registeredRewards[cvx] = CVX_INDEX+1; //mark registered at index+1
+            registeredRewards[cvx] = MUUU_INDEX+1; //mark registered at index+1
         }
 
         uint256 extraCount = IRewardStaking(mainPool).extraRewardsLength();
@@ -165,7 +165,7 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
             address extraToken = IRewardStaking(extraPool).rewardToken();
             if(extraToken == cvx){
                 //update cvx reward pool address
-                rewards[CVX_INDEX].reward_pool = extraPool;
+                rewards[MUUU_INDEX].reward_pool = extraPool;
             }else if(registeredRewards[extraToken] == 0){
                 //add new token to list
                 rewards.push(
@@ -321,8 +321,8 @@ contract MuuuStakingWrapper is ERC20, ReentrancyGuard {
                     I = I + IRewardStaking(reward.reward_pool).earned(address(this)).mul(1e20).div(supply);
                 }
                 newlyClaimable = _getDepositedBalance(_account).mul(I.sub(reward.reward_integral_for[_account])).div(1e20);
-                claimable[CVX_INDEX].amount = CvxMining.ConvertCrvToCvx(newlyClaimable);
-                claimable[CVX_INDEX].token = cvx;
+                claimable[MUUU_INDEX].amount = CvxMining.ConvertCrvToCvx(newlyClaimable);
+                claimable[MUUU_INDEX].token = cvx;
             }
         }
         return claimable;

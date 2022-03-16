@@ -268,7 +268,7 @@ module.exports = function (deployer, network, accounts) {
       return booster.setArbitrator(arb.address);
     })
 
-    // added CVX LockerV2 ref: /contracts/test/UI_7_DeployLockerV2.js
+    // added MUUU LockerV2 ref: /contracts/test/UI_7_DeployLockerV2.js
     .then(() => {
       // TODO: constructor
       return deployer.deploy(CvxLockerV2);

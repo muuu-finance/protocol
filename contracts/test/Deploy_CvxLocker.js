@@ -9,7 +9,7 @@ const CvxStakingProxy = artifacts.require('CvxStakingProxy')
 const cvxRewardPool = artifacts.require('cvxRewardPool')
 const IERC20 = artifacts.require('IERC20')
 
-contract('Deploy CVX Locker', async (accounts) => {
+contract('Deploy MUUU Locker', async (accounts) => {
   it('should setup lock contract', async () => {
     let deployer = '0x947B7742C403f20e5FaCcDAc5E092C943E7D0277'
     let multisig = '0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB'

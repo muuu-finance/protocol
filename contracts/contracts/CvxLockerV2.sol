@@ -14,7 +14,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 
 /*
-CVX locked in this contract will be entitled to voting rights for the Muuu Finance platform
+MUUU locked in this contract will be entitled to voting rights for the Muuu Finance platform
 Based on EPS Staking contract for http://ellipsis.finance/
 Based on SNX MultiRewards by iamdefinitelyahuman - https://github.com/iamdefinitelyahuman/multi-rewards
 
@@ -124,7 +124,7 @@ contract CvxLockerV2 is ReentrancyGuard, Ownable {
 
     constructor() public Ownable() {
         _name = "Vote Locked Muuu Token";
-        _symbol = "vlCVX";
+        _symbol = "vlMUUU";
         _decimals = 18;
 
         uint256 currentEpoch = block.timestamp.div(rewardsDuration).mul(rewardsDuration);
@@ -703,25 +703,25 @@ contract CvxLockerV2 is ReentrancyGuard, Ownable {
         if (reward > 0) {
             //if theres a reward(kicked), it will always be a withdraw only
             //preallocate enough cvx from stake contract to pay for both reward and withdraw
-            allocateCVXForTransfer(uint256(locked));
+            allocateMUUUForTransfer(uint256(locked));
 
             //reduce return amount by the kick reward
             locked = locked.sub(reward.to112());
 
             //transfer reward
-            transferCVX(_rewardAddress, reward, false);
+            transferMUUU(_rewardAddress, reward, false);
 
             emit KickReward(_rewardAddress, _account, reward);
         }else if(_spendRatio > 0){
             //preallocate enough cvx to transfer the boost cost
-            allocateCVXForTransfer( uint256(locked).mul(_spendRatio).div(denominator) );
+            allocateMUUUForTransfer( uint256(locked).mul(_spendRatio).div(denominator) );
         }
 
         //relock or return to user
         if (_relock) {
             _lock(_withdrawTo, locked, _spendRatio, true);
         } else {
-            transferCVX(_withdrawTo, locked, true);
+            transferMUUU(_withdrawTo, locked, true);
         }
     }
 
@@ -741,7 +741,7 @@ contract CvxLockerV2 is ReentrancyGuard, Ownable {
     }
 
     //pull required amount of cvx from staking for an upcoming transfer
-    function allocateCVXForTransfer(uint256 _amount) internal{
+    function allocateMUUUForTransfer(uint256 _amount) internal{
         uint256 balance = stakingToken.balanceOf(address(this));
         if (_amount > balance) {
             IStakingProxy(stakingProxy).withdraw(_amount.sub(balance));
@@ -749,9 +749,9 @@ contract CvxLockerV2 is ReentrancyGuard, Ownable {
     }
 
     //transfer helper: pull enough from staking, transfer, updating staking ratio
-    function transferCVX(address _account, uint256 _amount, bool _updateStake) internal {
+    function transferMUUU(address _account, uint256 _amount, bool _updateStake) internal {
         //allocate enough cvx from staking for the transfer
-        allocateCVXForTransfer(_amount);
+        allocateMUUUForTransfer(_amount);
         //transfer
         stakingToken.safeTransfer(_account, _amount);
 

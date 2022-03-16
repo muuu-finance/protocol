@@ -25,7 +25,7 @@ contract MuuuToken is ERC20{
         public
         ERC20(
             "Muuu Token",
-            "CVX"
+            "MUUU"
         )
     {
         operator = msg.sender;
