@@ -9,12 +9,12 @@ var jsonfile = require('jsonfile')
 var contractList = jsonfile.readFileSync('./contracts.json')
 
 const Booster = artifacts.require('Booster')
-const CrvDepositor = artifacts.require('CrvDepositor')
+const KglDepositor = artifacts.require('KglDepositor')
 const IERC20 = artifacts.require('IERC20')
 const IExchange = artifacts.require('IExchange')
 const ISPool = artifacts.require('ISPool')
-const I2CurveFi = artifacts.require('I2CurveFi')
-const I3CurveFi = artifacts.require('I3CurveFi')
+const I2KaglaFi = artifacts.require('I2KaglaFi')
+const I3KaglaFi = artifacts.require('I3KaglaFi')
 const IWalletCheckerDebug = artifacts.require('IWalletCheckerDebug')
 
 contract('Bootstrap', async (accounts) => {
@@ -28,17 +28,17 @@ contract('Bootstrap', async (accounts) => {
     )
     let susdSwap = await ISPool.at('0xA5407eAE9Ba41422680e2e00537571bcC53efBfD')
     let susdLp = await IERC20.at('0xC25a3A3b969415c80451098fa907EC722572917F')
-    let eursSwap = await I2CurveFi.at(
+    let eursSwap = await I2KaglaFi.at(
       '0x0Ce6a5fF5217e38315f87032CF90686C96627CAA',
     )
     let eursLp = await IERC20.at('0x194eBd173F6cDacE046C53eACcE9B953F28411d1')
-    let threeCrvSwap = await I3CurveFi.at(
+    let threeKglSwap = await I3KaglaFi.at(
       '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7',
     )
-    let threeCrvLp = await IERC20.at(
+    let threeKglLp = await IERC20.at(
       '0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490',
     )
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
     let walletChecker = await IWalletCheckerDebug.at(
       '0xca719728Ef172d0961768581fdF35CB116e0B7a4',
     )
@@ -90,22 +90,22 @@ contract('Bootstrap', async (accounts) => {
       currentTime + 3000,
     )
     daibalance = await dai.balanceOf(self)
-    await dai.approve(threeCrvSwap.address, daibalance)
-    await threeCrvSwap.add_liquidity([daibalance, 0, 0], 0)
+    await dai.approve(threeKglSwap.address, daibalance)
+    await threeKglSwap.add_liquidity([daibalance, 0, 0], 0)
 
-    await threeCrvLp
+    await threeKglLp
       .balanceOf(self)
-      .then((a) => console.log('threeCrvLp: ' + a))
+      .then((a) => console.log('threeKglLp: ' + a))
 
-    //get crv
+    //get kgl
     await exchange.swapExactTokensForTokens(
       web3.utils.toWei('5.0', 'ether'),
       0,
-      [weth.address, crv.address],
+      [weth.address, kgl.address],
       self,
       currentTime + 3000,
     )
-    await crv.balanceOf(self).then((a) => console.log('crv: ' + a))
+    await kgl.balanceOf(self).then((a) => console.log('kgl: ' + a))
 
     //whitelist
     console.log('whitelisting proxy...')
@@ -118,16 +118,16 @@ contract('Bootstrap', async (accounts) => {
     let isWhitelist = await walletChecker.check(contractList.system.voteProxy)
     console.log('is whitelist? ' + isWhitelist)
 
-    let crvDeposit = await CrvDepositor.at(contractList.system.crvDepositor)
-    await crv.transfer(contractList.system.voteProxy, 10000)
-    console.log('transfered crv to deposit')
-    await crvDeposit.initialLock()
+    let kglDeposit = await KglDepositor.at(contractList.system.kglDepositor)
+    await kgl.transfer(contractList.system.voteProxy, 10000)
+    console.log('transfered kgl to deposit')
+    await kglDeposit.initialLock()
 
     //add pbtc too
-    let sbtcswap = await I3CurveFi.at(
+    let sbtcswap = await I3KaglaFi.at(
       '0x7fC77b5c7614E1533320Ea6DDc2Eb61fa00A9714',
     )
-    let pbtcswap = await I2CurveFi.at(
+    let pbtcswap = await I2KaglaFi.at(
       '0x7F55DDe206dbAD629C080068923b36fe9D6bDBeF',
     )
     let pbtc = await IERC20.at('0xDE5331AC4B3630f94853Ff322B66407e0D6331E8')

@@ -12,7 +12,7 @@ import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 Pool Manager v2
 
 Changes:
-- check validity of a gauge and token by going through the gauge controller instead of curve's registry
+- check validity of a gauge and token by going through the gauge controller instead of kagla's registry
 */
 
 contract PoolManagerV2 {
@@ -41,7 +41,7 @@ contract PoolManagerV2 {
     IPools(pools).setPoolManager(operator);
   }
 
-  //add a new curve pool to the system.
+  //add a new kagla pool to the system.
   //gauge must be on gauge controller
   function addPool(address _gauge, uint256 _stashVersion) external returns (bool) {
     require(_gauge != address(0), "gauge is 0");
@@ -52,7 +52,7 @@ contract PoolManagerV2 {
     bool gaugeExists = IPools(pools).gaugeMap(_gauge);
     require(!gaugeExists, "already registered");
 
-    address lptoken = ICurveGauge(_gauge).lp_token();
+    address lptoken = IKaglaGauge(_gauge).lp_token();
     require(lptoken != address(0), "no token");
 
     IPools(pools).addPool(lptoken, _gauge, _stashVersion);

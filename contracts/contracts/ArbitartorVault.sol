@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
 //Hold extra reward tokens on behalf of pools that have the same token as a reward
-//Because anyone can call gauge.claim_rewards(address) for the convex staking contract, rewards
+//Because anyone can call gauge.claim_rewards(address) for the muuu staking contract, rewards
 //could be forced to the wrong pool.
 //hold tokens here and distribute fairly(or at least more fairly), to both pools at a later timing
 contract ArbitratorVault {

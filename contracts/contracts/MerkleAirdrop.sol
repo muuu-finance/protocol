@@ -10,7 +10,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND (express or implied).
  */
 /*
-Changes by Convex
+Changes by Muuu
 - update to solidity 0.6.12
 - allow different types of claiming(transfer, mint, generic interaction with seperate contract)
 */

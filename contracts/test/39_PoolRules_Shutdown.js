@@ -12,7 +12,7 @@ const Booster = artifacts.require('Booster')
 const PoolManagerV2 = artifacts.require('PoolManagerV2')
 const PoolManagerProxy = artifacts.require('PoolManagerProxy')
 const PoolManagerSecondaryProxy = artifacts.require('PoolManagerSecondaryProxy')
-const ICurveGauge = artifacts.require('ICurveGauge')
+const IKaglaGauge = artifacts.require('IKaglaGauge')
 const PoolManagerV3 = artifacts.require('PoolManagerV3')
 const IVoteStarter = artifacts.require('IVoteStarter')
 const IVoting = artifacts.require('IVoting')
@@ -286,16 +286,16 @@ contract('deploy pool manager layer', async (accounts) => {
     await poolSecondary.owner().then((a) => console.log('owner: ' + a))
     await poolSecondary.operator().then((a) => console.log('operator: ' + a))
 
-    let lpToken = await IERC20.at('0x3A283D9c08E8b55966afb64C515f5143cf907611') //cvx lp
+    let lpToken = await IERC20.at('0x3A283D9c08E8b55966afb64C515f5143cf907611') //muuu lp
     let depositToken = await IERC20.at(
       '0x0bC857f97c0554d1d0D602b56F2EEcE682016fBA',
-    ) //cvx lp
+    ) //muuu lp
     let badlpToken = await IERC20.at(
       '0x1cEBdB0856dd985fAe9b8fEa2262469360B8a3a6',
-    ) //crv lp
-    let gauge = await ICurveGauge.at(
+    ) //kgl lp
+    let gauge = await IKaglaGauge.at(
       '0x7E1444BA99dcdFfE8fBdb42C02F0005D14f13BE1',
-    ) //cvx lp gauge
+    ) //muuu lp gauge
     let sVersion = 3
 
     //shutdown individual pools
@@ -306,7 +306,7 @@ contract('deploy pool manager layer', async (accounts) => {
       .totalSupply()
       .then((a) => console.log('deposit token supply: ' + a))
     await poolManager.shutdownPool(64, { from: multisig, gasPrice: 0 })
-    console.log('shutdown cvx pool')
+    console.log('shutdown muuu pool')
     await lpToken
       .balanceOf(booster.address)
       .then((a) => console.log('lp on booster: ' + a))
@@ -369,7 +369,7 @@ contract('deploy pool manager layer', async (accounts) => {
     let gaugeAdmin = '0x40907540d8a6C65c637785e8f8B742ae6b0b9968'
     await unlockAccount(gaugeAdmin)
     var controller = await IGaugeController.at(
-      contractList.curve.gaugeController,
+      contractList.kagla.gaugeController,
     )
     await controller.add_gauge(fgauge.address, 0, 1000, {
       from: gaugeAdmin,
@@ -579,11 +579,11 @@ contract('deploy pool manager layer', async (accounts) => {
       .tokenCount()
       .then((a) => console.log('stash token count: ' + a))
     await boosterowner
-      .setStashExtraReward(somestash.address, contractList.system.cvx)
+      .setStashExtraReward(somestash.address, contractList.system.muuu)
       .catch((a) => console.log('ownership fail: ' + a))
     await boosterowner.setStashExtraReward(
       somestash.address,
-      contractList.system.cvx,
+      contractList.system.muuu,
       {
         from: multisig,
         gasPrice: 0,

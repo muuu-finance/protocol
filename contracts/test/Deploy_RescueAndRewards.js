@@ -4,7 +4,7 @@ const { keccak256: k256 } = require('ethereum-cryptography/keccak')
 var jsonfile = require('jsonfile')
 var contractList = jsonfile.readFileSync('./contracts.json')
 
-const rewardFile = jsonfile.readFileSync('./vlcvx_token_rewards.json')
+const rewardFile = jsonfile.readFileSync('./vlmuuu_token_rewards.json')
 
 const Booster = artifacts.require('Booster')
 const IERC20 = artifacts.require('IERC20')
@@ -16,7 +16,7 @@ const ProxyFactory = artifacts.require('ProxyFactory')
 const StashFactoryV2 = artifacts.require('StashFactoryV2')
 const IVoteStarter = artifacts.require('IVoteStarter')
 const PoolManager = artifacts.require('PoolManager')
-const I2CurveFi = artifacts.require('I2CurveFi')
+const I2KaglaFi = artifacts.require('I2KaglaFi')
 const ExtraRewardStashV3 = artifacts.require('ExtraRewardStashV3')
 const RewardHook = artifacts.require('RewardHook')
 const ExtraRewardStashTokenRescue = artifacts.require(
@@ -24,10 +24,10 @@ const ExtraRewardStashTokenRescue = artifacts.require(
 )
 const RescueToken = artifacts.require('RescueToken')
 const RewardDeposit = artifacts.require('RewardDeposit')
-const vlCvxExtraRewardDistribution = artifacts.require(
-  'vlCvxExtraRewardDistribution',
+const vlMuuuExtraRewardDistribution = artifacts.require(
+  'vlMuuuExtraRewardDistribution',
 )
-const CvxLocker = artifacts.require('CvxLocker')
+const MuuuLocker = artifacts.require('MuuuLocker')
 
 contract('Rescue tokens from voteProxy', async (accounts) => {
   it('should rescue tokens', async () => {
@@ -38,10 +38,10 @@ contract('Rescue tokens from voteProxy', async (accounts) => {
 
     //system
     let booster = await Booster.at(contractList.system.booster)
-    let locker = await CvxLocker.at(contractList.system.locker)
-    let cvx = await IERC20.at(contractList.system.cvx)
-    let cvxcrv = await IERC20.at(contractList.system.cvxCrv)
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
+    let locker = await MuuuLocker.at(contractList.system.locker)
+    let muuu = await IERC20.at(contractList.system.muuu)
+    let mukgl = await IERC20.at(contractList.system.muKgl)
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
     let exchange = await IExchange.at(
       '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
     )
@@ -76,7 +76,7 @@ contract('Rescue tokens from voteProxy', async (accounts) => {
     console.log('rescue token: ' + rescueToken.address)
 
     //3. Deploy rewards
-    let rewardDistro = await vlCvxExtraRewardDistribution.new()
+    let rewardDistro = await vlMuuuExtraRewardDistribution.new()
     console.log('reward deposit: ' + rewardDistro.address)
 
     //multisig 1. set stash implementation

@@ -13,7 +13,7 @@ contract RescueToken is ERC20 {
   using Address for address;
   using SafeMath for uint256;
 
-  constructor() public ERC20("Recue Token", "cvxRT") {}
+  constructor() public ERC20("Recue Token", "muuuRT") {}
 
   function rewards_receiver(address _address) external view returns (address) {
     return _address;

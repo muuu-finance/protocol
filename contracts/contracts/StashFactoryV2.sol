@@ -46,7 +46,7 @@ contract StashFactoryV2 {
   }
 
   //Create a stash contract for the given gauge.
-  //function calls are different depending on the version of curve gauges so determine which stash type is needed
+  //function calls are different depending on the version of kagla gauges so determine which stash type is needed
   function CreateStash(
     uint256 _pid,
     address _gauge,

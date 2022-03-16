@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.6.12;
 
-import "./interfaces/ILockedCvx.sol";
+import "./interfaces/ILockedMuuu.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /*
 Admin proxy for locker contract to fix require checks and seal off staking proxy changes
 */
 contract LockerAdmin {
-  ILockedCvx public constant locker = ILockedCvx(0xD18140b4B819b895A3dba5442F959fA44994AF50);
+  ILockedMuuu public constant locker = ILockedMuuu(0xD18140b4B819b895A3dba5442F959fA44994AF50);
   address public operator;
 
   constructor() public {

@@ -9,47 +9,47 @@ var jsonfile = require('jsonfile')
 var contractList = jsonfile.readFileSync('./contracts.json')
 
 const Booster = artifacts.require('Booster')
-const CrvDepositor = artifacts.require('CrvDepositor')
-const CurveVoterProxy = artifacts.require('CurveVoterProxy')
+const KglDepositor = artifacts.require('KglDepositor')
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
 const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2')
 const BaseRewardPool = artifacts.require('BaseRewardPool')
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool')
-const cvxRewardPool = artifacts.require('cvxRewardPool')
-const ConvexToken = artifacts.require('ConvexToken')
-const cvxCrvToken = artifacts.require('cvxCrvToken')
+const muuuRewardPool = artifacts.require('muuuRewardPool')
+const MuuuToken = artifacts.require('MuuuToken')
+const muKglToken = artifacts.require('muKglToken')
 const StashFactory = artifacts.require('StashFactory')
 const RewardFactory = artifacts.require('RewardFactory')
 const PoolManager = artifacts.require('PoolManager')
 
 const IExchange = artifacts.require('IExchange')
-const I2CurveFi = artifacts.require('I2CurveFi')
-const I3CurveFi = artifacts.require('I3CurveFi')
+const I2KaglaFi = artifacts.require('I2KaglaFi')
+const I3KaglaFi = artifacts.require('I3KaglaFi')
 const IERC20 = artifacts.require('IERC20')
-const ICurveGauge = artifacts.require('ICurveGauge')
-const ICurveGaugeDebug = artifacts.require('ICurveGaugeDebug')
+const IKaglaGauge = artifacts.require('IKaglaGauge')
+const IKaglaGaugeDebug = artifacts.require('IKaglaGaugeDebug')
 
 contract('ExtraRewardsTest v2', async (accounts) => {
-  it('should deposit and claim crv/cvx as well as extra incentives', async () => {
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
-    let threeCrv = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490')
+  it('should deposit and claim kgl/muuu as well as extra incentives', async () => {
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
+    let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490')
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2')
     let wbtc = await IERC20.at('0x2260fac5e5542a773aa44fbcfedf7c193bc2c599')
     let bor = await IERC20.at('0x89Ab32156e46F46D02ade3FEcbe5Fc4243B9AAeD')
     let exchange = await IExchange.at(
       '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
     )
-    let sbtcswap = await I3CurveFi.at(
+    let sbtcswap = await I3KaglaFi.at(
       '0x7fC77b5c7614E1533320Ea6DDc2Eb61fa00A9714',
     )
     let sbtc = await IERC20.at('0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3')
-    let obtcswap = await I2CurveFi.at(
+    let obtcswap = await I2KaglaFi.at(
       '0x7F55DDe206dbAD629C080068923b36fe9D6bDBeF',
     )
     let obtc = await IERC20.at('0xDE5331AC4B3630f94853Ff322B66407e0D6331E8')
-    let obtcGauge = await ICurveGauge.at(
+    let obtcGauge = await IKaglaGauge.at(
       '0xd7d147c6Bb90A718c3De8C0568F9B560C79fa416',
     )
-    let obtcGaugeDebug = await ICurveGaugeDebug.at(
+    let obtcGaugeDebug = await IKaglaGaugeDebug.at(
       '0xd7d147c6Bb90A718c3De8C0568F9B560C79fa416',
     )
     let obtcSwap = '0x7F55DDe206dbAD629C080068923b36fe9D6bDBeF'
@@ -60,23 +60,23 @@ contract('ExtraRewardsTest v2', async (accounts) => {
     let caller = accounts[3]
 
     //system setup
-    let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy)
+    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy)
     let booster = await Booster.deployed()
     let rewardFactory = await RewardFactory.deployed()
     let stashFactory = await StashFactory.deployed()
     let poolManager = await PoolManager.deployed()
-    let cvx = await ConvexToken.deployed()
-    let cvxCrv = await cvxCrvToken.deployed()
-    let crvDeposit = await CrvDepositor.deployed()
-    let cvxCrvRewards = await booster.lockRewards()
-    let cvxRewards = await booster.stakerRewards()
-    let cvxCrvRewardsContract = await BaseRewardPool.at(cvxCrvRewards)
-    let cvxRewardsContract = await cvxRewardPool.at(cvxRewards)
+    let muuu = await MuuuToken.deployed()
+    let muKgl = await muKglToken.deployed()
+    let kglDeposit = await KglDepositor.deployed()
+    let muKglRewards = await booster.lockRewards()
+    let muuuRewards = await booster.stakerRewards()
+    let muKglRewardsContract = await BaseRewardPool.at(muKglRewards)
+    let muuuRewardsContract = await muuuRewardPool.at(muuuRewards)
 
     //changed to pbtc since obtc rewards were not refilled while testing
     var poolId = contractList.pools.find((pool) => pool.name == 'pbtc').id
     let poolinfo = await booster.poolInfo(poolId)
-    let rewardPoolAddress = poolinfo.crvRewards
+    let rewardPoolAddress = poolinfo.kglRewards
     let rewardPool = await BaseRewardPool.at(rewardPoolAddress)
     let depositToken = await IERC20.at(poolinfo.token)
     console.log('pool lp token ' + poolinfo.lptoken)
@@ -197,24 +197,24 @@ contract('ExtraRewardsTest v2', async (accounts) => {
     let borRewards = await VirtualBalanceRewardPool.at(borRewardsAddress)
     console.log('bor token rewards (from main rewards): ' + borRewards.address)
 
-    //make sure crv and bor is where it should be
-    await crv
+    //make sure kgl and bor is where it should be
+    await kgl
       .balanceOf(voteproxy.address)
-      .then((a) => console.log('crv at voteproxy ' + a))
-    await crv
+      .then((a) => console.log('kgl at voteproxy ' + a))
+    await kgl
       .balanceOf(booster.address)
-      .then((a) => console.log('crv at booster ' + a))
-    await crv.balanceOf(caller).then((a) => console.log('crv at caller ' + a))
-    await crv
+      .then((a) => console.log('kgl at booster ' + a))
+    await kgl.balanceOf(caller).then((a) => console.log('kgl at caller ' + a))
+    await kgl
       .balanceOf(rewardPool.address)
-      .then((a) => console.log('crv at reward pool ' + a))
-    await crv
-      .balanceOf(cvxCrvRewards)
-      .then((a) => console.log('crv at cvxCrvRewards ' + a))
-    await crv
-      .balanceOf(cvxRewards)
-      .then((a) => console.log('crv at cvxRewards ' + a))
-    await crv.balanceOf(userA).then((a) => console.log('userA crv: ' + a))
+      .then((a) => console.log('kgl at reward pool ' + a))
+    await kgl
+      .balanceOf(muKglRewards)
+      .then((a) => console.log('kgl at muKglRewards ' + a))
+    await kgl
+      .balanceOf(muuuRewards)
+      .then((a) => console.log('kgl at muuuRewards ' + a))
+    await kgl.balanceOf(userA).then((a) => console.log('userA kgl: ' + a))
     await rewardPool
       .earned(userA)
       .then((a) => console.log('rewards earned(unclaimed): ' + a))
@@ -297,7 +297,7 @@ contract('ExtraRewardsTest v2', async (accounts) => {
       .claimable_reward(voteproxy.address, bor.address)
       .then((a) => console.log('claimableRewards: ' + a))
 
-    //claim crv and bor rewards, move all from stash to reward contract
+    //claim kgl and bor rewards, move all from stash to reward contract
     await booster.earmarkRewards(poolId, { from: caller })
     console.log('----earmark 2----')
     await rewardPool
@@ -314,24 +314,24 @@ contract('ExtraRewardsTest v2', async (accounts) => {
       .then((a) => console.log('claimableRewards: ' + a))
 
     //check balances, stashed bor should now be on rewards
-    //crv should be in all proper reward addresses
-    await crv
+    //kgl should be in all proper reward addresses
+    await kgl
       .balanceOf(voteproxy.address)
-      .then((a) => console.log('crv at voteproxy ' + a))
-    await crv
+      .then((a) => console.log('kgl at voteproxy ' + a))
+    await kgl
       .balanceOf(booster.address)
-      .then((a) => console.log('crv at booster ' + a))
-    await crv.balanceOf(caller).then((a) => console.log('crv at caller ' + a))
-    await crv
+      .then((a) => console.log('kgl at booster ' + a))
+    await kgl.balanceOf(caller).then((a) => console.log('kgl at caller ' + a))
+    await kgl
       .balanceOf(rewardPool.address)
-      .then((a) => console.log('crv at reward pool ' + a))
-    await crv
-      .balanceOf(cvxCrvRewards)
-      .then((a) => console.log('crv at cvxCrvRewards ' + a))
-    await crv
-      .balanceOf(cvxRewards)
-      .then((a) => console.log('crv at cvxRewards ' + a))
-    await crv.balanceOf(userA).then((a) => console.log('userA crv: ' + a))
+      .then((a) => console.log('kgl at reward pool ' + a))
+    await kgl
+      .balanceOf(muKglRewards)
+      .then((a) => console.log('kgl at muKglRewards ' + a))
+    await kgl
+      .balanceOf(muuuRewards)
+      .then((a) => console.log('kgl at muuuRewards ' + a))
+    await kgl.balanceOf(userA).then((a) => console.log('userA kgl: ' + a))
     await rewardPool
       .earned(userA)
       .then((a) => console.log('rewards earned(unclaimed): ' + a))
@@ -349,12 +349,12 @@ contract('ExtraRewardsTest v2', async (accounts) => {
       .balanceOf(borRewards.address)
       .then((a) => console.log('bor on rewards (>0): ' + a))
 
-    //claim crv reward pool, should also trigger cvx and bor
+    //claim kgl reward pool, should also trigger muuu and bor
     await rewardPool.getReward({ from: userA })
     console.log('getReward()')
-    await crv.balanceOf(userA).then((a) => console.log('userA crv: ' + a))
+    await kgl.balanceOf(userA).then((a) => console.log('userA kgl: ' + a))
     await bor.balanceOf(userA).then((a) => console.log('userA bor: ' + a))
-    await cvx.balanceOf(userA).then((a) => console.log('userA cvx: ' + a))
+    await muuu.balanceOf(userA).then((a) => console.log('userA muuu: ' + a))
 
     //unstake
     var stakedBal = await rewardPool.balanceOf(userA)
@@ -364,7 +364,7 @@ contract('ExtraRewardsTest v2', async (accounts) => {
     stakedBal = await rewardPool.balanceOf(userA)
     console.log('staked lp: ' + stakedBal)
     var deposTokenBal = await depositToken.balanceOf(userA)
-    console.log('convex deposit token: ' + deposTokenBal)
+    console.log('muuu deposit token: ' + deposTokenBal)
     await booster.withdraw(poolId, deposTokenBal, { from: userA })
     console.log('withdraw from booster')
     await rewardPool
@@ -372,7 +372,7 @@ contract('ExtraRewardsTest v2', async (accounts) => {
       .then((a) => console.log('staked balance: ' + a))
     await depositToken
       .balanceOf(userA)
-      .then((a) => console.log('obtc on convex: ' + a))
+      .then((a) => console.log('obtc on muuu: ' + a))
     await obtc
       .balanceOf(userA)
       .then((a) => console.log('obtc lp on wallet: ' + a))

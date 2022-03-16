@@ -8,12 +8,12 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract CurveVoterProxy is Ownable {
+contract KaglaVoterProxy is Ownable {
   using SafeERC20 for IERC20;
   using Address for address;
   using SafeMath for uint256;
 
-  address public crv; // IERC20 / CRV Token
+  address public kgl; // IERC20 / KGL Token
   address public votingEscrow; // for Specialize DEX
   address public gaugeController; // IVoting / GaugeController
   address public tokenMinter; // IMinter / Minter
@@ -25,23 +25,23 @@ contract CurveVoterProxy is Ownable {
   mapping(address => bool) private protectedTokens;
 
   constructor(
-    address _crv,
+    address _kgl,
     address _votingEscrow,
     address _gaugeController,
     address _tokenMinter
   ) public {
-    crv = _crv;
+    kgl = _kgl;
     votingEscrow = _votingEscrow;
     gaugeController = _gaugeController;
     tokenMinter = _tokenMinter;
   }
 
   function getName() external pure returns (string memory) {
-    return "CurveVoterProxy";
+    return "KaglaVoterProxy";
   }
 
-  function setCrv(address _crv) external onlyOwner {
-    crv = _crv;
+  function setKgl(address _kgl) external onlyOwner {
+    kgl = _kgl;
   }
 
   function setVotingEscrow(address _votingEscrow) external onlyOwner {
@@ -89,7 +89,7 @@ contract CurveVoterProxy is Ownable {
     if (balance > 0) {
       IERC20(_token).safeApprove(_gauge, 0);
       IERC20(_token).safeApprove(_gauge, balance);
-      ICurveGauge(_gauge).deposit(balance);
+      IKaglaGauge(_gauge).deposit(balance);
     }
     return true;
   }
@@ -132,35 +132,35 @@ contract CurveVoterProxy is Ownable {
   }
 
   function _withdrawSome(address _gauge, uint256 _amount) internal returns (uint256) {
-    ICurveGauge(_gauge).withdraw(_amount);
+    IKaglaGauge(_gauge).withdraw(_amount);
     return _amount;
   }
 
   function createLock(uint256 _value, uint256 _unlockTime) external returns (bool) {
     require(msg.sender == depositor, "!auth");
-    IERC20(crv).safeApprove(votingEscrow, 0);
-    IERC20(crv).safeApprove(votingEscrow, _value);
-    ICurveVoteEscrow(votingEscrow).create_lock(_value, _unlockTime);
+    IERC20(kgl).safeApprove(votingEscrow, 0);
+    IERC20(kgl).safeApprove(votingEscrow, _value);
+    IKaglaVoteEscrow(votingEscrow).create_lock(_value, _unlockTime);
     return true;
   }
 
   function increaseAmount(uint256 _value) external returns (bool) {
     require(msg.sender == depositor, "!auth");
-    IERC20(crv).safeApprove(votingEscrow, 0);
-    IERC20(crv).safeApprove(votingEscrow, _value);
-    ICurveVoteEscrow(votingEscrow).increase_amount(_value);
+    IERC20(kgl).safeApprove(votingEscrow, 0);
+    IERC20(kgl).safeApprove(votingEscrow, _value);
+    IKaglaVoteEscrow(votingEscrow).increase_amount(_value);
     return true;
   }
 
   function increaseTime(uint256 _value) external returns (bool) {
     require(msg.sender == depositor, "!auth");
-    ICurveVoteEscrow(votingEscrow).increase_unlock_time(_value);
+    IKaglaVoteEscrow(votingEscrow).increase_unlock_time(_value);
     return true;
   }
 
   function release() external returns (bool) {
     require(msg.sender == depositor, "!auth");
-    ICurveVoteEscrow(votingEscrow).withdraw();
+    IKaglaVoteEscrow(votingEscrow).withdraw();
     return true;
   }
 
@@ -182,13 +182,13 @@ contract CurveVoterProxy is Ownable {
     return true;
   }
 
-  function claimCrv(address _gauge) external returns (uint256) {
+  function claimKgl(address _gauge) external returns (uint256) {
     require(msg.sender == operator, "!auth");
 
     uint256 _balance = 0;
     try IMinter(tokenMinter).mint(_gauge) {
-      _balance = IERC20(crv).balanceOf(address(this));
-      IERC20(crv).safeTransfer(operator, _balance);
+      _balance = IERC20(kgl).balanceOf(address(this));
+      IERC20(kgl).safeTransfer(operator, _balance);
     } catch {}
 
     return _balance;
@@ -196,7 +196,7 @@ contract CurveVoterProxy is Ownable {
 
   function claimRewards(address _gauge) external returns (bool) {
     require(msg.sender == operator, "!auth");
-    ICurveGauge(_gauge).claim_rewards();
+    IKaglaGauge(_gauge).claim_rewards();
     return true;
   }
 
@@ -209,7 +209,7 @@ contract CurveVoterProxy is Ownable {
   }
 
   function balanceOfPool(address _gauge) public view returns (uint256) {
-    return ICurveGauge(_gauge).balanceOf(address(this));
+    return IKaglaGauge(_gauge).balanceOf(address(this));
   }
 
   function execute(

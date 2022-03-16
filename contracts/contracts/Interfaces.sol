@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.6.12;
 
-interface ICurveGauge {
+interface IKaglaGauge {
   function deposit(uint256) external;
 
   function balanceOf(address) external view returns (uint256);
@@ -17,7 +17,7 @@ interface ICurveGauge {
   function lp_token() external view returns (address);
 }
 
-interface ICurveVoteEscrow {
+interface IKaglaVoteEscrow {
   function create_lock(uint256, uint256) external;
 
   function increase_amount(uint256) external;
@@ -104,7 +104,7 @@ interface IStaker {
 
   function release() external;
 
-  function claimCrv(address) external returns (uint256);
+  function claimKgl(address) external returns (uint256);
 
   function claimRewards(address) external;
 
@@ -223,7 +223,7 @@ interface IDeposit {
   function owner() external returns (address);
 }
 
-interface ICrvDeposit {
+interface IKglDeposit {
   function deposit(uint256, bool) external;
 
   function lockIncentive() external view returns (uint256);
@@ -232,7 +232,7 @@ interface ICrvDeposit {
 interface IRewardFactory {
   function setAccess(address, bool) external;
 
-  function CreateCrvRewards(uint256, address) external returns (address);
+  function CreateKglRewards(uint256, address) external returns (address);
 
   function CreateTokenRewards(
     address,

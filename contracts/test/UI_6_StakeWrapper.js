@@ -4,17 +4,17 @@ var jsonfile = require('jsonfile')
 var contractList = jsonfile.readFileSync('./contracts.json')
 
 const Booster = artifacts.require('Booster')
-const CrvDepositor = artifacts.require('CrvDepositor')
-const ConvexToken = artifacts.require('ConvexToken')
-const cvxCrvToken = artifacts.require('cvxCrvToken')
-const CurveVoterProxy = artifacts.require('CurveVoterProxy')
+const KglDepositor = artifacts.require('KglDepositor')
+const MuuuToken = artifacts.require('MuuuToken')
+const muKglToken = artifacts.require('muKglToken')
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
 const BaseRewardPool = artifacts.require('BaseRewardPool')
-const ConvexStakingWrapper = artifacts.require('ConvexStakingWrapper')
+const MuuuStakingWrapper = artifacts.require('MuuuStakingWrapper')
 const IERC20 = artifacts.require('IERC20')
-const ICurveAavePool = artifacts.require('ICurveAavePool')
+const IKaglaAavePool = artifacts.require('IKaglaAavePool')
 const IExchange = artifacts.require('IExchange')
 const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01')
-const CvxMining = artifacts.require('CvxMining')
+const MuuuMining = artifacts.require('MuuuMining')
 
 contract('Test stake wrapper', async (accounts) => {
   it('should deposit lp tokens and earn rewards while being transferable', async () => {
@@ -24,12 +24,12 @@ contract('Test stake wrapper', async (accounts) => {
 
     //system
     let booster = await Booster.at(contractList.system.booster)
-    let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy)
-    let cvx = await ConvexToken.at(contractList.system.cvx)
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
+    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy)
+    let muuu = await MuuuToken.at(contractList.system.muuu)
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
     let stkaave = await IERC20.at('0x4da27a545c0c5B758a6BA100e3a049001de870f5')
-    let cvxCrv = await cvxCrvToken.at(contractList.system.cvxCrv)
-    let cvxCrvLP = await IERC20.at(contractList.system.cvxCrvCrvSLP)
+    let muKgl = await muKglToken.at(contractList.system.muKgl)
+    let muKglLP = await IERC20.at(contractList.system.muKglKglSLP)
     let exchange = await IExchange.at(
       '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
     )
@@ -37,17 +37,15 @@ contract('Test stake wrapper', async (accounts) => {
       '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
     )
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2')
-    let curveAave = await IERC20.at(
+    let kaglaAave = await IERC20.at(
       '0xFd2a8fA60Abd58Efe3EeE34dd494cD491dC14900',
     )
-    let convexAave = await IERC20.at(
-      '0x23F224C37C3A69A058d86a54D3f561295A93d542',
-    )
+    let muuuAave = await IERC20.at('0x23F224C37C3A69A058d86a54D3f561295A93d542')
     let aavepool = 24
-    let aaveswap = await ICurveAavePool.at(
+    let aaveswap = await IKaglaAavePool.at(
       '0xDeBF20617708857ebe4F679508E7b7863a8A8EeE',
     )
-    let convexAaveRewards = await BaseRewardPool.at(
+    let muuuAaveRewards = await BaseRewardPool.at(
       '0xE82c1eB4BC6F92f85BF7EB6421ab3b882C3F5a7B',
     )
     let dai = await IERC20.at('0x6B175474E89094C44Da98b954EedeAC495271d0F')
@@ -81,24 +79,24 @@ contract('Test stake wrapper', async (accounts) => {
       from: deployer,
     })
     console.log('liq added')
-    var lpbalance = await curveAave.balanceOf(deployer)
+    var lpbalance = await kaglaAave.balanceOf(deployer)
     console.log('lpbalance: ' + lpbalance)
 
     var touserB = lpbalance.div(new BN('3'))
-    await curveAave.transfer(userB, touserB, { from: deployer })
-    lpbalance = await curveAave.balanceOf(deployer)
-    await curveAave.transfer(userA, lpbalance, { from: deployer })
-    var userABalance = await curveAave.balanceOf(userA)
-    var userBBalance = await curveAave.balanceOf(userB)
+    await kaglaAave.transfer(userB, touserB, { from: deployer })
+    lpbalance = await kaglaAave.balanceOf(deployer)
+    await kaglaAave.transfer(userA, lpbalance, { from: deployer })
+    var userABalance = await kaglaAave.balanceOf(userA)
+    var userBBalance = await kaglaAave.balanceOf(userB)
     console.log('userA: ' + userABalance + ',  userB: ' + userBBalance)
 
-    let lib = await CvxMining.at(contractList.system.cvxMining)
+    let lib = await MuuuMining.at(contractList.system.muuuMining)
     console.log('mining lib at: ' + lib.address)
-    await ConvexStakingWrapper.link('CvxMining', lib.address)
-    let staker = await ConvexStakingWrapper.new(
-      curveAave.address,
-      convexAave.address,
-      convexAaveRewards.address,
+    await MuuuStakingWrapper.link('MuuuMining', lib.address)
+    let staker = await MuuuStakingWrapper.new(
+      kaglaAave.address,
+      muuuAave.address,
+      muuuAaveRewards.address,
       aavepool,
       addressZero,
       ' Test',
@@ -117,19 +115,19 @@ contract('Test stake wrapper', async (accounts) => {
       console.log('rewards ' + i + ': ' + JSON.stringify(rInfo))
     }
 
-    //user A will deposit curve tokens and user B convex
-    await curveAave.approve(staker.address, userABalance, { from: userA })
-    await curveAave.approve(booster.address, userBBalance, { from: userB })
-    await convexAave.approve(staker.address, userBBalance, { from: userB })
+    //user A will deposit kagla tokens and user B muuu
+    await kaglaAave.approve(staker.address, userABalance, { from: userA })
+    await kaglaAave.approve(booster.address, userBBalance, { from: userB })
+    await muuuAave.approve(staker.address, userBBalance, { from: userB })
     console.log('approved booster and staker')
     await booster.depositAll(aavepool, false, { from: userB })
-    console.log('deposited into convex')
+    console.log('deposited into muuu')
 
     var tx = await staker.deposit(userABalance, userA, { from: userA })
     console.log('user A deposited: ' + tx.receipt.gasUsed)
-    await convexAave
+    await muuuAave
       .balanceOf(userB)
-      .then((a) => console.log('user b convex aave: ' + a))
+      .then((a) => console.log('user b muuu aave: ' + a))
     var tx = await staker.stake(userBBalance, userB, { from: userB })
     console.log('user b staked: ' + tx.receipt.gasUsed)
   })

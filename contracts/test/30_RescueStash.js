@@ -14,7 +14,7 @@ const ProxyFactory = artifacts.require('ProxyFactory')
 const StashFactoryV2 = artifacts.require('StashFactoryV2')
 const IVoteStarter = artifacts.require('IVoteStarter')
 const PoolManager = artifacts.require('PoolManager')
-const I2CurveFi = artifacts.require('I2CurveFi')
+const I2KaglaFi = artifacts.require('I2KaglaFi')
 const ExtraRewardStashV3 = artifacts.require('ExtraRewardStashV3')
 const RewardHook = artifacts.require('RewardHook')
 const ExtraRewardStashTokenRescue = artifacts.require(
@@ -32,9 +32,9 @@ contract('Rescue tokens from voteProxy', async (accounts) => {
 
     //system
     let booster = await Booster.at(contractList.system.booster)
-    let cvx = await IERC20.at(contractList.system.cvx)
-    let cvxcrv = await IERC20.at(contractList.system.cvxCrv)
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
+    let muuu = await IERC20.at(contractList.system.muuu)
+    let mukgl = await IERC20.at(contractList.system.muKgl)
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
     let exchange = await IExchange.at(
       '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
     )

@@ -13,21 +13,21 @@ var droplist = jsonfile.readFileSync('../airdrop/drop_proofs.json')
 var contractList = jsonfile.readFileSync('./contracts.json')
 var distroList = jsonfile.readFileSync('./migrations/distro.json')
 
-const CurveVoterProxy = artifacts.require('CurveVoterProxy')
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
 const VestedEscrow = artifacts.require('VestedEscrow')
-const cvxRewardPool = artifacts.require('cvxRewardPool')
-const ConvexToken = artifacts.require('ConvexToken')
+const muuuRewardPool = artifacts.require('muuuRewardPool')
+const MuuuToken = artifacts.require('MuuuToken')
 
-const VotingEscrow = artifacts.require('MockCurveVoteEscrow')
+const VotingEscrow = artifacts.require('MockKaglaVoteEscrow')
 
 contract('VestedEscrow Test', async (accounts) => {
   it('should claim unlock over time and claim', async () => {
     //system
     const votingEscrow = await VotingEscrow.new()
-    const curveVoterProxy = await CurveVoterProxy.new(votingEscrow.address)
-    const cvx = await ConvexToken.new(curveVoterProxy.address)
-    let cvxRewards = await cvxRewardPool.new(
-      cvx.address,
+    const kaglaVoterProxy = await KaglaVoterProxy.new(votingEscrow.address)
+    const muuu = await MuuuToken.new(kaglaVoterProxy.address)
+    let muuuRewards = await muuuRewardPool.new(
+      muuu.address,
       ZERO_ADDRESS,
       ZERO_ADDRESS,
       ZERO_ADDRESS,
@@ -38,7 +38,7 @@ contract('VestedEscrow Test', async (accounts) => {
     const rewardsStart = Math.floor(Date.now() / 1000) + 3600
     const rewardsEnd = rewardsStart + 1 * 364 * 86400
     let vested = await VestedEscrow.new(
-      cvx.address,
+      muuu.address,
       rewardsStart,
       rewardsEnd,
       ZERO_ADDRESS,
@@ -129,13 +129,13 @@ contract('VestedEscrow Test', async (accounts) => {
     }
 
     await vested.claim(accountA)
-    await cvx
+    await muuu
       .balanceOf(accountA)
-      .then((a) => console.log('User A cvx in wallet: ' + a))
+      .then((a) => console.log('User A muuu in wallet: ' + a))
 
     // await vested.claimAndStake({from:accountB}) // because not setting token
-    await cvxRewards
+    await muuuRewards
       .balanceOf(accountB)
-      .then((a) => console.log('User B cvx staked: ' + a))
+      .then((a) => console.log('User B muuu staked: ' + a))
   })
 })

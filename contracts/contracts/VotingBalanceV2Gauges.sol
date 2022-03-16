@@ -2,7 +2,7 @@
 pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
 
-import "./interfaces/ILockedCvx.sol";
+import "./interfaces/ILockedMuuu.sol";
 
 contract VotingBalanceV2Gauges {
   address public constant oldlocker = address(0xD18140b4B819b895A3dba5442F959fA44994AF50);
@@ -24,12 +24,12 @@ contract VotingBalanceV2Gauges {
   function balanceOf(address _account) external view returns (uint256) {
     //compute to find previous epoch
     uint256 currentEpoch = (block.timestamp / rewardsDuration) * rewardsDuration;
-    uint256 epochindex = ILockedCvx(locker).epochCount() - 1;
+    uint256 epochindex = ILockedMuuu(locker).epochCount() - 1;
 
     //there may or may not have been a checkpoint in the new epoch
     //thus get date of latest epoch and compare to block.timestamp
     //if epoch.date >= current epoch then there was a checkpoint and need to move index back to get prev
-    (, uint32 _date) = ILockedCvx(locker).epochs(epochindex);
+    (, uint32 _date) = ILockedMuuu(locker).epochs(epochindex);
     if (_date >= currentEpoch) {
       //if end date is already the current epoch,  minus 1 to get the previous
       epochindex--;
@@ -41,30 +41,30 @@ contract VotingBalanceV2Gauges {
     // length -1 = next
     // length -2 = current
     // length -3 = previous
-    (, _date) = ILockedCvx(locker).epochs(epochindex);
+    (, _date) = ILockedMuuu(locker).epochs(epochindex);
     if (_date >= currentEpoch) {
       //if end date is already the current epoch,  minus 1 to get the previous
       epochindex--;
     }
 
     //get balances of previous epoch
-    uint256 balanceAtPrev = ILockedCvx(locker).balanceAtEpochOf(epochindex, _account);
+    uint256 balanceAtPrev = ILockedMuuu(locker).balanceAtEpochOf(epochindex, _account);
 
     //get pending
-    uint256 pending = ILockedCvx(locker).pendingLockAtEpochOf(epochindex, _account);
+    uint256 pending = ILockedMuuu(locker).pendingLockAtEpochOf(epochindex, _account);
 
     //if using old locker for grace period
     if (UseOldLocker) {
       //check if tokens have not been withdrawn yet
-      if (ILockedCvx(oldlocker).lockedBalanceOf(_account) > 0) {
-        uint256 eindex = ILockedCvx(oldlocker).epochCount() - 1;
-        (, uint32 _edate) = ILockedCvx(oldlocker).epochs(eindex);
+      if (ILockedMuuu(oldlocker).lockedBalanceOf(_account) > 0) {
+        uint256 eindex = ILockedMuuu(oldlocker).epochCount() - 1;
+        (, uint32 _edate) = ILockedMuuu(oldlocker).epochs(eindex);
         if (_edate >= currentEpoch) {
           //if end date is already the current epoch,  minus 1 to get the previous
           eindex--;
         }
         //add to current balance
-        pending += ILockedCvx(oldlocker).balanceAtEpochOf(eindex, _account);
+        pending += ILockedMuuu(oldlocker).balanceAtEpochOf(eindex, _account);
       }
     }
 
@@ -72,6 +72,6 @@ contract VotingBalanceV2Gauges {
   }
 
   function totalSupply() external view returns (uint256) {
-    return ILockedCvx(locker).totalSupply();
+    return ILockedMuuu(locker).totalSupply();
   }
 }

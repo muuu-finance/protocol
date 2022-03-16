@@ -16,12 +16,12 @@ const StashFactory = artifacts.require('StashFactory')
 const ExtraRewardStashV3 = artifacts.require('ExtraRewardStashV3')
 const PoolManager = artifacts.require('PoolManager')
 const IExchange = artifacts.require('IExchange')
-const I2CurveFi = artifacts.require('I2CurveFi')
-const ICurveFi = artifacts.require('I3CurveFi')
-const ICurveGaugeDebug = artifacts.require('ICurveGaugeDebug')
+const I2KaglaFi = artifacts.require('I2KaglaFi')
+const IKaglaFi = artifacts.require('I3KaglaFi')
+const IKaglaGaugeDebug = artifacts.require('IKaglaGaugeDebug')
 const IBaseRewards = artifacts.require('IBaseRewards')
 const TreasuryFunds = artifacts.require('TreasuryFunds')
-const ConvexToken = artifacts.require('ConvexToken')
+const MuuuToken = artifacts.require('MuuuToken')
 const RewardHook = artifacts.require('RewardHook')
 
 contract('Factory Update', async (accounts) => {
@@ -31,7 +31,7 @@ contract('Factory Update', async (accounts) => {
 
     let booster = await Booster.at(contractList.system.booster)
     let pools = await PoolManager.at(contractList.system.poolManager)
-    let cvx = await ConvexToken.at(contractList.system.cvx)
+    let muuu = await MuuuToken.at(contractList.system.muuu)
 
     let newStashFactory = await StashFactory.new(
       booster.address,
@@ -55,7 +55,7 @@ contract('Factory Update', async (accounts) => {
     var fac = await booster.stashFactory()
     console.log('check if set -> set factory: ' + fac)
 
-    let rEthSwap = await I2CurveFi.at(
+    let rEthSwap = await I2KaglaFi.at(
       '0xF9440930043eb3997fc70e1339dBb11F341de7A8',
     )
     let exchange = await IExchange.at(
@@ -66,7 +66,7 @@ contract('Factory Update', async (accounts) => {
     let reth = await IERC20.at('0x9559aaa82d9649c7a7b220e7c461d2e74c9a3593')
     let rethLP = await IERC20.at('0x53a901d48795C58f485cBB38df08FA96a24669D5')
     let stafi = await IERC20.at('0xef3A930e1FfFFAcd2fc13434aC81bD278B0ecC8d')
-    let rethGauge = await ICurveGaugeDebug.at(
+    let rethGauge = await IKaglaGaugeDebug.at(
       '0x824F13f1a2F29cFEEa81154b46C0fc820677A637',
     )
     let userA = accounts[1]
@@ -146,7 +146,7 @@ contract('Factory Update', async (accounts) => {
     await time.advanceBlock()
     console.log('advance time...')
 
-    let pool = await IBaseRewards.at(info.crvRewards)
+    let pool = await IBaseRewards.at(info.kglRewards)
     await pool.getReward(userA, true)
     await stafi
       .balanceOf(userA)
@@ -181,7 +181,7 @@ contract('Factory Update', async (accounts) => {
     //earmark
     await booster.earmarkRewards(poolCount - 1)
     console.log('earmarked')
-    await cvx
+    await muuu
       .balanceOf(stash.address)
       .then((a) => console.log('weth on stash after earmark: ' + a))
     await weth

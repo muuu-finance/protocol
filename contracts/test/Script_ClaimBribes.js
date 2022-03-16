@@ -4,19 +4,19 @@ var jsonfile = require('jsonfile')
 var contractList = jsonfile.readFileSync('./contracts.json')
 
 const Booster = artifacts.require('Booster')
-const CrvDepositor = artifacts.require('CrvDepositor')
-const ConvexToken = artifacts.require('ConvexToken')
-const cvxCrvToken = artifacts.require('cvxCrvToken')
-const CurveVoterProxy = artifacts.require('CurveVoterProxy')
+const KglDepositor = artifacts.require('KglDepositor')
+const MuuuToken = artifacts.require('MuuuToken')
+const muKglToken = artifacts.require('muKglToken')
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
 const BaseRewardPool = artifacts.require('BaseRewardPool')
 const IERC20 = artifacts.require('IERC20')
 const ERC20 = artifacts.require('ERC20')
 const IExchange = artifacts.require('IExchange')
 const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01')
 const Multicaller = artifacts.require('Multicaller')
-const ICrvBribe = artifacts.require('ICrvBribe')
+const IKglBribe = artifacts.require('IKglBribe')
 const IVoting = artifacts.require('IVoting')
-const ICurveGaugeController = artifacts.require('ICurveGaugeController')
+const IKaglaGaugeController = artifacts.require('IKaglaGaugeController')
 
 contract('check for rewards and claim', async (accounts) => {
   it('should check for rewards and claim', async () => {
@@ -26,11 +26,11 @@ contract('check for rewards and claim', async (accounts) => {
 
     //system
     let booster = await Booster.at(contractList.system.booster)
-    let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy)
-    let cvx = await ConvexToken.at(contractList.system.cvx)
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
-    let cvxCrv = await cvxCrvToken.at(contractList.system.cvxCrv)
-    let cvxCrvLP = await IERC20.at(contractList.system.cvxCrvCrvSLP)
+    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy)
+    let muuu = await MuuuToken.at(contractList.system.muuu)
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
+    let muKgl = await muKglToken.at(contractList.system.muKgl)
+    let muKglLP = await IERC20.at(contractList.system.muKglKglSLP)
     let exchange = await IExchange.at(
       '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
     )
@@ -42,7 +42,7 @@ contract('check for rewards and claim', async (accounts) => {
     let multicaller = await Multicaller.at(
       '0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441',
     )
-    let bribe = await ICrvBribe.at('0x7893bbb46613d7a4FbcC31Dab4C9b823FfeE1026')
+    let bribe = await IKglBribe.at('0x7893bbb46613d7a4FbcC31Dab4C9b823FfeE1026')
 
     let userA = accounts[0]
     let userB = accounts[1]
@@ -54,7 +54,7 @@ contract('check for rewards and claim', async (accounts) => {
     // var poolList = contractList.pools;
     var gaugeList = []
 
-    let gaugeController = await ICurveGaugeController.at(
+    let gaugeController = await IKaglaGaugeController.at(
       '0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB',
     )
     let gaugeCount = await gaugeController.n_gauges()

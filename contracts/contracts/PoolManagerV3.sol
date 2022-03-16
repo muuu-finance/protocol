@@ -27,13 +27,13 @@ contract PoolManagerV3 {
     operator = _operator;
   }
 
-  //add a new curve pool to the system. (default stash to v3)
+  //add a new kagla pool to the system. (default stash to v3)
   function addPool(address _gauge) external returns (bool) {
     _addPool(_gauge, 3);
     return true;
   }
 
-  //add a new curve pool to the system.
+  //add a new kagla pool to the system.
   function addPool(address _gauge, uint256 _stashVersion) external returns (bool) {
     _addPool(_gauge, _stashVersion);
     return true;
@@ -41,7 +41,7 @@ contract PoolManagerV3 {
 
   function _addPool(address _gauge, uint256 _stashVersion) internal {
     //get lp token from gauge
-    address lptoken = ICurveGauge(_gauge).lp_token();
+    address lptoken = IKaglaGauge(_gauge).lp_token();
 
     //gauge/lptoken address checks will happen in the next call
     IPools(pools).addPool(lptoken, _gauge, _stashVersion);

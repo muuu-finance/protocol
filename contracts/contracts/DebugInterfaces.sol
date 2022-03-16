@@ -14,7 +14,7 @@ interface IExchange {
   ) external;
 }
 
-interface I3CurveFi {
+interface I3KaglaFi {
   function get_virtual_price() external view returns (uint256);
 
   function add_liquidity(
@@ -24,7 +24,7 @@ interface I3CurveFi {
   ) external;
 }
 
-interface I2CurveFi {
+interface I2KaglaFi {
   function get_virtual_price() external view returns (uint256);
 
   function add_liquidity(
@@ -38,7 +38,7 @@ interface I2CurveFi {
   function claimable_rewards(address, address) external view returns (uint256);
 }
 
-interface ICurveAavePool {
+interface IKaglaAavePool {
   function get_virtual_price() external view returns (uint256);
 
   function add_liquidity(
@@ -69,13 +69,13 @@ interface ISPool {
   function claim_rewards(address) external;
 }
 
-interface ICurveGaugeController {
+interface IKaglaGaugeController {
   function n_gauges() external view returns (uint256);
 
   function gauges(uint256) external view returns (address);
 }
 
-interface ICurveGaugeDebug {
+interface IKaglaGaugeDebug {
   function claim_rewards(address) external;
 
   function claimable_tokens(address) external view returns (uint256);

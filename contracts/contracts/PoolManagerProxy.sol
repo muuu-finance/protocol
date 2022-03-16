@@ -60,7 +60,7 @@ contract PoolManagerProxy {
     require(!gaugeExists, "already registered gauge");
 
     //must also check that the lp token is not a registered gauge
-    //because curve gauges are tokenized
+    //because kagla gauges are tokenized
     gaugeExists = IPools(pools).gaugeMap(_lptoken);
     require(!gaugeExists, "already registered lptoken");
 

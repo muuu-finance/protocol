@@ -61,7 +61,7 @@ interface IOwner {
 }
 
 /*
-Immutable booster owner that requires all pools to be shutdown before shutting down the entire convex system
+Immutable booster owner that requires all pools to be shutdown before shutting down the entire muuu system
 A timelock is required if forcing a shutdown if there is a bugged pool that can not be withdrawn from
 
 Allow arbitrary calls to other contracts, but limit how calls are made to Booster

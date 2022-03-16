@@ -6,38 +6,38 @@ const { ZERO_ADDRESS } = require('@openzeppelin/test-helpers/src/constants')
 var distroList = jsonfile.readFileSync('./distro.json')
 
 const Booster = artifacts.require('Booster')
-const CurveVoterProxy = artifacts.require('CurveVoterProxy')
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
 const RewardFactory = artifacts.require('RewardFactory')
 const StashFactory = artifacts.require('StashFactory')
 const TokenFactory = artifacts.require('TokenFactory')
-const ConvexToken = artifacts.require('ConvexToken')
-const cvxCrvToken = artifacts.require('cvxCrvToken')
-const CrvDepositor = artifacts.require('CrvDepositor')
+const MuuuToken = artifacts.require('MuuuToken')
+const muKglToken = artifacts.require('muKglToken')
+const KglDepositor = artifacts.require('KglDepositor')
 const PoolManager = artifacts.require('PoolManager')
 const BaseRewardPool = artifacts.require('BaseRewardPool')
-const cvxRewardPool = artifacts.require('cvxRewardPool')
+const muuuRewardPool = artifacts.require('muuuRewardPool')
 const ArbitratorVault = artifacts.require('ArbitratorVault')
 const ClaimZap = artifacts.require('ClaimZap')
-const ConvexMasterChef = artifacts.require('ConvexMasterChef')
+const MuuuMasterChef = artifacts.require('MuuuMasterChef')
 const VestedEscrow = artifacts.require('VestedEscrow')
 const MerkleAirdrop = artifacts.require('MerkleAirdrop')
 const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory')
 // define Mocks
 const MintableERC20 = artifacts.require('MintableERC20')
-const MockVotingEscrow = artifacts.require('MockCurveVoteEscrow')
-const MockRegistry = artifacts.require('MockCurveRegistry')
-const MockFeeDistributor = artifacts.require('MockCurveFeeDistributor')
-const MockAddressProvider = artifacts.require('MockCurveAddressProvider')
+const MockVotingEscrow = artifacts.require('MockKaglaVoteEscrow')
+const MockRegistry = artifacts.require('MockKaglaRegistry')
+const MockFeeDistributor = artifacts.require('MockKaglaFeeDistributor')
+const MockAddressProvider = artifacts.require('MockKaglaAddressProvider')
 
-const CvxLockerV2 = artifacts.require('CvxLockerV2')
+const MuuuLockerV2 = artifacts.require('MuuuLockerV2')
 
 module.exports = function (deployer, network, accounts) {
   if (network === 'skipMigration') {
     console.log(`Skip migration in ${network} network`)
     return
   }
-  // you need to prepare curveVoterProxy beforehand
-  // const convexVoterProxy = "0xE7FDdA2a4Ba464A9F11a54A62B378E79c94d8332";
+  // you need to prepare kaglaVoterProxy beforehand
+  // const muuuVoterProxy = "0xE7FDdA2a4Ba464A9F11a54A62B378E79c94d8332";
 
   // tmp: team account
   const treasuryAddress = '0xCdfc500F7f0FCe1278aECb0340b523cD55b3EBbb'
@@ -47,14 +47,14 @@ module.exports = function (deployer, network, accounts) {
     '0x632a2ad201c5b95d3f75c1332afdcf489d4e6b4b7480cf878d8eba2aa87d5f73'
 
   // TODO: replace this with mock token addrress
-  // const crv = "0xD533a949740bb3306d119CC777fa900bA034cd52";
+  // const kgl = "0xD533a949740bb3306d119CC777fa900bA034cd52";
 
   let admin = accounts[0]
   console.log('deploying from: ' + admin)
   var premine = new BN(0)
   premine.add(distroList.lpincentives)
-  premine.add(distroList.vecrv)
-  premine.add(distroList.teamcvxLpSeed)
+  premine.add(distroList.vekgl)
+  premine.add(distroList.teammuuuLpSeed)
   var vestedAddresses = distroList.vested.team.addresses.concat(
     distroList.vested.investor.addresses,
     distroList.vested.treasury.addresses,
@@ -71,27 +71,27 @@ module.exports = function (deployer, network, accounts) {
   }
   console.log('total vested: ' + totalVested.toString())
   premine.add(totalVested)
-  console.log('total cvx premine: ' + premine.toString())
+  console.log('total muuu premine: ' + premine.toString())
   var totaldistro = new BN(premine).add(distroList.miningRewards)
-  console.log('total cvx: ' + totaldistro.toString())
+  console.log('total muuu: ' + totaldistro.toString())
 
   var booster,
     voter,
     rFactory,
     sFactory,
     tFactory,
-    cvx,
-    cvxCrv,
+    muuu,
+    muKgl,
     deposit,
     arb,
     pools
-  var crvToken
-  var cvxCrvRewards, cvxRewards, airdrop, vesting
+  var kglToken
+  var muKglRewards, muuuRewards, airdrop, vesting
   var pairToken
-  var crvdepositAmt, crvbal, cvxCrvBal
-  var crv, weth, dai, threeCrv
-  var convexVoterProxy
-  var cvxLockerV2
+  var kgldepositAmt, kglbal, muKglBal
+  var kgl, weth, dai, threeKgl
+  var muuuVoterProxy
+  var muuuLockerV2
 
   let mockVotingEscrow, mockRegistry, mockFeeDistributor, mockAddressProvider
 
@@ -116,15 +116,15 @@ module.exports = function (deployer, network, accounts) {
     })
   }
 
-  // addContract("system","voteProxy",convexVoterProxy);
+  // addContract("system","voteProxy",muuuVoterProxy);
   addContract('system', 'treasury', treasuryAddress)
 
   deployer
     // ========================== Preparation start ==========================
-    .deploy(MintableERC20, 'crv', 'CRV', 18)
+    .deploy(MintableERC20, 'kgl', 'KGL', 18)
     .then((instance) => {
-      crv = instance
-      addContract('mocks', 'CRV', crv.address)
+      kgl = instance
+      addContract('mocks', 'KGL', kgl.address)
     })
     .then(() => deployer.deploy(MintableERC20, 'weth', 'WETH', 18))
     .then((instance) => {
@@ -137,23 +137,23 @@ module.exports = function (deployer, network, accounts) {
       addContract('mocks', 'DAI', dai.address)
     })
     .then(() =>
-      deployer.deploy(MintableERC20, '3Crv', 'Curve.fi DAI/USDC/USDT', 18),
+      deployer.deploy(MintableERC20, '3Kgl', 'Kagla.fi DAI/USDC/USDT', 18),
     )
     .then((instance) => {
-      threeCrv = instance
-      addContract('mocks', '3Crv', threeCrv.address)
+      threeKgl = instance
+      addContract('mocks', '3Kgl', threeKgl.address)
     })
     .then(() => deployer.deploy(MockVotingEscrow))
     .then((instance) => {
       mockVotingEscrow = instance
       addContract('mocks', 'mockVotingEscrow', mockVotingEscrow.address)
     })
-    .then(() => deployer.deploy(MockRegistry, threeCrv.address))
+    .then(() => deployer.deploy(MockRegistry, threeKgl.address))
     .then((instance) => {
       mockRegistry = instance
       addContract('mocks', 'mockRegistry', mockRegistry.address)
     })
-    .then(() => deployer.deploy(MockFeeDistributor, threeCrv.address))
+    .then(() => deployer.deploy(MockFeeDistributor, threeKgl.address))
     .then((instance) => {
       mockFeeDistributor = instance
       addContract('mocks', 'mockFeeDistributor', mockFeeDistributor.address)
@@ -171,8 +171,8 @@ module.exports = function (deployer, network, accounts) {
     })
     .then(() =>
       deployer.deploy(
-        CurveVoterProxy,
-        crv.address,
+        KaglaVoterProxy,
+        kgl.address,
         mockVotingEscrow.address,
         ZERO_ADDRESS, // TODO:
         ZERO_ADDRESS, // TODO:
@@ -183,17 +183,17 @@ module.exports = function (deployer, network, accounts) {
       addContract('system', 'voteProxy', voter.address)
     })
     // ========================== Preparation end ==========================
-    .then(() => deployer.deploy(ConvexToken, voter.address))
+    .then(() => deployer.deploy(MuuuToken, voter.address))
     .then((instance) => {
-      cvx = instance
-      addContract('system', 'cvx', cvx.address)
+      muuu = instance
+      addContract('system', 'muuu', muuu.address)
     })
     .then(() =>
       deployer.deploy(
         Booster,
         voter.address,
-        cvx.address,
-        crv.address,
+        muuu.address,
+        kgl.address,
         mockAddressProvider.address,
       ),
     )
@@ -209,7 +209,7 @@ module.exports = function (deployer, network, accounts) {
       }
     })
     .then(() => voter.setOperator(booster.address))
-    .then(() => cvx.mint(accounts[0], premine.toString()))
+    .then(() => muuu.mint(accounts[0], premine.toString()))
     .then(() => deployer.deploy(RewardFactory, booster.address))
     .then((instance) => {
       rFactory = instance
@@ -224,23 +224,23 @@ module.exports = function (deployer, network, accounts) {
     .then((instance) => {
       sFactory = instance
       addContract('system', 'sFactory', sFactory.address)
-      return deployer.deploy(cvxCrvToken)
+      return deployer.deploy(muKglToken)
     })
     .then((instance) => {
-      cvxCrv = instance
-      addContract('system', 'cvxCrv', cvxCrv.address)
+      muKgl = instance
+      addContract('system', 'muKgl', muKgl.address)
       return deployer.deploy(
-        CrvDepositor,
+        KglDepositor,
         voter.address,
-        cvxCrv.address,
-        crv.address,
+        muKgl.address,
+        kgl.address,
         mockVotingEscrow.address, // TODO: replace
       )
     })
     .then((instance) => {
       deposit = instance
-      addContract('system', 'crvDepositor', deposit.address)
-      return cvxCrv.setOperator(deposit.address)
+      addContract('system', 'kglDepositor', deposit.address)
+      return muKgl.setOperator(deposit.address)
     })
     .then(() => voter.setDepositor(deposit.address))
     .then(() => deposit.initialLock())
@@ -249,33 +249,33 @@ module.exports = function (deployer, network, accounts) {
       deployer.deploy(
         BaseRewardPool,
         0,
-        cvxCrv.address,
-        crv.address,
+        muKgl.address,
+        kgl.address,
         booster.address,
         rFactory.address,
       ),
     )
     .then((instance) => {
-      cvxCrvRewards = instance
-      addContract('system', 'cvxCrvRewards', cvxCrvRewards.address)
+      muKglRewards = instance
+      addContract('system', 'muKglRewards', muKglRewards.address)
       // reward manager is admin to add any new incentive programs
       return deployer.deploy(
-        cvxRewardPool,
-        cvx.address,
-        crv.address,
+        muuuRewardPool,
+        muuu.address,
+        kgl.address,
         deposit.address,
-        cvxCrvRewards.address,
-        cvxCrv.address,
+        muKglRewards.address,
+        muKgl.address,
         booster.address,
         admin,
       )
     })
     .then((instance) => {
-      cvxRewards = instance
-      addContract('system', 'cvxRewards', cvxRewards.address)
+      muuuRewards = instance
+      addContract('system', 'muuuRewards', muuuRewards.address)
       return booster.setRewardContracts(
-        cvxCrvRewards.address,
-        cvxRewards.address,
+        muKglRewards.address,
+        muuuRewards.address,
       )
     })
     .then(() =>
@@ -305,27 +305,27 @@ module.exports = function (deployer, network, accounts) {
       return booster.setArbitrator(arb.address)
     })
 
-    // added CVX LockerV2 ref: /contracts/test/UI_7_DeployLockerV2.js
+    // added MUUU LockerV2 ref: /contracts/test/UI_7_DeployLockerV2.js
     .then(() => {
       // TODO: constructor
-      return deployer.deploy(CvxLockerV2)
+      return deployer.deploy(MuuuLockerV2)
     })
     .then((instance) => {
-      cvxLockerV2 = instance
-      addContract('system', 'cvxLockerV2', cvxLockerV2.address)
+      muuuLockerV2 = instance
+      addContract('system', 'muuuLockerV2', muuuLockerV2.address)
     })
 
     .then(() => {
       return deployer.deploy(
         ClaimZap,
-        crv.address,
-        cvx.address,
-        cvxCrv.address,
+        kgl.address,
+        muuu.address,
+        muKgl.address,
         deposit.address,
-        cvxCrvRewards.address,
-        cvxRewards.address,
-        treasuryAddress, // TODO: replace. this is supposed to be Factory cvxCRV in curve
-        cvxLockerV2.address,
+        muKglRewards.address,
+        muuuRewards.address,
+        treasuryAddress, // TODO: replace. this is supposed to be Factory muKGL in kagla
+        muuuLockerV2.address,
       )
     })
     .then((instance) => {
@@ -338,17 +338,17 @@ module.exports = function (deployer, network, accounts) {
       //vest team, invest, treasury
       return deployer.deploy(
         VestedEscrow,
-        cvx.address,
+        muuu.address,
         rewardsStart,
         rewardsEnd,
-        cvxRewards.address,
+        muuuRewards.address,
         admin,
       )
     })
     .then((instance) => {
       vesting = instance
       addContract('system', 'vestedEscrow', vesting.address)
-      return cvx.approve(vesting.address, distroList.vested.total)
+      return muuu.approve(vesting.address, distroList.vested.total)
     })
     .then(() => vesting.addTokens(distroList.vested.total))
     .then(() => vesting.fund(vestedAddresses, vestedAmounts))
@@ -372,21 +372,21 @@ module.exports = function (deployer, network, accounts) {
     .then((instance) => {
       airdrop = instance
       addContract('system', 'airdrop', airdrop.address)
-      return airdrop.setRewardToken(cvx.address)
+      return airdrop.setRewardToken(muuu.address)
     })
-    .then(() => cvx.transfer(airdrop.address, distroList.vecrv))
-    .then(() => cvx.balanceOf(airdrop.address))
+    .then(() => muuu.transfer(airdrop.address, distroList.vekgl))
+    .then(() => muuu.balanceOf(airdrop.address))
     .then((dropBalance) => {
       console.log('airdrop balance: ' + dropBalance)
       return airdrop.setRoot(merkleRoot)
     })
 
-    //Create convex pools
+    //Create muuu pools
     .then(() => {
       poolNames.push('3pool')
       console.log('adding pool ' + poolNames[poolNames.length - 1])
       return pools.addPool(
-        // TODO: remove Curve address, use test or mock address
+        // TODO: remove Kagla address, use test or mock address
         '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7' /** 3Pool address */,
         '0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A' /** 3Pool Gauge address */,
         0,
@@ -412,9 +412,9 @@ module.exports = function (deployer, network, accounts) {
         delete poolInfoList[i]['4']
         delete poolInfoList[i]['5']
         delete poolInfoList[i]['shutdown']
-        var crvrewards = poolInfoList[i]['crvRewards']
+        var kglrewards = poolInfoList[i]['kglRewards']
         var rewardList = []
-        rewardList.push({ rToken: crv.address, rAddress: crvrewards })
+        rewardList.push({ rToken: kgl.address, rAddress: kglrewards })
         poolInfoList[i].rewards = rewardList
         poolInfoList[i].name = poolNames[i]
         poolInfoList[i].id = i

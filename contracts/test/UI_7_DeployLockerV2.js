@@ -3,12 +3,12 @@ const { BN, time } = require('@openzeppelin/test-helpers')
 var jsonfile = require('jsonfile')
 var contractList = jsonfile.readFileSync('./contracts.json')
 
-const CvxLocker = artifacts.require('CvxLocker')
-const CvxStakingProxy = artifacts.require('CvxStakingProxy')
+const MuuuLocker = artifacts.require('MuuuLocker')
+const MuuuStakingProxy = artifacts.require('MuuuStakingProxy')
 const IERC20 = artifacts.require('IERC20')
 const LockerAdmin = artifacts.require('LockerAdmin')
-const CvxLockerV2 = artifacts.require('CvxLockerV2')
-const CvxStakingProxyV2 = artifacts.require('CvxStakingProxyV2')
+const MuuuLockerV2 = artifacts.require('MuuuLockerV2')
+const MuuuStakingProxyV2 = artifacts.require('MuuuStakingProxyV2')
 
 const unlockAccount = async (address) => {
   return new Promise((resolve, reject) => {
@@ -37,8 +37,8 @@ contract('Test Deploy locker for UI testing', async (accounts) => {
     let addressZero = '0x0000000000000000000000000000000000000000'
 
     //system
-    let cvx = await IERC20.at(contractList.system.cvx)
-    let cvxcrv = await IERC20.at(contractList.system.cvxCrv)
+    let muuu = await IERC20.at(contractList.system.muuu)
+    let mukgl = await IERC20.at(contractList.system.muKgl)
 
     let userA = accounts[0]
     let userB = accounts[1]
@@ -67,14 +67,14 @@ contract('Test Deploy locker for UI testing', async (accounts) => {
     const day = 86400
 
     //get old locker
-    var oldLocker = await CvxLocker.at(contractList.system.locker)
+    var oldLocker = await MuuuLocker.at(contractList.system.locker)
 
-    //send cvx to usera
-    await cvx.transfer(userA, web3.utils.toWei('123.0', 'ether'), {
+    //send muuu to usera
+    await muuu.transfer(userA, web3.utils.toWei('123.0', 'ether'), {
       from: treasury,
       gasPrice: 0,
     })
-    await cvx.approve(oldLocker.address, web3.utils.toWei('123.0', 'ether'), {
+    await muuu.approve(oldLocker.address, web3.utils.toWei('123.0', 'ether'), {
       from: userA,
     })
     await oldLocker.lock(userA, web3.utils.toWei('123.0', 'ether'), 0, {
@@ -93,13 +93,13 @@ contract('Test Deploy locker for UI testing', async (accounts) => {
     console.log('shutdown v1')
 
     //deploy
-    let locker = await CvxLockerV2.new({ from: deployer })
-    let stakeproxy = await CvxStakingProxyV2.new(locker.address, {
+    let locker = await MuuuLockerV2.new({ from: deployer })
+    let stakeproxy = await MuuuStakingProxyV2.new(locker.address, {
       from: deployer,
     })
     console.log('deployed v2: ' + locker.address)
     await stakeproxy.setApprovals()
-    await locker.addReward(cvxcrv.address, stakeproxy.address, true, {
+    await locker.addReward(mukgl.address, stakeproxy.address, true, {
       from: deployer,
     })
     await locker.setStakingContract(stakeproxy.address, { from: deployer })

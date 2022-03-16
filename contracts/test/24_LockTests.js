@@ -3,9 +3,9 @@ const { BN, time } = require('@openzeppelin/test-helpers')
 var jsonfile = require('jsonfile')
 var contractList = jsonfile.readFileSync('./contracts.json')
 
-const CvxLocker = artifacts.require('CvxLocker')
-const CvxStakingProxy = artifacts.require('CvxStakingProxy')
-const cvxRewardPool = artifacts.require('cvxRewardPool')
+const MuuuLocker = artifacts.require('MuuuLocker')
+const MuuuStakingProxy = artifacts.require('MuuuStakingProxy')
+const muuuRewardPool = artifacts.require('muuuRewardPool')
 const IERC20 = artifacts.require('IERC20')
 const IExchange = artifacts.require('IExchange')
 const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01')
@@ -24,10 +24,10 @@ const DepositToken = artifacts.require('DepositToken')
 - relocking
 - force withdrawing/kick (too fast and proper)
 - get reward
-- get reward and stake cvxcrv
+- get reward and stake mukgl
 - distribute new rewards
 - add new rewards
-- cvx rewards are non-boosted
+- muuu rewards are non-boosted
 - remove distributor
 - find epochs by timestamp
 - shutdown
@@ -39,20 +39,18 @@ const DepositToken = artifacts.require('DepositToken')
 */
 
 contract('Test lock contract', async (accounts) => {
-  it('should deposit cvx and test all functions', async () => {
+  it('should deposit muuu and test all functions', async () => {
     let deployer = '0x947B7742C403f20e5FaCcDAc5E092C943E7D0277'
     let multisig = '0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB'
     let treasury = '0x1389388d01708118b497f59521f6943Be2541bb7'
     let addressZero = '0x0000000000000000000000000000000000000000'
 
     //system
-    let cvx = await IERC20.at(contractList.system.cvx)
-    let cvxcrv = await IERC20.at(contractList.system.cvxCrv)
-    let cvxrewards = await cvxRewardPool.at(contractList.system.cvxRewards)
-    let cvxcrvrewards = await cvxRewardPool.at(
-      contractList.system.cvxCrvRewards,
-    )
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
+    let muuu = await IERC20.at(contractList.system.muuu)
+    let mukgl = await IERC20.at(contractList.system.muKgl)
+    let muuurewards = await muuuRewardPool.at(contractList.system.muuuRewards)
+    let mukglrewards = await muuuRewardPool.at(contractList.system.muKglRewards)
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
     let exchange = await IExchange.at(
       '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
     )
@@ -76,7 +74,7 @@ contract('Test lock contract', async (accounts) => {
 
     let starttime = await time.latest()
 
-    //swap for cvx
+    //swap for muuu
     await weth.sendTransaction({
       value: web3.utils.toWei('20.0', 'ether'),
       from: deployer,
@@ -87,7 +85,7 @@ contract('Test lock contract', async (accounts) => {
     await exchange.swapExactTokensForTokens(
       web3.utils.toWei('5.0', 'ether'),
       0,
-      [weth.address, cvx.address],
+      [weth.address, muuu.address],
       userA,
       starttime + 3000,
       { from: deployer },
@@ -95,24 +93,24 @@ contract('Test lock contract', async (accounts) => {
     await exchange.swapExactTokensForTokens(
       web3.utils.toWei('5.0', 'ether'),
       0,
-      [weth.address, cvx.address],
+      [weth.address, muuu.address],
       userB,
       starttime + 3000,
       { from: deployer },
     )
-    var cvxbalance = await cvx.balanceOf(userA)
-    var cvxbalanceB = await cvx.balanceOf(userB)
-    console.log('swapped for cvx(userA): ' + cvxbalance)
-    console.log('swapped for cvx(userB): ' + cvxbalanceB)
+    var muuubalance = await muuu.balanceOf(userA)
+    var muuubalanceB = await muuu.balanceOf(userB)
+    console.log('swapped for muuu(userA): ' + muuubalance)
+    console.log('swapped for muuu(userB): ' + muuubalanceB)
 
     //deploy
-    let locker = await CvxLocker.new({ from: deployer })
-    let stakeproxy = await CvxStakingProxy.new(locker.address, {
+    let locker = await MuuuLocker.new({ from: deployer })
+    let stakeproxy = await MuuuStakingProxy.new(locker.address, {
       from: deployer,
     })
     console.log('deployed')
     await stakeproxy.setApprovals()
-    await locker.addReward(cvxcrv.address, stakeproxy.address, true, {
+    await locker.addReward(mukgl.address, stakeproxy.address, true, {
       from: deployer,
     })
     await locker.setStakingContract(stakeproxy.address, { from: deployer })
@@ -141,15 +139,15 @@ contract('Test lock contract', async (accounts) => {
 
     const lockerInfo = async () => {
       console.log('\t==== locker info =====')
-      await cvx
+      await muuu
         .balanceOf(locker.address)
-        .then((a) => console.log('\t   cvx: ' + a))
-      await cvx
+        .then((a) => console.log('\t   muuu: ' + a))
+      await muuu
         .balanceOf(treasury)
-        .then((a) => console.log('\t   treasury cvx: ' + a))
+        .then((a) => console.log('\t   treasury muuu: ' + a))
       await stakeproxy
         .getBalance()
-        .then((a) => console.log('\t   staked cvx: ' + a))
+        .then((a) => console.log('\t   staked muuu: ' + a))
       var tsup = await locker.totalSupply()
       console.log('\t   totalSupply: ' + tsup)
       await locker
@@ -158,9 +156,9 @@ contract('Test lock contract', async (accounts) => {
       await locker
         .boostedSupply()
         .then((a) => console.log('\t   boostedSupply: ' + a))
-      await cvxcrv
+      await mukgl
         .balanceOf(locker.address)
-        .then((a) => console.log('\t   cvxcrv: ' + a))
+        .then((a) => console.log('\t   mukgl: ' + a))
       var epochs = await locker.epochCount()
       console.log('\t   epochs: ' + epochs)
       for (var i = 0; i < epochs; i++) {
@@ -220,15 +218,15 @@ contract('Test lock contract', async (accounts) => {
       await locker
         .claimableRewards(_user)
         .then((a) => console.log('\t   claimableRewards: ' + a))
-      await cvx
+      await muuu
         .balanceOf(_user)
-        .then((a) => console.log('\t   cvx wallet: ' + a))
-      await cvxcrv
+        .then((a) => console.log('\t   muuu wallet: ' + a))
+      await mukgl
         .balanceOf(_user)
-        .then((a) => console.log('\t   cvxcrv wallet: ' + a))
-      await cvxcrvrewards
+        .then((a) => console.log('\t   mukgl wallet: ' + a))
+      await mukglrewards
         .balanceOf(_user)
-        .then((a) => console.log('\t   staked cvxcrv: ' + a))
+        .then((a) => console.log('\t   staked mukgl: ' + a))
       var epochs = await locker.epochCount()
       for (var i = 0; i < epochs; i++) {
         var balAtE = await locker.balanceAtEpochOf(i, _user)
@@ -252,10 +250,10 @@ contract('Test lock contract', async (accounts) => {
 
     //deposit
 
-    await cvx.approve(locker.address, cvxbalance, { from: userA })
-    await cvx.approve(locker.address, cvxbalanceB, { from: userB })
-    await cvx.approve(locker.address, cvxbalanceB, { from: userC })
-    await cvx.approve(locker.address, cvxbalance, { from: userD })
+    await muuu.approve(locker.address, muuubalance, { from: userA })
+    await muuu.approve(locker.address, muuubalanceB, { from: userB })
+    await muuu.approve(locker.address, muuubalanceB, { from: userC })
+    await muuu.approve(locker.address, muuubalance, { from: userD })
     console.log('approved users')
     var tx = await locker.lock(userA, '1000000000000000000', 0, { from: userA })
     console.log('locked for user a, gas: ' + tx.receipt.gasUsed)
@@ -279,16 +277,16 @@ contract('Test lock contract', async (accounts) => {
     const day = 86400
     await advanceTime(day)
 
-    await cvxrewards.getReward(stakeproxy.address, true, true)
-    await cvxcrvrewards
+    await muuurewards.getReward(stakeproxy.address, true, true)
+    await mukglrewards
       .balanceOf(stakeproxy.address)
-      .then((a) => console.log('staked cvxcrv on proxy: ' + a))
+      .then((a) => console.log('staked mukgl on proxy: ' + a))
 
     await stakeproxy.distribute({ from: deployer })
     console.log('distribute()')
-    await cvxcrvrewards
+    await mukglrewards
       .balanceOf(stakeproxy.address)
-      .then((a) => console.log('staked cvxcrv on proxy: ' + a))
+      .then((a) => console.log('staked mukgl on proxy: ' + a))
 
     await lockerInfo()
     await userInfo(userA)
@@ -425,7 +423,7 @@ contract('Test lock contract', async (accounts) => {
     }
 
     console.log(
-      'process locks for user A(withdraw), check cvx supply, user lock data update, user wallet info',
+      'process locks for user A(withdraw), check muuu supply, user lock data update, user wallet info',
     )
     var tx = await locker.processExpiredLocks(false, { from: userA })
     console.log('gas cost: ' + tx.receipt.gasUsed)
@@ -468,7 +466,7 @@ contract('Test lock contract', async (accounts) => {
     await userInfo(userB)
 
     console.log(
-      'process locks for user A(relock), check cvx supply, user lock data update, user wallet info',
+      'process locks for user A(relock), check muuu supply, user lock data update, user wallet info',
     )
     var tx = await locker.methods['processExpiredLocks(bool,uint256,address)'](
       true,
@@ -488,7 +486,7 @@ contract('Test lock contract', async (accounts) => {
     await userInfo(userA)
 
     console.log('test adding a reward that is non-boosted...')
-    var userCBalance = await cvx.balanceOf(userC)
+    var userCBalance = await muuu.balanceOf(userC)
     var userBrelockBalance = new BN(userCBalance.toString()).mul(new BN('10'))
     console.log(
       'user c balance: ' +
@@ -500,11 +498,11 @@ contract('Test lock contract', async (accounts) => {
     await locker.lock(userB, userBrelockBalance, 500, { from: userB })
     console.log('locked')
     //remove balance from user b to make output easier to read
-    cvxbalanceB = await cvx.balanceOf(userB)
-    await cvx.transfer(userD, cvxbalanceB, { from: userB })
+    muuubalanceB = await muuu.balanceOf(userB)
+    await muuu.transfer(userD, muuubalanceB, { from: userB })
 
     //create new rewards
-    let dummyReward = await DepositToken.new(userA, cvx.address)
+    let dummyReward = await DepositToken.new(userA, muuu.address)
     await dummyReward.mint(userA, '1000000000000000', { from: userA })
     console.log('create and mint dummy reward: ' + dummyReward.address)
     await locker.addReward(dummyReward.address, userA, false, {
@@ -565,7 +563,7 @@ contract('Test lock contract', async (accounts) => {
     console.log('gas: ' + tx.receipt.gasUsed)
     var tx = await locker.lock(userD, '100000000000000000', 0, { from: userD })
     console.log('cheaper gas(stake delayed): ' + tx.receipt.gasUsed)
-    console.log('locker info should show some cvx not staked')
+    console.log('locker info should show some muuu not staked')
     await lockerInfo()
     var tx = await locker.lock(userD, '100000000000000000000', 0, {
       from: userD,

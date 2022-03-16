@@ -4,15 +4,15 @@ const { keccak256: k256 } = require('ethereum-cryptography/keccak')
 var jsonfile = require('jsonfile')
 var contractList = jsonfile.readFileSync('./contracts.json')
 
-const CvxLocker = artifacts.require('CvxLocker')
-const CvxStakingProxy = artifacts.require('CvxStakingProxy')
-const cvxRewardPool = artifacts.require('cvxRewardPool')
+const MuuuLocker = artifacts.require('MuuuLocker')
+const MuuuStakingProxy = artifacts.require('MuuuStakingProxy')
+const muuuRewardPool = artifacts.require('muuuRewardPool')
 const IERC20 = artifacts.require('IERC20')
 const IExchange = artifacts.require('IExchange')
 const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01')
 const DepositToken = artifacts.require('DepositToken')
 const IDelegation = artifacts.require('IDelegation')
-const BasicCvxHolder = artifacts.require('BasicCvxHolder')
+const BasicMuuuHolder = artifacts.require('BasicMuuuHolder')
 const BaseRewardPool = artifacts.require('BaseRewardPool')
 const VotingBalance = artifacts.require('VotingBalance')
 
@@ -24,13 +24,11 @@ contract('setup lock contract', async (accounts) => {
     let addressZero = '0x0000000000000000000000000000000000000000'
 
     //system
-    let cvx = await IERC20.at(contractList.system.cvx)
-    let cvxcrv = await IERC20.at(contractList.system.cvxCrv)
-    let cvxrewards = await cvxRewardPool.at(contractList.system.cvxRewards)
-    let cvxcrvrewards = await cvxRewardPool.at(
-      contractList.system.cvxCrvRewards,
-    )
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
+    let muuu = await IERC20.at(contractList.system.muuu)
+    let mukgl = await IERC20.at(contractList.system.muKgl)
+    let muuurewards = await muuuRewardPool.at(contractList.system.muuuRewards)
+    let mukglrewards = await muuuRewardPool.at(contractList.system.muKglRewards)
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
     let exchange = await IExchange.at(
       '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
     )
@@ -65,7 +63,7 @@ contract('setup lock contract', async (accounts) => {
     }
     const day = 86400
 
-    //swap for cvx
+    //swap for muuu
     await weth.sendTransaction({
       value: web3.utils.toWei('10.0', 'ether'),
       from: deployer,
@@ -76,33 +74,33 @@ contract('setup lock contract', async (accounts) => {
     await exchange.swapExactTokensForTokens(
       web3.utils.toWei('10.0', 'ether'),
       0,
-      [weth.address, cvx.address],
+      [weth.address, muuu.address],
       userA,
       starttime + 3000,
       { from: deployer },
     )
-    var cvxbalance = await cvx.balanceOf(userA)
-    console.log('swapped for cvx(userA): ' + cvxbalance)
+    var muuubalance = await muuu.balanceOf(userA)
+    console.log('swapped for muuu(userA): ' + muuubalance)
 
     //deploy
-    let locker = await CvxLocker.at(contractList.system.locker)
+    let locker = await MuuuLocker.at(contractList.system.locker)
 
-    let holder = await BasicCvxHolder.new(locker.address)
+    let holder = await BasicMuuuHolder.new(locker.address)
     await holder.setApprovals()
     console.log('holder deployed')
 
-    await cvx.transfer(holder.address, cvxbalance, { from: userA })
-    await cvx
+    await muuu.transfer(holder.address, muuubalance, { from: userA })
+    await muuu
       .balanceOf(holder.address)
-      .then((a) => console.log('unlocked cvx: ' + a))
+      .then((a) => console.log('unlocked muuu: ' + a))
     await holder.lock(0, 0)
     await advanceTime(10 * day)
-    await cvx
+    await muuu
       .balanceOf(holder.address)
-      .then((a) => console.log('unlocked cvx: ' + a))
+      .then((a) => console.log('unlocked muuu: ' + a))
     await locker
       .lockedBalanceOf(holder.address)
-      .then((a) => console.log('locked cvx: ' + a))
+      .then((a) => console.log('locked muuu: ' + a))
     await locker
       .balanceOf(holder.address)
       .then((a) => console.log('voting power: ' + a))

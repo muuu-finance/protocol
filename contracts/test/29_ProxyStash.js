@@ -14,7 +14,7 @@ const ProxyFactory = artifacts.require('ProxyFactory')
 const StashFactoryV2 = artifacts.require('StashFactoryV2')
 const IVoteStarter = artifacts.require('IVoteStarter')
 const PoolManager = artifacts.require('PoolManager')
-const I2CurveFi = artifacts.require('I2CurveFi')
+const I2KaglaFi = artifacts.require('I2KaglaFi')
 const ExtraRewardStashV3 = artifacts.require('ExtraRewardStashV3')
 const RewardHook = artifacts.require('RewardHook')
 
@@ -27,9 +27,9 @@ contract('setup stash proxies', async (accounts) => {
 
     //system
     let booster = await Booster.at(contractList.system.booster)
-    let cvx = await IERC20.at(contractList.system.cvx)
-    let cvxcrv = await IERC20.at(contractList.system.cvxCrv)
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
+    let muuu = await IERC20.at(contractList.system.muuu)
+    let mukgl = await IERC20.at(contractList.system.muKgl)
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
     let exchange = await IExchange.at(
       '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
     )
@@ -100,29 +100,29 @@ contract('setup stash proxies', async (accounts) => {
     // await voter.executeVote(73);
     // console.log("vote executed");
 
-    var cvxcrvLP = await IERC20.at('0x9D0464996170c6B9e75eED71c68B99dDEDf279e8')
-    var cvxcrvGauge = '0x903dA6213a5A12B61c821598154EfAd98C3B20E4'
+    var mukglLP = await IERC20.at('0x9D0464996170c6B9e75eED71c68B99dDEDf279e8')
+    var mukglGauge = '0x903dA6213a5A12B61c821598154EfAd98C3B20E4'
     var trigauge = '0xDeFd8FdD20e0f34115C7018CCfb655796F6B2168'
 
     //add weight
-    // await booster.voteGaugeWeight([trigauge,cvxcrvGauge],[0,1500],{from:multisig,gasPrice:0});
+    // await booster.voteGaugeWeight([trigauge,mukglGauge],[0,1500],{from:multisig,gasPrice:0});
     // console.log("weight added");
 
     // await advanceTime(day*7);
 
     await pools.revertControl({ from: multisig, gasPrice: 0 })
     console.log('reverted pool control')
-    var tx = await booster.addPool(cvxcrvLP.address, cvxcrvGauge, 3, {
+    var tx = await booster.addPool(mukglLP.address, mukglGauge, 3, {
       from: multisig,
       gasPrice: 0,
     })
-    console.log('cvxcrv pool added, gas: ' + tx.receipt.gasUsed)
+    console.log('mukgl pool added, gas: ' + tx.receipt.gasUsed)
 
     var poolLength = await booster.poolLength()
     var poolInfo = await booster.poolInfo(poolLength - 1)
     console.log(poolInfo)
 
-    //swap for crv
+    //swap for kgl
     await weth.sendTransaction({
       value: web3.utils.toWei('10.0', 'ether'),
       from: deployer,
@@ -133,29 +133,29 @@ contract('setup stash proxies', async (accounts) => {
     await exchange.swapExactTokensForTokens(
       web3.utils.toWei('5.0', 'ether'),
       0,
-      [weth.address, crv.address],
+      [weth.address, kgl.address],
       userA,
       starttime + 3000,
       { from: deployer },
     )
-    var crvbalance = await crv.balanceOf(userA)
-    console.log('swapped for crv(userA): ' + crvbalance)
+    var kglbalance = await kgl.balanceOf(userA)
+    console.log('swapped for kgl(userA): ' + kglbalance)
 
     //deposit into pool
-    var pool = await I2CurveFi.at(cvxcrvLP.address)
-    await crv.approve(pool.address, crvbalance)
-    await pool.add_liquidity([crvbalance, 0], 0)
+    var pool = await I2KaglaFi.at(mukglLP.address)
+    await kgl.approve(pool.address, kglbalance)
+    await pool.add_liquidity([kglbalance, 0], 0)
     console.log('added liquidity')
 
-    var lptokens = await cvxcrvLP.balanceOf(userA)
+    var lptokens = await mukglLP.balanceOf(userA)
     console.log('lp tokens: ' + lptokens)
 
     //deposit
-    await cvxcrvLP.approve(booster.address, lptokens)
+    await mukglLP.approve(booster.address, lptokens)
     await booster.depositAll(poolLength - 1, true)
     console.log('deposited')
 
-    var rewardContract = await BaseRewardPool.at(poolInfo.crvRewards)
+    var rewardContract = await BaseRewardPool.at(poolInfo.kglRewards)
     console.log('reward contract: ' + rewardContract.address)
     var stakedAmount = await rewardContract.balanceOf(userA)
     console.log('staked amount: ' + stakedAmount)
@@ -197,7 +197,7 @@ contract('setup stash proxies', async (accounts) => {
     //earmark
     await booster.earmarkRewards(poolLength - 1)
     console.log('earmarked')
-    await cvx
+    await muuu
       .balanceOf(stash.address)
       .then((a) => console.log('weth on stash after earmark: ' + a))
     await weth
@@ -209,7 +209,7 @@ contract('setup stash proxies', async (accounts) => {
     await rewardContract.getReward(userA, true)
 
     await weth.balanceOf(userA).then((a) => console.log('weth: ' + a))
-    await crv.balanceOf(userA).then((a) => console.log('crv: ' + a))
-    await cvx.balanceOf(userA).then((a) => console.log('cvx: ' + a))
+    await kgl.balanceOf(userA).then((a) => console.log('kgl: ' + a))
+    await muuu.balanceOf(userA).then((a) => console.log('muuu: ' + a))
   })
 })

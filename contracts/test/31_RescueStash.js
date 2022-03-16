@@ -14,7 +14,7 @@ const ProxyFactory = artifacts.require('ProxyFactory')
 const StashFactoryV2 = artifacts.require('StashFactoryV2')
 const IVoteStarter = artifacts.require('IVoteStarter')
 const PoolManager = artifacts.require('PoolManager')
-const I2CurveFi = artifacts.require('I2CurveFi')
+const I2KaglaFi = artifacts.require('I2KaglaFi')
 const ExtraRewardStashV3 = artifacts.require('ExtraRewardStashV3')
 const RewardHook = artifacts.require('RewardHook')
 const ExtraRewardStashTokenRescue = artifacts.require(
@@ -22,10 +22,10 @@ const ExtraRewardStashTokenRescue = artifacts.require(
 )
 const RescueToken = artifacts.require('RescueToken')
 const RewardDeposit = artifacts.require('RewardDeposit')
-const vlCvxExtraRewardDistribution = artifacts.require(
-  'vlCvxExtraRewardDistribution',
+const vlMuuuExtraRewardDistribution = artifacts.require(
+  'vlMuuuExtraRewardDistribution',
 )
-const CvxLocker = artifacts.require('CvxLocker')
+const MuuuLocker = artifacts.require('MuuuLocker')
 
 contract('Rescue tokens from voteProxy', async (accounts) => {
   it('should rescue tokens', async () => {
@@ -36,9 +36,9 @@ contract('Rescue tokens from voteProxy', async (accounts) => {
 
     //system
     let booster = await Booster.at(contractList.system.booster)
-    let cvx = await IERC20.at(contractList.system.cvx)
-    let cvxcrv = await IERC20.at(contractList.system.cvxCrv)
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
+    let muuu = await IERC20.at(contractList.system.muuu)
+    let mukgl = await IERC20.at(contractList.system.muKgl)
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
     let exchange = await IExchange.at(
       '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
     )
@@ -48,7 +48,7 @@ contract('Rescue tokens from voteProxy', async (accounts) => {
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2')
     let dai = await IERC20.at('0x6B175474E89094C44Da98b954EedeAC495271d0F')
     let pools = await PoolManager.at(contractList.system.poolManager)
-    let locker = await CvxLocker.at(contractList.system.locker)
+    let locker = await MuuuLocker.at(contractList.system.locker)
 
     let userA = accounts[0]
     let userB = accounts[1]
@@ -114,7 +114,7 @@ contract('Rescue tokens from voteProxy', async (accounts) => {
     console.log('stash: ' + rstash.address)
 
     //let rdeposit = await RewardDeposit.new(deployer);
-    let rdeposit = await vlCvxExtraRewardDistribution.new()
+    let rdeposit = await vlMuuuExtraRewardDistribution.new()
     console.log('reward deposit: ' + rdeposit.address)
 
     await rstash.setDistribution(deployer, rdeposit.address, deployer, {

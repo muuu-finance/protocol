@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.6.12;
 
-import "./interfaces/ILockedCvx.sol";
+import "./interfaces/ILockedMuuu.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -51,10 +51,10 @@ contract VotingBalance is Ownable {
       }
     }
 
-    return ILockedCvx(locker).balanceOf(_account);
+    return ILockedMuuu(locker).balanceOf(_account);
   }
 
   function totalSupply() external view returns (uint256) {
-    return ILockedCvx(locker).totalSupply();
+    return ILockedMuuu(locker).totalSupply();
   }
 }

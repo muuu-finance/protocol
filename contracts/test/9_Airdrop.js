@@ -11,7 +11,7 @@ var jsonfile = require('jsonfile')
 var droplist = jsonfile.readFileSync('../airdrop/drop_proofs.json')
 var contractList = jsonfile.readFileSync('./contracts.json')
 
-const ConvexToken = artifacts.require('ConvexToken')
+const MuuuToken = artifacts.require('MuuuToken')
 const MerkleAirdrop = artifacts.require('MerkleAirdrop')
 const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory')
 const VestedEscrow = artifacts.require('VestedEscrow')
@@ -22,12 +22,12 @@ const MulticallerView = artifacts.require('MulticallerView')
 contract('Airdrop Test', async (accounts) => {
   it('should claim airdrop for all users', async () => {
     //system
-    let cvx = await ConvexToken.at(contractList.system.cvx)
+    let muuu = await MuuuToken.at(contractList.system.muuu)
     let airdrop = await MerkleAirdrop.at(contractList.system.airdrop)
     console.log('airdrop at: ' + airdrop.address)
     let mroot = await airdrop.merkleRoot()
     console.log('airdrop root: ' + mroot)
-    let vecrvVesting = await VestedEscrow.at(contractList.system.vestedEscrow)
+    let vekglVesting = await VestedEscrow.at(contractList.system.vestedEscrow)
     let multicaller = await Multicaller.at(
       '0x5e227AD1969Ea493B43F840cfF78d08a6fc17796',
     )
@@ -69,12 +69,12 @@ contract('Airdrop Test', async (accounts) => {
       var proof = info.proof
       proof = proof.map((e) => Buffer.from(e, 'hex'))
       // await airdrop.claim(proof,dropAddresses[i],amount).catch(a=>console.log("--> could not claim"));
-      // await cvx.balanceOf(dropAddresses[i]).then(a => console.log("claimed: " +a));
+      // await muuu.balanceOf(dropAddresses[i]).then(a => console.log("claimed: " +a));
 
-      var calldata = cvx.contract.methods
+      var calldata = muuu.contract.methods
         .balanceOf(dropAddresses[i])
         .encodeABI()
-      callDataList.push([cvx.address, calldata])
+      callDataList.push([muuu.address, calldata])
 
       if (callDataList.length == 100) {
         console.log('call multi balanceOf')
@@ -134,17 +134,17 @@ contract('Airdrop Test', async (accounts) => {
     //     await time.advanceBlock();
 
     //     await time.latest().then(a=>console.log("advance time..."+a));
-    //     await vecrvVesting.totalTime().then(a=>console.log("vesting total time: " +a));
-    //     await vecrvVesting.initialLockedSupply().then(a=>console.log("vesting initialLockedSupply: " +a));
-    //     await vecrvVesting.unallocatedSupply().then(a=>console.log("vesting unallocatedSupply: " +a));
-    //     await vecrvVesting.vestedSupply().then(a=>console.log("vesting vestedSupply: " +a));
+    //     await vekglVesting.totalTime().then(a=>console.log("vesting total time: " +a));
+    //     await vekglVesting.initialLockedSupply().then(a=>console.log("vesting initialLockedSupply: " +a));
+    //     await vekglVesting.unallocatedSupply().then(a=>console.log("vesting unallocatedSupply: " +a));
+    //     await vekglVesting.vestedSupply().then(a=>console.log("vesting vestedSupply: " +a));
 
-    //     await vecrvVesting.lockedOf(lastaddress).then(a=>console.log("user locked: " +a))
-    //     await vecrvVesting.balanceOf(lastaddress).then(a=>console.log("user balance: " +a))
-    //     await vecrvVesting.vestedOf(lastaddress).then(a=>console.log("user vested: " +a))
+    //     await vekglVesting.lockedOf(lastaddress).then(a=>console.log("user locked: " +a))
+    //     await vekglVesting.balanceOf(lastaddress).then(a=>console.log("user balance: " +a))
+    //     await vekglVesting.vestedOf(lastaddress).then(a=>console.log("user vested: " +a))
     // }
 
-    // await vecrvVesting.claim(lastaddress);
-    // await cvx.balanceOf(lastaddress).then(a=>console.log("cvx balance in wallet: " +a))
+    // await vekglVesting.claim(lastaddress);
+    // await muuu.balanceOf(lastaddress).then(a=>console.log("muuu balance in wallet: " +a))
   })
 })

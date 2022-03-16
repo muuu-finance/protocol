@@ -49,7 +49,7 @@ contract ExtraRewardStashV1 {
   }
 
   function setToken() internal {
-    address token = ICurveGauge(gauge).rewarded_token();
+    address token = IKaglaGauge(gauge).rewarded_token();
 
     if (token != address(0)) {
       //set token address

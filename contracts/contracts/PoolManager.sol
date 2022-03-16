@@ -40,8 +40,8 @@ contract PoolManager {
     IPools(pools).setPoolManager(operator);
   }
 
-  //add a new curve pool to the system.
-  //gauge must be on curve's registry, thus anyone can call
+  //add a new kagla pool to the system.
+  //gauge must be on kagla's registry, thus anyone can call
   function addPool(
     address _swap,
     address _gauge,
@@ -50,7 +50,7 @@ contract PoolManager {
     require(_gauge != address(0), "gauge is 0");
     require(_swap != address(0), "swap is 0");
 
-    //get curve's registery
+    //get kagla's registery
     address mainReg = IRegistry(addressProvider).get_registry();
 
     //get lp token and gauge list from swap address

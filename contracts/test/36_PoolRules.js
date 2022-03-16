@@ -11,7 +11,7 @@ const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01')
 const Booster = artifacts.require('Booster')
 const PoolManagerV2 = artifacts.require('PoolManagerV2')
 const PoolManagerProxy = artifacts.require('PoolManagerProxy')
-const ICurveGauge = artifacts.require('ICurveGauge')
+const IKaglaGauge = artifacts.require('IKaglaGauge')
 const PoolManagerV3 = artifacts.require('PoolManagerV3')
 const IVoteStarter = artifacts.require('IVoteStarter')
 const IVoting = artifacts.require('IVoting')
@@ -77,16 +77,16 @@ contract('deploy pool manager layer', async (accounts) => {
     await poolProxy.owner().then((a) => console.log('owner: ' + a))
     await poolProxy.operator().then((a) => console.log('operator: ' + a))
 
-    let lpToken = '0x3A283D9c08E8b55966afb64C515f5143cf907611' //cvx lp
-    let badlpToken = '0x1cEBdB0856dd985fAe9b8fEa2262469360B8a3a6' //crv lp
-    let gauge = await ICurveGauge.at(
+    let lpToken = '0x3A283D9c08E8b55966afb64C515f5143cf907611' //muuu lp
+    let badlpToken = '0x1cEBdB0856dd985fAe9b8fEa2262469360B8a3a6' //kgl lp
+    let gauge = await IKaglaGauge.at(
       '0x7E1444BA99dcdFfE8fBdb42C02F0005D14f13BE1',
-    ) //cvx lp gauge
+    ) //muuu lp gauge
     let sVersion = 3
 
     //shutdown current pool
     await poolProxy.shutdownPool(64, { from: deployer, gasPrice: 0 })
-    console.log('shutdown current cvx pool')
+    console.log('shutdown current muuu pool')
 
     //test add pool
     console.log('add pool')

@@ -2,7 +2,7 @@
 pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
 
-import "./interfaces/ILockedCvx.sol";
+import "./interfaces/ILockedMuuu.sol";
 import "./interfaces/IVotingEligibility.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
@@ -26,15 +26,15 @@ contract VotingBalanceMax {
 
     //compute to find previous epoch
     uint256 currentEpoch = block.timestamp.div(rewardsDuration).mul(rewardsDuration);
-    uint256 epochindex = ILockedCvx(locker).epochCount() - 1;
-    (, uint32 _enddate) = ILockedCvx(locker).epochs(epochindex);
+    uint256 epochindex = ILockedMuuu(locker).epochCount() - 1;
+    (, uint32 _enddate) = ILockedMuuu(locker).epochs(epochindex);
     if (_enddate >= currentEpoch) {
       //if end date is already the current epoch,  minus 1 to get the previous
       epochindex -= 1;
     }
     //get balances of current and previous
-    uint256 balanceAtPrev = ILockedCvx(locker).balanceAtEpochOf(epochindex, _account);
-    uint256 currentBalance = ILockedCvx(locker).balanceOf(_account);
+    uint256 balanceAtPrev = ILockedMuuu(locker).balanceAtEpochOf(epochindex, _account);
+    uint256 currentBalance = ILockedMuuu(locker).balanceOf(_account);
 
     //return greater balance
     return max(balanceAtPrev, currentBalance);
@@ -52,7 +52,7 @@ contract VotingBalanceMax {
     );
 
     //grab account lock list
-    (, , , ILockedCvx.LockedBalance[] memory balances) = ILockedCvx(locker).lockedBalances(
+    (, , , ILockedMuuu.LockedBalance[] memory balances) = ILockedMuuu(locker).lockedBalances(
       _account
     );
 
@@ -70,6 +70,6 @@ contract VotingBalanceMax {
   }
 
   function totalSupply() external view returns (uint256) {
-    return ILockedCvx(locker).totalSupply();
+    return ILockedMuuu(locker).totalSupply();
   }
 }

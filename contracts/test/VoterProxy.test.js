@@ -1,21 +1,21 @@
 const { assert } = require('chai')
 const { ZERO_ADDRESS } = require('@openzeppelin/test-helpers/src/constants')
 
-contract('CurveVoterProxy', async (accounts) => {
+contract('KaglaVoterProxy', async (accounts) => {
   const setup = async () => {
-    const VotingEscrow = artifacts.require('MockCurveVoteEscrow')
-    const CurveVoterProxy = artifacts.require('CurveVoterProxy')
+    const VotingEscrow = artifacts.require('MockKaglaVoteEscrow')
+    const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
     const votingEscrow = await VotingEscrow.new()
-    const curveVoterProxy = await CurveVoterProxy.new(votingEscrow.address)
+    const kaglaVoterProxy = await KaglaVoterProxy.new(votingEscrow.address)
 
     return {
       votingEscrow,
-      curveVoterProxy,
+      kaglaVoterProxy,
     }
   }
 
   it('constructor & initial parameters', async () => {
-    const { votingEscrow, curveVoterProxy: instance } = await setup()
+    const { votingEscrow, kaglaVoterProxy: instance } = await setup()
     assert.equal(
       await instance.operator(),
       ZERO_ADDRESS,
@@ -37,9 +37,9 @@ contract('CurveVoterProxy', async (accounts) => {
       'Fail to check .mintr',
     )
     assert.equal(
-      await instance.crv(),
+      await instance.kgl(),
       '0xD533a949740bb3306d119CC777fa900bA034cd52',
-      'Fail to check .crv',
+      'Fail to check .kgl',
     )
     assert.equal(
       await instance.gaugeController(),
@@ -49,8 +49,8 @@ contract('CurveVoterProxy', async (accounts) => {
   })
 
   it('#getName', async () => {
-    const { curveVoterProxy: instance } = await setup()
-    assert.equal(await instance.getName(), 'CurveVoterProxy')
+    const { kaglaVoterProxy: instance } = await setup()
+    assert.equal(await instance.getName(), 'KaglaVoterProxy')
   })
 
   it.skip('#deposit')

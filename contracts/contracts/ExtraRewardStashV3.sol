@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
-//Stash v3: support for curve gauge reward redirect
+//Stash v3: support for kagla gauge reward redirect
 //v3.1: support for arbitrary token rewards outside of gauge rewards
 //      add reward hook to pull rewards during claims
 //v3.2: move constuctor to init function for proxy creation
@@ -18,7 +18,7 @@ contract ExtraRewardStashV3 {
   using Address for address;
   using SafeMath for uint256;
 
-  address public constant crv = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
+  address public constant kgl = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
   uint256 private constant maxRewards = 8;
 
   uint256 public pid;
@@ -29,7 +29,7 @@ contract ExtraRewardStashV3 {
 
   mapping(address => uint256) public historicalRewards;
   bool public hasRedirected;
-  bool public hasCurveRewards;
+  bool public hasKaglaRewards;
 
   struct TokenInfo {
     address token;
@@ -81,7 +81,7 @@ contract ExtraRewardStashV3 {
       hasRedirected = true;
     }
 
-    if (hasCurveRewards) {
+    if (hasKaglaRewards) {
       //claim rewards on gauge for staker
       //using reward_receiver so all rewards will be moved to this stash
       IDeposit(operator).claimRewards(pid, gauge);
@@ -97,19 +97,19 @@ contract ExtraRewardStashV3 {
   //check if gauge rewards have changed
   function checkForNewRewardTokens() internal {
     for (uint256 i = 0; i < maxRewards; i++) {
-      address token = ICurveGauge(gauge).reward_tokens(i);
+      address token = IKaglaGauge(gauge).reward_tokens(i);
       if (token == address(0)) {
         break;
       }
-      if (!hasCurveRewards) {
-        hasCurveRewards = true;
+      if (!hasKaglaRewards) {
+        hasKaglaRewards = true;
       }
       setToken(token);
     }
   }
 
   //register an extra reward token to be handled
-  // (any new incentive that is not directly on curve gauges)
+  // (any new incentive that is not directly on kagla gauges)
   function setExtraReward(address _token) external {
     //owner of booster can set extra rewards
     require(IDeposit(operator).owner() == msg.sender, "!owner");
@@ -130,9 +130,9 @@ contract ExtraRewardStashV3 {
       //set token address
       t.token = _token;
 
-      //check if crv
-      if (_token != crv) {
-        //create new reward contract (for NON-crv tokens only)
+      //check if kgl
+      if (_token != kgl) {
+        //create new reward contract (for NON-kgl tokens only)
         (, , , address mainRewardContract, , ) = IDeposit(operator).poolInfo(pid);
         address rewardContract = IRewardFactory(rewardFactory).CreateTokenRewards(
           _token,
@@ -168,8 +168,8 @@ contract ExtraRewardStashV3 {
       uint256 amount = IERC20(token).balanceOf(address(this));
       if (amount > 0) {
         historicalRewards[token] = historicalRewards[token].add(amount);
-        if (token == crv) {
-          //if crv, send back to booster to distribute
+        if (token == kgl) {
+          //if kgl, send back to booster to distribute
           IERC20(token).safeTransfer(operator, amount);
           continue;
         }

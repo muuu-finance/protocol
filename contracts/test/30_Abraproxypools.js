@@ -4,20 +4,20 @@ var jsonfile = require('jsonfile')
 var contractList = jsonfile.readFileSync('./contracts.json')
 
 const Booster = artifacts.require('Booster')
-const CrvDepositor = artifacts.require('CrvDepositor')
-const ConvexToken = artifacts.require('ConvexToken')
-const cvxCrvToken = artifacts.require('cvxCrvToken')
-const CurveVoterProxy = artifacts.require('CurveVoterProxy')
+const KglDepositor = artifacts.require('KglDepositor')
+const MuuuToken = artifacts.require('MuuuToken')
+const muKglToken = artifacts.require('muKglToken')
+const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
 const BaseRewardPool = artifacts.require('BaseRewardPool')
-const ConvexStakingWrapper = artifacts.require('ConvexStakingWrapper')
-const ConvexStakingWrapperAbra = artifacts.require('ConvexStakingWrapperAbra')
+const MuuuStakingWrapper = artifacts.require('MuuuStakingWrapper')
+const MuuuStakingWrapperAbra = artifacts.require('MuuuStakingWrapperAbra')
 const IERC20 = artifacts.require('IERC20')
-const ICurveAavePool = artifacts.require('ICurveAavePool')
+const IKaglaAavePool = artifacts.require('IKaglaAavePool')
 const IExchange = artifacts.require('IExchange')
 const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01')
-const CvxMining = artifacts.require('CvxMining')
-const I3CurveFi = artifacts.require('I3CurveFi')
-const I2CurveFi = artifacts.require('I2CurveFi')
+const MuuuMining = artifacts.require('MuuuMining')
+const I3KaglaFi = artifacts.require('I3KaglaFi')
+const I2KaglaFi = artifacts.require('I2KaglaFi')
 const ICauldron = artifacts.require('ICauldron')
 const IBentoBox = artifacts.require('IBentoBox')
 const ProxyFactory = artifacts.require('ProxyFactory')
@@ -30,11 +30,11 @@ contract('Test stake wrapper', async (accounts) => {
 
     //system
     let booster = await Booster.at(contractList.system.booster)
-    let voteproxy = await CurveVoterProxy.at(contractList.system.voteProxy)
-    let cvx = await ConvexToken.at(contractList.system.cvx)
-    let crv = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
-    let cvxCrv = await cvxCrvToken.at(contractList.system.cvxCrv)
-    let cvxCrvLP = await IERC20.at(contractList.system.cvxCrvCrvSLP)
+    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy)
+    let muuu = await MuuuToken.at(contractList.system.muuu)
+    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
+    let muKgl = await muKglToken.at(contractList.system.muKgl)
+    let muKglLP = await IERC20.at(contractList.system.muKglKglSLP)
     let exchange = await IExchange.at(
       '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
     )
@@ -42,10 +42,10 @@ contract('Test stake wrapper', async (accounts) => {
       '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
     )
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2')
-    let curvetoken = await IERC20.at(
+    let kaglatoken = await IERC20.at(
       '0x49849C98ae39Fff122806C06791Fa73784FB3675',
     )
-    let curveswap = await I2CurveFi.at(
+    let kaglaswap = await I2KaglaFi.at(
       '0x93054188d876f558f4a66B2EF1d97d16eDf0895B',
     )
     let underlying = await IERC20.at(
@@ -81,20 +81,20 @@ contract('Test stake wrapper', async (accounts) => {
     var underlyingbalance = await underlying.balanceOf(deployer)
     console.log('swapped for underlying: ' + underlyingbalance)
 
-    await underlying.approve(curveswap.address, underlyingbalance, {
+    await underlying.approve(kaglaswap.address, underlyingbalance, {
       from: deployer,
     })
     console.log('approved')
-    await curveswap.add_liquidity([0, underlyingbalance], 0, { from: deployer })
+    await kaglaswap.add_liquidity([0, underlyingbalance], 0, { from: deployer })
     console.log('liq added')
-    var lpbalance = await curvetoken.balanceOf(deployer)
+    var lpbalance = await kaglatoken.balanceOf(deployer)
     console.log('lpbalance: ' + lpbalance)
 
-    let lib = await CvxMining.at(contractList.system.cvxMining)
+    let lib = await MuuuMining.at(contractList.system.muuuMining)
     console.log('mining lib at: ' + lib.address)
-    await ConvexStakingWrapperAbra.link('CvxMining', lib.address)
+    await MuuuStakingWrapperAbra.link('MuuuMining', lib.address)
 
-    let master = await ConvexStakingWrapperAbra.new()
+    let master = await MuuuStakingWrapperAbra.new()
     let pfactory = await ProxyFactory.at(contractList.system.proxyFactory)
 
     //static call first to see what the next address will be
@@ -102,20 +102,20 @@ contract('Test stake wrapper', async (accounts) => {
     console.log('clone: ' + clone)
     let clonetx = await pfactory.clone(master.address)
 
-    let staker = await ConvexStakingWrapperAbra.at(clone)
+    let staker = await MuuuStakingWrapperAbra.at(clone)
     let pool = contractList.pools.find((a) => a.name == 'ren')
     await staker.initialize(
       pool.lptoken,
       pool.token,
-      pool.crvRewards,
+      pool.kglRewards,
       pool.id,
       addressZero,
     )
     console.log('staker token: ' + staker.address)
     await staker.name().then((a) => console.log('name: ' + a))
     await staker.symbol().then((a) => console.log('symbol: ' + a))
-    await staker.curveToken().then((a) => console.log('curve token: ' + a))
-    await staker.convexToken().then((a) => console.log('convex token: ' + a))
+    await staker.kaglaToken().then((a) => console.log('kagla token: ' + a))
+    await staker.muuuToken().then((a) => console.log('muuu token: ' + a))
     // await staker.setCauldron("0x806e16ec797c69afa8590A55723CE4CC1b54050E",{from:deployer});
     // var cauldronaddress =  await staker.cauldrons(1)
     // console.log("cauldron: " +cauldronaddress);
@@ -126,10 +126,10 @@ contract('Test stake wrapper', async (accounts) => {
       console.log('rewards ' + i + ': ' + JSON.stringify(rInfo))
     }
 
-    var lpbalance = await curvetoken.balanceOf(deployer)
+    var lpbalance = await kaglatoken.balanceOf(deployer)
     console.log('lpbalance: ' + lpbalance)
 
-    await curvetoken.approve(staker.address, lpbalance, { from: deployer })
+    await kaglatoken.approve(staker.address, lpbalance, { from: deployer })
     console.log('approved staker')
 
     var tx = await staker.deposit(lpbalance, userA, { from: deployer })
@@ -163,20 +163,20 @@ contract('Test stake wrapper', async (accounts) => {
 
     console.log('======')
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a))
-    await crv
+    await kgl
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet crv: ' + a))
-    await cvx
+      .then((a) => console.log('user a wallet kgl: ' + a))
+    await muuu
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet cvx: ' + a))
+      .then((a) => console.log('user a wallet muuu: ' + a))
     console.log('-----')
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a))
-    await crv
+    await kgl
       .balanceOf(userB)
-      .then((a) => console.log('user b wallet crv: ' + a))
-    await cvx
+      .then((a) => console.log('user b wallet kgl: ' + a))
+    await muuu
       .balanceOf(userB)
-      .then((a) => console.log('user b wallet cvx: ' + a))
+      .then((a) => console.log('user b wallet muuu: ' + a))
 
     console.log('checkpoint')
     var tx = await staker.user_checkpoint([userA, addressZero])
@@ -196,12 +196,12 @@ contract('Test stake wrapper', async (accounts) => {
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a))
     await staker.earned(userB).then((a) => console.log('user b earned: ' + a))
 
-    await crv
+    await kgl
       .balanceOf(staker.address)
-      .then((a) => console.log('staker crv: ' + a))
-    await cvx
+      .then((a) => console.log('staker kgl: ' + a))
+    await muuu
       .balanceOf(staker.address)
-      .then((a) => console.log('staker cvx: ' + a))
+      .then((a) => console.log('staker muuu: ' + a))
     for (var i = 0; i < rewardCount; i++) {
       var rInfo = await staker.rewards(i)
       console.log('rewards ' + i + ': ' + JSON.stringify(rInfo))
@@ -209,12 +209,12 @@ contract('Test stake wrapper', async (accounts) => {
 
     console.log('======')
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a))
-    await crv
+    await kgl
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet crv: ' + a))
-    await cvx
+      .then((a) => console.log('user a wallet kgl: ' + a))
+    await muuu
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet cvx: ' + a))
+      .then((a) => console.log('user a wallet muuu: ' + a))
     for (var i = 0; i < rewardCount; i++) {
       var rInfo = await staker.rewards(i)
       console.log('rewards ' + i + ': ' + JSON.stringify(rInfo))
@@ -225,26 +225,26 @@ contract('Test stake wrapper', async (accounts) => {
     console.log('\n\nadvance time...')
     console.log('======')
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a))
-    await crv
+    await kgl
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet crv: ' + a))
-    await cvx
+      .then((a) => console.log('user a wallet kgl: ' + a))
+    await muuu
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet cvx: ' + a))
+      .then((a) => console.log('user a wallet muuu: ' + a))
     console.log('claiming rewards...')
     var tx = await staker.getReward(userA, { from: userA })
     console.log('claimed A, gas: ' + tx.receipt.gasUsed)
-    await crv
+    await kgl
       .balanceOf(staker.address)
-      .then((a) => console.log('crv on staker: ' + a))
+      .then((a) => console.log('kgl on staker: ' + a))
     console.log('======')
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a))
-    await crv
+    await kgl
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet crv: ' + a))
-    await cvx
+      .then((a) => console.log('user a wallet kgl: ' + a))
+    await muuu
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet cvx: ' + a))
+      .then((a) => console.log('user a wallet muuu: ' + a))
     for (var i = 0; i < rewardCount; i++) {
       var rInfo = await staker.rewards(i)
       console.log('rewards ' + i + ': ' + JSON.stringify(rInfo))
@@ -256,26 +256,26 @@ contract('Test stake wrapper', async (accounts) => {
     console.log('\n\nadvance time...')
     console.log('======')
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a))
-    await crv
+    await kgl
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet crv: ' + a))
-    await cvx
+      .then((a) => console.log('user a wallet kgl: ' + a))
+    await muuu
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet cvx: ' + a))
+      .then((a) => console.log('user a wallet muuu: ' + a))
     console.log('claiming rewards...')
     var tx = await staker.getReward(userA, { from: userA })
     console.log('claimed A, gas: ' + tx.receipt.gasUsed)
-    await crv
+    await kgl
       .balanceOf(staker.address)
-      .then((a) => console.log('crv on staker: ' + a))
+      .then((a) => console.log('kgl on staker: ' + a))
     console.log('======')
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a))
-    await crv
+    await kgl
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet crv: ' + a))
-    await cvx
+      .then((a) => console.log('user a wallet kgl: ' + a))
+    await muuu
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet cvx: ' + a))
+      .then((a) => console.log('user a wallet muuu: ' + a))
     for (var i = 0; i < rewardCount; i++) {
       var rInfo = await staker.rewards(i)
       console.log('rewards ' + i + ': ' + JSON.stringify(rInfo))
@@ -287,23 +287,23 @@ contract('Test stake wrapper', async (accounts) => {
     console.log('\n\nadvance time...')
     console.log('======')
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a))
-    await crv
+    await kgl
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet crv: ' + a))
-    await cvx
+      .then((a) => console.log('user a wallet kgl: ' + a))
+    await muuu
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet cvx: ' + a))
+      .then((a) => console.log('user a wallet muuu: ' + a))
     console.log('claiming rewards...')
     var tx = await staker.getReward(userA, { from: userA })
     console.log('claimed A, gas: ' + tx.receipt.gasUsed)
     console.log('======')
     await staker.earned(userA).then((a) => console.log('user a earned: ' + a))
-    await crv
+    await kgl
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet crv: ' + a))
-    await cvx
+      .then((a) => console.log('user a wallet kgl: ' + a))
+    await muuu
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet cvx: ' + a))
+      .then((a) => console.log('user a wallet muuu: ' + a))
 
     await time.increase(86400)
     await time.advanceBlock()
@@ -318,20 +318,20 @@ contract('Test stake wrapper', async (accounts) => {
     console.log('claimed A, gas: ' + tx.receipt.gasUsed)
 
     console.log('--- current rewards on wrapper ---')
-    await crv
+    await kgl
       .balanceOf(staker.address)
-      .then((a) => console.log('staker crv: ' + a))
-    await cvx
+      .then((a) => console.log('staker kgl: ' + a))
+    await muuu
       .balanceOf(staker.address)
-      .then((a) => console.log('staker cvx: ' + a))
+      .then((a) => console.log('staker muuu: ' + a))
     console.log('-----')
-    await crv
+    await kgl
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet crv: ' + a))
-    await cvx
+      .then((a) => console.log('user a wallet kgl: ' + a))
+    await muuu
       .balanceOf(userA)
-      .then((a) => console.log('user a wallet cvx: ' + a))
-    await curvetoken
+      .then((a) => console.log('user a wallet muuu: ' + a))
+    await kaglatoken
       .balanceOf(userA)
       .then((a) => console.log('user a wallet lptoken: ' + a))
 
@@ -346,12 +346,12 @@ contract('Test stake wrapper', async (accounts) => {
     await staker
       .totalSupply()
       .then((a) => console.log('remaining supply: ' + a))
-    await crv
+    await kgl
       .balanceOf(staker.address)
-      .then((a) => console.log('remaining crv: ' + a))
-    await cvx
+      .then((a) => console.log('remaining kgl: ' + a))
+    await muuu
       .balanceOf(staker.address)
-      .then((a) => console.log('remaining cvx: ' + a))
+      .then((a) => console.log('remaining muuu: ' + a))
     // await stkaave.balanceOf(staker.address).then(a=>console.log("remaining stkaave: " +a));
   })
 })
