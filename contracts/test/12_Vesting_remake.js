@@ -6,11 +6,8 @@ const {
   time,
 } = require('@openzeppelin/test-helpers')
 
-const MerkleTree = require('./helpers/merkleTree')
 var jsonfile = require('jsonfile')
 const { ZERO_ADDRESS } = require('@openzeppelin/test-helpers/src/constants')
-var droplist = jsonfile.readFileSync('../airdrop/drop_proofs.json')
-var contractList = jsonfile.readFileSync('./contracts.json')
 var distroList = jsonfile.readFileSync('./migrations/distro.json')
 
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
@@ -19,15 +16,22 @@ const muuuRewardPool = artifacts.require('muuuRewardPool')
 const MuuuToken = artifacts.require('MuuuToken')
 
 const VotingEscrow = artifacts.require('MockKaglaVoteEscrow')
+const MintableERC20 = artifacts.require('MintableERC20')
 
 contract('VestedEscrow Test', async (accounts) => {
   it('should claim unlock over time and claim', async () => {
     //system
     const votingEscrow = await VotingEscrow.new()
-    const kaglaVoterProxy = await KaglaVoterProxy.new(votingEscrow.address)
-    const muuu = await MuuuToken.new(kaglaVoterProxy.address)
-    let muuuRewards = await muuuRewardPool.new(
-      muuu.address,
+    const kglToken = await MintableERC20.new('Kagle Token', 'KGL', 18)
+    const kaglaVoterProxy = await KaglaVoterProxy.new(
+      kglToken.address,
+      votingEscrow.address,
+      ZERO_ADDRESS,
+      ZERO_ADDRESS,
+    )
+    const muuuToken = await MuuuToken.new(kaglaVoterProxy.address)
+    const muuuRewards = await muuuRewardPool.new(
+      muuuToken.address,
       ZERO_ADDRESS,
       ZERO_ADDRESS,
       ZERO_ADDRESS,
@@ -37,8 +41,8 @@ contract('VestedEscrow Test', async (accounts) => {
     )
     const rewardsStart = Math.floor(Date.now() / 1000) + 3600
     const rewardsEnd = rewardsStart + 1 * 364 * 86400
-    let vested = await VestedEscrow.new(
-      muuu.address,
+    const vested = await VestedEscrow.new(
+      muuuToken.address,
       rewardsStart,
       rewardsEnd,
       ZERO_ADDRESS,
@@ -85,11 +89,11 @@ contract('VestedEscrow Test', async (accounts) => {
     let accountA = '0xAAc0aa431c237C2C0B5f041c8e59B3f1a43aC78F'
     let accountB = '0xb3DF5271b92e9fD2fed137253BB4611285923f16'
     for (var i = 0; i < 13; i++) {
-      // await time.increase(35*86400);
-      // await time.advanceBlock();
-      // await time.advanceBlock();
-      // await time.advanceBlock();
-      // await time.latest().then(a=>console.log("advance time..."+a));
+      await time.increase(35 * 86400)
+      await time.advanceBlock()
+      await time.advanceBlock()
+      await time.advanceBlock()
+      await time.latest().then((a) => console.log('advance time...' + a))
       // refs
       // - https://stackoverflow.com/questions/70650263/testing-contracts-using-time-from-openzepplin-library-error-invalid-json-rpc-r
       // - https://forum.openzeppelin.com/t/invalid-json-rpc-response-when-using-test-helpers-expectrevert-openzeppelin-test-environment/4422
@@ -129,7 +133,7 @@ contract('VestedEscrow Test', async (accounts) => {
     }
 
     await vested.claim(accountA)
-    await muuu
+    await muuuToken
       .balanceOf(accountA)
       .then((a) => console.log('User A muuu in wallet: ' + a))
 
