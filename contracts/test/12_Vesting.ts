@@ -54,6 +54,28 @@ const setupContracts = async () => {
   }
 }
 
+const loggingVestingStatus = async (contract) => {
+  console.log(
+    `vesting initialLockedSupply: ${await contract.initialLockedSupply()}`,
+  )
+  console.log(
+    `vesting unallocatedSupply: ${await contract.unallocatedSupply()}`,
+  )
+  console.log(`vesting vestedSupply: ${await contract.vestedSupply()}`)
+}
+
+const loggingAccountStatusInVestedEscrow = async ({
+  contract,
+  account,
+  name,
+}) => {
+  console.log(`${name} locked: .lockedOf = ${await contract.lockedOf(account)}`)
+  console.log(
+    `${name} balance: .balanceOf = ${await contract.balanceOf(account)}`,
+  )
+  console.log(`${name} vested: .vestedOf = ${await contract.vestedOf(account)}`)
+}
+
 contract('VestedEscrow Test', async (accounts) => {
   it('should claim unlock over time and claim', async () => {
     const {
@@ -105,17 +127,44 @@ contract('VestedEscrow Test', async (accounts) => {
     console.log(`accountB ... ${accountB}`)
 
     const eth = 1 * 10 ** 18
-    // setup: 3 token, admin -> vested
+
+    console.log('setup: 3 token, admin -> vested')
     await muuuToken.approve(vested.address, (3 * eth).toString())
     await muuuToken.mint(accounts[0], (3 * eth).toString())
     await vested.addTokens((3 * eth).toString())
-    // setup: fund - 1 token to A, 2 token to B
+    // logging
+    await loggingVestingStatus(vested)
+    await loggingAccountStatusInVestedEscrow({
+      contract: vested,
+      account: accountA,
+      name: 'AccountA',
+    })
+    await loggingAccountStatusInVestedEscrow({
+      contract: vested,
+      account: accountB,
+      name: 'AccountB',
+    })
+
+    console.log('setup: fund - 1 token to A, 2 token to B')
     await vested.fund(
       [accountA, accountB],
       [(1 * eth).toString(), (2 * eth).toString()],
     )
+    // logging
+    await loggingVestingStatus(vested)
+    await loggingAccountStatusInVestedEscrow({
+      contract: vested,
+      account: accountA,
+      name: 'AccountA',
+    })
+    await loggingAccountStatusInVestedEscrow({
+      contract: vested,
+      account: accountB,
+      name: 'AccountB',
+    })
 
     for (var i = 0; i < 13; i++) {
+      console.log(`--- Loop:${i + 1} ---`)
       await time.increase(35 * 86400)
       await time.advanceBlock()
       await time.advanceBlock()
@@ -125,35 +174,18 @@ contract('VestedEscrow Test', async (accounts) => {
       await vested
         .totalTime()
         .then((a) => console.log('vesting total time: ' + a))
-      await vested
-        .initialLockedSupply()
-        .then((a) => console.log('vesting initialLockedSupply: ' + a))
-      await vested
-        .unallocatedSupply()
-        .then((a) => console.log('vesting unallocatedSupply: ' + a))
-      await vested
-        .vestedSupply()
-        .then((a) => console.log('vesting vestedSupply: ' + a))
+      await loggingVestingStatus(vested)
 
-      await vested
-        .lockedOf(accountA)
-        .then((a) => console.log('userA locked: ' + a))
-      await vested
-        .balanceOf(accountA)
-        .then((a) => console.log('userA balance: ' + a))
-      await vested
-        .vestedOf(accountA)
-        .then((a) => console.log('userA vested: ' + a))
-
-      await vested
-        .lockedOf(accountB)
-        .then((a) => console.log('userB locked: ' + a))
-      await vested
-        .balanceOf(accountB)
-        .then((a) => console.log('userB balance: ' + a))
-      await vested
-        .vestedOf(accountB)
-        .then((a) => console.log('userB vested: ' + a))
+      await loggingAccountStatusInVestedEscrow({
+        contract: vested,
+        account: accountA,
+        name: 'AccountA',
+      })
+      await loggingAccountStatusInVestedEscrow({
+        contract: vested,
+        account: accountB,
+        name: 'AccountB',
+      })
     }
 
     await vested.claim(accountA)
