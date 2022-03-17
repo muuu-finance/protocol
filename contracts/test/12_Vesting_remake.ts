@@ -18,36 +18,51 @@ const MuuuToken = artifacts.require('MuuuToken')
 const VotingEscrow = artifacts.require('MockKaglaVoteEscrow')
 const MintableERC20 = artifacts.require('MintableERC20')
 
+const setupContracts = async () => {
+  const votingEscrow = await VotingEscrow.new()
+  const kglToken = await MintableERC20.new('Kagle Token', 'KGL', 18)
+  const kaglaVoterProxy = await KaglaVoterProxy.new(
+    kglToken.address,
+    votingEscrow.address,
+    ZERO_ADDRESS,
+    ZERO_ADDRESS,
+  )
+  const muuuToken = await MuuuToken.new(kaglaVoterProxy.address)
+  const muuuRewards = await muuuRewardPool.new(
+    muuuToken.address,
+    ZERO_ADDRESS,
+    ZERO_ADDRESS,
+    ZERO_ADDRESS,
+    ZERO_ADDRESS,
+    ZERO_ADDRESS,
+    ZERO_ADDRESS,
+  )
+  const rewardsStart = Math.floor(Date.now() / 1000) + 3600
+  const rewardsEnd = rewardsStart + 1 * 364 * 86400
+  const vestedEscrow = await VestedEscrow.new(
+    muuuToken.address,
+    rewardsStart,
+    rewardsEnd,
+    ZERO_ADDRESS,
+    ZERO_ADDRESS,
+  )
+
+  return {
+    vestedEscrow,
+    muuuToken,
+    muuuRewards,
+  }
+}
+
 contract('VestedEscrow Test', async (accounts) => {
   it('should claim unlock over time and claim', async () => {
     //system
-    const votingEscrow = await VotingEscrow.new()
-    const kglToken = await MintableERC20.new('Kagle Token', 'KGL', 18)
-    const kaglaVoterProxy = await KaglaVoterProxy.new(
-      kglToken.address,
-      votingEscrow.address,
-      ZERO_ADDRESS,
-      ZERO_ADDRESS,
-    )
-    const muuuToken = await MuuuToken.new(kaglaVoterProxy.address)
-    const muuuRewards = await muuuRewardPool.new(
-      muuuToken.address,
-      ZERO_ADDRESS,
-      ZERO_ADDRESS,
-      ZERO_ADDRESS,
-      ZERO_ADDRESS,
-      ZERO_ADDRESS,
-      ZERO_ADDRESS,
-    )
-    const rewardsStart = Math.floor(Date.now() / 1000) + 3600
-    const rewardsEnd = rewardsStart + 1 * 364 * 86400
-    const vested = await VestedEscrow.new(
-      muuuToken.address,
-      rewardsStart,
-      rewardsEnd,
-      ZERO_ADDRESS,
-      ZERO_ADDRESS,
-    )
+
+    const {
+      vestedEscrow: vested,
+      muuuToken,
+      muuuRewards,
+    } = await setupContracts()
 
     var team = distroList.vested.team.addresses
     var investor = distroList.vested.investor.addresses
