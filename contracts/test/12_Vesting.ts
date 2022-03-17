@@ -23,11 +23,11 @@ const setupContracts = async () => {
   const muuuRewards = await muuuRewardPool.new(
     muuuToken.address,
     kglToken.address,
-    ZERO_ADDRESS, // kglDeposits
-    ZERO_ADDRESS, // muKglRewards
-    ZERO_ADDRESS, // muKglToken
-    ZERO_ADDRESS, // operator
-    ZERO_ADDRESS, // rewardManager
+    ZERO_ADDRESS,
+    ZERO_ADDRESS,
+    ZERO_ADDRESS,
+    ZERO_ADDRESS,
+    ZERO_ADDRESS,
   )
   const rewardsStart = Math.floor(Date.now() / 1000) + 3600
   const rewardsEnd = rewardsStart + 1 * 364 * 86400
@@ -35,7 +35,7 @@ const setupContracts = async () => {
     muuuToken.address,
     rewardsStart,
     rewardsEnd,
-    muuuRewards.address, // stakeContract
+    muuuRewards.address,
     ZERO_ADDRESS,
   )
 
