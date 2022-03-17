@@ -1,20 +1,11 @@
-const {
-  BN,
-  constants,
-  expectEvent,
-  expectRevert,
-  time,
-} = require('@openzeppelin/test-helpers')
+const { time } = require('@openzeppelin/test-helpers')
 var jsonfile = require('jsonfile')
 var contractList = jsonfile.readFileSync('./contracts.json')
 
 const Booster = artifacts.require('Booster')
 const KglDepositor = artifacts.require('KglDepositor')
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
-const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2')
 const BaseRewardPool = artifacts.require('BaseRewardPool')
-const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool')
-//const muKglRewardPool = artifacts.require("muKglRewardPool");
 const muuuRewardPool = artifacts.require('muuuRewardPool')
 const MuuuToken = artifacts.require('MuuuToken')
 const muKglToken = artifacts.require('muKglToken')
@@ -42,23 +33,14 @@ contract('Shutdown Test', async (accounts) => {
     let threeKglGauge = '0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A'
     let threeKglSwap = '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7'
 
-    let admin = accounts[0]
-    let userA = accounts[1]
-    let userB = accounts[2]
-    let caller = accounts[3]
+    const [admin, userA, , caller] = accounts
+
     //system
     let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy)
     let booster = await Booster.deployed()
-    let voterewardFactoryproxy = await RewardFactory.deployed()
-    let stashFactory = await StashFactory.deployed()
-    let poolManager = await PoolManager.deployed()
     let muuu = await MuuuToken.deployed()
     let muKgl = await muKglToken.deployed()
     let kglDeposit = await KglDepositor.deployed()
-    let muKglRewards = await booster.lockRewards()
-    let muuuRewards = await booster.stakerRewards()
-    let muKglRewardsContract = await BaseRewardPool.at(muKglRewards)
-    let muuuRewardsContract = await muuuRewardPool.at(muuuRewards)
 
     var poolId = contractList.pools.find((pool) => pool.name == '3pool').id
     var poolinfo = await booster.poolInfo(poolId)
