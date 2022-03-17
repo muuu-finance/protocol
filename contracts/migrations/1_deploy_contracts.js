@@ -11,7 +11,7 @@ const RewardFactory = artifacts.require('RewardFactory')
 const StashFactory = artifacts.require('StashFactory')
 const TokenFactory = artifacts.require('TokenFactory')
 const MuuuToken = artifacts.require('MuuuToken')
-const muKglToken = artifacts.require('muKglToken')
+const MuKglToken = artifacts.require('MuKglToken')
 const KglDepositor = artifacts.require('KglDepositor')
 const PoolManager = artifacts.require('PoolManager')
 const BaseRewardPool = artifacts.require('BaseRewardPool')
@@ -224,7 +224,7 @@ module.exports = function (deployer, network, accounts) {
     .then((instance) => {
       sFactory = instance
       addContract('system', 'sFactory', sFactory.address)
-      return deployer.deploy(muKglToken)
+      return deployer.deploy(MuKglToken)
     })
     .then((instance) => {
       muKgl = instance
