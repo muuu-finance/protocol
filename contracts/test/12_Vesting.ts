@@ -1,14 +1,6 @@
-const {
-  BN,
-  constants,
-  expectEvent,
-  expectRevert,
-  time,
-} = require('@openzeppelin/test-helpers')
+const { BN, time } = require('@openzeppelin/test-helpers')
 
-var jsonfile = require('jsonfile')
 const { ZERO_ADDRESS } = require('@openzeppelin/test-helpers/src/constants')
-var distroList = jsonfile.readFileSync('./migrations/distro.json')
 
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
 const VestedEscrow = artifacts.require('VestedEscrow')
@@ -78,11 +70,7 @@ const loggingAccountStatusInVestedEscrow = async ({
 
 contract('VestedEscrow Test', async (accounts) => {
   it('should claim unlock over time and claim', async () => {
-    const {
-      vestedEscrow: vested,
-      muuuToken,
-      muuuRewards,
-    } = await setupContracts()
+    const { vestedEscrow, muuuToken, muuuRewards } = await setupContracts()
 
     // var team = distroList.vested.team.addresses
     // var investor = distroList.vested.investor.addresses
@@ -121,44 +109,44 @@ contract('VestedEscrow Test', async (accounts) => {
     //     .then((a) => console.log(treasury[i] + ' vested: ' + a))
     // }
 
-    let accountA = accounts[1]
-    let accountB = accounts[2]
+    const [deployer, accountA, accountB] = accounts
+    console.log(`deployer ... ${deployer}`)
     console.log(`accountA ... ${accountA}`)
     console.log(`accountB ... ${accountB}`)
 
     const eth = 1 * 10 ** 18
 
-    console.log('setup: 3 token, admin -> vested')
-    await muuuToken.approve(vested.address, (3 * eth).toString())
-    await muuuToken.mint(accounts[0], (3 * eth).toString())
-    await vested.addTokens((3 * eth).toString())
+    console.log('--- setup: 3 token, admin -> vested ---')
+    await muuuToken.approve(vestedEscrow.address, (3 * eth).toString())
+    await muuuToken.mint(deployer, (3 * eth).toString())
+    await vestedEscrow.addTokens((3 * eth).toString())
     // logging
-    await loggingVestingStatus(vested)
+    await loggingVestingStatus(vestedEscrow)
     await loggingAccountStatusInVestedEscrow({
-      contract: vested,
+      contract: vestedEscrow,
       account: accountA,
       name: 'AccountA',
     })
     await loggingAccountStatusInVestedEscrow({
-      contract: vested,
+      contract: vestedEscrow,
       account: accountB,
       name: 'AccountB',
     })
 
-    console.log('setup: fund - 1 token to A, 2 token to B')
-    await vested.fund(
+    console.log('--- setup: fund - 1 token to A, 2 token to B ---')
+    await vestedEscrow.fund(
       [accountA, accountB],
       [(1 * eth).toString(), (2 * eth).toString()],
     )
     // logging
-    await loggingVestingStatus(vested)
+    await loggingVestingStatus(vestedEscrow)
     await loggingAccountStatusInVestedEscrow({
-      contract: vested,
+      contract: vestedEscrow,
       account: accountA,
       name: 'AccountA',
     })
     await loggingAccountStatusInVestedEscrow({
-      contract: vested,
+      contract: vestedEscrow,
       account: accountB,
       name: 'AccountB',
     })
@@ -171,29 +159,29 @@ contract('VestedEscrow Test', async (accounts) => {
       await time.advanceBlock()
       await time.latest().then((a) => console.log('advance time...' + a))
 
-      await vested
+      await vestedEscrow
         .totalTime()
         .then((a) => console.log('vesting total time: ' + a))
-      await loggingVestingStatus(vested)
+      await loggingVestingStatus(vestedEscrow)
 
       await loggingAccountStatusInVestedEscrow({
-        contract: vested,
+        contract: vestedEscrow,
         account: accountA,
         name: 'AccountA',
       })
       await loggingAccountStatusInVestedEscrow({
-        contract: vested,
+        contract: vestedEscrow,
         account: accountB,
         name: 'AccountB',
       })
     }
 
-    await vested.claim(accountA)
+    await vestedEscrow.claim(accountA)
     await muuuToken
       .balanceOf(accountA)
       .then((a) => console.log('User A muuu in wallet: ' + a))
 
-    await vested.claimAndStake({ from: accountB })
+    await vestedEscrow.claimAndStake({ from: accountB })
     await muuuRewards
       .balanceOf(accountB)
       .then((a) => console.log('User B muuu staked: ' + a))
