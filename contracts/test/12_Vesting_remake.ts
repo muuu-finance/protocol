@@ -30,12 +30,12 @@ const setupContracts = async () => {
   const muuuToken = await MuuuToken.new(kaglaVoterProxy.address)
   const muuuRewards = await muuuRewardPool.new(
     muuuToken.address,
-    ZERO_ADDRESS,
-    ZERO_ADDRESS,
-    ZERO_ADDRESS,
-    ZERO_ADDRESS,
-    ZERO_ADDRESS,
-    ZERO_ADDRESS,
+    kglToken.address,
+    ZERO_ADDRESS, // kglDeposits
+    ZERO_ADDRESS, // muKglRewards
+    ZERO_ADDRESS, // muKglToken
+    ZERO_ADDRESS, // operator
+    ZERO_ADDRESS, // rewardManager
   )
   const rewardsStart = Math.floor(Date.now() / 1000) + 3600
   const rewardsEnd = rewardsStart + 1 * 364 * 86400
@@ -43,7 +43,7 @@ const setupContracts = async () => {
     muuuToken.address,
     rewardsStart,
     rewardsEnd,
-    ZERO_ADDRESS,
+    muuuRewards.address, // stakeContract
     ZERO_ADDRESS,
   )
 
@@ -56,62 +56,71 @@ const setupContracts = async () => {
 
 contract('VestedEscrow Test', async (accounts) => {
   it('should claim unlock over time and claim', async () => {
-    //system
-
     const {
       vestedEscrow: vested,
       muuuToken,
       muuuRewards,
     } = await setupContracts()
 
-    var team = distroList.vested.team.addresses
-    var investor = distroList.vested.investor.addresses
-    var treasury = distroList.vested.treasury.addresses
-    for (var i = 0; i < team.length; i++) {
-      await vested
-        .lockedOf(team[i])
-        .then((a) => console.log(team[i] + ' locked: ' + a))
-      await vested
-        .balanceOf(team[i])
-        .then((a) => console.log(team[i] + ' balance: ' + a))
-      await vested
-        .vestedOf(team[i])
-        .then((a) => console.log(team[i] + ' vested: ' + a))
-    }
-    for (var i = 0; i < investor.length; i++) {
-      await vested
-        .lockedOf(investor[i])
-        .then((a) => console.log(investor[i] + ' locked: ' + a))
-      await vested
-        .balanceOf(investor[i])
-        .then((a) => console.log(investor[i] + ' balance: ' + a))
-      await vested
-        .vestedOf(investor[i])
-        .then((a) => console.log(investor[i] + ' vested: ' + a))
-    }
-    for (var i = 0; i < treasury.length; i++) {
-      await vested
-        .lockedOf(treasury[i])
-        .then((a) => console.log(treasury[i] + ' locked: ' + a))
-      await vested
-        .balanceOf(treasury[i])
-        .then((a) => console.log(treasury[i] + ' balance: ' + a))
-      await vested
-        .vestedOf(treasury[i])
-        .then((a) => console.log(treasury[i] + ' vested: ' + a))
-    }
+    // var team = distroList.vested.team.addresses
+    // var investor = distroList.vested.investor.addresses
+    // var treasury = distroList.vested.treasury.addresses
+    // for (var i = 0; i < team.length; i++) {
+    //   await vested
+    //     .lockedOf(team[i])
+    //     .then((a) => console.log(team[i] + ' locked: ' + a))
+    //   await vested
+    //     .balanceOf(team[i])
+    //     .then((a) => console.log(team[i] + ' balance: ' + a))
+    //   await vested
+    //     .vestedOf(team[i])
+    //     .then((a) => console.log(team[i] + ' vested: ' + a))
+    // }
+    // for (var i = 0; i < investor.length; i++) {
+    //   await vested
+    //     .lockedOf(investor[i])
+    //     .then((a) => console.log(investor[i] + ' locked: ' + a))
+    //   await vested
+    //     .balanceOf(investor[i])
+    //     .then((a) => console.log(investor[i] + ' balance: ' + a))
+    //   await vested
+    //     .vestedOf(investor[i])
+    //     .then((a) => console.log(investor[i] + ' vested: ' + a))
+    // }
+    // for (var i = 0; i < treasury.length; i++) {
+    //   await vested
+    //     .lockedOf(treasury[i])
+    //     .then((a) => console.log(treasury[i] + ' locked: ' + a))
+    //   await vested
+    //     .balanceOf(treasury[i])
+    //     .then((a) => console.log(treasury[i] + ' balance: ' + a))
+    //   await vested
+    //     .vestedOf(treasury[i])
+    //     .then((a) => console.log(treasury[i] + ' vested: ' + a))
+    // }
 
-    let accountA = '0xAAc0aa431c237C2C0B5f041c8e59B3f1a43aC78F'
-    let accountB = '0xb3DF5271b92e9fD2fed137253BB4611285923f16'
+    let accountA = accounts[1]
+    let accountB = accounts[2]
+    console.log(`accountA ... ${accountA}`)
+    console.log(`accountB ... ${accountB}`)
+
+    const eth = 1 * 10 ** 18
+    // setup: 3 token, admin -> vested
+    await muuuToken.approve(vested.address, (3 * eth).toString())
+    await muuuToken.mint(accounts[0], (3 * eth).toString())
+    await vested.addTokens((3 * eth).toString())
+    // setup: fund - 1 token to A, 2 token to B
+    await vested.fund(
+      [accountA, accountB],
+      [(1 * eth).toString(), (2 * eth).toString()],
+    )
+
     for (var i = 0; i < 13; i++) {
       await time.increase(35 * 86400)
       await time.advanceBlock()
       await time.advanceBlock()
       await time.advanceBlock()
       await time.latest().then((a) => console.log('advance time...' + a))
-      // refs
-      // - https://stackoverflow.com/questions/70650263/testing-contracts-using-time-from-openzepplin-library-error-invalid-json-rpc-r
-      // - https://forum.openzeppelin.com/t/invalid-json-rpc-response-when-using-test-helpers-expectrevert-openzeppelin-test-environment/4422
 
       await vested
         .totalTime()
@@ -152,7 +161,7 @@ contract('VestedEscrow Test', async (accounts) => {
       .balanceOf(accountA)
       .then((a) => console.log('User A muuu in wallet: ' + a))
 
-    // await vested.claimAndStake({from:accountB}) // because not setting token
+    await vested.claimAndStake({ from: accountB })
     await muuuRewards
       .balanceOf(accountB)
       .then((a) => console.log('User B muuu staked: ' + a))
