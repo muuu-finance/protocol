@@ -81,8 +81,8 @@ const setupContracts = async () => {
   const threeKglSwap = '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7' // dummy
   await poolManager.addPool(
     // TODO: remove Kagla address, use test or mock address
-    threeKglGauge /** 3Pool address */,
-    threeKglSwap /** 3Pool Gauge address */,
+    threeKglSwap /** 3Pool address */,
+    threeKglGauge /** 3Pool Gauge address */,
     0,
   )
 
