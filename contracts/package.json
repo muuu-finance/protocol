@@ -3,7 +3,8 @@
     "generate-types": "typechain --target=truffle-v5 'build/contracts/*.json'",
     "postinstall": "truffle compile && npm run generate-types",
     "deploy": "truffle migrate --network ganachecli --skip-dry-run",
-    "test": "npm run postinstall && truffle test",
+    "test": "npm run postinstall && truffle test --stacktrace-extra",
+    "test:light": "truffle test --stacktrace-extra --network ganachecli --compile-none",
     "prettier:check": "prettier -c 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'",
     "prettier:write": "prettier --write 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'"
   },
