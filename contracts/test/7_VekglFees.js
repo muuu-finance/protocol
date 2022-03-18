@@ -1,4 +1,5 @@
 const { time } = require('@openzeppelin/test-helpers')
+const { ZERO_ADDRESS } = require('@openzeppelin/test-helpers/src/constants')
 var jsonfile = require('jsonfile')
 var contractList = jsonfile.readFileSync('./contracts.json')
 
@@ -7,81 +8,137 @@ const KglDepositor = artifacts.require('KglDepositor')
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
 const BaseRewardPool = artifacts.require('BaseRewardPool')
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool')
-const muKglToken = artifacts.require('muKglToken')
+const MuKglToken = artifacts.require('muKglToken')
 
 const IExchange = artifacts.require('IExchange')
 const IERC20 = artifacts.require('IERC20')
 const IWalletCheckerDebug = artifacts.require('IWalletCheckerDebug')
 const IBurner = artifacts.require('IBurner')
 
+const MockVotingEscrow = artifacts.require('MockKaglaVoteEscrow')
+const MockMintableERC20 = artifacts.require('MintableERC20')
+
+const setupContracts = async () => {
+  const votingEscrow = await MockVotingEscrow.new()
+
+  const kglToken = await MockMintableERC20.new('Kagle Token', 'KGL', 18)
+  const kaglaVoterProxy = await KaglaVoterProxy.new(
+    kglToken.address,
+    votingEscrow.address,
+    ZERO_ADDRESS,
+    ZERO_ADDRESS,
+  )
+
+  const muKglToken = await MuKglToken.new()
+
+  const kglDepositor = await KglDepositor.new(
+    kaglaVoterProxy.address,
+    muKglToken.address,
+    kglToken.address,
+    votingEscrow.address,
+  )
+
+  // update config - set KglDepositor address
+  await kaglaVoterProxy.setDepositor(kglDepositor.address)
+  await muKglToken.setOperator(kglDepositor.address)
+  // await kglDepositor.initialLock()
+
+  const baseRewardPool = await BaseRewardPool.new(
+    0,
+    muKglToken.address,
+    kglToken.address,
+    ZERO_ADDRESS,
+    ZERO_ADDRESS,
+  )
+
+  const veKglToken = await MockMintableERC20.new(
+    'Vote-escrowed KGL',
+    'veKGL',
+    18,
+  )
+
+  return {
+    kaglaVoterProxy,
+    kglToken,
+    muKglToken,
+    veKglToken,
+    kglDepositor,
+    baseRewardPool,
+  }
+}
+
 contract('VeKgl Fees Test', async (accounts) => {
   it('should add to whitelist, lock kgl, test vekgl fee distribution', async () => {
-    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
-    let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2')
-    let dai = await IERC20.at('0x6B175474E89094C44Da98b954EedeAC495271d0F')
-    let vekgl = await IERC20.at('0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2')
-    let threekgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490')
-    let exchange = await IExchange.at(
-      '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
-    )
-    let walletChecker = await IWalletCheckerDebug.at(
-      '0xca719728Ef172d0961768581fdF35CB116e0B7a4',
-    )
-    let checkerAdmin = '0x40907540d8a6C65c637785e8f8B742ae6b0b9968'
+    // let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
+    // let dai = await IERC20.at('0x6B175474E89094C44Da98b954EedeAC495271d0F')
+    // let vekgl = await IERC20.at('0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2')
+    // let threekgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490')
 
-    //memo: these burner addresses may change
-    let burner = await IBurner.at('0xeCb456EA5365865EbAb8a2661B0c503410e9B347')
-    let underlyingburner = await IBurner.at(
-      '0x786B374B5eef874279f4B7b4de16940e57301A58',
-    )
-    ///////
+    // //memo: these burner addresses may change
+    // let burner = await IBurner.at('0xeCb456EA5365865EbAb8a2661B0c503410e9B347')
+    // let underlyingburner = await IBurner.at(
+    //   '0x786B374B5eef874279f4B7b4de16940e57301A58',
+    // )
+    // ///////
 
+    // //system
+    // let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy)
+    // let booster = await Booster.deployed()
+    // let muKgl = await muKglToken.deployed()
+    // let kglDeposit = await KglDepositor.deployed()
+    // let muKglRewards = await booster.lockRewards()
+    // let vekglRewards = await booster.lockFees()
+    // let muKglRewardsContract = await BaseRewardPool.at(muKglRewards)
+    // let vekglRewardsContract = await VirtualBalanceRewardPool.at(vekglRewards)
+
+    const {
+      kaglaVoterProxy: voteproxy,
+      kglToken: kgl,
+      muKglToken: muKgl,
+      veKglToken: vekgl,
+      kglDepositor: kglDeposit,
+      baseRewardPool: muKglRewardsContract,
+    } = await setupContracts()
     let userA = accounts[1]
     let caller = accounts[3]
-
-    //system
-    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy)
-    let booster = await Booster.deployed()
-    let muKgl = await muKglToken.deployed()
-    let kglDeposit = await KglDepositor.deployed()
-    let muKglRewards = await booster.lockRewards()
-    let vekglRewards = await booster.lockFees()
-    let muKglRewardsContract = await BaseRewardPool.at(muKglRewards)
-    let vekglRewardsContract = await VirtualBalanceRewardPool.at(vekglRewards)
 
     let starttime = await time.latest()
     console.log('current block time: ' + starttime)
     await time.latestBlock().then((a) => console.log('current block: ' + a))
 
-    //add to whitelist
-    await walletChecker.approveWallet(voteproxy.address, {
-      from: checkerAdmin,
-      gasPrice: 0,
-    })
-    console.log('approve wallet')
-    let isWhitelist = await walletChecker.check(voteproxy.address)
-    console.log('is whitelist? ' + isWhitelist)
+    // //add to whitelist
+    // await walletChecker.approveWallet(voteproxy.address, {
+    //   from: checkerAdmin,
+    //   gasPrice: 0,
+    // })
+    // console.log('approve wallet')
+    // let isWhitelist = await walletChecker.check(voteproxy.address)
+    // console.log('is whitelist? ' + isWhitelist)
 
-    //exchange for kgl
-    await weth.sendTransaction({
-      value: web3.utils.toWei('1.0', 'ether'),
-      from: userA,
-    })
-    let wethForKgl = await weth.balanceOf(userA)
-    await weth.approve(exchange.address, 0, { from: userA })
-    await weth.approve(exchange.address, wethForKgl, { from: userA })
-    await exchange.swapExactTokensForTokens(
-      wethForKgl,
-      0,
-      [weth.address, kgl.address],
-      userA,
-      starttime + 3000,
-      { from: userA },
-    )
-    let startingkgl = await kgl.balanceOf(userA)
-    console.log('kgl to deposit: ' + startingkgl)
+    // //exchange for kgl
+    // await weth.sendTransaction({
+    //   value: web3.utils.toWei('1.0', 'ether'),
+    //   from: userA,
+    // })
+    // let wethForKgl = await weth.balanceOf(userA)
+    // await weth.approve(exchange.address, 0, { from: userA })
+    // await weth.approve(exchange.address, wethForKgl, { from: userA })
+    // await exchange.swapExactTokensForTokens(
+    //   wethForKgl,
+    //   0,
+    //   [weth.address, kgl.address],
+    //   userA,
+    //   starttime + 3000,
+    //   { from: userA },
+    // )
+    // let startingkgl = await kgl.balanceOf(userA)
+    // console.log('kgl to deposit: ' + startingkgl)
 
     //deposit kgl and stake
+    //  PREPARE
+    await kgl.mint(50000, { from: userA })
+    const startingkgl = await kgl.balanceOf(userA)
+    //  EXECUTE
     await kgl.approve(kglDeposit.address, 0, { from: userA })
     await kgl.approve(kglDeposit.address, startingkgl, { from: userA })
     await kglDeposit.deposit(
@@ -119,6 +176,8 @@ contract('VeKgl Fees Test', async (accounts) => {
     await muKglRewardsContract
       .balanceOf(userA)
       .then((a) => console.log('muKgl staked: ' + a))
+
+    // ----- works normally here -----
 
     //voting
     console.log('fee claiming...')
