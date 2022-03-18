@@ -1,7 +1,5 @@
 const { time } = require('@openzeppelin/test-helpers')
 const { ZERO_ADDRESS } = require('@openzeppelin/test-helpers/src/constants')
-var jsonfile = require('jsonfile')
-var contractList = jsonfile.readFileSync('./contracts.json')
 
 const Booster = artifacts.require('Booster')
 const KglDepositor = artifacts.require('KglDepositor')
@@ -9,14 +7,8 @@ const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
 const BaseRewardPool = artifacts.require('BaseRewardPool')
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool')
 const MuKglToken = artifacts.require('muKglToken')
-
-const IExchange = artifacts.require('IExchange')
-const IERC20 = artifacts.require('IERC20')
-const IWalletCheckerDebug = artifacts.require('IWalletCheckerDebug')
-const IBurner = artifacts.require('IBurner')
-
-const RewardFactory = artifacts.require('RewardFactory')
 const MuuuToken = artifacts.require('MuuuToken')
+const RewardFactory = artifacts.require('RewardFactory')
 
 // define mocks
 const MockVotingEscrow = artifacts.require('MockKaglaVoteEscrow')
