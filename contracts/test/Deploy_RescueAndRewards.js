@@ -25,7 +25,7 @@ const ExtraRewardStashTokenRescue = artifacts.require(
 const RescueToken = artifacts.require('RescueToken')
 const RewardDeposit = artifacts.require('RewardDeposit')
 const vlMuuuExtraRewardDistribution = artifacts.require(
-  'vlMuuuExtraRewardDistribution',
+  'VlMuuuExtraRewardDistribution',
 )
 const MuuuLocker = artifacts.require('MuuuLocker')
 

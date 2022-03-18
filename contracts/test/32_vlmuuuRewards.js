@@ -27,7 +27,7 @@ const RescueToken = artifacts.require('RescueToken')
 const RewardDeposit = artifacts.require('RewardDeposit')
 const MuuuLocker = artifacts.require('MuuuLocker')
 const vlMuuuExtraRewardDistribution = artifacts.require(
-  'vlMuuuExtraRewardDistribution',
+  'VlMuuuExtraRewardDistribution',
 )
 
 contract('Extra rewards for vlmuuu', async (accounts) => {
