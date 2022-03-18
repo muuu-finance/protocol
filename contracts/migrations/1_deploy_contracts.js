@@ -28,6 +28,7 @@ const MockVotingEscrow = artifacts.require('MockKaglaVoteEscrow')
 const MockRegistry = artifacts.require('MockKaglaRegistry')
 const MockFeeDistributor = artifacts.require('MockKaglaFeeDistributor')
 const MockAddressProvider = artifacts.require('MockKaglaAddressProvider')
+const MockKaglaGauge = artifacts.require('MockKaglaGauge')
 
 const MuuuLockerV2 = artifacts.require('MuuuLockerV2')
 
@@ -93,7 +94,11 @@ module.exports = function (deployer, network, accounts) {
   var muuuVoterProxy
   var muuuLockerV2
 
-  let mockVotingEscrow, mockRegistry, mockFeeDistributor, mockAddressProvider
+  let mockVotingEscrow,
+    mockRegistry,
+    mockFeeDistributor,
+    mockAddressProvider,
+    mockKaglaGauge
 
   var rewardsStart = Math.floor(Date.now() / 1000) + 3600
   var rewardsEnd = rewardsStart + 1 * 364 * 86400
@@ -143,12 +148,24 @@ module.exports = function (deployer, network, accounts) {
       threeKgl = instance
       addContract('mocks', '3Kgl', threeKgl.address)
     })
+    .then(() => deployer.deploy(MockKaglaGauge, threeKgl.address))
+    .then((instance) => {
+      mockKaglaGauge = instance
+      addContract('mocks', 'mockKaglaGauge', mockKaglaGauge.address)
+    })
     .then(() => deployer.deploy(MockVotingEscrow))
     .then((instance) => {
       mockVotingEscrow = instance
       addContract('mocks', 'mockVotingEscrow', mockVotingEscrow.address)
     })
-    .then(() => deployer.deploy(MockRegistry, threeKgl.address))
+    .then(() =>
+      deployer.deploy(
+        MockRegistry,
+        threeKgl.address,
+        mockKaglaGauge.address,
+        threeKgl.address,
+      ),
+    )
     .then((instance) => {
       mockRegistry = instance
       addContract('mocks', 'mockRegistry', mockRegistry.address)
@@ -210,7 +227,7 @@ module.exports = function (deployer, network, accounts) {
     })
     .then(() => voter.setOperator(booster.address))
     .then(() => muuu.mint(accounts[0], premine.toString()))
-    .then(() => deployer.deploy(RewardFactory, booster.address))
+    .then(() => deployer.deploy(RewardFactory, booster.address, kgl.address))
     .then((instance) => {
       rFactory = instance
       addContract('system', 'rFactory', rFactory.address)
@@ -387,8 +404,8 @@ module.exports = function (deployer, network, accounts) {
       console.log('adding pool ' + poolNames[poolNames.length - 1])
       return pools.addPool(
         // TODO: remove Kagla address, use test or mock address
-        '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7' /** 3Pool address */,
-        '0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A' /** 3Pool Gauge address */,
+        threeKgl.address /** 3Pool address */,
+        mockKaglaGauge.address /** 3Pool Gauge address */,
         0,
       )
     })
