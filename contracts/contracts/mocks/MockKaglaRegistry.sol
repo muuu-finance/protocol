@@ -9,10 +9,14 @@ contract MockKaglaRegistry {
   address public lpToken; // TODO: lpTokens for each pool
   mapping(address => address[10]) public gauges;
 
-  constructor(address _lpToken) public {
-    address pool = address(0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7); // 3Pool
+  constructor(
+    address _pool,
+    address _gauge,
+    address _lpToken
+  ) public {
+    address pool = _pool; // 3Pool
     gauges[pool] = [
-      address(0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A), // 3Pool Gauge
+      _gauge, // 3Pool Gauge
       address(0),
       address(0),
       address(0),
