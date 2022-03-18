@@ -2,10 +2,10 @@
 pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
 
-import "./interfaces/MathUtil.sol";
+import "./libraries/MathUtil.sol";
 import "./interfaces/IStakingProxy.sol";
 import "./interfaces/IRewardStaking.sol";
-import "./interfaces/BoringMath.sol";
+import "./libraries/BoringMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/math/Math.sol";
