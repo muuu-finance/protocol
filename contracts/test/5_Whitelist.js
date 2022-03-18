@@ -17,7 +17,7 @@ const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool')
 //const muKglRewardPool = artifacts.require("muKglRewardPool");
 const muuuRewardPool = artifacts.require('MuuuRewardPool')
 const MuuuToken = artifacts.require('MuuuToken')
-const muKglToken = artifacts.require('muKglToken')
+const muKglToken = artifacts.require('MuKglToken')
 const StashFactory = artifacts.require('StashFactory')
 const RewardFactory = artifacts.require('RewardFactory')
 
