@@ -9,6 +9,8 @@ const {
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
 const Booster = artifacts.require('Booster')
 const RewardFactory = artifacts.require('RewardFactory')
+const TokenFactory = artifacts.require('TokenFactory')
+const StashFactory = artifacts.require('StashFactory')
 const MuuuToken = artifacts.require('MuuuToken')
 const BaseRewardPool = artifacts.require('BaseRewardPool')
 const PoolManager = artifacts.require('PoolManager')
@@ -26,15 +28,19 @@ const MockMinter = artifacts.require('MockMinter')
 const MockGaugeController = artifacts.require('MockGaugeController')
 
 const setupContracts = async () => {
-  const poolId = 0
   const kgl = await MintableERC20.new('kgl', 'KGL', 18)
   const threeKglToken = await MintableERC20.new('3KGL Token', '3Kgl', 18)
   const mockVotingEscrow = await MockVotingEscrow.new()
 
-  const mockKaglaGauge = await MockKaglaGauge.new()
-  const threeKglGaugeAddress = mockKaglaGauge.address
+  const mockKaglaGauge = await MockKaglaGauge.new(threeKglToken.address)
 
-  const mockRegistry = await MockRegistry.new(threeKglToken.address)
+  const threeKglGaugeAddress = mockKaglaGauge.address
+  const mockRegistry = await MockRegistry.new(
+    threeKglToken.address, // tmp
+    mockKaglaGauge.address,
+    threeKglToken.address,
+  )
+
   const mockFeeDistributor = await MockFeeDistributor.new(threeKglToken.address)
   const mockAddressProvider = await MockAddressProvider.new(
     mockRegistry.address,
@@ -50,21 +56,36 @@ const setupContracts = async () => {
     mockGaugeController.address,
     mockMinter.address,
   )
-  const muuu = await MuuuToken.new()
+  const muuu = await MuuuToken.new(voterProxy.address)
   const booster = await Booster.new(
     voterProxy.address,
     muuu.address,
     kgl.address,
     mockAddressProvider.address,
   )
+  await voterProxy.setOperator(booster.address)
+
+  const rewardFactory = await RewardFactory.new(booster.address, kgl.address)
+  const tokenFactory = await TokenFactory.new(booster.address)
+  const stashFactory = await StashFactory.new(
+    booster.address,
+    rewardFactory.address,
+  )
 
   const poolManager = await PoolManager.new(
     booster.address,
     mockAddressProvider.address,
   )
+  await booster.setPoolManager(poolManager.address)
 
-  // Could be better: map address and pool name or??? this is written based on json files created
-  poolManager.addPool(threeKglToken.address, threeKglGaugeAddress, poolId)
+  await booster.setFactories(
+    rewardFactory.address,
+    stashFactory.address,
+    tokenFactory.address,
+  )
+
+  await poolManager.addPool(threeKglToken.address, threeKglGaugeAddress, 0)
+  const poolId = 0
   const poolinfo = await booster.poolInfo(poolId)
   const rewardPoolAddress = poolinfo.kglRewards
   const rewardPool = await BaseRewardPool.at(rewardPoolAddress)
@@ -72,6 +93,8 @@ const setupContracts = async () => {
   console.log('pool lp token ' + poolinfo.lptoken)
   console.log('pool gauge ' + poolinfo.gauge)
   console.log('pool reward contract at ' + rewardPool.address)
+
+  console.log('Setup completed successfully!')
 
   return {
     threeKglToken,
@@ -117,7 +140,7 @@ contract('BasicDepositWithdraw', async (accounts) => {
     console.log('try depositing too much')
     await expectRevert(
       booster.deposit(poolId, threeKglTokenBalance + 1, false, { from: userA }),
-      'SafeERC20',
+      'Revert (message: ERC20: transfer amount exceeds balance)',
     )
     console.log(' ->reverted')
 
@@ -206,8 +229,8 @@ contract('BasicDepositWithdraw', async (accounts) => {
     // this will error on the gauge not having enough balance
     console.log('try withdraw too much')
     await expectRevert(
-      booster.withdraw(poolId, threeKglBalance + 1, { from: userA }),
-      'revert',
+      booster.withdraw(poolId, threeKglTokenBalance + 1, { from: userA }),
+      'Revert (message: ERC20: burn amount exceeds balance)',
     )
     console.log(' ->reverted (fail on unstake)')
 
@@ -225,8 +248,8 @@ contract('BasicDepositWithdraw', async (accounts) => {
     // to check gauge balance passes though because of userB but burn is first. so errur orrured
     console.log('try withdraw too much(2)')
     await expectRevert(
-      booster.withdraw(poolId, threeKglBalance + 1, { from: userA }),
-      'revert',
+      booster.withdraw(poolId, threeKglTokenBalance + 1, { from: userA }),
+      'Revert (message: ERC20: burn amount exceeds balance)',
     )
     console.log(' ->reverted (fail on user funds)')
 
