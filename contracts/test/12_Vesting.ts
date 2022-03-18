@@ -4,7 +4,7 @@ const { ZERO_ADDRESS } = require('@openzeppelin/test-helpers/src/constants')
 
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
 const VestedEscrow = artifacts.require('VestedEscrow')
-const muuuRewardPool = artifacts.require('muuuRewardPool')
+const muuuRewardPool = artifacts.require('MuuuRewardPool')
 const MuuuToken = artifacts.require('MuuuToken')
 
 const VotingEscrow = artifacts.require('MockKaglaVoteEscrow')

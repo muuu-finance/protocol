@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import "../interfaces/IRewardStaking.sol";
 import "../interfaces/IMuuuDeposits.sol";
-import "../interfaces/MuuuMining.sol";
+import "../libraries/MuuuMining.sol";
 import "../interfaces/IRariToken.sol";
 import "./MuKglStakingWrapper.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";

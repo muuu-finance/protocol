@@ -7,7 +7,7 @@ var contractList = jsonfile.readFileSync('./contracts.json')
 const Booster = artifacts.require('Booster')
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
 const MuuuToken = artifacts.require('MuuuToken')
-const muKglToken = artifacts.require('muKglToken')
+const muKglToken = artifacts.require('MuKglToken')
 const IERC20 = artifacts.require('IERC20')
 const IExchange = artifacts.require('IExchange')
 const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01')
@@ -27,7 +27,7 @@ const RescueToken = artifacts.require('RescueToken')
 const RewardDeposit = artifacts.require('RewardDeposit')
 const MuuuLocker = artifacts.require('MuuuLocker')
 const vlMuuuExtraRewardDistribution = artifacts.require(
-  'vlMuuuExtraRewardDistribution',
+  'VlMuuuExtraRewardDistribution',
 )
 
 contract('Extra rewards for vlmuuu', async (accounts) => {

@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import "../interfaces/IRewardStaking.sol";
 import "../interfaces/IMuuuDeposits.sol";
-import "../interfaces/MuuuMining.sol";
+import "../libraries/MuuuMining.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";

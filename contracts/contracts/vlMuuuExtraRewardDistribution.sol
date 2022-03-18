@@ -2,7 +2,7 @@
 pragma solidity 0.6.12;
 
 import "./interfaces/ILockedMuuu.sol";
-import "./interfaces/BoringMath.sol";
+import "./libraries/BoringMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
@@ -16,7 +16,7 @@ import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 //During this week all addReward() calls are assigned to users in epoch 9
 //Users who were locked in epoch 9 can claim once epoch 11 begins
 // -> epoch 10 is the assigning phase for epoch 9, thus we must wait until 10 is complete before claiming 9
-contract vlMuuuExtraRewardDistribution {
+contract VlMuuuExtraRewardDistribution {
   using SafeERC20 for IERC20;
   using BoringMath for uint256;
 

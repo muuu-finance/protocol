@@ -6,7 +6,7 @@ const KglDepositor = artifacts.require('KglDepositor')
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
 const BaseRewardPool = artifacts.require('BaseRewardPool')
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool')
-const MuKglToken = artifacts.require('muKglToken')
+const MuKglToken = artifacts.require('MuKglToken')
 const MuuuToken = artifacts.require('MuuuToken')
 const RewardFactory = artifacts.require('RewardFactory')
 

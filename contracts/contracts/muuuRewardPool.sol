@@ -11,7 +11,7 @@ pragma solidity 0.6.12;
 /___/ \_, //_//_/\__//_//_/\__/ \__//_/ /_\_\
      /___/
 
-* Synthetix: muuuRewardPool.sol
+* Synthetix: MuuuRewardPool.sol
 *
 * Docs: https://docs.synthetix.io/
 *
@@ -40,13 +40,13 @@ pragma solidity 0.6.12;
 */
 
 import "./Interfaces.sol";
-import "./interfaces/MathUtil.sol";
+import "./libraries/MathUtil.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
-contract muuuRewardPool {
+contract MuuuRewardPool {
   using SafeERC20 for IERC20;
   using SafeMath for uint256;
 
