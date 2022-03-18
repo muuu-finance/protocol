@@ -5,7 +5,7 @@ var contractList = jsonfile.readFileSync('./contracts.json')
 
 const MuuuLocker = artifacts.require('MuuuLocker')
 const MuuuStakingProxy = artifacts.require('MuuuStakingProxy')
-const muuuRewardPool = artifacts.require('muuuRewardPool')
+const muuuRewardPool = artifacts.require('MuuuRewardPool')
 const IERC20 = artifacts.require('IERC20')
 const IExchange = artifacts.require('IExchange')
 const IUniswapV2Router01 = artifacts.require('IUniswapV2Router01')

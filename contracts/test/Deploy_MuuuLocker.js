@@ -6,7 +6,7 @@ var contractList = jsonfile.readFileSync('./contracts.json')
 const Booster = artifacts.require('Booster')
 const MuuuLocker = artifacts.require('MuuuLocker')
 const MuuuStakingProxy = artifacts.require('MuuuStakingProxy')
-const muuuRewardPool = artifacts.require('muuuRewardPool')
+const muuuRewardPool = artifacts.require('MuuuRewardPool')
 const IERC20 = artifacts.require('IERC20')
 
 contract('Deploy MUUU Locker', async (accounts) => {
