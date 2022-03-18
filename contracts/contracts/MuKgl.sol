@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract muKglToken is ERC20 {
+contract MuKglToken is ERC20 {
   using SafeERC20 for IERC20;
   using Address for address;
   using SafeMath for uint256;

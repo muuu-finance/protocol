@@ -12,14 +12,14 @@ import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 contract RewardFactory {
   using Address for address;
 
-  address public constant kgl = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
-
   address public operator;
+  address public kgl;
   mapping(address => bool) private rewardAccess;
   mapping(address => uint256[]) public rewardActiveList;
 
-  constructor(address _operator) public {
+  constructor(address _operator, address _kgl) public {
     operator = _operator;
+    kgl = _kgl;
   }
 
   //Get active count function

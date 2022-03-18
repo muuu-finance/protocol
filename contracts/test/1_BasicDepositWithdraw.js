@@ -6,243 +6,281 @@ const {
   time,
 } = require('@openzeppelin/test-helpers')
 
-var jsonfile = require('jsonfile')
-var contractList = jsonfile.readFileSync('./contracts.json')
-
-const Booster = artifacts.require('Booster')
-const KglDepositor = artifacts.require('KglDepositor')
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
-const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2')
-const BaseRewardPool = artifacts.require('BaseRewardPool')
-const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool')
-const muuuRewardPool = artifacts.require('muuuRewardPool')
-const MuuuToken = artifacts.require('MuuuToken')
-const muKglToken = artifacts.require('muKglToken')
-const StashFactory = artifacts.require('StashFactory')
+const Booster = artifacts.require('Booster')
 const RewardFactory = artifacts.require('RewardFactory')
-
-const IExchange = artifacts.require('IExchange')
-const IKaglaFi = artifacts.require('I3KaglaFi')
+const TokenFactory = artifacts.require('TokenFactory')
+const StashFactory = artifacts.require('StashFactory')
+const MuuuToken = artifacts.require('MuuuToken')
+const BaseRewardPool = artifacts.require('BaseRewardPool')
+const PoolManager = artifacts.require('PoolManager')
 const IERC20 = artifacts.require('IERC20')
+
+const I3KaglaFi = artifacts.require('I3KaglaFi')
+
+const MintableERC20 = artifacts.require('MintableERC20')
+const MockRegistry = artifacts.require('MockKaglaRegistry')
+const MockFeeDistributor = artifacts.require('MockKaglaFeeDistributor')
+const MockVotingEscrow = artifacts.require('MockKaglaVoteEscrow')
+const MockAddressProvider = artifacts.require('MockKaglaAddressProvider')
+const MockKaglaGauge = artifacts.require('MockKaglaGauge')
+const MockMinter = artifacts.require('MockMinter')
+const MockGaugeController = artifacts.require('MockGaugeController')
+
+const setupContracts = async () => {
+  const kgl = await MintableERC20.new('kgl', 'KGL', 18)
+  const threeKglToken = await MintableERC20.new('3KGL Token', '3Kgl', 18)
+  const mockVotingEscrow = await MockVotingEscrow.new()
+
+  const mockKaglaGauge = await MockKaglaGauge.new(threeKglToken.address)
+
+  const threeKglGaugeAddress = mockKaglaGauge.address
+  const mockRegistry = await MockRegistry.new(
+    threeKglToken.address, // tmp
+    mockKaglaGauge.address,
+    threeKglToken.address,
+  )
+
+  const mockFeeDistributor = await MockFeeDistributor.new(threeKglToken.address)
+  const mockAddressProvider = await MockAddressProvider.new(
+    mockRegistry.address,
+    mockFeeDistributor.address,
+  )
+
+  const mockMinter = await MockMinter.new(kgl.address)
+  const mockGaugeController = await MockGaugeController.new()
+
+  const voterProxy = await KaglaVoterProxy.new(
+    kgl.address,
+    mockVotingEscrow.address,
+    mockGaugeController.address,
+    mockMinter.address,
+  )
+  const muuu = await MuuuToken.new(voterProxy.address)
+  const booster = await Booster.new(
+    voterProxy.address,
+    muuu.address,
+    kgl.address,
+    mockAddressProvider.address,
+  )
+  await voterProxy.setOperator(booster.address)
+
+  const rewardFactory = await RewardFactory.new(booster.address, kgl.address)
+  const tokenFactory = await TokenFactory.new(booster.address)
+  const stashFactory = await StashFactory.new(
+    booster.address,
+    rewardFactory.address,
+  )
+
+  const poolManager = await PoolManager.new(
+    booster.address,
+    mockAddressProvider.address,
+  )
+  await booster.setPoolManager(poolManager.address)
+
+  await booster.setFactories(
+    rewardFactory.address,
+    stashFactory.address,
+    tokenFactory.address,
+  )
+
+  await poolManager.addPool(threeKglToken.address, threeKglGaugeAddress, 0)
+  const poolId = 0
+  const poolinfo = await booster.poolInfo(poolId)
+  const rewardPoolAddress = poolinfo.kglRewards
+  const rewardPool = await BaseRewardPool.at(rewardPoolAddress)
+  const depositToken = await IERC20.at(poolinfo.token)
+  console.log('pool lp token ' + poolinfo.lptoken)
+  console.log('pool gauge ' + poolinfo.gauge)
+  console.log('pool reward contract at ' + rewardPool.address)
+
+  console.log('Setup completed successfully!')
+
+  return {
+    threeKglToken,
+    threeKglGaugeAddress,
+    booster,
+    depositToken,
+    rewardPool,
+    voterProxy,
+    poolId,
+  }
+}
 
 contract('BasicDepositWithdraw', async (accounts) => {
   it('should test basic deposits and withdrawals', async () => {
-    let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
-    let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2')
-    let dai = await IERC20.at('0x6b175474e89094c44da98b954eedeac495271d0f')
-    let exchange = await IExchange.at(
-      '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
-    )
-    let threekglswap = await IKaglaFi.at(
-      '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7',
-    )
-    let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490')
-    let threeKglGauge = '0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A'
-    let threeKglSwap = '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7'
-    let vekglFeeDistro = '0xA464e6DCda8AC41e03616F95f4BC98a13b8922Dc'
+    // accounts
+    const admin = accounts[0]
+    const userA = accounts[1]
+    const userB = accounts[2]
+    const caller = accounts[3]
 
-    let admin = accounts[0]
-    let userA = accounts[1]
-    let userB = accounts[2]
-    let caller = accounts[3]
+    const {
+      threeKglToken,
+      threeKglGaugeAddress,
+      booster,
+      depositToken,
+      rewardPool,
+      voterProxy,
+      poolId,
+    } = await setupContracts()
 
-    //system setup
-    let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy)
-    let booster = await Booster.deployed()
-    let voterewardFactoryproxy = await RewardFactory.deployed()
-    let stashFactory = await StashFactory.deployed()
-    let muuu = await MuuuToken.deployed()
-    let muKgl = await muKglToken.deployed()
-    let kglDeposit = await KglDepositor.deployed()
-    let muKglRewards = await booster.lockRewards()
-    let muuuRewards = await booster.stakerRewards()
-
-    var poolId = contractList.pools.find((pool) => pool.name == '3pool').id
-    console.log('pool id: ' + poolId)
-    let poolinfo = await booster.poolInfo(poolId)
-    let rewardPoolAddress = poolinfo.kglRewards
-    let rewardPool = await BaseRewardPool.at(rewardPoolAddress)
-    let depositToken = await IERC20.at(poolinfo.token)
-    console.log('pool lp token ' + poolinfo.lptoken)
-    console.log('pool gauge ' + poolinfo.gauge)
-    console.log('pool reward contract at ' + rewardPool.address)
-    let starttime = await time.latest()
-    console.log('current block time: ' + starttime)
-
-    //exchange weth for dai
-    await weth.sendTransaction({
-      value: web3.utils.toWei('2.0', 'ether'),
-      from: userA,
-    })
-    let startingWeth = await weth.balanceOf(userA)
-    await weth.approve(exchange.address, startingWeth, { from: userA })
-    await exchange.swapExactTokensForTokens(
-      startingWeth,
-      0,
-      [weth.address, dai.address],
-      userA,
-      starttime + 3000,
-      { from: userA },
-    )
-    let startingDai = await dai.balanceOf(userA)
-
-    //deposit dai for 3kgl
-    await dai.approve(threekglswap.address, startingDai, { from: userA })
-    await threekglswap.add_liquidity([startingDai, 0, 0], 0, { from: userA })
-    let startingThreeKgl = await threeKgl.balanceOf(userA)
-    console.log('3kgl: ' + startingThreeKgl)
+    //mint threeKglToken to userA (pretend that userA had deposited)
+    await threeKglToken.mint(web3.utils.toWei('100', 'ether'), { from: userA })
+    const threeKglTokenBalance = await threeKglToken.balanceOf(userA)
+    console.log('3KglTokenBalance:', threeKglTokenBalance.toString())
 
     //approve
-    await threeKgl.approve(booster.address, 0, { from: userA })
-    await threeKgl.approve(booster.address, startingThreeKgl, { from: userA })
+    // await threeKglToken.approve(booster.address, 0, { from: userA })
+    await threeKglToken.approve(booster.address, threeKglTokenBalance, {
+      from: userA,
+    })
 
     //first try depositing too much
     console.log('try depositing too much')
     await expectRevert(
-      booster.deposit(poolId, startingThreeKgl + 1, false, { from: userA }),
-      'SafeERC20',
+      booster.deposit(poolId, threeKglTokenBalance + 1, false, { from: userA }),
+      'Revert (message: ERC20: transfer amount exceeds balance)',
     )
     console.log(' ->reverted')
 
     //deposit a small portion
-    await booster.deposit(poolId, web3.utils.toWei('500.0', 'ether'), false, {
+    await booster.deposit(poolId, web3.utils.toWei('50.0', 'ether'), false, {
       from: userA,
     })
     console.log('deposited portion')
 
     //check wallet balance and deposit credit
-    await threeKgl
-      .balanceOf(userA)
-      .then((a) => console.log('wallet balance: ' + a))
-    await depositToken
-      .balanceOf(userA)
-      .then((a) => console.log('lp balance: ' + a))
-    //should not be staked
-    await rewardPool
-      .balanceOf(userA)
-      .then((a) => console.log('staked balance: ' + a))
-    //should be staked on kagla even if not staked in rewards
-    await voteproxy
-      .balanceOfPool(threeKglGauge)
-      .then((a) => console.log('gauge balance: ' + a))
+    const threeKglTokenBalanceAfterDeposit = await threeKglToken.balanceOf(
+      userA,
+    )
+    console.log(
+      'threeKglTokenBalance:',
+      threeKglTokenBalanceAfterDeposit.toString(),
+    )
+    const depositTokenBalance = await depositToken.balanceOf(userA)
+    console.log('depositTokenBalance:', depositTokenBalance.toString())
 
-    //deposit reset of funds
+    //should not be staked
+    const stakedBalance = await rewardPool.balanceOf(userA)
+    console.log('stakedBalance(should be zero):', stakedBalance.toString())
+
+    //should be staked on kagla even if not staked in rewards
+    const gaugeBalance = await voterProxy.balanceOfPool(threeKglGaugeAddress)
+    console.log('gaugeBalance:', gaugeBalance.toString())
+
+    //deposit all
     await booster.depositAll(poolId, false, { from: userA })
     console.log('deposited all')
 
     //check wallet balance and deposit credit
-    await threeKgl
-      .balanceOf(userA)
-      .then((a) => console.log('wallet balance: ' + a))
-    await depositToken
-      .balanceOf(userA)
-      .then((a) => console.log('lp balance: ' + a))
+    const threeKglTokenBalanceAfterDepositAll = await threeKglToken.balanceOf(
+      userA,
+    )
+    console.log(
+      'threeKglTokenBalanceAfterDepositAll(should be zero):',
+      threeKglTokenBalanceAfterDepositAll.toString(),
+    )
+    const depositTokenBalanceAfterDepositAll = await depositToken.balanceOf(
+      userA,
+    )
+    console.log(
+      'depositTokenBalanceAfterDepositAll:',
+      depositTokenBalanceAfterDepositAll.toString(),
+    )
 
     //should not be staked
-    await rewardPool
-      .balanceOf(userA)
-      .then((a) => console.log('staked balance: ' + a))
+    const stakedBalanceAfterDepositAll = await rewardPool.balanceOf(userA)
+    console.log(
+      'stakedBalanceAfterDepositAll(should be zero):',
+      stakedBalanceAfterDepositAll.toString(),
+    )
+
     //check if staked on kagla
-    await voteproxy
-      .balanceOfPool(threeKglGauge)
-      .then((a) => console.log('gauge balance: ' + a))
+    const gaugeBalanceAfterDepositAll = await voterProxy.balanceOfPool(
+      threeKglGaugeAddress,
+    )
+    console.log(
+      'gaugeBalanceAfterDepositAll:',
+      gaugeBalanceAfterDepositAll.toString(),
+    )
 
     //withdraw a portion
-    await booster.withdraw(poolId, web3.utils.toWei('500.0', 'ether'), {
+    await booster.withdraw(poolId, web3.utils.toWei('50.0', 'ether'), {
       from: userA,
     })
     console.log('withdrawn portion')
 
     //check wallet increased and that deposit credit decreased
-    await threeKgl
-      .balanceOf(userA)
-      .then((a) => console.log('wallet balance: ' + a))
-    await depositToken
-      .balanceOf(userA)
-      .then((a) => console.log('lp balance: ' + a))
+    const threeKglTokenBalanceAfterWithdraw = await threeKglToken.balanceOf(
+      userA,
+    )
+    console.log(
+      'threeKglTokenBalanceAfterWithdraw:',
+      threeKglTokenBalanceAfterWithdraw.toString(),
+    )
+    const depositTokenBalanceAfterWithdraw = await depositToken.balanceOf(userA)
+    console.log(
+      'depositTokenBalanceAfterWithdraw:',
+      depositTokenBalanceAfterWithdraw.toString(),
+    )
 
-    //withdraw too much error check
+    // withdraw too much error check
     // this will error on the gauge not having enough balance
     console.log('try withdraw too much')
     await expectRevert(
-      booster.withdraw(poolId, startingThreeKgl + 1, { from: userA }),
-      'revert',
+      booster.withdraw(poolId, threeKglTokenBalance + 1, { from: userA }),
+      'Revert (message: ERC20: burn amount exceeds balance)',
     )
     console.log(' ->reverted (fail on unstake)')
 
-    ///add funds for user B
-    await weth.sendTransaction({
-      value: web3.utils.toWei('2.0', 'ether'),
+    //mint threeKglToken to userB (pretend that userB had deposited)
+    await threeKglToken.mint(web3.utils.toWei('100', 'ether'), { from: userB })
+    const threeKglTokenBalanceB = await threeKglToken.balanceOf(userB)
+    // await threeKglToken.approve(booster.address, 0, { from: userB })
+    await threeKglToken.approve(booster.address, threeKglTokenBalanceB, {
       from: userB,
     })
-    await weth.approve(exchange.address, web3.utils.toWei('2.0', 'ether'), {
-      from: userB,
-    })
-    await exchange.swapExactTokensForTokens(
-      web3.utils.toWei('2.0', 'ether'),
-      0,
-      [weth.address, dai.address],
-      userB,
-      starttime + 3000,
-      { from: userB },
-    )
-    let userBDai = await dai.balanceOf(userB)
-    await dai.approve(threekglswap.address, userBDai, { from: userB })
-    await threekglswap.add_liquidity([userBDai, 0, 0], 0, { from: userB })
-    let userBThreeKgl = await threeKgl.balanceOf(userB)
-    await threeKgl.approve(booster.address, 0, { from: userB })
-    await threeKgl.approve(booster.address, userBThreeKgl, { from: userB })
     await booster.depositAll(poolId, false, { from: userB })
-    await depositToken
-      .balanceOf(userB)
-      .then((a) => console.log('lp balance: ' + a))
+    console.log('UserB has deposited all.')
 
-    //withdraw too much error check again
-    // this will error on the deposit balance not being high enough (gauge balance check passes though because of userB)
-    //update: ordering of unstake and burn changed so burn is always first.
+    // withdraw too much error check again
+    // to check gauge balance passes though because of userB but burn is first. so errur orrured
     console.log('try withdraw too much(2)')
     await expectRevert(
-      booster.withdraw(poolId, startingThreeKgl + 1, { from: userA }),
-      'revert',
+      booster.withdraw(poolId, threeKglTokenBalance + 1, { from: userA }),
+      'Revert (message: ERC20: burn amount exceeds balance)',
     )
     console.log(' ->reverted (fail on user funds)')
-
-    await voteproxy
-      .balanceOfPool(threeKglGauge)
-      .then((a) => console.log('gauge balance: ' + a))
 
     //withdraw all properly
     await booster.withdrawAll(poolId, { from: userA })
     console.log('withdrawAll A')
 
     //all balance should be back on wallet and equal to starting value
-    await threeKgl
-      .balanceOf(userA)
-      .then((a) => console.log('userA wallet balance: ' + a))
-    await depositToken
-      .balanceOf(userA)
-      .then((a) => console.log('userA lp balance: ' + a))
-    await rewardPool
-      .balanceOf(userA)
-      .then((a) => console.log('userA staked balance: ' + a))
-    await voteproxy
-      .balanceOfPool(threeKglGauge)
-      .then((a) => console.log('gauge balance: ' + a))
+    const finalThreeKglTokenBalanceA = await threeKglToken.balanceOf(userA)
+    console.log('userA wallet balance:', finalThreeKglTokenBalanceA.toString())
+    const finalDepositTokenBalanceA = await depositToken.balanceOf(userA)
+    console.log('userA lp balance:', finalDepositTokenBalanceA.toString())
+    const finalRewardPoolBalanceA = await rewardPool.balanceOf(userA)
+    console.log('userA staked balance:', finalRewardPoolBalanceA.toString())
+    const semiFinalThreeKglGaugeBalance = await voterProxy.balanceOfPool(
+      threeKglGaugeAddress,
+    )
+    console.log('gauge balance:', semiFinalThreeKglGaugeBalance.toString())
 
     //withdraw all properly
     await booster.withdrawAll(poolId, { from: userB })
-    console.log('withdrawAll B')
-    await threeKgl
-      .balanceOf(userB)
-      .then((a) => console.log('userB wallet balance: ' + a))
-    await depositToken
-      .balanceOf(userB)
-      .then((a) => console.log('userB lp balance: ' + a))
-    await rewardPool
-      .balanceOf(userB)
-      .then((a) => console.log('userB staked balance: ' + a))
-    await voteproxy
-      .balanceOfPool(threeKglGauge)
-      .then((a) => console.log('gauge balance: ' + a))
+    console.log('withdrawAll UserB')
+    const finalThreeKglTokenBalanceB = await threeKglToken.balanceOf(userB)
+    console.log('userB wallet balance:', finalThreeKglTokenBalanceB.toString())
+    const finalDepositTokenBalanceB = await depositToken.balanceOf(userB)
+    console.log('userB lp balance:', finalDepositTokenBalanceA.toString())
+    const finalRewardPoolBalanceB = await rewardPool.balanceOf(userB)
+    console.log('userB staked balance:', finalRewardPoolBalanceB.toString())
+    const finalThreeKglGaugeBalance = await voterProxy.balanceOfPool(
+      threeKglGaugeAddress,
+    )
+    console.log('gauge balance:', finalThreeKglGaugeBalance.toString())
   })
 })
