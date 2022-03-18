@@ -18,8 +18,8 @@ contract DepositToken is ERC20 {
   constructor(address _operator, address _lptoken)
     public
     ERC20(
-      string(abi.encodePacked(ERC20(_lptoken).name(), " Muuu Deposit")),
-      string(abi.encodePacked("muuu", ERC20(_lptoken).symbol()))
+      string(abi.encodePacked(ERC20(_lptoken).name(), " Muuu Deposit Token")),
+      string(abi.encodePacked("mu", ERC20(_lptoken).symbol()))
     )
   {
     operator = _operator;
