@@ -1,30 +1,16 @@
-const {
-  BN,
-  constants,
-  expectEvent,
-  expectRevert,
-  time,
-} = require('@openzeppelin/test-helpers')
+const { time } = require('@openzeppelin/test-helpers')
 var jsonfile = require('jsonfile')
 var contractList = jsonfile.readFileSync('./contracts.json')
 
 const Booster = artifacts.require('Booster')
 const KglDepositor = artifacts.require('KglDepositor')
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
-const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2')
 const BaseRewardPool = artifacts.require('BaseRewardPool')
 const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool')
-//const muKglRewardPool = artifacts.require("muKglRewardPool");
-const muuuRewardPool = artifacts.require('muuuRewardPool')
-const MuuuToken = artifacts.require('MuuuToken')
 const muKglToken = artifacts.require('muKglToken')
-const StashFactory = artifacts.require('StashFactory')
-const RewardFactory = artifacts.require('RewardFactory')
 
 const IExchange = artifacts.require('IExchange')
 const IERC20 = artifacts.require('IERC20')
-const IKaglaGauge = artifacts.require('IKaglaGauge')
-const IKaglaGaugeDebug = artifacts.require('IKaglaGaugeDebug')
 const IWalletCheckerDebug = artifacts.require('IWalletCheckerDebug')
 const IBurner = artifacts.require('IBurner')
 
@@ -32,7 +18,6 @@ contract('VeKgl Fees Test', async (accounts) => {
   it('should add to whitelist, lock kgl, test vekgl fee distribution', async () => {
     let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
     let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2')
-    let wbtc = await IERC20.at('0x2260fac5e5542a773aa44fbcfedf7c193bc2c599')
     let dai = await IERC20.at('0x6B175474E89094C44Da98b954EedeAC495271d0F')
     let vekgl = await IERC20.at('0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2')
     let threekgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490')
@@ -43,7 +28,6 @@ contract('VeKgl Fees Test', async (accounts) => {
       '0xca719728Ef172d0961768581fdF35CB116e0B7a4',
     )
     let checkerAdmin = '0x40907540d8a6C65c637785e8f8B742ae6b0b9968'
-    let vekglWhale = '0xb01151B93B5783c252333Ce0707D704d0BBDF5EC'
 
     //memo: these burner addresses may change
     let burner = await IBurner.at('0xeCb456EA5365865EbAb8a2661B0c503410e9B347')
@@ -52,24 +36,17 @@ contract('VeKgl Fees Test', async (accounts) => {
     )
     ///////
 
-    let admin = accounts[0]
     let userA = accounts[1]
-    let userB = accounts[2]
     let caller = accounts[3]
 
     //system
     let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy)
     let booster = await Booster.deployed()
-    let rewardFactory = await RewardFactory.deployed()
-    let stashFactory = await StashFactory.deployed()
-    let muuu = await MuuuToken.deployed()
     let muKgl = await muKglToken.deployed()
     let kglDeposit = await KglDepositor.deployed()
     let muKglRewards = await booster.lockRewards()
-    let muuuRewards = await booster.stakerRewards()
     let vekglRewards = await booster.lockFees()
     let muKglRewardsContract = await BaseRewardPool.at(muKglRewards)
-    let muuuRewardsContract = await muuuRewardPool.at(muuuRewards)
     let vekglRewardsContract = await VirtualBalanceRewardPool.at(vekglRewards)
 
     let starttime = await time.latest()
