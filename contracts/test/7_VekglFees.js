@@ -139,9 +139,8 @@ contract('VeKgl Fees Test', async (accounts) => {
     let userA = accounts[1]
     let caller = accounts[3]
 
-    let starttime = await time.latest()
-    console.log('current block time: ' + starttime)
-    await time.latestBlock().then((a) => console.log('current block: ' + a))
+    console.log(`current block time: ${await time.latest()}`)
+    console.log(`current block: ${await time.latestBlock()}`)
 
     // //add to whitelist
     // await walletChecker.approveWallet(voteproxy.address, {
@@ -187,19 +186,12 @@ contract('VeKgl Fees Test', async (accounts) => {
       },
     )
     console.log('kgl deposited')
-    await muKgl
-      .balanceOf(userA)
-      .then((a) => console.log('muKgl on wallet: ' + a))
-    await muKgl.totalSupply().then((a) => console.log('muKgl supply: ' + a))
-    await kgl
-      .balanceOf(kglDeposit.address)
-      .then((a) => console.log('depositor kgl(>0): ' + a))
-    await kgl
-      .balanceOf(voteproxy.address)
-      .then((a) => console.log('proxy kgl(==0): ' + a))
-    await vekgl
-      .balanceOf(voteproxy.address)
-      .then((a) => console.log('proxy veKgl(==0): ' + a))
+    console.log(`muKgl on wallet: ${await muKgl.balanceOf(userA)}`)
+    console.log(`muKgl supply: ${await muKgl.totalSupply()}`)
+    console.log(`depositor kgl(>0): ${await kgl.balanceOf(kglDeposit.address)}`)
+    console.log(`proxy kgl(==0): ${await kgl.balanceOf(voteproxy.address)}`)
+    console.log(`proxy veKgl(==0): ${await vekgl.balanceOf(voteproxy.address)}`)
+
     console.log('staking kgl')
     await muKgl.approve(muKglRewardsContract.address, 0, { from: userA })
     await muKgl.approve(muKglRewardsContract.address, startingkgl, {
@@ -207,12 +199,8 @@ contract('VeKgl Fees Test', async (accounts) => {
     })
     await muKglRewardsContract.stakeAll({ from: userA })
     console.log('staked')
-    await muKgl
-      .balanceOf(userA)
-      .then((a) => console.log('muKgl on wallet: ' + a))
-    await muKglRewardsContract
-      .balanceOf(userA)
-      .then((a) => console.log('muKgl staked: ' + a))
+    console.log(`muKgl on wallet: ${await muKgl.balanceOf(userA)}`)
+    console.log(`muKgl staked: ${await muKglRewardsContract.balanceOf(userA)}`)
 
     //voting
     console.log('fee claiming...')
@@ -222,9 +210,11 @@ contract('VeKgl Fees Test', async (accounts) => {
     console.log('fees earmarked')
 
     //reward contract balance (should be 0 still)
-    await threekgl
-      .balanceOf(vekglRewardsContract.address)
-      .then((a) => console.log('vekglRewardsContract balance: ' + a))
+    console.log(
+      `vekglRewardsContract balance: ${await threekgl.balanceOf(
+        vekglRewardsContract.address,
+      )}`,
+    )
 
     //move forward about 2 weeks
     await time.increase(86400 * 15)
@@ -294,47 +284,40 @@ contract('VeKgl Fees Test', async (accounts) => {
     console.log('fees earmarked')
 
     //balance check (should be all in vekgl reward contract)
-    await threekgl
-      .balanceOf(vekglRewardsContract.address)
-      .then((a) => console.log('vekglRewardsContract balance: ' + a))
-    await threekgl
-      .balanceOf(voteproxy.address)
-      .then((a) => console.log('voteproxy balance(==0): ' + a))
-    await threekgl
-      .balanceOf(booster.address)
-      .then((a) => console.log('booster balance(==0): ' + a))
+    console.log(
+      `vekglRewardsContract balance: ${await threekgl.balanceOf(
+        vekglRewardsContract.address,
+      )}`,
+    )
+    console.log(
+      `voteproxy balance(==0): ${await threekgl.balanceOf(voteproxy.address)}`,
+    )
+    console.log(
+      `booster balance(==0): ${await threekgl.balanceOf(booster.address)}`,
+    )
 
     //check earned
-    await vekglRewardsContract
-      .earned(userA)
-      .then((a) => console.log('earned fees: ' + a))
+    console.log(`earned fees: ${await vekglRewardsContract.earned(userA)}`)
 
     //increase time
     await time.increase(86400)
     await time.advanceBlock()
     console.log('advance time...')
     //check earned
-    await vekglRewardsContract
-      .earned(userA)
-      .then((a) => console.log('earned fees: ' + a))
+    console.log(`earned fees: ${await vekglRewardsContract.earned(userA)}`)
+
     //increase time
     await time.increase(86400)
     await time.advanceBlock()
     console.log('advance time...')
 
     //check earned
-    await vekglRewardsContract
-      .earned(userA)
-      .then((a) => console.log('earned fees: ' + a))
+    console.log(`earned fees: ${await vekglRewardsContract.earned(userA)}`)
 
     //before balance
-    await threekgl
-      .balanceOf(userA)
-      .then((a) => console.log('3kgl before claim: ' + a))
+    console.log(`3kgl before claim: ${await threekgl.balanceOf(userA)}`)
     //get reward from main contract which will also claim from children contracts(kgl is main, vekgl fees is child)
     await muKglRewardsContract.getReward({ from: userA })
-    await threekgl
-      .balanceOf(userA)
-      .then((a) => console.log('3kgl after claim: ' + a))
+    console.log(`3kgl after claim: ${await threekgl.balanceOf(userA)}`)
   })
 })
