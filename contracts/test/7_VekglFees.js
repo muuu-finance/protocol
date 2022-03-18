@@ -84,6 +84,9 @@ const setupContracts = async () => {
   await booster.setFactories(rewardFactory.address, ZERO_ADDRESS, ZERO_ADDRESS)
   await booster.setRewardContracts(baseRewardPool.address, ZERO_ADDRESS)
   await booster.setFeeInfo()
+  const virtualBalanceRewardPool = await VirtualBalanceRewardPool.at(
+    await booster.lockFees(),
+  )
 
   await kaglaVoterProxy.setOperator(booster.address)
 
@@ -101,6 +104,8 @@ const setupContracts = async () => {
     kglDepositor,
     baseRewardPool,
     booster,
+    threeKglToken,
+    virtualBalanceRewardPool,
   }
 }
 
@@ -136,6 +141,8 @@ contract('VeKgl Fees Test', async (accounts) => {
       kglDepositor: kglDeposit,
       baseRewardPool: muKglRewardsContract,
       booster,
+      threeKglToken: threekgl,
+      virtualBalanceRewardPool: vekglRewardsContract,
     } = await setupContracts()
     let userA = accounts[1]
     let caller = accounts[3]
@@ -222,8 +229,6 @@ contract('VeKgl Fees Test', async (accounts) => {
     await booster.earmarkFees({ from: caller })
     console.log('fees earmarked')
 
-    // ----- works normally here -----
-
     //reward contract balance (should be 0 still)
     await threekgl
       .balanceOf(vekglRewardsContract.address)
@@ -234,59 +239,61 @@ contract('VeKgl Fees Test', async (accounts) => {
     await time.advanceBlock()
     console.log('advance time...')
 
+    // --> skip operations to kgl contracts
+
     /// ----- burn fees to vekgl claim contracts (kagla dao side) ----
-    let burnerBalance = await threekgl.balanceOf(
-      '0xA464e6DCda8AC41e03616F95f4BC98a13b8922Dc',
-    )
-    console.log('3kgl on burner: ' + burnerBalance)
+    // let burnerBalance = await threekgl.balanceOf(
+    //   '0xA464e6DCda8AC41e03616F95f4BC98a13b8922Dc',
+    // )
+    // console.log('3kgl on burner: ' + burnerBalance)
 
-    await dai
-      .balanceOf(burner.address)
-      .then((a) => console.log('burner dai: ' + a))
-    //withdraw 3kgl fees
-    await burner.withdraw_admin_fees(
-      '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7',
-    )
-    console.log('admin fees withdrawn from pool')
-    await dai
-      .balanceOf(burner.address)
-      .then((a) => console.log('burner dai: ' + a))
-    await dai
-      .balanceOf(underlyingburner.address)
-      .then((a) => console.log('dai on underlyingburner: ' + a))
+    // await dai
+    //   .balanceOf(burner.address)
+    //   .then((a) => console.log('burner dai: ' + a))
+    // //withdraw 3kgl fees
+    // await burner.withdraw_admin_fees(
+    //   '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7',
+    // )
+    // console.log('admin fees withdrawn from pool')
+    // await dai
+    //   .balanceOf(burner.address)
+    //   .then((a) => console.log('burner dai: ' + a))
+    // await dai
+    //   .balanceOf(underlyingburner.address)
+    //   .then((a) => console.log('dai on underlyingburner: ' + a))
 
-    //burn dai/usdt/usdc
-    await burner.burn(dai.address)
-    await burner.burn('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48')
-    await burner.burn('0xdAC17F958D2ee523a2206206994597C13D831ec7')
-    console.log('burnt single coins')
+    // //burn dai/usdt/usdc
+    // await burner.burn(dai.address)
+    // await burner.burn('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48')
+    // await burner.burn('0xdAC17F958D2ee523a2206206994597C13D831ec7')
+    // console.log('burnt single coins')
 
-    await dai
-      .balanceOf(burner.address)
-      .then((a) => console.log('burner dai: ' + a))
-    await dai
-      .balanceOf(underlyingburner.address)
-      .then((a) => console.log('dai on underlyingburner: ' + a))
+    // await dai
+    //   .balanceOf(burner.address)
+    //   .then((a) => console.log('burner dai: ' + a))
+    // await dai
+    //   .balanceOf(underlyingburner.address)
+    //   .then((a) => console.log('dai on underlyingburner: ' + a))
 
-    //execute to wrap everything to 3kgl then send to "receiver" at 0xa464
-    await underlyingburner.execute()
-    console.log('burner executed')
+    // //execute to wrap everything to 3kgl then send to "receiver" at 0xa464
+    // await underlyingburner.execute()
+    // console.log('burner executed')
 
-    //should be zero now that its transfered
-    await dai
-      .balanceOf(burner.address)
-      .then((a) => console.log('burner dai: ' + a))
-    await dai
-      .balanceOf(underlyingburner.address)
-      .then((a) => console.log('dai on underlyingburner: ' + a))
-    //burn 3kgl
-    await burner.burn(threekgl.address)
-    console.log('burn complete, checkpoit 3kgl')
+    // //should be zero now that its transfered
+    // await dai
+    //   .balanceOf(burner.address)
+    //   .then((a) => console.log('burner dai: ' + a))
+    // await dai
+    //   .balanceOf(underlyingburner.address)
+    //   .then((a) => console.log('dai on underlyingburner: ' + a))
+    // //burn 3kgl
+    // await burner.burn(threekgl.address)
+    // console.log('burn complete, checkpoit 3kgl')
 
-    let burnerBalance2 = await threekgl.balanceOf(
-      '0xA464e6DCda8AC41e03616F95f4BC98a13b8922Dc',
-    )
-    console.log('3kgl on burner: ' + burnerBalance2)
+    // let burnerBalance2 = await threekgl.balanceOf(
+    //   '0xA464e6DCda8AC41e03616F95f4BC98a13b8922Dc',
+    // )
+    // console.log('3kgl on burner: ' + burnerBalance2)
 
     /// ----- burn to vekgl claim contract complete ----
 
