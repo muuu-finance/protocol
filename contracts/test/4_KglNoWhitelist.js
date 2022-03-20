@@ -1,7 +1,5 @@
 const { time } = require('@openzeppelin/test-helpers')
 const { ZERO_ADDRESS } = require('@openzeppelin/test-helpers/src/constants')
-var jsonfile = require('jsonfile')
-var contractList = jsonfile.readFileSync('./contracts.json')
 
 const Booster = artifacts.require('Booster')
 const KglDepositor = artifacts.require('KglDepositor')
@@ -15,10 +13,6 @@ const StashFactory = artifacts.require('StashFactory')
 const TokenFactory = artifacts.require('TokenFactory')
 const PoolManager = artifacts.require('PoolManager')
 
-const IExchange = artifacts.require('IExchange')
-const IKaglaFi = artifacts.require('I3KaglaFi')
-const IERC20 = artifacts.require('IERC20')
-
 const MockVotingEscrow = artifacts.require('MockKaglaVoteEscrow')
 const MockKaglaGauge = artifacts.require('MockKaglaGauge')
 const MockMintableERC20 = artifacts.require('MintableERC20')
@@ -27,19 +21,7 @@ const MockFeeDistributor = artifacts.require('MockKaglaFeeDistributor')
 const MockAddressProvider = artifacts.require('MockKaglaAddressProvider')
 const MockMinter = artifacts.require('MockMinter')
 
-const setupContracts = async (account) => {
-  // What are needs?
-  // - kgl Token ... deposited & get muKgl)
-  // - muKgl Token
-  // - KglDepositor ... deposit here
-  // - Booster
-  //  - BaseRewardPool (for muKgl/kgl)
-  //  - function needed
-  //    - stakeAll
-  //    - earmarkRewards
-  //    - earned
-  //    - getReward
-
+const setupContracts = async () => {
   const kglToken = await MockMintableERC20.new('Kagle Token', 'KGL', '18')
   const muKglToken = await MuKglToken.new()
   const threeKglToken = await MockMintableERC20.new('3KGL Token', '3Kgl', 18)
@@ -130,6 +112,7 @@ const setupContracts = async (account) => {
 
   await booster.setFeeInfo()
 
+  // about pool added
   await poolManager.addPool(threeKglToken.address, kaglaGauge.address, 0)
   const kglRewardPoolAddress = (await booster.poolInfo(0)).kglRewards
   const kglRewardsPool = await BaseRewardPool.at(kglRewardPoolAddress)
@@ -150,18 +133,7 @@ const setupContracts = async (account) => {
 }
 
 contract('muKgl Rewards', async (accounts) => {
-  it('should deposit and gain rewrds with muKgl', async () => {
-    // let kgl = await IERC20.at('0xD533a949740bb3306d119CC777fa900bA034cd52')
-    // let weth = await IERC20.at('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2')
-    // let dai = await IERC20.at('0x6b175474e89094c44da98b954eedeac495271d0f')
-    // let exchange = await IExchange.at(
-    //   '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
-    // )
-    // let threekglswap = await IKaglaFi.at(
-    //   '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7',
-    // )
-    // let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490')
-
+  it('should deposit and gain rewords with muKgl', async () => {
     const {
       kglToken: kgl,
       threeKglToken: threeKgl,
@@ -178,22 +150,7 @@ contract('muKgl Rewards', async (accounts) => {
     let userA = accounts[1]
     let caller = accounts[3]
 
-    //system
-    // let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy)
-    // let booster = await Booster.deployed()
-    // let muuu = await MuuuToken.deployed()
-    // let muKgl = await muKglToken.deployed()
-    // let kglDeposit = await KglDepositor.deployed()
-    // let muKglRewards = await booster.lockRewards()
-    // let muuuRewards = await booster.stakerRewards()
-    // let muKglRewardsContract = await BaseRewardPool.at(muKglRewards)
-
-    // var poolId = contractList.pools.find((pool) => pool.name == '3pool').id
-    // let poolinfo = await booster.poolInfo(poolId)
-    // let rewardPoolAddress = poolinfo.kglRewards
-    // let rewardPool = await BaseRewardPool.at(rewardPoolAddress)
-
-    //advance to start muuu farming
+    // advance to start muuu farming
     await time.increase(10 * 86400)
     await time.advanceBlock()
     await time.advanceBlock()
@@ -202,30 +159,11 @@ contract('muKgl Rewards', async (accounts) => {
     console.log('current block time: ' + starttime)
     await time.latestBlock().then((a) => console.log('current block: ' + a))
 
-    // //exchange and deposit for 3kgl
-    // await weth.sendTransaction({
-    //   value: web3.utils.toWei('2.0', 'ether'),
-    //   from: userA,
-    // })
-    // let startingWeth = await weth.balanceOf(userA)
-    // await weth.approve(exchange.address, startingWeth, { from: userA })
-    // await exchange.swapExactTokensForTokens(
-    //   startingWeth,
-    //   0,
-    //   [weth.address, dai.address],
-    //   userA,
-    //   starttime + 3000,
-    //   { from: userA },
-    // )
-    // let startingDai = await dai.balanceOf(userA)
-    // await dai.approve(threekglswap.address, startingDai, { from: userA })
-    // await threekglswap.add_liquidity([startingDai, 0, 0], 0, { from: userA })
-
     await threeKgl.mint(50000, { from: userA })
     let startingThreeKgl = await threeKgl.balanceOf(userA)
     console.log('3kgl: ' + startingThreeKgl)
 
-    //approve and deposit 3kgl
+    // approve and deposit 3kgl
     await threeKgl.approve(booster.address, 0, { from: userA })
     await threeKgl.approve(booster.address, startingThreeKgl, { from: userA })
 
@@ -242,23 +180,6 @@ contract('muKgl Rewards', async (accounts) => {
       .earned(userA)
       .then((a) => console.log('rewards earned(unclaimed): ' + a))
     console.log('--- confirmed - deposited lp tokens ---')
-
-    // // exchange for kgl
-    // await weth.sendTransaction({
-    //   value: web3.utils.toWei('1.0', 'ether'),
-    //   from: userA,
-    // })
-    // let wethForKgl = await weth.balanceOf(userA)
-    // await weth.approve(exchange.address, 0, { from: userA })
-    // await weth.approve(exchange.address, wethForKgl, { from: userA })
-    // await exchange.swapExactTokensForTokens(
-    //   wethForKgl,
-    //   0,
-    //   [weth.address, kgl.address],
-    //   userA,
-    //   starttime + 3000,
-    //   { from: userA },
-    // )
 
     //deposit kgl
     await kgl.mint(50000, { from: userA })
@@ -279,7 +200,7 @@ contract('muKgl Rewards', async (accounts) => {
     await muKgl
       .balanceOf(userA)
       .then((a) => console.log('muKgl on wallet: ' + a))
-    //stake muKgl
+    // stake muKgl
     console.log('stake at ' + muKglRewardsContract.address)
     await muKgl.approve(muKglRewardsContract.address, 0, { from: userA })
     await muKgl.approve(muKglRewardsContract.address, startingkgl, {
@@ -289,7 +210,7 @@ contract('muKgl Rewards', async (accounts) => {
     await muKglRewardsContract.stakeAll({ from: userA })
     console.log('staked')
 
-    //check balances, depositor should still have kgl since no whitelist
+    // check balances, depositor should still have kgl since no whitelist
     await muKgl
       .balanceOf(userA)
       .then((a) => console.log('muKgl on wallet: ' + a))
@@ -301,7 +222,7 @@ contract('muKgl Rewards', async (accounts) => {
       .then((a) => console.log('kgl on depositor: ' + a))
     await muKgl.totalSupply().then((a) => console.log('muKgl supply: ' + a))
 
-    //advance time
+    // advance time
     await time.increase(86400)
     await time.advanceBlock()
     await time.advanceBlock()
@@ -309,7 +230,7 @@ contract('muKgl Rewards', async (accounts) => {
     await time.latest().then((a) => console.log('current block time: ' + a))
     await time.latestBlock().then((a) => console.log('current block: ' + a))
 
-    //distribute rewards
+    // distribute rewards
     await booster.earmarkRewards(0, { from: caller })
     console.log('earmark')
 
@@ -328,7 +249,7 @@ contract('muKgl Rewards', async (accounts) => {
       .balanceOf(muuuRewards)
       .then((a) => console.log('kgl at muuuRewards ' + a))
 
-    //check earned(should be 0)
+    // check earned(should be 0)
     await muKglRewardsContract
       .earned(userA)
       .then((a) => console.log('current earned: ' + a))
@@ -341,11 +262,11 @@ contract('muKgl Rewards', async (accounts) => {
     await time.advanceBlock()
     console.log('advance time....')
 
-    //check earned
+    // check earned
     await muKglRewardsContract
       .earned(userA)
       .then((a) => console.log('current earned: ' + a))
-    //claim
+    // claim
     await muKglRewardsContract.getReward({ from: userA })
     console.log('getReward()')
 
@@ -361,13 +282,13 @@ contract('muKgl Rewards', async (accounts) => {
     await kgl.balanceOf(userA).then((a) => console.log('kgl on wallet: ' + a))
     await muuu.balanceOf(userA).then((a) => console.log('muuu on wallet: ' + a))
 
-    //advance time
+    // advance time
     await time.increase(10 * 86400)
     await time.advanceBlock()
     await time.advanceBlock()
     console.log('advance time....')
 
-    //claim rewards again
+    // claim rewards again
     await muKglRewardsContract
       .earned(userA)
       .then((a) => console.log('current earned: ' + a))
@@ -386,7 +307,7 @@ contract('muKgl Rewards', async (accounts) => {
     await kgl.balanceOf(userA).then((a) => console.log('kgl on wallet: ' + a))
     await muuu.balanceOf(userA).then((a) => console.log('muuu on wallet: ' + a))
 
-    //distribute again
+    // distribute again
     await booster.earmarkRewards(0)
     console.log('earmark 2')
     await kgl
@@ -404,7 +325,7 @@ contract('muKgl Rewards', async (accounts) => {
     await time.advanceBlock()
     console.log('advance time....')
 
-    //rewards should be earning again
+    // rewards should be earning again
     await muKglRewardsContract
       .earned(userA)
       .then((a) => console.log('current earned: ' + a))
