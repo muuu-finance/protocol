@@ -132,7 +132,9 @@ const setupContracts = async (account) => {
   const kglRewardsPool = await BaseRewardPool.at(rewardPoolAddress)
 
   return {
+    kglToken,
     threeKglToken,
+    kglDepositor,
     booster,
     kglRewardsPool,
   }
@@ -152,7 +154,9 @@ contract('muKgl Rewards', async (accounts) => {
     // let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490')
 
     const {
+      kglToken: kgl,
       threeKglToken: threeKgl,
+      kglDepositor: kglDeposit,
       booster,
       kglRewardsPool: rewardPool,
     } = await setupContracts()
@@ -223,28 +227,28 @@ contract('muKgl Rewards', async (accounts) => {
       .earned(userA)
       .then((a) => console.log('rewards earned(unclaimed): ' + a))
     console.log('--- confirmed - deposited lp tokens ---')
-    // ----- works normally here -----
 
-    //exchange for kgl
-    await weth.sendTransaction({
-      value: web3.utils.toWei('1.0', 'ether'),
-      from: userA,
-    })
-    let wethForKgl = await weth.balanceOf(userA)
-    await weth.approve(exchange.address, 0, { from: userA })
-    await weth.approve(exchange.address, wethForKgl, { from: userA })
-    await exchange.swapExactTokensForTokens(
-      wethForKgl,
-      0,
-      [weth.address, kgl.address],
-      userA,
-      starttime + 3000,
-      { from: userA },
-    )
-    let startingkgl = await kgl.balanceOf(userA)
-    console.log('kgl: ' + startingkgl)
+    // // exchange for kgl
+    // await weth.sendTransaction({
+    //   value: web3.utils.toWei('1.0', 'ether'),
+    //   from: userA,
+    // })
+    // let wethForKgl = await weth.balanceOf(userA)
+    // await weth.approve(exchange.address, 0, { from: userA })
+    // await weth.approve(exchange.address, wethForKgl, { from: userA })
+    // await exchange.swapExactTokensForTokens(
+    //   wethForKgl,
+    //   0,
+    //   [weth.address, kgl.address],
+    //   userA,
+    //   starttime + 3000,
+    //   { from: userA },
+    // )
 
     //deposit kgl
+    await kgl.mint(50000, { from: userA })
+    let startingkgl = await kgl.balanceOf(userA)
+    console.log('kgl: ' + startingkgl)
     await kgl.approve(kglDeposit.address, 0, { from: userA })
     await kgl.approve(kglDeposit.address, startingkgl, { from: userA })
     await kglDeposit.deposit(
@@ -256,6 +260,7 @@ contract('muKgl Rewards', async (accounts) => {
       },
     )
     console.log('kgl deposited')
+    // ----- works normally here -----
     await muKgl
       .balanceOf(userA)
       .then((a) => console.log('muKgl on wallet: ' + a))
