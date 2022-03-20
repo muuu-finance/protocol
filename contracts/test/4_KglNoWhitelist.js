@@ -25,6 +25,7 @@ const MockMintableERC20 = artifacts.require('MintableERC20')
 const MockRegistry = artifacts.require('MockKaglaRegistry')
 const MockFeeDistributor = artifacts.require('MockKaglaFeeDistributor')
 const MockAddressProvider = artifacts.require('MockKaglaAddressProvider')
+const MockMinter = artifacts.require('MockMinter')
 
 const setupContracts = async (account) => {
   // What are needs?
@@ -48,7 +49,9 @@ const setupContracts = async (account) => {
     kglToken.address,
     votingEscrow.address,
     ZERO_ADDRESS,
-    ZERO_ADDRESS,
+    (
+      await MockMinter.new(kglToken.address)
+    ).address,
   )
 
   const kglDepositor = await KglDepositor.new(
@@ -289,7 +292,6 @@ contract('muKgl Rewards', async (accounts) => {
       .balanceOf(kglDeposit.address)
       .then((a) => console.log('kgl on depositor: ' + a))
     await muKgl.totalSupply().then((a) => console.log('muKgl supply: ' + a))
-    // ----- works normally here -----
 
     //advance time
     await time.increase(86400)
@@ -302,6 +304,7 @@ contract('muKgl Rewards', async (accounts) => {
     //distribute rewards
     await booster.earmarkRewards(0, { from: caller })
     console.log('earmark')
+    // ----- works normally here -----
     await kgl
       .balanceOf(voteproxy.address)
       .then((a) => console.log('proxy kgl(==0): ' + a))
