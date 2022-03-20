@@ -1,25 +1,13 @@
-const {
-  BN,
-  constants,
-  expectEvent,
-  expectRevert,
-  time,
-} = require('@openzeppelin/test-helpers')
+const { time } = require('@openzeppelin/test-helpers')
 var jsonfile = require('jsonfile')
 var contractList = jsonfile.readFileSync('./contracts.json')
 
 const Booster = artifacts.require('Booster')
 const KglDepositor = artifacts.require('KglDepositor')
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
-const ExtraRewardStashV2 = artifacts.require('ExtraRewardStashV2')
 const BaseRewardPool = artifacts.require('BaseRewardPool')
-const VirtualBalanceRewardPool = artifacts.require('VirtualBalanceRewardPool')
-//const muKglRewardPool = artifacts.require("muKglRewardPool");
-const muuuRewardPool = artifacts.require('MuuuRewardPool')
 const MuuuToken = artifacts.require('MuuuToken')
 const muKglToken = artifacts.require('MuKglToken')
-const StashFactory = artifacts.require('StashFactory')
-const RewardFactory = artifacts.require('RewardFactory')
 
 const IExchange = artifacts.require('IExchange')
 const IKaglaFi = artifacts.require('I3KaglaFi')
@@ -37,26 +25,19 @@ contract('muKgl Rewards', async (accounts) => {
       '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7',
     )
     let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490')
-    let threeKglGauge = '0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A'
-    let threeKglSwap = '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7'
 
-    let admin = accounts[0]
     let userA = accounts[1]
-    let userB = accounts[2]
     let caller = accounts[3]
 
     //system
     let voteproxy = await KaglaVoterProxy.at(contractList.system.voteProxy)
     let booster = await Booster.deployed()
-    let rewardFactory = await RewardFactory.deployed()
-    let stashFactory = await StashFactory.deployed()
     let muuu = await MuuuToken.deployed()
     let muKgl = await muKglToken.deployed()
     let kglDeposit = await KglDepositor.deployed()
     let muKglRewards = await booster.lockRewards()
     let muuuRewards = await booster.stakerRewards()
     let muKglRewardsContract = await BaseRewardPool.at(muKglRewards)
-    let muuuRewardsContract = await muuuRewardPool.at(muuuRewards)
 
     var poolId = contractList.pools.find((pool) => pool.name == '3pool').id
     let poolinfo = await booster.poolInfo(poolId)
@@ -97,6 +78,7 @@ contract('muKgl Rewards', async (accounts) => {
     await threeKgl.approve(booster.address, 0, { from: userA })
     await threeKgl.approve(booster.address, startingThreeKgl, { from: userA })
 
+    // deposit all
     await booster.depositAll(0, true, { from: userA })
     await rewardPool
       .balanceOf(userA)
