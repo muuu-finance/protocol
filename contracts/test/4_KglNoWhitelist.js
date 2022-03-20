@@ -134,9 +134,11 @@ const setupContracts = async (account) => {
   return {
     kglToken,
     threeKglToken,
+    muKglToken,
     kglDepositor,
     booster,
     kglRewardsPool,
+    baseRewardPool,
   }
 }
 
@@ -156,9 +158,11 @@ contract('muKgl Rewards', async (accounts) => {
     const {
       kglToken: kgl,
       threeKglToken: threeKgl,
+      muKglToken: muKgl,
       kglDepositor: kglDeposit,
       booster,
       kglRewardsPool: rewardPool,
+      baseRewardPool: muKglRewardsContract,
     } = await setupContracts()
     let userA = accounts[1]
     let caller = accounts[3]
@@ -260,7 +264,7 @@ contract('muKgl Rewards', async (accounts) => {
       },
     )
     console.log('kgl deposited')
-    // ----- works normally here -----
+
     await muKgl
       .balanceOf(userA)
       .then((a) => console.log('muKgl on wallet: ' + a))
@@ -285,6 +289,7 @@ contract('muKgl Rewards', async (accounts) => {
       .balanceOf(kglDeposit.address)
       .then((a) => console.log('kgl on depositor: ' + a))
     await muKgl.totalSupply().then((a) => console.log('muKgl supply: ' + a))
+    // ----- works normally here -----
 
     //advance time
     await time.increase(86400)
