@@ -128,10 +128,13 @@ const setupContracts = async (account) => {
   await booster.setFeeInfo()
 
   await poolManager.addPool(threeKglToken.address, kaglaGauge.address, 0)
+  const rewardPoolAddress = (await booster.poolInfo(0)).kglRewards
+  const kglRewardsPool = await BaseRewardPool.at(rewardPoolAddress)
 
   return {
     threeKglToken,
     booster,
+    kglRewardsPool,
   }
 }
 
@@ -148,7 +151,11 @@ contract('muKgl Rewards', async (accounts) => {
     // )
     // let threeKgl = await IERC20.at('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490')
 
-    const { threeKglToken: threeKgl, booster } = await setupContracts()
+    const {
+      threeKglToken: threeKgl,
+      booster,
+      kglRewardsPool: rewardPool,
+    } = await setupContracts()
     let userA = accounts[1]
     let caller = accounts[3]
 
@@ -205,7 +212,7 @@ contract('muKgl Rewards', async (accounts) => {
 
     // deposit all
     await booster.depositAll(0, true, { from: userA })
-    // ----- works normally here -----
+    console.log('--- deposited lp tokens ---')
     await rewardPool
       .balanceOf(userA)
       .then((a) => console.log('deposited lp: ' + a))
@@ -215,7 +222,8 @@ contract('muKgl Rewards', async (accounts) => {
     await rewardPool
       .earned(userA)
       .then((a) => console.log('rewards earned(unclaimed): ' + a))
-    console.log('deposited lp tokens')
+    console.log('--- confirmed - deposited lp tokens ---')
+    // ----- works normally here -----
 
     //exchange for kgl
     await weth.sendTransaction({
