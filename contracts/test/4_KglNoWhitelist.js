@@ -131,16 +131,20 @@ const setupContracts = async (account) => {
   await booster.setFeeInfo()
 
   await poolManager.addPool(threeKglToken.address, kaglaGauge.address, 0)
-  const rewardPoolAddress = (await booster.poolInfo(0)).kglRewards
-  const kglRewardsPool = await BaseRewardPool.at(rewardPoolAddress)
+  const kglRewardPoolAddress = (await booster.poolInfo(0)).kglRewards
+  const kglRewardsPool = await BaseRewardPool.at(kglRewardPoolAddress)
 
   return {
     kglToken,
     threeKglToken,
+    muuuToken,
     muKglToken,
+    kaglaVoterProxy,
     kglDepositor,
     booster,
+    kglRewardPoolAddress,
     kglRewardsPool,
+    boosterStakerRewards: await booster.stakerRewards(),
     baseRewardPool,
   }
 }
@@ -161,10 +165,14 @@ contract('muKgl Rewards', async (accounts) => {
     const {
       kglToken: kgl,
       threeKglToken: threeKgl,
+      muuuToken: muuu,
       muKglToken: muKgl,
+      kaglaVoterProxy: voteproxy,
       kglDepositor: kglDeposit,
       booster,
+      kglRewardPoolAddress: muKglRewards,
       kglRewardsPool: rewardPool,
+      boosterStakerRewards: muuuRewards,
       baseRewardPool: muKglRewardsContract,
     } = await setupContracts()
     let userA = accounts[1]
@@ -304,7 +312,7 @@ contract('muKgl Rewards', async (accounts) => {
     //distribute rewards
     await booster.earmarkRewards(0, { from: caller })
     console.log('earmark')
-    // ----- works normally here -----
+
     await kgl
       .balanceOf(voteproxy.address)
       .then((a) => console.log('proxy kgl(==0): ' + a))
