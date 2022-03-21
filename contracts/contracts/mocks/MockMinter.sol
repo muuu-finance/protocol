@@ -5,6 +5,8 @@ pragma solidity 0.6.12;
 // refs
 // - https://github.com/curvefi/curve-dao-contracts/blob/master/contracts/Minter.vy
 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 interface IMintableERC20 {
   function mint(uint256 value) external returns (bool);
 }
@@ -25,7 +27,8 @@ contract MockMinter {
   }
 
   function _mint(address _gaugeAddr, address _for) internal {
-    uint256 to_mint = 10000;
+    uint256 to_mint = 100000000000000000000;
     IMintableERC20(token).mint(to_mint);
+    IERC20(token).transfer(_for, to_mint);
   }
 }
