@@ -27,7 +27,7 @@ contract MockMinter {
   }
 
   function _mint(address _gaugeAddr, address _for) internal {
-    uint256 to_mint = 10000;
+    uint256 to_mint = 100000000000000000000;
     IMintableERC20(token).mint(to_mint);
     IERC20(token).transfer(_for, to_mint);
   }
