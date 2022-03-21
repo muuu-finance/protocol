@@ -37,7 +37,7 @@ const setupContracts = async () => {
 
   const addressProvider = await MockAddressProvider.new(
     (
-      await MockRegistry.new(threeKglToken.address)
+      await MockRegistry.new(ZERO_ADDRESS, ZERO_ADDRESS, threeKglToken.address)
     ).address,
     (
       await MockFeeDistributor.new(threeKglToken.address)
@@ -52,7 +52,10 @@ const setupContracts = async () => {
   )
   await kaglaVoterProxy.setOperator(booster.address)
 
-  const rewardFactory = await RewardFactory.new(booster.address)
+  const rewardFactory = await RewardFactory.new(
+    booster.address,
+    kglToken.address,
+  )
   await booster.setFactories(
     rewardFactory.address,
     (
