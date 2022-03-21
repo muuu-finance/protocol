@@ -196,12 +196,15 @@ contract('RewardsTest', async (accounts) => {
     await time.latestBlock().then((a) => console.log('current block: ' + a))
 
     // mint 3kgl to UseA
-    await threeKglToken.mint(web3.utils.toWei('100', 'ether'), { from: userA })
+    await threeKglToken.mint(web3.utils.toWei('100', 'ether'), {
+      from: userA,
+    })
     const startingThreeKgl = await threeKglToken.balanceOf(userA)
     console.log('UserA 3kgl: ' + startingThreeKgl)
 
     //mint muuu to user b to stake
-    await muuu.mint(userB, web3.utils.toWei('100', 'ether'))
+    await muuu.mint(admin, '50000000000000000000000000')
+    await muuu.transfer(userB, web3.utils.toWei('100', 'ether'))
     const muuuBalance = await muuu.balanceOf(userB)
     console.log('UserB muuu: ' + muuuBalance)
     await muuu.approve(muuuRewardsContract.address, muuuBalance, {
@@ -300,22 +303,37 @@ contract('RewardsTest', async (accounts) => {
       .earned(userA)
       .then((a) => console.log('rewards earned(should still be 0): ' + a))
 
-    await time.increase(86400)
+    await time.increase(time.duration.days(10))
     await time.advanceBlock()
     console.log('advance time...')
     await time.latest().then((a) => console.log('current block time: ' + a))
     await time.latestBlock().then((a) => console.log('current block: ' + a))
 
+    await kglRewardPool
+      .totalSupply()
+      .then((a) => console.log('kglRewardPool totalSupply: ' + a))
+    await kglRewardPool
+      .rewardPerToken()
+      .then((a) => console.log('kglRewardPool rewardPerToken: ' + a))
+    await kglRewardPool.rewardRate
+      .call()
+      .then((e) => console.log('kglRewardPool rewardRate: ' + e))
+    await kglRewardPool.lastUpdateTime
+      .call()
+      .then((e) => console.log('kglRewardPool lastUpdateTime: ' + e))
+
     //should now have earned amount
     await kglRewardPool
       .earned(userA)
-      .then((a) => console.log('rewards earned(unclaimed): ' + a))
+      .then((a) => console.log('UserA rewards earned(not zero): ' + a))
 
     //claim reward, should receive kgl and muuu (muuu should be about half)
     await kglRewardPool.getReward({ from: userA })
     console.log('getReward()')
+
     await kgl.balanceOf(userA).then((a) => console.log('userA kgl: ' + a))
     await muuu.balanceOf(userA).then((a) => console.log('userA muuu: ' + a))
+
     await kgl
       .balanceOf(kglRewardPool.address)
       .then((a) => console.log('rewards left: ' + a))
