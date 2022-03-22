@@ -12,6 +12,7 @@ const TokenFactory = artifacts.require('TokenFactory')
 const PoolManager = artifacts.require('PoolManager')
 
 const MockVotingEscrow = artifacts.require('MockKaglaVoteEscrow')
+const MockKaglaGauge = artifacts.require('MockKaglaGauge')
 const MockRegistry = artifacts.require('MockKaglaRegistry')
 const MockFeeDistributor = artifacts.require('MockKaglaFeeDistributor')
 const MockAddressProvider = artifacts.require('MockKaglaAddressProvider')
@@ -35,9 +36,14 @@ const setupContracts = async () => {
     18,
   )
 
+  const threeKaglaGauge = await await MockKaglaGauge.new(threeKglToken.address)
   const addressProvider = await MockAddressProvider.new(
     (
-      await MockRegistry.new(threeKglToken.address)
+      await MockRegistry.new(
+        threeKglToken.address, // temp address
+        threeKaglaGauge.address,
+        threeKglToken.address,
+      )
     ).address,
     (
       await MockFeeDistributor.new(threeKglToken.address)
@@ -52,7 +58,10 @@ const setupContracts = async () => {
   )
   await kaglaVoterProxy.setOperator(booster.address)
 
-  const rewardFactory = await RewardFactory.new(booster.address)
+  const rewardFactory = await RewardFactory.new(
+    booster.address,
+    kglToken.address,
+  )
   await booster.setFactories(
     rewardFactory.address,
     (
@@ -77,17 +86,12 @@ const setupContracts = async () => {
   )
   await booster.setPoolManager(poolManager.address)
 
-  const threeKglGauge = '0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A' // dummy
-  const threeKglSwap = '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7' // dummy
-  await poolManager.addPool(
-    // TODO: remove Kagla address, use test or mock address
-    threeKglSwap /** 3Pool address */,
-    threeKglGauge /** 3Pool Gauge address */,
-    0,
-  )
+  await poolManager.addPool(threeKglToken.address, threeKaglaGauge.address, 0)
 
   return {
+    kaglaVoterProxy,
     threeKglToken,
+    threeKaglaGauge,
     booster,
     baseRewardPool,
   }
@@ -96,7 +100,9 @@ const setupContracts = async () => {
 contract('Shutdown Test', async (accounts) => {
   it('should deposit, shutdown, withdraw, upgrade, redeposit', async () => {
     const {
+      kaglaVoterProxy: voteproxy,
       threeKglToken: threeKgl,
+      threeKaglaGauge: threeKglGauge
       booster,
       baseRewardPool: rewardPool,
     } = await setupContracts()
@@ -120,10 +126,9 @@ contract('Shutdown Test', async (accounts) => {
     console.log(`3kgl on wallet: ${await threeKgl.balanceOf(userA)}`)
     console.log(`deposited lp: ${await rewardPool.balanceOf(userA)}`)
     console.log(`3kgl at booster: ${await threeKgl.balanceOf(booster.address)}`)
-    // TODO: revert or remove (Consider in GaugeMock)
-    // await voteproxy
-    //   .balanceOfPool(threeKglGauge)
-    //   .then((a) => console.log('3kgl on gauge ' + a))
+    await voteproxy
+      .balanceOfPool(threeKglGauge.address)
+      .then((a) => console.log('3kgl on gauge ' + a))
 
     //shutdown, funds move back to booster(depositor)
     await booster.shutdownSystem({ from: admin })
@@ -131,10 +136,9 @@ contract('Shutdown Test', async (accounts) => {
     console.log(`3kgl on wallet: ${await threeKgl.balanceOf(userA)}`)
     console.log(`deposited lp: ${await rewardPool.balanceOf(userA)}`)
     console.log(`3kgl at booster: ${await threeKgl.balanceOf(booster.address)}`)
-    // TODO: revert or remove (Consider in GaugeMock)
-    // await voteproxy
-    //   .balanceOfPool(threeKglGauge)
-    //   .then((a) => console.log('3kgl on gauge ' + a))
+    await voteproxy
+      .balanceOfPool(threeKglGauge.address)
+      .then((a) => console.log('3kgl on gauge ' + a))
 
     //try to deposit while in shutdown state, will revert
     console.log('try deposit again')
@@ -148,12 +152,11 @@ contract('Shutdown Test', async (accounts) => {
     console.log(`3kgl on wallet: ${await threeKgl.balanceOf(userA)}`)
     console.log(`deposited lp: ${await rewardPool.balanceOf(userA)}`)
     console.log(`3kgl at booster: ${await threeKgl.balanceOf(booster.address)}`)
-    // TODO: revert or remove (Consider in GaugeMock)
-    // await voteproxy
-    //   .balanceOfPool(threeKglGauge)
-    //   .then((a) => console.log('3kgl on gauge ' + a))
+    await voteproxy
+      .balanceOfPool(threeKglGauge.address)
+      .then((a) => console.log('3kgl on gauge ' + a))
 
-    // TODO:
+    // WANT:
     //  relaunch the system and connect to voteproxy and muuu contracts
   })
 })
