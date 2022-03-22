@@ -36,12 +36,12 @@ const setupContracts = async () => {
     18,
   )
 
-  const kaglaGauge = await await MockKaglaGauge.new(threeKglToken.address)
+  const threeKaglaGauge = await await MockKaglaGauge.new(threeKglToken.address)
   const addressProvider = await MockAddressProvider.new(
     (
       await MockRegistry.new(
         threeKglToken.address, // temp address
-        kaglaGauge.address,
+        threeKaglaGauge.address,
         threeKglToken.address,
       )
     ).address,
@@ -86,10 +86,12 @@ const setupContracts = async () => {
   )
   await booster.setPoolManager(poolManager.address)
 
-  await poolManager.addPool(threeKglToken.address, kaglaGauge.address, 0)
+  await poolManager.addPool(threeKglToken.address, threeKaglaGauge.address, 0)
 
   return {
+    kaglaVoterProxy,
     threeKglToken,
+    threeKaglaGauge,
     booster,
     baseRewardPool,
   }
@@ -98,7 +100,9 @@ const setupContracts = async () => {
 contract('Shutdown Test', async (accounts) => {
   it('should deposit, shutdown, withdraw, upgrade, redeposit', async () => {
     const {
+      kaglaVoterProxy: voteproxy,
       threeKglToken: threeKgl,
+      threeKaglaGauge: threeKglGauge
       booster,
       baseRewardPool: rewardPool,
     } = await setupContracts()
@@ -122,10 +126,9 @@ contract('Shutdown Test', async (accounts) => {
     console.log(`3kgl on wallet: ${await threeKgl.balanceOf(userA)}`)
     console.log(`deposited lp: ${await rewardPool.balanceOf(userA)}`)
     console.log(`3kgl at booster: ${await threeKgl.balanceOf(booster.address)}`)
-    // TODO: revert or remove (Consider in GaugeMock)
-    // await voteproxy
-    //   .balanceOfPool(threeKglGauge)
-    //   .then((a) => console.log('3kgl on gauge ' + a))
+    await voteproxy
+      .balanceOfPool(threeKglGauge.address)
+      .then((a) => console.log('3kgl on gauge ' + a))
 
     //shutdown, funds move back to booster(depositor)
     await booster.shutdownSystem({ from: admin })
@@ -133,10 +136,9 @@ contract('Shutdown Test', async (accounts) => {
     console.log(`3kgl on wallet: ${await threeKgl.balanceOf(userA)}`)
     console.log(`deposited lp: ${await rewardPool.balanceOf(userA)}`)
     console.log(`3kgl at booster: ${await threeKgl.balanceOf(booster.address)}`)
-    // TODO: revert or remove (Consider in GaugeMock)
-    // await voteproxy
-    //   .balanceOfPool(threeKglGauge)
-    //   .then((a) => console.log('3kgl on gauge ' + a))
+    await voteproxy
+      .balanceOfPool(threeKglGauge.address)
+      .then((a) => console.log('3kgl on gauge ' + a))
 
     //try to deposit while in shutdown state, will revert
     console.log('try deposit again')
@@ -150,10 +152,9 @@ contract('Shutdown Test', async (accounts) => {
     console.log(`3kgl on wallet: ${await threeKgl.balanceOf(userA)}`)
     console.log(`deposited lp: ${await rewardPool.balanceOf(userA)}`)
     console.log(`3kgl at booster: ${await threeKgl.balanceOf(booster.address)}`)
-    // TODO: revert or remove (Consider in GaugeMock)
-    // await voteproxy
-    //   .balanceOfPool(threeKglGauge)
-    //   .then((a) => console.log('3kgl on gauge ' + a))
+    await voteproxy
+      .balanceOfPool(threeKglGauge.address)
+      .then((a) => console.log('3kgl on gauge ' + a))
 
     // TODO:
     //  relaunch the system and connect to voteproxy and muuu contracts
