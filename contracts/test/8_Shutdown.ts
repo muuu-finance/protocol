@@ -156,7 +156,7 @@ contract('Shutdown Test', async (accounts) => {
       .balanceOfPool(threeKglGauge.address)
       .then((a) => console.log('3kgl on gauge ' + a))
 
-    // TODO:
+    // WANT:
     //  relaunch the system and connect to voteproxy and muuu contracts
   })
 })
