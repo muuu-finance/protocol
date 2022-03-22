@@ -12,6 +12,7 @@ const TokenFactory = artifacts.require('TokenFactory')
 const PoolManager = artifacts.require('PoolManager')
 
 const MockVotingEscrow = artifacts.require('MockKaglaVoteEscrow')
+const MockKaglaGauge = artifacts.require('MockKaglaGauge')
 const MockRegistry = artifacts.require('MockKaglaRegistry')
 const MockFeeDistributor = artifacts.require('MockKaglaFeeDistributor')
 const MockAddressProvider = artifacts.require('MockKaglaAddressProvider')
@@ -35,9 +36,14 @@ const setupContracts = async () => {
     18,
   )
 
+  const kaglaGauge = await await MockKaglaGauge.new(threeKglToken.address)
   const addressProvider = await MockAddressProvider.new(
     (
-      await MockRegistry.new(ZERO_ADDRESS, ZERO_ADDRESS, threeKglToken.address)
+      await MockRegistry.new(
+        threeKglToken.address, // temp address
+        kaglaGauge.address,
+        threeKglToken.address,
+      )
     ).address,
     (
       await MockFeeDistributor.new(threeKglToken.address)
@@ -80,14 +86,7 @@ const setupContracts = async () => {
   )
   await booster.setPoolManager(poolManager.address)
 
-  const threeKglGauge = '0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A' // dummy
-  const threeKglSwap = '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7' // dummy
-  await poolManager.addPool(
-    // TODO: remove Kagla address, use test or mock address
-    threeKglSwap /** 3Pool address */,
-    threeKglGauge /** 3Pool Gauge address */,
-    0,
-  )
+  await poolManager.addPool(threeKglToken.address, kaglaGauge.address, 0)
 
   return {
     threeKglToken,
