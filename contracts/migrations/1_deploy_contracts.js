@@ -30,13 +30,6 @@ const ClaimZap = artifacts.require('ClaimZap')
 const VestedEscrow = artifacts.require('VestedEscrow')
 const MerkleAirdrop = artifacts.require('MerkleAirdrop')
 const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory')
-// ---- Mocks
-const MintableERC20 = artifacts.require('MintableERC20')
-const MockVotingEscrow = artifacts.require('MockKaglaVoteEscrow')
-const MockRegistry = artifacts.require('MockKaglaRegistry')
-const MockFeeDistributor = artifacts.require('MockKaglaFeeDistributor')
-const MockAddressProvider = artifacts.require('MockKaglaAddressProvider')
-const MockKaglaGauge = artifacts.require('MockKaglaGauge')
 // ---- Expansions
 const MuuuLockerV2 = artifacts.require('MuuuLockerV2')
 
@@ -154,17 +147,8 @@ module.exports = function (deployer, network, accounts) {
   // ---- expantions
   let muuuLockerV2
   // ---- mocks (tokens, kaglas)
-  const {
-    kgl,
-    weth,
-    dai,
-    threeKgl,
-    mockVotingEscrow,
-    mockRegistry,
-    mockFeeDistributor,
-    mockAddressProvider,
-    mockKaglaGauge,
-  } = loadDeployedMockAddresses(network)
+  const { threeKgl, mockVotingEscrow, mockAddressProvider, mockKaglaGauge } =
+    loadDeployedMockAddresses(network)
 
   const rewardsStart = Math.floor(Date.now() / 1000) + 3600
   const rewardsEnd = rewardsStart + 1 * 364 * 86400
