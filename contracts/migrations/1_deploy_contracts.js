@@ -59,8 +59,6 @@ const addContract = (group, name, value) =>
 const loadDeployedMockAddresses = (network) => {
   // TODO: consider network & select file
   const deployed = jsonfile.readFileSync(MOCK_CONTRACTS_INFO_JSON)
-  console.log(deployed)
-  console.log(deployed.kaglaMocks.votingEscrow)
   const {
     tokenMocks,
     kaglaMocks: {
@@ -147,8 +145,13 @@ module.exports = function (deployer, network, accounts) {
   // ---- expantions
   let muuuLockerV2
   // ---- mocks (tokens, kaglas)
-  const { threeKgl, mockVotingEscrow, mockAddressProvider, mockKaglaGauge } =
-    loadDeployedMockAddresses(network)
+  const {
+    kgl,
+    threeKgl,
+    mockVotingEscrow,
+    mockAddressProvider,
+    mockKaglaGauge,
+  } = loadDeployedMockAddresses(network)
 
   const rewardsStart = Math.floor(Date.now() / 1000) + 3600
   const rewardsEnd = rewardsStart + 1 * 364 * 86400
