@@ -36,15 +36,16 @@ const MockKaglaGauge = artifacts.require('MockKaglaGauge')
 
 const MuuuLockerV2 = artifacts.require('MuuuLockerV2')
 
+const CONTRACTS_INFO_JSON = './contracts.json'
 const resetContractAddressesJson = () => {
-  if (fs.existsSync('./contracts.json')) {
+  if (fs.existsSync(CONTRACTS_INFO_JSON)) {
     // TODO: evacuate original file to rename
   }
-  fs.writeFileSync('./contracts.json', JSON.stringify({}, null, 2))
+  fs.writeFileSync(CONTRACTS_INFO_JSON, JSON.stringify({}, null, 2))
 }
 
 const addContract = (group, name, value) =>
-  writeContractAddress(group, name, value, './contracts.json')
+  writeContractAddress(group, name, value, CONTRACTS_INFO_JSON)
 
 module.exports = function (deployer, network, accounts) {
   if (network === 'skipMigration') {
@@ -436,7 +437,7 @@ module.exports = function (deployer, network, accounts) {
         poolInfoList[i].id = i
         poolsContracts.push(poolInfoList[i])
       }
-      writeValueToGroup('pools', poolsContracts, './contracts.json')
+      writeValueToGroup('pools', poolsContracts, CONTRACTS_INFO_JSON)
     })
-    .then(() => console.log(readContractAddresses('./contracts.json')))
+    .then(() => console.log(readContractAddresses(CONTRACTS_INFO_JSON)))
 }
