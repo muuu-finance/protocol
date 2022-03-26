@@ -9,6 +9,10 @@ const {
 } = require('../utils/access_contracts_json')
 const distroList = jsonfile.readFileSync('./distro.json')
 
+// json file path to save deployed contracts' addresses
+const CONTRACTS_INFO_JSON = './contracts.json'
+const MOCK_CONTRACTS_INFO_JSON = './contract-mocks.json'
+
 // -- Contracts to use
 const Booster = artifacts.require('Booster')
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
@@ -26,18 +30,10 @@ const ClaimZap = artifacts.require('ClaimZap')
 const VestedEscrow = artifacts.require('VestedEscrow')
 const MerkleAirdrop = artifacts.require('MerkleAirdrop')
 const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory')
-// ---- Mocks
-const MintableERC20 = artifacts.require('MintableERC20')
-const MockVotingEscrow = artifacts.require('MockKaglaVoteEscrow')
-const MockRegistry = artifacts.require('MockKaglaRegistry')
-const MockFeeDistributor = artifacts.require('MockKaglaFeeDistributor')
-const MockAddressProvider = artifacts.require('MockKaglaAddressProvider')
-const MockKaglaGauge = artifacts.require('MockKaglaGauge')
 // ---- Expansions
 const MuuuLockerV2 = artifacts.require('MuuuLockerV2')
 
 // -- Functions
-const CONTRACTS_INFO_JSON = './contracts.json'
 const resetContractAddressesJson = () => {
   if (fs.existsSync(CONTRACTS_INFO_JSON)) {
     const folderName = 'tmp'
@@ -59,6 +55,34 @@ const resetContractAddressesJson = () => {
 }
 const addContract = (group, name, value) =>
   writeContractAddress(group, name, value, CONTRACTS_INFO_JSON)
+
+const loadDeployedMockAddresses = (network) => {
+  // TODO: consider network & select file
+  const deployed = jsonfile.readFileSync(MOCK_CONTRACTS_INFO_JSON)
+  const {
+    tokenMocks,
+    kaglaMocks: {
+      votingEscrow,
+      gauge,
+      feeDistributor,
+      registry,
+      addressProvider,
+    },
+  } = deployed
+
+  // NOTE: make return values by considering how to use in migration
+  return {
+    kgl: { address: tokenMocks['KGL'] },
+    weth: { address: tokenMocks['WETH'] },
+    dai: { address: tokenMocks['DAI'] },
+    threeKgl: { address: tokenMocks['3Kgl'] },
+    mockVotingEscrow: { address: votingEscrow },
+    mockRegistry: { address: registry },
+    mockFeeDistributor: { address: feeDistributor },
+    mockAddressProvider: { address: addressProvider },
+    mockKaglaGauge: { address: gauge },
+  }
+}
 
 // -- Main Script
 module.exports = function (deployer, network, accounts) {
@@ -118,16 +142,16 @@ module.exports = function (deployer, network, accounts) {
     arb,
     pools
   let muKglRewards, muuuRewards, airdrop, vesting
-  // ---- tokens
-  let kgl, weth, dai, threeKgl
   // ---- expantions
   let muuuLockerV2
-  // ---- mocks
-  let mockVotingEscrow,
-    mockRegistry,
-    mockFeeDistributor,
+  // ---- mocks (tokens, kaglas)
+  const {
+    kgl,
+    threeKgl,
+    mockVotingEscrow,
     mockAddressProvider,
-    mockKaglaGauge
+    mockKaglaGauge,
+  } = loadDeployedMockAddresses(network)
 
   const rewardsStart = Math.floor(Date.now() / 1000) + 3600
   const rewardsEnd = rewardsStart + 1 * 364 * 86400
@@ -142,76 +166,14 @@ module.exports = function (deployer, network, accounts) {
   // addContract("system","voteProxy",muuuVoterProxy);
   addContract('system', 'treasury', treasuryAddress)
 
+  // ========================== Preparation start ==========================
   deployer
-    // ========================== Preparation start ==========================
-    .deploy(MintableERC20, 'kgl', 'KGL', 18)
-    .then((instance) => {
-      kgl = instance
-      addContract('mocks', 'KGL', kgl.address)
-    })
-    .then(() => deployer.deploy(MintableERC20, 'weth', 'WETH', 18))
-    .then((instance) => {
-      weth = instance
-      addContract('mocks', 'WETH', weth.address)
-    })
-    .then(() => deployer.deploy(MintableERC20, 'dai', 'DAI', 18))
-    .then((instance) => {
-      dai = instance
-      addContract('mocks', 'DAI', dai.address)
-    })
-    .then(() =>
-      deployer.deploy(MintableERC20, '3Kgl', 'Kagla.fi DAI/USDC/USDT', 18),
-    )
-    .then((instance) => {
-      threeKgl = instance
-      addContract('mocks', '3Kgl', threeKgl.address)
-    })
-    .then(() => deployer.deploy(MockKaglaGauge, threeKgl.address))
-    .then((instance) => {
-      mockKaglaGauge = instance
-      addContract('mocks', 'mockKaglaGauge', mockKaglaGauge.address)
-    })
-    .then(() => deployer.deploy(MockVotingEscrow))
-    .then((instance) => {
-      mockVotingEscrow = instance
-      addContract('mocks', 'mockVotingEscrow', mockVotingEscrow.address)
-    })
-    .then(() =>
-      deployer.deploy(
-        MockRegistry,
-        threeKgl.address,
-        mockKaglaGauge.address,
-        threeKgl.address,
-      ),
-    )
-    .then((instance) => {
-      mockRegistry = instance
-      addContract('mocks', 'mockRegistry', mockRegistry.address)
-    })
-    .then(() => deployer.deploy(MockFeeDistributor, threeKgl.address))
-    .then((instance) => {
-      mockFeeDistributor = instance
-      addContract('mocks', 'mockFeeDistributor', mockFeeDistributor.address)
-    })
-    .then(() =>
-      deployer.deploy(
-        MockAddressProvider,
-        mockRegistry.address,
-        mockFeeDistributor.address,
-      ),
-    )
-    .then((instance) => {
-      mockAddressProvider = instance
-      addContract('mocks', 'mockAddressProvider', mockAddressProvider.address)
-    })
-    .then(() =>
-      deployer.deploy(
-        KaglaVoterProxy,
-        kgl.address,
-        mockVotingEscrow.address,
-        ZERO_ADDRESS, // TODO:
-        ZERO_ADDRESS, // TODO:
-      ),
+    .deploy(
+      KaglaVoterProxy,
+      kgl.address,
+      mockVotingEscrow.address,
+      ZERO_ADDRESS, // TODO:
+      ZERO_ADDRESS, // TODO:
     )
     .then((instance) => {
       voter = instance

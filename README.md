@@ -9,12 +9,14 @@
 # - global install truffle
 cd contracts
 
-# in local development
+# In local development (when using ganache cli)
 # Prerequisite
-# - install ganache & launch
-truffle migrate
+# - install ganache cli & launch
+yarn deploy:mocks-token:local
+yarn deploy:mocks-kagla:local
+yarn deploy:local
 
-# in global network
+# In global network
 touch .secret
 # & add mnemonic to .secret
 truffle migrate --network shibuya
