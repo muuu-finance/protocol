@@ -1,10 +1,15 @@
-const { time } = require('@openzeppelin/test-helpers')
-var fs = require('fs')
-var jsonfile = require('jsonfile')
-var BN = require('big-number')
+const fs = require('fs')
+const jsonfile = require('jsonfile')
+const BN = require('big-number')
 const { ZERO_ADDRESS } = require('@openzeppelin/test-helpers/src/constants')
-var distroList = jsonfile.readFileSync('./distro.json')
+const {
+  readContractAddresses,
+  writeContractAddress,
+  writeValueToGroup,
+} = require('../utils/access_contracts_json')
+const distroList = jsonfile.readFileSync('./distro.json')
 
+// -- Contracts to use
 const Booster = artifacts.require('Booster')
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
 const RewardFactory = artifacts.require('RewardFactory')
@@ -18,20 +23,44 @@ const BaseRewardPool = artifacts.require('BaseRewardPool')
 const muuuRewardPool = artifacts.require('MuuuRewardPool')
 const ArbitratorVault = artifacts.require('ArbitratorVault')
 const ClaimZap = artifacts.require('ClaimZap')
-const MuuuMasterChef = artifacts.require('MuuuMasterChef')
 const VestedEscrow = artifacts.require('VestedEscrow')
 const MerkleAirdrop = artifacts.require('MerkleAirdrop')
 const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory')
-// define Mocks
+// ---- Mocks
 const MintableERC20 = artifacts.require('MintableERC20')
 const MockVotingEscrow = artifacts.require('MockKaglaVoteEscrow')
 const MockRegistry = artifacts.require('MockKaglaRegistry')
 const MockFeeDistributor = artifacts.require('MockKaglaFeeDistributor')
 const MockAddressProvider = artifacts.require('MockKaglaAddressProvider')
 const MockKaglaGauge = artifacts.require('MockKaglaGauge')
-
+// ---- Expansions
 const MuuuLockerV2 = artifacts.require('MuuuLockerV2')
 
+// -- Functions
+const CONTRACTS_INFO_JSON = './contracts.json'
+const resetContractAddressesJson = () => {
+  if (fs.existsSync(CONTRACTS_INFO_JSON)) {
+    const folderName = 'tmp'
+    fs.mkdirSync(folderName, { recursive: true })
+    // get current datetime in this timezone
+    const date = new Date()
+    date.setTime(date.getTime() + 9 * 60 * 60 * 1000)
+    const strDate = date
+      .toISOString()
+      .replace(/(-|T|:)/g, '')
+      .substring(0, 14)
+    // rename current file
+    fs.renameSync(
+      CONTRACTS_INFO_JSON,
+      `${folderName}/contracts-old-${strDate}.json`,
+    )
+  }
+  fs.writeFileSync(CONTRACTS_INFO_JSON, JSON.stringify({}, null, 2))
+}
+const addContract = (group, name, value) =>
+  writeContractAddress(group, name, value, CONTRACTS_INFO_JSON)
+
+// -- Main Script
 module.exports = function (deployer, network, accounts) {
   if (network === 'skipMigration') {
     console.log(`Skip migration in ${network} network`)
@@ -50,33 +79,35 @@ module.exports = function (deployer, network, accounts) {
   // TODO: replace this with mock token addrress
   // const kgl = "0xD533a949740bb3306d119CC777fa900bA034cd52";
 
-  let admin = accounts[0]
+  const admin = accounts[0]
   console.log('deploying from: ' + admin)
-  var premine = new BN(0)
+  const premine = new BN(0)
   premine.add(distroList.lpincentives)
   premine.add(distroList.vekgl)
   premine.add(distroList.teammuuuLpSeed)
-  var vestedAddresses = distroList.vested.team.addresses.concat(
+  const vestedAddresses = distroList.vested.team.addresses.concat(
     distroList.vested.investor.addresses,
     distroList.vested.treasury.addresses,
   )
   // console.log("vested addresses: " +vestedAddresses.toString())
-  var vestedAmounts = distroList.vested.team.amounts.concat(
+  const vestedAmounts = distroList.vested.team.amounts.concat(
     distroList.vested.investor.amounts,
     distroList.vested.treasury.amounts,
   )
   //console.log("vested amounts: " +vestedAmounts.toString())
-  var totalVested = new BN(0)
+  const totalVested = new BN(0)
   for (var i in vestedAmounts) {
     totalVested.add(vestedAmounts[i])
   }
   console.log('total vested: ' + totalVested.toString())
   premine.add(totalVested)
   console.log('total muuu premine: ' + premine.toString())
-  var totaldistro = new BN(premine).add(distroList.miningRewards)
+  const totaldistro = new BN(premine).add(distroList.miningRewards)
   console.log('total muuu: ' + totaldistro.toString())
 
-  var booster,
+  // -- Variable declarations
+  // ---- contracts
+  let booster,
     voter,
     rFactory,
     sFactory,
@@ -86,40 +117,27 @@ module.exports = function (deployer, network, accounts) {
     deposit,
     arb,
     pools
-  var kglToken
-  var muKglRewards, muuuRewards, airdrop, vesting
-  var pairToken
-  var kgldepositAmt, kglbal, muKglBal
-  var kgl, weth, dai, threeKgl
-  var muuuVoterProxy
-  var muuuLockerV2
-
+  let muKglRewards, muuuRewards, airdrop, vesting
+  // ---- tokens
+  let kgl, weth, dai, threeKgl
+  // ---- expantions
+  let muuuLockerV2
+  // ---- mocks
   let mockVotingEscrow,
     mockRegistry,
     mockFeeDistributor,
     mockAddressProvider,
     mockKaglaGauge
 
-  var rewardsStart = Math.floor(Date.now() / 1000) + 3600
-  var rewardsEnd = rewardsStart + 1 * 364 * 86400
+  const rewardsStart = Math.floor(Date.now() / 1000) + 3600
+  const rewardsEnd = rewardsStart + 1 * 364 * 86400
 
-  var contractList = {}
-  var systemContracts = {}
-  var poolsContracts = []
-  var poolNames = []
-  contractList['system'] = systemContracts
-  contractList['pools'] = poolsContracts
-  contractList['mocks'] = {}
+  // for save pool infos to json
+  const poolsContracts = []
+  const poolNames = []
 
-  var addContract = function (group, name, value) {
-    contractList[group][name] = value
-    var contractListOutput = JSON.stringify(contractList, null, 4)
-    fs.writeFileSync('contracts.json', contractListOutput, function (err) {
-      if (err) {
-        return console.log('Error writing file: ' + err)
-      }
-    })
-  }
+  // reset json to have deployed contracts' addresses
+  resetContractAddressesJson()
 
   // addContract("system","voteProxy",muuuVoterProxy);
   addContract('system', 'treasury', treasuryAddress)
@@ -412,16 +430,16 @@ module.exports = function (deployer, network, accounts) {
 
     .then(() => booster.poolLength())
     .then((poolCount) => {
-      var pList = []
-      for (var i = 0; i < poolCount; i++) {
+      const pList = []
+      for (let i = 0; i < poolCount; i++) {
         pList.push(booster.poolInfo(i))
       }
-      //var pinfo = await booster.poolInfo(0)
+      //const pinfo = await booster.poolInfo(0)
       return Promise.all(pList)
     })
     .then((poolInfoList) => {
       //console.log("poolInfo: " +JSON.stringify(poolInfoList));
-      for (var i = 0; i < poolInfoList.length; i++) {
+      for (let i = 0; i < poolInfoList.length; i++) {
         delete poolInfoList[i]['0']
         delete poolInfoList[i]['1']
         delete poolInfoList[i]['2']
@@ -429,23 +447,15 @@ module.exports = function (deployer, network, accounts) {
         delete poolInfoList[i]['4']
         delete poolInfoList[i]['5']
         delete poolInfoList[i]['shutdown']
-        var kglrewards = poolInfoList[i]['kglRewards']
-        var rewardList = []
+        const kglrewards = poolInfoList[i]['kglRewards']
+        const rewardList = []
         rewardList.push({ rToken: kgl.address, rAddress: kglrewards })
         poolInfoList[i].rewards = rewardList
         poolInfoList[i].name = poolNames[i]
         poolInfoList[i].id = i
         poolsContracts.push(poolInfoList[i])
       }
+      writeValueToGroup('pools', poolsContracts, CONTRACTS_INFO_JSON)
     })
-
-    .then(() => {
-      var contractListOutput = JSON.stringify(contractList, null, 4)
-      console.log(contractListOutput)
-      fs.writeFileSync('contracts.json', contractListOutput, function (err) {
-        if (err) {
-          return console.log('Error writing file: ' + err)
-        }
-      })
-    })
+    .then(() => console.log(readContractAddresses(CONTRACTS_INFO_JSON)))
 }
