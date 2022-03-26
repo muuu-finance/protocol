@@ -36,6 +36,16 @@ const MockKaglaGauge = artifacts.require('MockKaglaGauge')
 
 const MuuuLockerV2 = artifacts.require('MuuuLockerV2')
 
+const resetContractAddressesJson = () => {
+  if (fs.existsSync('./contracts.json')) {
+    // TODO: evacuate original file to rename
+  }
+  fs.writeFileSync('./contracts.json', JSON.stringify({}, null, 2))
+}
+
+const addContract = (group, name, value) =>
+  writeContractAddress(group, name, value, './contracts.json')
+
 module.exports = function (deployer, network, accounts) {
   if (network === 'skipMigration') {
     console.log(`Skip migration in ${network} network`)
@@ -106,17 +116,6 @@ module.exports = function (deployer, network, accounts) {
   // for save pool infos to json
   const poolsContracts = []
   const poolNames = []
-
-  const resetContractAddressesJson = function () {
-    if (fs.existsSync('./contracts.json')) {
-      // TODO: evacuate original file to rename
-    }
-    fs.writeFileSync('./contracts.json', JSON.stringify({}, null, 2))
-  }
-
-  const addContract = function (group, name, value) {
-    writeContractAddress(group, name, value, './contracts.json')
-  }
 
   // reset json to have deployed contracts' addresses
   resetContractAddressesJson()
