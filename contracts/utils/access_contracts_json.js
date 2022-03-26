@@ -1,8 +1,8 @@
 const fs = require('fs')
 const jsonfile = require('jsonfile')
-const FILE_NAME = './contracts.json'
+const DEFAULT_FILE_NAME = './contracts.json'
 
-const readContractAddresses = (fileName = FILE_NAME) =>
+const readContractAddresses = (fileName = DEFAULT_FILE_NAME) =>
   jsonfile.readFileSync(fileName)
 
 const _updateJson = (group, name, value, obj) => {
