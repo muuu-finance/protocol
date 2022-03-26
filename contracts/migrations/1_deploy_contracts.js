@@ -7,9 +7,9 @@ const {
   writeContractAddress,
   writeValueToGroup,
 } = require('../utils/access_contracts_json')
-
 const distroList = jsonfile.readFileSync('./distro.json')
 
+// -- Contracts to use
 const Booster = artifacts.require('Booster')
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
 const RewardFactory = artifacts.require('RewardFactory')
@@ -26,16 +26,17 @@ const ClaimZap = artifacts.require('ClaimZap')
 const VestedEscrow = artifacts.require('VestedEscrow')
 const MerkleAirdrop = artifacts.require('MerkleAirdrop')
 const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory')
-// define Mocks
+// ---- Mocks
 const MintableERC20 = artifacts.require('MintableERC20')
 const MockVotingEscrow = artifacts.require('MockKaglaVoteEscrow')
 const MockRegistry = artifacts.require('MockKaglaRegistry')
 const MockFeeDistributor = artifacts.require('MockKaglaFeeDistributor')
 const MockAddressProvider = artifacts.require('MockKaglaAddressProvider')
 const MockKaglaGauge = artifacts.require('MockKaglaGauge')
-
+// ---- Expansions
 const MuuuLockerV2 = artifacts.require('MuuuLockerV2')
 
+// -- Functions
 const CONTRACTS_INFO_JSON = './contracts.json'
 const resetContractAddressesJson = () => {
   if (fs.existsSync(CONTRACTS_INFO_JSON)) {
@@ -43,10 +44,10 @@ const resetContractAddressesJson = () => {
   }
   fs.writeFileSync(CONTRACTS_INFO_JSON, JSON.stringify({}, null, 2))
 }
-
 const addContract = (group, name, value) =>
   writeContractAddress(group, name, value, CONTRACTS_INFO_JSON)
 
+// -- Main Script
 module.exports = function (deployer, network, accounts) {
   if (network === 'skipMigration') {
     console.log(`Skip migration in ${network} network`)
@@ -91,6 +92,8 @@ module.exports = function (deployer, network, accounts) {
   const totaldistro = new BN(premine).add(distroList.miningRewards)
   console.log('total muuu: ' + totaldistro.toString())
 
+  // -- Variable declarations
+  // ---- contracts
   let booster,
     voter,
     rFactory,
@@ -102,9 +105,11 @@ module.exports = function (deployer, network, accounts) {
     arb,
     pools
   let muKglRewards, muuuRewards, airdrop, vesting
+  // ---- tokens
   let kgl, weth, dai, threeKgl
+  // ---- expantions
   let muuuLockerV2
-
+  // ---- mocks
   let mockVotingEscrow,
     mockRegistry,
     mockFeeDistributor,
