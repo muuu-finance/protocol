@@ -3,6 +3,8 @@
     "generate-types": "typechain --target=truffle-v5 'build/contracts/*.json'",
     "postinstall": "truffle compile && npm run generate-types",
     "deploy": "truffle migrate --network ganachecli --skip-dry-run",
+    "deploy:mocks-token": "truffle exec scripts/deploy_token_mocks.js",
+    "deploy:mocks-kagla": "truffle exec scripts/deploy_kagla_mocks.js",
     "test": "npm run postinstall && truffle test --stacktrace-extra",
     "test:light": "truffle test --stacktrace-extra --network ganachecli --compile-none",
     "prettier:check": "prettier -c 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'",
