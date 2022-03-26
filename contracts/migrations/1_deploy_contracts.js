@@ -3,6 +3,12 @@ var fs = require('fs')
 var jsonfile = require('jsonfile')
 var BN = require('big-number')
 const { ZERO_ADDRESS } = require('@openzeppelin/test-helpers/src/constants')
+const {
+  readContractAddresses,
+  writeContractAddress,
+  writeValueToGroup,
+} = require('../utils/access_contracts_json')
+
 var distroList = jsonfile.readFileSync('./distro.json')
 
 const Booster = artifacts.require('Booster')
@@ -111,15 +117,19 @@ module.exports = function (deployer, network, accounts) {
   contractList['pools'] = poolsContracts
   contractList['mocks'] = {}
 
-  var addContract = function (group, name, value) {
-    contractList[group][name] = value
-    var contractListOutput = JSON.stringify(contractList, null, 4)
-    fs.writeFileSync('contracts.json', contractListOutput, function (err) {
-      if (err) {
-        return console.log('Error writing file: ' + err)
-      }
-    })
+  var resetContractAddressesJson = function () {
+    if (fs.existsSync('./contracts.json')) {
+      // TODO: evacuate original file to rename
+    }
+    fs.writeFileSync('./contracts.json', JSON.stringify({}, null, 2))
   }
+
+  var addContract = function (group, name, value) {
+    writeContractAddress(group, name, value, './contracts.json')
+  }
+
+  // reset json to have deployed contracts' addresses
+  resetContractAddressesJson()
 
   // addContract("system","voteProxy",muuuVoterProxy);
   addContract('system', 'treasury', treasuryAddress)
@@ -437,15 +447,7 @@ module.exports = function (deployer, network, accounts) {
         poolInfoList[i].id = i
         poolsContracts.push(poolInfoList[i])
       }
+      writeValueToGroup('pools', poolsContracts, './contracts.json')
     })
-
-    .then(() => {
-      var contractListOutput = JSON.stringify(contractList, null, 4)
-      console.log(contractListOutput)
-      fs.writeFileSync('contracts.json', contractListOutput, function (err) {
-        if (err) {
-          return console.log('Error writing file: ' + err)
-        }
-      })
-    })
+    .then(() => console.log(readContractAddresses('./contracts.json')))
 }
