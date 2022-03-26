@@ -20,7 +20,7 @@ const writeContractAddress = (group, name, value, fileName) => {
     const base = jsonfile.readFileSync(fileName)
     _updateJson(group, name, value, base)
     const output = JSON.stringify(base, null, 2)
-    fs.writeFileSync(fileName, output, function (err) {
+    fs.writeFileSync(fileName, output, (err) => {
       if (err) {
         return console.log('Error writing file: ' + err)
       }
@@ -35,7 +35,7 @@ const writeValueToGroup = (group, value, fileName) => {
     const base = jsonfile.readFileSync(fileName)
     _updateJson(group, null, value, base)
     const output = JSON.stringify(base, null, 2)
-    fs.writeFileSync(fileName, output, function (err) {
+    fs.writeFileSync(fileName, output, (err) => {
       if (err) {
         return console.log('Error writing file: ' + err)
       }
