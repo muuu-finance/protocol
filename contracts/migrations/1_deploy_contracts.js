@@ -40,7 +40,20 @@ const MuuuLockerV2 = artifacts.require('MuuuLockerV2')
 const CONTRACTS_INFO_JSON = './contracts.json'
 const resetContractAddressesJson = () => {
   if (fs.existsSync(CONTRACTS_INFO_JSON)) {
-    // TODO: evacuate original file to rename
+    const folderName = 'tmp'
+    fs.mkdirSync(folderName, { recursive: true })
+    // get current datetime in this timezone
+    const date = new Date()
+    date.setTime(date.getTime() + 9 * 60 * 60 * 1000)
+    const strDate = date
+      .toISOString()
+      .replace(/(-|T|:)/g, '')
+      .substring(0, 14)
+    // rename current file
+    fs.renameSync(
+      CONTRACTS_INFO_JSON,
+      `${folderName}/contracts-old-${strDate}.json`,
+    )
   }
   fs.writeFileSync(CONTRACTS_INFO_JSON, JSON.stringify({}, null, 2))
 }
