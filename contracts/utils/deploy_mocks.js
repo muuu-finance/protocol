@@ -48,7 +48,7 @@ const deployWethToken = async ({ deployer, artifacts }) =>
     artifacts: artifacts,
   })
 
-// Curve
+// Kagla
 const deployMockKaglaGauge = async ({
   threeKglTokenAddress,
   deployer,

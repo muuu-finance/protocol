@@ -13,6 +13,7 @@ const {
 } = require('../utils/access_contracts_json')
 
 const FILE_PATH = './contract-mocks.json'
+const GROUP = 'kaglaMocks'
 module.exports = async (callback) => {
   const deployedMocks = jsonfile.readFileSync(FILE_PATH)
   const threeKglTokenAddress = deployedMocks.mocks['3Kgl']
@@ -54,7 +55,7 @@ module.exports = async (callback) => {
     { key: 'addressProvider', contract: addressProvider },
   ]
   for (let info of deployedInfos) {
-    writeContractAddress('mocks', info.key, info.contract.address, FILE_PATH)
+    writeContractAddress(GROUP, info.key, info.contract.address, FILE_PATH)
   }
   console.log(`> addresses in ${FILE_PATH}`)
   console.log(readContractAddresses(FILE_PATH))

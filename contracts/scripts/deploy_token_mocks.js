@@ -11,6 +11,7 @@ const {
 } = require('../utils/access_contracts_json')
 
 const FILE_PATH = './contract-mocks.json'
+const GROUP = 'tokenMocks'
 module.exports = async (callback) => {
   console.log(`--- START ---`)
   const [deployer] = await web3.eth.getAccounts()
@@ -34,7 +35,7 @@ module.exports = async (callback) => {
     console.log(`symbol: ${symbol}`)
     console.log(`decimal: ${(await token.decimals()).toString()}`)
     console.log(`- - - - - -`)
-    writeContractAddress('mocks', symbol, token.address, FILE_PATH)
+    writeContractAddress(GROUP, symbol, token.address, FILE_PATH)
   }
   console.log(`> addresses in ${FILE_PATH}`)
   console.log(readContractAddresses(FILE_PATH))
