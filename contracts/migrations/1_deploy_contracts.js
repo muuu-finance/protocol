@@ -1,6 +1,6 @@
-var fs = require('fs')
-var jsonfile = require('jsonfile')
-var BN = require('big-number')
+const fs = require('fs')
+const jsonfile = require('jsonfile')
+const BN = require('big-number')
 const { ZERO_ADDRESS } = require('@openzeppelin/test-helpers/src/constants')
 const {
   readContractAddresses,
@@ -8,7 +8,7 @@ const {
   writeValueToGroup,
 } = require('../utils/access_contracts_json')
 
-var distroList = jsonfile.readFileSync('./distro.json')
+const distroList = jsonfile.readFileSync('./distro.json')
 
 const Booster = artifacts.require('Booster')
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
@@ -54,33 +54,33 @@ module.exports = function (deployer, network, accounts) {
   // TODO: replace this with mock token addrress
   // const kgl = "0xD533a949740bb3306d119CC777fa900bA034cd52";
 
-  let admin = accounts[0]
+  const admin = accounts[0]
   console.log('deploying from: ' + admin)
-  var premine = new BN(0)
+  const premine = new BN(0)
   premine.add(distroList.lpincentives)
   premine.add(distroList.vekgl)
   premine.add(distroList.teammuuuLpSeed)
-  var vestedAddresses = distroList.vested.team.addresses.concat(
+  const vestedAddresses = distroList.vested.team.addresses.concat(
     distroList.vested.investor.addresses,
     distroList.vested.treasury.addresses,
   )
   // console.log("vested addresses: " +vestedAddresses.toString())
-  var vestedAmounts = distroList.vested.team.amounts.concat(
+  const vestedAmounts = distroList.vested.team.amounts.concat(
     distroList.vested.investor.amounts,
     distroList.vested.treasury.amounts,
   )
   //console.log("vested amounts: " +vestedAmounts.toString())
-  var totalVested = new BN(0)
+  const totalVested = new BN(0)
   for (var i in vestedAmounts) {
     totalVested.add(vestedAmounts[i])
   }
   console.log('total vested: ' + totalVested.toString())
   premine.add(totalVested)
   console.log('total muuu premine: ' + premine.toString())
-  var totaldistro = new BN(premine).add(distroList.miningRewards)
+  const totaldistro = new BN(premine).add(distroList.miningRewards)
   console.log('total muuu: ' + totaldistro.toString())
 
-  var booster,
+  let booster,
     voter,
     rFactory,
     sFactory,
@@ -90,9 +90,9 @@ module.exports = function (deployer, network, accounts) {
     deposit,
     arb,
     pools
-  var muKglRewards, muuuRewards, airdrop, vesting
-  var kgl, weth, dai, threeKgl
-  var muuuLockerV2
+  let muKglRewards, muuuRewards, airdrop, vesting
+  let kgl, weth, dai, threeKgl
+  let muuuLockerV2
 
   let mockVotingEscrow,
     mockRegistry,
@@ -100,25 +100,21 @@ module.exports = function (deployer, network, accounts) {
     mockAddressProvider,
     mockKaglaGauge
 
-  var rewardsStart = Math.floor(Date.now() / 1000) + 3600
-  var rewardsEnd = rewardsStart + 1 * 364 * 86400
+  const rewardsStart = Math.floor(Date.now() / 1000) + 3600
+  const rewardsEnd = rewardsStart + 1 * 364 * 86400
 
-  var contractList = {}
-  var systemContracts = {}
-  var poolsContracts = []
-  var poolNames = []
-  contractList['system'] = systemContracts
-  contractList['pools'] = poolsContracts
-  contractList['mocks'] = {}
+  // for save pool infos to json
+  const poolsContracts = []
+  const poolNames = []
 
-  var resetContractAddressesJson = function () {
+  const resetContractAddressesJson = function () {
     if (fs.existsSync('./contracts.json')) {
       // TODO: evacuate original file to rename
     }
     fs.writeFileSync('./contracts.json', JSON.stringify({}, null, 2))
   }
 
-  var addContract = function (group, name, value) {
+  const addContract = function (group, name, value) {
     writeContractAddress(group, name, value, './contracts.json')
   }
 
@@ -416,16 +412,16 @@ module.exports = function (deployer, network, accounts) {
 
     .then(() => booster.poolLength())
     .then((poolCount) => {
-      var pList = []
-      for (var i = 0; i < poolCount; i++) {
+      const pList = []
+      for (let i = 0; i < poolCount; i++) {
         pList.push(booster.poolInfo(i))
       }
-      //var pinfo = await booster.poolInfo(0)
+      //const pinfo = await booster.poolInfo(0)
       return Promise.all(pList)
     })
     .then((poolInfoList) => {
       //console.log("poolInfo: " +JSON.stringify(poolInfoList));
-      for (var i = 0; i < poolInfoList.length; i++) {
+      for (let i = 0; i < poolInfoList.length; i++) {
         delete poolInfoList[i]['0']
         delete poolInfoList[i]['1']
         delete poolInfoList[i]['2']
@@ -433,8 +429,8 @@ module.exports = function (deployer, network, accounts) {
         delete poolInfoList[i]['4']
         delete poolInfoList[i]['5']
         delete poolInfoList[i]['shutdown']
-        var kglrewards = poolInfoList[i]['kglRewards']
-        var rewardList = []
+        const kglrewards = poolInfoList[i]['kglRewards']
+        const rewardList = []
         rewardList.push({ rToken: kgl.address, rAddress: kglrewards })
         poolInfoList[i].rewards = rewardList
         poolInfoList[i].name = poolNames[i]
