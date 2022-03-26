@@ -1,4 +1,3 @@
-const { time } = require('@openzeppelin/test-helpers')
 var fs = require('fs')
 var jsonfile = require('jsonfile')
 var BN = require('big-number')
@@ -24,7 +23,6 @@ const BaseRewardPool = artifacts.require('BaseRewardPool')
 const muuuRewardPool = artifacts.require('MuuuRewardPool')
 const ArbitratorVault = artifacts.require('ArbitratorVault')
 const ClaimZap = artifacts.require('ClaimZap')
-const MuuuMasterChef = artifacts.require('MuuuMasterChef')
 const VestedEscrow = artifacts.require('VestedEscrow')
 const MerkleAirdrop = artifacts.require('MerkleAirdrop')
 const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory')
@@ -92,12 +90,8 @@ module.exports = function (deployer, network, accounts) {
     deposit,
     arb,
     pools
-  var kglToken
   var muKglRewards, muuuRewards, airdrop, vesting
-  var pairToken
-  var kgldepositAmt, kglbal, muKglBal
   var kgl, weth, dai, threeKgl
-  var muuuVoterProxy
   var muuuLockerV2
 
   let mockVotingEscrow,
