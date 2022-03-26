@@ -16,7 +16,7 @@ const FILE_PATH = './contract-mocks.json'
 const GROUP = 'kaglaMocks'
 module.exports = async (callback) => {
   const deployedMocks = jsonfile.readFileSync(FILE_PATH)
-  const threeKglTokenAddress = deployedMocks.mocks['3Kgl']
+  const threeKglTokenAddress = deployedMocks.tokenMocks['3Kgl']
 
   console.log(`--- START ---`)
   const [deployer] = await web3.eth.getAccounts()
