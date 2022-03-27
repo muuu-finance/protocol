@@ -27,11 +27,20 @@ const etherscanAPI = fs.existsSync('.etherscanApi')
   ? fs.readFileSync('.etherscanApi').toString().trim()
   : ''
 
-const INFURA_PROJECT_ID = '' // if use Infura, set this parameter
 const BWARE_LABS_KEY = '' // if use BwareLabs for Astar, set this parameter
-const getAstarNetworkUrl = (networkName) => BWARE_LABS_KEY
-  ? `https://${networkName}-api.bwarelabs.com/${BWARE_LABS_KEY}`
-  : `https://rpc.${networkName === "astar" ? "astar" : `${networkName}.astar`}.network:8545`
+const getAstarNetworkUrl = (networkName) =>
+  BWARE_LABS_KEY
+    ? `https://${networkName}-api.bwarelabs.com/${BWARE_LABS_KEY}`
+    : `https://rpc.${
+        networkName === 'astar' ? 'astar' : `${networkName}.astar`
+      }.network:8545`
+
+const INFURA_KEY = '' // if use Infura, set this parameter
+const ALCHEMY_KEY = '' // if use Alchemy, set this parameter
+const getEthereumNetworkUrl = (networkName) =>
+  INFURA_KEY
+    ? `https://${networkName}.infura.io/v3/${INFURA_KEY}`
+    : `https://eth-${networkName}.alchemyapi.io/v2/${ALCHEMY_KEY}`
 
 module.exports = {
   /**
@@ -53,12 +62,12 @@ module.exports = {
     //
     development: {
       host: '127.0.0.1', // Localhost (default: none)
-      port: 7545, // Standard Ethereum port (default: none) -> use ganache
+      port: 8545, // Standard Ethereum port (default: none) -> use ganache
       network_id: '*', // Any network (default: none)
     },
     skipMigration: {
       host: '127.0.0.1',
-      port: 7545,
+      port: 8545,
       network_id: '*',
     },
     // Another network with more advanced options...
@@ -76,7 +85,7 @@ module.exports = {
       provider: () =>
         new HDWalletProvider(
           mnemonic,
-          `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+          `https://mainnet.infura.io/v3/${INFURA_KEY}`,
         ),
       network_id: 1,
       gas: 6721975,
@@ -84,30 +93,33 @@ module.exports = {
     },
     astar: {
       provider: () =>
-        new HDWalletProvider(
-          mnemonic,
-          getAstarNetworkUrl("astar"),
-        ),
+        new HDWalletProvider(mnemonic, getAstarNetworkUrl('astar')),
       network_id: 592,
-      gasPrice: 102 * 1000 * 1000 * 1000
+      gasPrice: 102 * 1000 * 1000 * 1000,
     },
     shiden: {
       provider: () =>
-        new HDWalletProvider(
-          mnemonic,
-          getAstarNetworkUrl("shiden"),
-        ),
+        new HDWalletProvider(mnemonic, getAstarNetworkUrl('shiden')),
       network_id: 336,
-      gasPrice: 102 * 1000 * 1000 * 1000
+      gasPrice: 102 * 1000 * 1000 * 1000,
     },
     shibuya: {
       provider: () =>
-        new HDWalletProvider(
-          mnemonic,
-          getAstarNetworkUrl("shibuya"),
-        ),
+        new HDWalletProvider(mnemonic, getAstarNetworkUrl('shibuya')),
       network_id: 81,
-      gasPrice: 102 * 1000 * 1000 * 1000
+      gasPrice: 102 * 1000 * 1000 * 1000,
+    },
+    rinkeby: {
+      provider: () =>
+        new HDWalletProvider(mnemonic, getEthereumNetworkUrl('rinkeby')),
+      network_id: 4,
+      gasPrice: 102 * 1000 * 1000 * 1000,
+    },
+    kovan: {
+      provider: () =>
+        new HDWalletProvider(mnemonic, getEthereumNetworkUrl('kovan')),
+      network_id: 42,
+      gasPrice: 102 * 1000 * 1000 * 1000,
     },
     // Useful for private networks
     // private: {
