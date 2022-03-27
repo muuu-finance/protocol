@@ -12,40 +12,50 @@ const {
   readContractAddresses,
 } = require('../utils/access_contracts_json')
 
-const FILE_PATH = './contract-mocks.json'
+const getFilePath = (network) => `./contract-mocks-${network}.json`
 const GROUP = 'kaglaMocks'
 module.exports = async (callback) => {
-  const deployedMocks = jsonfile.readFileSync(FILE_PATH)
+  const { network } = config
+  const filePath = getFilePath(network)
+  const deployedMocks = jsonfile.readFileSync(filePath)
   const threeKglTokenAddress = deployedMocks.tokenMocks['3Kgl']
 
   console.log(`--- START ---`)
   const [deployer] = await web3.eth.getAccounts()
+  console.log(`network name: ${network}`)
   console.log(`deployer address: ${deployer}`)
 
+  console.log(`--- start deployments ---`)
   const commonArgs = {
     deployer: deployer,
     artifacts: artifacts,
   }
   const votingEscrow = await deployMockKaglaVotingEscrow(commonArgs)
+  console.log(`> deployed votingEscrow`)
   const gauge = await deployMockKaglaGauge({
     threeKglTokenAddress: threeKglTokenAddress,
     ...commonArgs,
   })
+  console.log(`> deployed gauge`)
   const feeDistributor = await deployMockKaglaFeeDistributor({
     tokenAddress: threeKglTokenAddress,
     ...commonArgs,
   })
+  console.log(`> deployed feeDistributor`)
   const registry = await deployMockKaglaRegistry({
     pool: threeKglTokenAddress, // temporary
     gauge: gauge.address,
     lpToken: threeKglTokenAddress,
     ...commonArgs,
   })
+  console.log(`> deployed registry`)
   const addressProvider = await deployMockKaglaAddressProvider({
     registryAddress: registry.address,
     feeDistributorAddress: feeDistributor.address,
     ...commonArgs,
   })
+  console.log(`> deployed addressProvider`)
+  console.log(`--- finished deployments ---`)
 
   const deployedInfos = [
     { key: 'votingEscrow', contract: votingEscrow },
@@ -55,10 +65,10 @@ module.exports = async (callback) => {
     { key: 'addressProvider', contract: addressProvider },
   ]
   for (let info of deployedInfos) {
-    writeContractAddress(GROUP, info.key, info.contract.address, FILE_PATH)
+    writeContractAddress(GROUP, info.key, info.contract.address, filePath)
   }
-  console.log(`> addresses in ${FILE_PATH}`)
-  console.log(readContractAddresses(FILE_PATH))
+  console.log(`> addresses in ${filePath}`)
+  console.log(readContractAddresses(filePath))
   console.log(`--- FINISHED ---`)
   callback()
 }
