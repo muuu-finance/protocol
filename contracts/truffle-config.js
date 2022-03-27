@@ -63,12 +63,12 @@ module.exports = {
     //
     development: {
       host: '127.0.0.1', // Localhost (default: none)
-      port: 7545, // Standard Ethereum port (default: none) -> use ganache
+      port: 8545, // Standard Ethereum port (default: none) -> use ganache
       network_id: '*', // Any network (default: none)
     },
     skipMigration: {
       host: '127.0.0.1',
-      port: 7545,
+      port: 8545,
       network_id: '*',
     },
     // Another network with more advanced options...
