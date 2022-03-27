@@ -27,7 +27,6 @@ const etherscanAPI = fs.existsSync('.etherscanApi')
   ? fs.readFileSync('.etherscanApi').toString().trim()
   : ''
 
-const INFURA_PROJECT_ID = '' // if use Infura, set this parameter
 const BWARE_LABS_KEY = '' // if use BwareLabs for Astar, set this parameter
 const getAstarNetworkUrl = (networkName) =>
   BWARE_LABS_KEY
@@ -36,8 +35,8 @@ const getAstarNetworkUrl = (networkName) =>
         networkName === 'astar' ? 'astar' : `${networkName}.astar`
       }.network:8545`
 
-const ALCHEMY_KEY = ''
-const INFURA_KEY = ''
+const INFURA_KEY = '' // if use Infura, set this parameter
+const ALCHEMY_KEY = '' // if use Alchemy, set this parameter
 const getEthereumNetworkUrl = (networkName) =>
   INFURA_KEY
     ? `https://${networkName}.infura.io/v3/${INFURA_KEY}`
@@ -86,7 +85,7 @@ module.exports = {
       provider: () =>
         new HDWalletProvider(
           mnemonic,
-          `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+          `https://mainnet.infura.io/v3/${INFURA_KEY}`,
         ),
       network_id: 1,
       gas: 6721975,
