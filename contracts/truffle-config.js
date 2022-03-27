@@ -29,9 +29,19 @@ const etherscanAPI = fs.existsSync('.etherscanApi')
 
 const INFURA_PROJECT_ID = '' // if use Infura, set this parameter
 const BWARE_LABS_KEY = '' // if use BwareLabs for Astar, set this parameter
-const getAstarNetworkUrl = (networkName) => BWARE_LABS_KEY
-  ? `https://${networkName}-api.bwarelabs.com/${BWARE_LABS_KEY}`
-  : `https://rpc.${networkName === "astar" ? "astar" : `${networkName}.astar`}.network:8545`
+const getAstarNetworkUrl = (networkName) =>
+  BWARE_LABS_KEY
+    ? `https://${networkName}-api.bwarelabs.com/${BWARE_LABS_KEY}`
+    : `https://rpc.${
+        networkName === 'astar' ? 'astar' : `${networkName}.astar`
+      }.network:8545`
+
+const ALCHEMY_KEY = ''
+const INFURA_KEY = ''
+const getEthereumNetworkUrl = (networkName) =>
+  INFURA_KEY
+    ? `https://${networkName}.infura.io/v3/${INFURA_KEY}`
+    : `https://eth-${networkName}.alchemyapi.io/v2/${ALCHEMY_KEY}`
 
 module.exports = {
   /**
@@ -84,30 +94,33 @@ module.exports = {
     },
     astar: {
       provider: () =>
-        new HDWalletProvider(
-          mnemonic,
-          getAstarNetworkUrl("astar"),
-        ),
+        new HDWalletProvider(mnemonic, getAstarNetworkUrl('astar')),
       network_id: 592,
-      gasPrice: 102 * 1000 * 1000 * 1000
+      gasPrice: 102 * 1000 * 1000 * 1000,
     },
     shiden: {
       provider: () =>
-        new HDWalletProvider(
-          mnemonic,
-          getAstarNetworkUrl("shiden"),
-        ),
+        new HDWalletProvider(mnemonic, getAstarNetworkUrl('shiden')),
       network_id: 336,
-      gasPrice: 102 * 1000 * 1000 * 1000
+      gasPrice: 102 * 1000 * 1000 * 1000,
     },
     shibuya: {
       provider: () =>
-        new HDWalletProvider(
-          mnemonic,
-          getAstarNetworkUrl("shibuya"),
-        ),
+        new HDWalletProvider(mnemonic, getAstarNetworkUrl('shibuya')),
       network_id: 81,
-      gasPrice: 102 * 1000 * 1000 * 1000
+      gasPrice: 102 * 1000 * 1000 * 1000,
+    },
+    rinkeby: {
+      provider: () =>
+        new HDWalletProvider(mnemonic, getEthereumNetworkUrl('rinkeby')),
+      network_id: 4,
+      gasPrice: 102 * 1000 * 1000 * 1000,
+    },
+    kovan: {
+      provider: () =>
+        new HDWalletProvider(mnemonic, getEthereumNetworkUrl('kovan')),
+      network_id: 42,
+      gasPrice: 102 * 1000 * 1000 * 1000,
     },
     // Useful for private networks
     // private: {
