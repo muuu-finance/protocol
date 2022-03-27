@@ -11,7 +11,7 @@ const distroList = jsonfile.readFileSync('./distro.json')
 
 // json file path to save deployed contracts' addresses
 const CONTRACTS_INFO_JSON = './contracts.json'
-const MOCK_CONTRACTS_INFO_JSON = './contract-mocks.json'
+const getMockFilePath = (network) => `./contract-mocks-${network}.json`
 
 // -- Contracts to use
 const Booster = artifacts.require('Booster')
@@ -57,8 +57,8 @@ const addContract = (group, name, value) =>
   writeContractAddress(group, name, value, CONTRACTS_INFO_JSON)
 
 const loadDeployedMockAddresses = (network) => {
-  // TODO: consider network & select file
-  const deployed = jsonfile.readFileSync(MOCK_CONTRACTS_INFO_JSON)
+  const filePath = getMockFilePath(network)
+  const deployed = jsonfile.readFileSync(filePath)
   const {
     tokenMocks,
     kaglaMocks: {
