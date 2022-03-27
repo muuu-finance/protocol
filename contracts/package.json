@@ -4,6 +4,8 @@
     "postinstall": "truffle compile && npm run generate-types",
     "deploy": "truffle migrate --skip-dry-run",
     "deploy:local": "yarn deploy --network ganachecli",
+    "deploy:rinkeby": "yarn deploy --network rinkeby",
+    "deploy:kovan": "yarn deploy --network kovan",
     "deploy:mocks-token": "truffle exec scripts/deploy_token_mocks.js",
     "deploy:mocks-token:local": "yarn deploy:mocks-token --network ganachecli",
     "deploy:mocks-token:rinkeby": "yarn deploy:mocks-token --network rinkeby",
