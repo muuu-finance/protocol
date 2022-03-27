@@ -33,8 +33,9 @@ const MuuuLockerV2 = artifacts.require('MuuuLockerV2')
 const BASE_PATH = '.'
 const BASE_NAME = 'contracts'
 const EXTENSTION = 'json'
-const getFilePath = (network, suffix = undefined) => {
-  const commonFilePath = `${BASE_PATH}/${BASE_NAME}-${network}`
+const getFilePath = (network, base_path = undefined, suffix = undefined) => {
+  const basePath = base_path ? base_path : BASE_PATH
+  const commonFilePath = `${basePath}/${BASE_NAME}-${network}`
   return suffix
     ? `${commonFilePath}-${suffix}.${EXTENSTION}`
     : `${commonFilePath}.${EXTENSTION}`
@@ -54,7 +55,7 @@ const resetContractAddressesJson = (network) => {
       .replace(/(-|T|:)/g, '')
       .substring(0, 14)
     // rename current file
-    fs.renameSync(fileName, getFilePath(network, strDate))
+    fs.renameSync(fileName, getFilePath(network, `./tmp`, strDate))
   }
   fs.writeFileSync(fileName, JSON.stringify({}, null, 2))
 }
