@@ -9,10 +9,6 @@ const {
 } = require('../utils/access_contracts_json')
 const distroList = jsonfile.readFileSync('./distro.json')
 
-// json file path to save deployed contracts' addresses
-const CONTRACTS_INFO_JSON = './contracts.json'
-const getMockFilePath = (network) => `./contract-mocks-${network}.json`
-
 // -- Contracts to use
 const Booster = artifacts.require('Booster')
 const KaglaVoterProxy = artifacts.require('KaglaVoterProxy')
@@ -34,8 +30,20 @@ const MerkleAirdropFactory = artifacts.require('MerkleAirdropFactory')
 const MuuuLockerV2 = artifacts.require('MuuuLockerV2')
 
 // -- Functions
-const resetContractAddressesJson = () => {
-  if (fs.existsSync(CONTRACTS_INFO_JSON)) {
+const BASE_PATH = '.'
+const BASE_NAME = 'contracts'
+const EXTENSTION = 'json'
+const getFilePath = (network, suffix = undefined) => {
+  const commonFilePath = `${BASE_PATH}/${BASE_NAME}-${network}`
+  return suffix
+    ? `${commonFilePath}-${suffix}.${EXTENSTION}`
+    : `${commonFilePath}.${EXTENSTION}`
+}
+const getMockFilePath = (network) => `./contract-mocks-${network}.json`
+
+const resetContractAddressesJson = (network) => {
+  const fileName = getFilePath(network)
+  if (fs.existsSync(fileName)) {
     const folderName = 'tmp'
     fs.mkdirSync(folderName, { recursive: true })
     // get current datetime in this timezone
@@ -46,15 +54,12 @@ const resetContractAddressesJson = () => {
       .replace(/(-|T|:)/g, '')
       .substring(0, 14)
     // rename current file
-    fs.renameSync(
-      CONTRACTS_INFO_JSON,
-      `${folderName}/contracts-old-${strDate}.json`,
-    )
+    fs.renameSync(fileName, getFilePath(network, strDate))
   }
-  fs.writeFileSync(CONTRACTS_INFO_JSON, JSON.stringify({}, null, 2))
+  fs.writeFileSync(fileName, JSON.stringify({}, null, 2))
 }
-const addContract = (group, name, value) =>
-  writeContractAddress(group, name, value, CONTRACTS_INFO_JSON)
+const _addContract = (group, name, value, network) =>
+  writeContractAddress(group, name, value, getFilePath(network))
 
 const loadDeployedMockAddresses = (network) => {
   const filePath = getMockFilePath(network)
@@ -90,6 +95,7 @@ module.exports = function (deployer, network, accounts) {
     console.log(`Skip migration in ${network} network`)
     return
   }
+  console.log(`network: ${network}`)
   // you need to prepare kaglaVoterProxy beforehand
   // const muuuVoterProxy = "0xE7FDdA2a4Ba464A9F11a54A62B378E79c94d8332";
 
@@ -161,7 +167,11 @@ module.exports = function (deployer, network, accounts) {
   const poolNames = []
 
   // reset json to have deployed contracts' addresses
-  resetContractAddressesJson()
+  resetContractAddressesJson(network)
+  // - define function to write to json
+  const addContract = (_group, _name, _value) =>
+    _addContract(_group, _name, _value, network)
+  const contractsJsonFilePath = getFilePath(network)
 
   // addContract("system","voteProxy",muuuVoterProxy);
   addContract('system', 'treasury', treasuryAddress)
@@ -417,7 +427,7 @@ module.exports = function (deployer, network, accounts) {
         poolInfoList[i].id = i
         poolsContracts.push(poolInfoList[i])
       }
-      writeValueToGroup('pools', poolsContracts, CONTRACTS_INFO_JSON)
+      writeValueToGroup('pools', poolsContracts, contractsJsonFilePath)
     })
-    .then(() => console.log(readContractAddresses(CONTRACTS_INFO_JSON)))
+    .then(() => console.log(readContractAddresses(contractsJsonFilePath)))
 }
