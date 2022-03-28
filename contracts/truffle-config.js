@@ -18,16 +18,12 @@
  *
  */
 
+require('dotenv').config()
 const HDWalletProvider = require('@truffle/hdwallet-provider')
 const fs = require('fs')
-const mnemonic = fs.existsSync('.secret')
-  ? fs.readFileSync('.secret').toString().trim()
-  : ''
-const etherscanAPI = fs.existsSync('.etherscanApi')
-  ? fs.readFileSync('.etherscanApi').toString().trim()
-  : ''
-
-const BWARE_LABS_KEY = '' // if use BwareLabs for Astar, set this parameter
+const MNEMONIC = process.env.MNEMONIC || ''
+const ETHERSCAN_KEY = process.env.ETHERSCAN_KEY || ''
+const BWARE_LABS_KEY = process.env.BWARE_LABS_KEY || '' // if use BwareLabs for Astar, set this parameter
 const getAstarNetworkUrl = (networkName) =>
   BWARE_LABS_KEY
     ? `https://${networkName}-api.bwarelabs.com/${BWARE_LABS_KEY}`
@@ -35,12 +31,14 @@ const getAstarNetworkUrl = (networkName) =>
         networkName === 'astar' ? 'astar' : `${networkName}.astar`
       }.network:8545`
 
-const INFURA_KEY = '' // if use Infura, set this parameter
-const ALCHEMY_KEY = '' // if use Alchemy, set this parameter
+const INFURA_KEY = process.env.INFURA_KEY || '' // if use Infura, set this parameter
+const ALCHEMY_KEY = process.env.ALCHEMY_KEY || '' // if use Alchemy, set this parameter
 const getEthereumNetworkUrl = (networkName) =>
   INFURA_KEY
     ? `https://${networkName}.infura.io/v3/${INFURA_KEY}`
     : `https://eth-${networkName}.alchemyapi.io/v2/${ALCHEMY_KEY}`
+
+const GWEI = 1000 * 1000 * 1000
 
 module.exports = {
   /**
@@ -84,7 +82,7 @@ module.exports = {
     mainnet: {
       provider: () =>
         new HDWalletProvider(
-          mnemonic,
+          MNEMONIC,
           `https://mainnet.infura.io/v3/${INFURA_KEY}`,
         ),
       network_id: 1,
@@ -93,37 +91,37 @@ module.exports = {
     },
     astar: {
       provider: () =>
-        new HDWalletProvider(mnemonic, getAstarNetworkUrl('astar')),
+        new HDWalletProvider(MNEMONIC, getAstarNetworkUrl('astar')),
       network_id: 592,
-      gasPrice: 102 * 1000 * 1000 * 1000,
+      gasPrice: 1 * GWEI,
     },
     shiden: {
       provider: () =>
-        new HDWalletProvider(mnemonic, getAstarNetworkUrl('shiden')),
+        new HDWalletProvider(MNEMONIC, getAstarNetworkUrl('shiden')),
       network_id: 336,
-      gasPrice: 102 * 1000 * 1000 * 1000,
+      gasPrice: 1 * GWEI,
     },
     shibuya: {
       provider: () =>
-        new HDWalletProvider(mnemonic, getAstarNetworkUrl('shibuya')),
+        new HDWalletProvider(MNEMONIC, getAstarNetworkUrl('shibuya')),
       network_id: 81,
-      gasPrice: 102 * 1000 * 1000 * 1000,
+      gasPrice: 1 * GWEI,
     },
     rinkeby: {
       provider: () =>
-        new HDWalletProvider(mnemonic, getEthereumNetworkUrl('rinkeby')),
+        new HDWalletProvider(MNEMONIC, getEthereumNetworkUrl('rinkeby')),
       network_id: 4,
-      gasPrice: 102 * 1000 * 1000 * 1000,
+      gasPrice: 20 * GWEI,
     },
     kovan: {
       provider: () =>
-        new HDWalletProvider(mnemonic, getEthereumNetworkUrl('kovan')),
+        new HDWalletProvider(MNEMONIC, getEthereumNetworkUrl('kovan')),
       network_id: 42,
-      gasPrice: 102 * 1000 * 1000 * 1000,
+      gasPrice: 20 * GWEI,
     },
     // Useful for private networks
     // private: {
-    // provider: () => new HDWalletProvider(mnemonic, `https://network.io`),
+    // provider: () => new HDWalletProvider(MNEMONIC, `https://network.io`),
     // network_id: 2111,   // This network is yours, in the cloud.
     // production: true    // Treats this network as if it was a public net. (default: false)
     // }
@@ -173,6 +171,6 @@ module.exports = {
   },
   plugins: ['truffle-plugin-verify'],
   api_keys: {
-    etherscan: etherscanAPI,
+    etherscan: ETHERSCAN_KEY,
   },
 }

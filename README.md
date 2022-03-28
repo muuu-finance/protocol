@@ -17,7 +17,7 @@ yarn deploy:mocks-kagla:local
 yarn deploy:local
 
 # In global network
-touch .secret
-# & add mnemonic to .secret
+cp .env.template .env
+# & add params to .env
 truffle migrate --network shibuya
 ```
