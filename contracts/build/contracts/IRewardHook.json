@@ -1,0 +1,206 @@
+{
+  "contractName": "IRewardHook",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "onRewardClaim",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"onRewardClaim\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/IRewardHook.sol\":\"IRewardHook\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/interfaces/IRewardHook.sol\":{\"keccak256\":\"0x283574fca925c5d592d9fa1326f852dbdc0015cc8b19faf7ac8e9c7cb1d1c4e8\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://bf8199c7aac88da66c50af5efb6eaa0768d66f02a2037eeba8cf9968919f28e2\",\"dweb:/ipfs/QmRUy97TYgeefQZCbQvTcC9DVzz7nJPCnbYd4aPANdYcWP\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\n\npragma solidity 0.6.12;\n\ninterface IRewardHook {\n  function onRewardClaim() external;\n}\n",
+  "sourcePath": "/Users/linnefromice/repository/github.com/muuu-finance/muuu-protocol/contracts/contracts/interfaces/IRewardHook.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/interfaces/IRewardHook.sol",
+    "exportedSymbols": {
+      "IRewardHook": [
+        28141
+      ]
+    },
+    "id": 28142,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 28137,
+        "literals": [
+          "solidity",
+          "0.6",
+          ".12"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:23:79"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 28141,
+        "linearizedBaseContracts": [
+          28141
+        ],
+        "name": "IRewardHook",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "2663fcfc",
+            "id": 28140,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "onRewardClaim",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 28138,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "106:2:79"
+            },
+            "returnParameters": {
+              "id": 28139,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "117:0:79"
+            },
+            "scope": 28141,
+            "src": "84:34:79",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 28142,
+        "src": "58:62:79"
+      }
+    ],
+    "src": "33:88:79"
+  },
+  "legacyAST": {
+    "attributes": {
+      "absolutePath": "project:/contracts/interfaces/IRewardHook.sol",
+      "exportedSymbols": {
+        "IRewardHook": [
+          28141
+        ]
+      },
+      "license": "MIT"
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "0.6",
+            ".12"
+          ]
+        },
+        "id": 28137,
+        "name": "PragmaDirective",
+        "src": "33:23:79"
+      },
+      {
+        "attributes": {
+          "abstract": false,
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "interface",
+          "documentation": null,
+          "fullyImplemented": false,
+          "linearizedBaseContracts": [
+            28141
+          ],
+          "name": "IRewardHook",
+          "scope": 28142
+        },
+        "children": [
+          {
+            "attributes": {
+              "body": null,
+              "documentation": null,
+              "functionSelector": "2663fcfc",
+              "implemented": false,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "onRewardClaim",
+              "overrides": null,
+              "scope": 28141,
+              "stateMutability": "nonpayable",
+              "virtual": false,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 28138,
+                "name": "ParameterList",
+                "src": "106:2:79"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 28139,
+                "name": "ParameterList",
+                "src": "117:0:79"
+              }
+            ],
+            "id": 28140,
+            "name": "FunctionDefinition",
+            "src": "84:34:79"
+          }
+        ],
+        "id": 28141,
+        "name": "ContractDefinition",
+        "src": "58:62:79"
+      }
+    ],
+    "id": 28142,
+    "name": "SourceUnit",
+    "src": "33:88:79"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.6.12+commit.27d51765.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.6",
+  "updatedAt": "2022-03-16T12:46:39.394Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

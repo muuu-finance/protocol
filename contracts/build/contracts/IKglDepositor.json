@@ -1,0 +1,326 @@
+{
+  "contractName": "IKglDepositor",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "name": "deposit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"name\":\"deposit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/IKglDepositor.sol\":\"IKglDepositor\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/interfaces/IKglDepositor.sol\":{\"keccak256\":\"0x28ed4751245a7f7ed4fd83b83b4b337e574e531f0f9fe3844b188a46463d413c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6cf1327f8aa46b3c6ae9db7e43af863ac00bfd9f4743d4b629bcea89d305beb9\",\"dweb:/ipfs/QmXcAijCd5ynjU39J6wNhF6dCG8ZvqhGE9S13n9FChG38j\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity 0.6.12;\n\ninterface IKglDepositor {\n  function deposit(uint256, bool) external;\n}\n",
+  "sourcePath": "/Users/linnefromice/repository/github.com/muuu-finance/muuu-protocol/contracts/contracts/interfaces/IKglDepositor.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/interfaces/IKglDepositor.sol",
+    "exportedSymbols": {
+      "IKglDepositor": [
+        27865
+      ]
+    },
+    "id": 27866,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 27857,
+        "literals": [
+          "solidity",
+          "0.6",
+          ".12"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:73"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 27865,
+        "linearizedBaseContracts": [
+          27865
+        ],
+        "name": "IKglDepositor",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "9a408321",
+            "id": 27864,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "deposit",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 27862,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 27859,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 27864,
+                  "src": "102:7:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 27858,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "102:7:73",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 27861,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 27864,
+                  "src": "111:4:73",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 27860,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "111:4:73",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "101:15:73"
+            },
+            "returnParameters": {
+              "id": 27863,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "125:0:73"
+            },
+            "scope": 27865,
+            "src": "85:41:73",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 27866,
+        "src": "57:71:73"
+      }
+    ],
+    "src": "32:97:73"
+  },
+  "legacyAST": {
+    "attributes": {
+      "absolutePath": "project:/contracts/interfaces/IKglDepositor.sol",
+      "exportedSymbols": {
+        "IKglDepositor": [
+          27865
+        ]
+      },
+      "license": "MIT"
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "0.6",
+            ".12"
+          ]
+        },
+        "id": 27857,
+        "name": "PragmaDirective",
+        "src": "32:23:73"
+      },
+      {
+        "attributes": {
+          "abstract": false,
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "interface",
+          "documentation": null,
+          "fullyImplemented": false,
+          "linearizedBaseContracts": [
+            27865
+          ],
+          "name": "IKglDepositor",
+          "scope": 27866
+        },
+        "children": [
+          {
+            "attributes": {
+              "body": null,
+              "documentation": null,
+              "functionSelector": "9a408321",
+              "implemented": false,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "deposit",
+              "overrides": null,
+              "scope": 27865,
+              "stateMutability": "nonpayable",
+              "virtual": false,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "",
+                      "overrides": null,
+                      "scope": 27864,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 27858,
+                        "name": "ElementaryTypeName",
+                        "src": "102:7:73"
+                      }
+                    ],
+                    "id": 27859,
+                    "name": "VariableDeclaration",
+                    "src": "102:7:73"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "",
+                      "overrides": null,
+                      "scope": 27864,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bool",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bool",
+                          "type": "bool"
+                        },
+                        "id": 27860,
+                        "name": "ElementaryTypeName",
+                        "src": "111:4:73"
+                      }
+                    ],
+                    "id": 27861,
+                    "name": "VariableDeclaration",
+                    "src": "111:4:73"
+                  }
+                ],
+                "id": 27862,
+                "name": "ParameterList",
+                "src": "101:15:73"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 27863,
+                "name": "ParameterList",
+                "src": "125:0:73"
+              }
+            ],
+            "id": 27864,
+            "name": "FunctionDefinition",
+            "src": "85:41:73"
+          }
+        ],
+        "id": 27865,
+        "name": "ContractDefinition",
+        "src": "57:71:73"
+      }
+    ],
+    "id": 27866,
+    "name": "SourceUnit",
+    "src": "32:97:73"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.6.12+commit.27d51765.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.6",
+  "updatedAt": "2022-03-16T12:46:39.392Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

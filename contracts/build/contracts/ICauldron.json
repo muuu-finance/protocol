@@ -1,0 +1,326 @@
+{
+  "contractName": "ICauldron",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "userCollateralShare",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"userCollateralShare\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/ICauldron.sol\":\"ICauldron\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/interfaces/ICauldron.sol\":{\"keccak256\":\"0x435e504ffbf378fe070147927da67d0cbe961cd2d7b02fccfd20320ddd7ed758\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://816c33ca8e427ccb5a14d6edcafd0de428bf2daee2bf7d9abf68410024d7f06d\",\"dweb:/ipfs/QmVnqDAytFtXEDXHabjkNDT6dHT27bt4Wndq44ZRGGmWiX\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity 0.6.12;\n\ninterface ICauldron {\n  function userCollateralShare(address account) external view returns (uint);\n}\n",
+  "sourcePath": "/Users/linnefromice/repository/github.com/muuu-finance/muuu-protocol/contracts/contracts/interfaces/ICauldron.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/interfaces/ICauldron.sol",
+    "exportedSymbols": {
+      "ICauldron": [
+        27712
+      ]
+    },
+    "id": 27713,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 27704,
+        "literals": [
+          "solidity",
+          "0.6",
+          ".12"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:68"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 27712,
+        "linearizedBaseContracts": [
+          27712
+        ],
+        "name": "ICauldron",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "1c9e379b",
+            "id": 27711,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "userCollateralShare",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 27707,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 27706,
+                  "mutability": "mutable",
+                  "name": "account",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 27711,
+                  "src": "110:15:68",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 27705,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "110:7:68",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "109:17:68"
+            },
+            "returnParameters": {
+              "id": 27710,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 27709,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 27711,
+                  "src": "150:4:68",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 27708,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "150:4:68",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "149:6:68"
+            },
+            "scope": 27712,
+            "src": "81:75:68",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 27713,
+        "src": "57:101:68"
+      }
+    ],
+    "src": "32:127:68"
+  },
+  "legacyAST": {
+    "attributes": {
+      "absolutePath": "project:/contracts/interfaces/ICauldron.sol",
+      "exportedSymbols": {
+        "ICauldron": [
+          27712
+        ]
+      },
+      "license": "MIT"
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "0.6",
+            ".12"
+          ]
+        },
+        "id": 27704,
+        "name": "PragmaDirective",
+        "src": "32:23:68"
+      },
+      {
+        "attributes": {
+          "abstract": false,
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "interface",
+          "documentation": null,
+          "fullyImplemented": false,
+          "linearizedBaseContracts": [
+            27712
+          ],
+          "name": "ICauldron",
+          "scope": 27713
+        },
+        "children": [
+          {
+            "attributes": {
+              "body": null,
+              "documentation": null,
+              "functionSelector": "1c9e379b",
+              "implemented": false,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "userCollateralShare",
+              "overrides": null,
+              "scope": 27712,
+              "stateMutability": "view",
+              "virtual": false,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "account",
+                      "overrides": null,
+                      "scope": 27711,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 27705,
+                        "name": "ElementaryTypeName",
+                        "src": "110:7:68"
+                      }
+                    ],
+                    "id": 27706,
+                    "name": "VariableDeclaration",
+                    "src": "110:15:68"
+                  }
+                ],
+                "id": 27707,
+                "name": "ParameterList",
+                "src": "109:17:68"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "",
+                      "overrides": null,
+                      "scope": 27711,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint",
+                          "type": "uint256"
+                        },
+                        "id": 27708,
+                        "name": "ElementaryTypeName",
+                        "src": "150:4:68"
+                      }
+                    ],
+                    "id": 27709,
+                    "name": "VariableDeclaration",
+                    "src": "150:4:68"
+                  }
+                ],
+                "id": 27710,
+                "name": "ParameterList",
+                "src": "149:6:68"
+              }
+            ],
+            "id": 27711,
+            "name": "FunctionDefinition",
+            "src": "81:75:68"
+          }
+        ],
+        "id": 27712,
+        "name": "ContractDefinition",
+        "src": "57:101:68"
+      }
+    ],
+    "id": 27713,
+    "name": "SourceUnit",
+    "src": "32:127:68"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.6.12+commit.27d51765.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.6",
+  "updatedAt": "2022-03-16T12:46:39.391Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

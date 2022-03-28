@@ -1,0 +1,711 @@
+{
+  "contractName": "IMuuuDeposits",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_pid",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "_stake",
+          "type": "bool"
+        }
+      ],
+      "name": "deposit",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "_lock",
+          "type": "bool"
+        },
+        {
+          "internalType": "address",
+          "name": "_stakeAddress",
+          "type": "address"
+        }
+      ],
+      "name": "deposit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_pid\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"_stake\",\"type\":\"bool\"}],\"name\":\"deposit\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"_lock\",\"type\":\"bool\"},{\"internalType\":\"address\",\"name\":\"_stakeAddress\",\"type\":\"address\"}],\"name\":\"deposit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/IMuuuDeposits.sol\":\"IMuuuDeposits\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/interfaces/IMuuuDeposits.sol\":{\"keccak256\":\"0x9f6f8d0233e53053e153db8099aad715c7eb352c92fc356fb30e1d28903cd40e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://986c2c877a1c54e338c2f338c9e8460e364e6e8deeddb38fe68cf2812ac33c64\",\"dweb:/ipfs/QmNMLcpuz159Ziqgj2N5kaffvpV8JxhGB2zu5wD7U2yyb5\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity 0.6.12;\n\ninterface IMuuuDeposits {\n  function deposit(\n    uint256 _pid,\n    uint256 _amount,\n    bool _stake\n  ) external returns (bool);\n\n  function deposit(\n    uint256 _amount,\n    bool _lock,\n    address _stakeAddress\n  ) external;\n}\n",
+  "sourcePath": "/Users/linnefromice/repository/github.com/muuu-finance/muuu-protocol/contracts/contracts/interfaces/IMuuuDeposits.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/interfaces/IMuuuDeposits.sol",
+    "exportedSymbols": {
+      "IMuuuDeposits": [
+        28080
+      ]
+    },
+    "id": 28081,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 28059,
+        "literals": [
+          "solidity",
+          "0.6",
+          ".12"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:76"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 28080,
+        "linearizedBaseContracts": [
+          28080
+        ],
+        "name": "IMuuuDeposits",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "43a0d066",
+            "id": 28070,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "deposit",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 28066,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 28061,
+                  "mutability": "mutable",
+                  "name": "_pid",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 28070,
+                  "src": "107:12:76",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 28060,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "107:7:76",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 28063,
+                  "mutability": "mutable",
+                  "name": "_amount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 28070,
+                  "src": "125:15:76",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 28062,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "125:7:76",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 28065,
+                  "mutability": "mutable",
+                  "name": "_stake",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 28070,
+                  "src": "146:11:76",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 28064,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "146:4:76",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "101:60:76"
+            },
+            "returnParameters": {
+              "id": 28069,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 28068,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 28070,
+                  "src": "180:4:76",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 28067,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "180:4:76",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "179:6:76"
+            },
+            "scope": 28080,
+            "src": "85:101:76",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "80ed71e4",
+            "id": 28079,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "deposit",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 28077,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 28072,
+                  "mutability": "mutable",
+                  "name": "_amount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 28079,
+                  "src": "212:15:76",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 28071,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "212:7:76",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 28074,
+                  "mutability": "mutable",
+                  "name": "_lock",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 28079,
+                  "src": "233:10:76",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 28073,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "233:4:76",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 28076,
+                  "mutability": "mutable",
+                  "name": "_stakeAddress",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 28079,
+                  "src": "249:21:76",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 28075,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "249:7:76",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "206:68:76"
+            },
+            "returnParameters": {
+              "id": 28078,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "283:0:76"
+            },
+            "scope": 28080,
+            "src": "190:94:76",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 28081,
+        "src": "57:229:76"
+      }
+    ],
+    "src": "32:255:76"
+  },
+  "legacyAST": {
+    "attributes": {
+      "absolutePath": "project:/contracts/interfaces/IMuuuDeposits.sol",
+      "exportedSymbols": {
+        "IMuuuDeposits": [
+          28080
+        ]
+      },
+      "license": "MIT"
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "0.6",
+            ".12"
+          ]
+        },
+        "id": 28059,
+        "name": "PragmaDirective",
+        "src": "32:23:76"
+      },
+      {
+        "attributes": {
+          "abstract": false,
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "interface",
+          "documentation": null,
+          "fullyImplemented": false,
+          "linearizedBaseContracts": [
+            28080
+          ],
+          "name": "IMuuuDeposits",
+          "scope": 28081
+        },
+        "children": [
+          {
+            "attributes": {
+              "body": null,
+              "documentation": null,
+              "functionSelector": "43a0d066",
+              "implemented": false,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "deposit",
+              "overrides": null,
+              "scope": 28080,
+              "stateMutability": "nonpayable",
+              "virtual": false,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "_pid",
+                      "overrides": null,
+                      "scope": 28070,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 28060,
+                        "name": "ElementaryTypeName",
+                        "src": "107:7:76"
+                      }
+                    ],
+                    "id": 28061,
+                    "name": "VariableDeclaration",
+                    "src": "107:12:76"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "_amount",
+                      "overrides": null,
+                      "scope": 28070,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 28062,
+                        "name": "ElementaryTypeName",
+                        "src": "125:7:76"
+                      }
+                    ],
+                    "id": 28063,
+                    "name": "VariableDeclaration",
+                    "src": "125:15:76"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "_stake",
+                      "overrides": null,
+                      "scope": 28070,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bool",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bool",
+                          "type": "bool"
+                        },
+                        "id": 28064,
+                        "name": "ElementaryTypeName",
+                        "src": "146:4:76"
+                      }
+                    ],
+                    "id": 28065,
+                    "name": "VariableDeclaration",
+                    "src": "146:11:76"
+                  }
+                ],
+                "id": 28066,
+                "name": "ParameterList",
+                "src": "101:60:76"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "",
+                      "overrides": null,
+                      "scope": 28070,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bool",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bool",
+                          "type": "bool"
+                        },
+                        "id": 28067,
+                        "name": "ElementaryTypeName",
+                        "src": "180:4:76"
+                      }
+                    ],
+                    "id": 28068,
+                    "name": "VariableDeclaration",
+                    "src": "180:4:76"
+                  }
+                ],
+                "id": 28069,
+                "name": "ParameterList",
+                "src": "179:6:76"
+              }
+            ],
+            "id": 28070,
+            "name": "FunctionDefinition",
+            "src": "85:101:76"
+          },
+          {
+            "attributes": {
+              "body": null,
+              "documentation": null,
+              "functionSelector": "80ed71e4",
+              "implemented": false,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "deposit",
+              "overrides": null,
+              "scope": 28080,
+              "stateMutability": "nonpayable",
+              "virtual": false,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "_amount",
+                      "overrides": null,
+                      "scope": 28079,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 28071,
+                        "name": "ElementaryTypeName",
+                        "src": "212:7:76"
+                      }
+                    ],
+                    "id": 28072,
+                    "name": "VariableDeclaration",
+                    "src": "212:15:76"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "_lock",
+                      "overrides": null,
+                      "scope": 28079,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bool",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bool",
+                          "type": "bool"
+                        },
+                        "id": 28073,
+                        "name": "ElementaryTypeName",
+                        "src": "233:4:76"
+                      }
+                    ],
+                    "id": 28074,
+                    "name": "VariableDeclaration",
+                    "src": "233:10:76"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "_stakeAddress",
+                      "overrides": null,
+                      "scope": 28079,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 28075,
+                        "name": "ElementaryTypeName",
+                        "src": "249:7:76"
+                      }
+                    ],
+                    "id": 28076,
+                    "name": "VariableDeclaration",
+                    "src": "249:21:76"
+                  }
+                ],
+                "id": 28077,
+                "name": "ParameterList",
+                "src": "206:68:76"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 28078,
+                "name": "ParameterList",
+                "src": "283:0:76"
+              }
+            ],
+            "id": 28079,
+            "name": "FunctionDefinition",
+            "src": "190:94:76"
+          }
+        ],
+        "id": 28080,
+        "name": "ContractDefinition",
+        "src": "57:229:76"
+      }
+    ],
+    "id": 28081,
+    "name": "SourceUnit",
+    "src": "32:255:76"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.6.12+commit.27d51765.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.6",
+  "updatedAt": "2022-03-16T12:46:39.393Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
