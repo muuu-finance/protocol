@@ -9,7 +9,7 @@ const taskPaths = ['deploys', 'samples']
 taskPaths.forEach((folder) => {
   const tasksPath = path.join(__dirname, 'tasks', folder)
   fs.readdirSync(tasksPath)
-    .filter((pth) => pth.includes('.js'))
+    .filter((pth) => pth.includes('.js') || pth.includes(".ts"))
     .forEach((task) => {
       require(`${tasksPath}/${task}`)
     })
