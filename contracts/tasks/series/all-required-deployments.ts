@@ -41,17 +41,17 @@ task(
 
       // Deployments
       // TODO: pass other addresses to tasks
-      await hre.run(`deploy-${ContractKeys.KaglaVoterProxy}`, {
+      const voterProxyAddress = await hre.run(`deploy-${ContractKeys.KaglaVoterProxy}`, {
         deployer: signer,
         inMultiDeploymentFlow: true,
         useAlreadyDeployed: useAlreadyDeployed,
       })
-      await hre.run(`deploy-${ContractKeys.MuuuToken}`, {
+      const muuuTokenAddress = await hre.run(`deploy-${ContractKeys.MuuuToken}`, {
         deployer: signer,
         inMultiDeploymentFlow: true,
         useAlreadyDeployed: useAlreadyDeployed,
       })
-      await hre.run(`deploy-${ContractKeys.Booster}`, {
+      const boosterAddress = await hre.run(`deploy-${ContractKeys.Booster}`, {
         deployer: signer,
         inMultiDeploymentFlow: true,
         useAlreadyDeployed: useAlreadyDeployed,

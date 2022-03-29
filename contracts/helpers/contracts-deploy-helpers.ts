@@ -13,7 +13,6 @@ const loggingDeployedContract = (id: string, instance: Contract) => {
   console.log(`******\n`);
 }
 
-
 const withSaveAndVerify = async <ContractType extends Contract>(
   instance: ContractType,
   id: string,
@@ -81,3 +80,5 @@ export const deployBooster = async ({
   ),
   ContractKeys.Booster
 )
+
+
