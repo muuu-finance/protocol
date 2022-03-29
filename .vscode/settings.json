@@ -7,5 +7,7 @@
   "javascript.format.enable": true,
   "editor.formatOnSave": true,
   "files.insertFinalNewline": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "solidity.packageDefaultDependenciesContractsDirectory": "",
+  "solidity.packageDefaultDependenciesDirectory": "contracts/node_modules"
 }
