@@ -4,6 +4,8 @@
 
 ### Folder structure
 
+Explain about folders, files that need commentary.
+
 ```text
 contracts
 |- contracts // Contract codes
