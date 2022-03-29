@@ -102,7 +102,7 @@ contract('Shutdown Test', async (accounts) => {
     const {
       kaglaVoterProxy: voteproxy,
       threeKglToken: threeKgl,
-      threeKaglaGauge: threeKglGauge
+      threeKaglaGauge: threeKglGauge,
       booster,
       baseRewardPool: rewardPool,
     } = await setupContracts()

@@ -18,25 +18,15 @@
  *
  */
 
-require('dotenv').config()
-const HDWalletProvider = require('@truffle/hdwallet-provider')
-const fs = require('fs')
-const MNEMONIC = process.env.MNEMONIC || ''
-const ETHERSCAN_KEY = process.env.ETHERSCAN_KEY || ''
-const BWARE_LABS_KEY = process.env.BWARE_LABS_KEY || '' // if use BwareLabs for Astar, set this parameter
-const getAstarNetworkUrl = (networkName) =>
-  BWARE_LABS_KEY
-    ? `https://${networkName}-api.bwarelabs.com/${BWARE_LABS_KEY}`
-    : `https://rpc.${
-        networkName === 'astar' ? 'astar' : `${networkName}.astar`
-      }.network:8545`
+const {
+  MNEMONIC,
+  ETHERSCAN_KEY,
+  getAstarNetworkUrl,
+  getEthereumNetworkUrl
+} = require("./utils/config_utils")
 
-const INFURA_KEY = process.env.INFURA_KEY || '' // if use Infura, set this parameter
-const ALCHEMY_KEY = process.env.ALCHEMY_KEY || '' // if use Alchemy, set this parameter
-const getEthereumNetworkUrl = (networkName) =>
-  INFURA_KEY
-    ? `https://${networkName}.infura.io/v3/${INFURA_KEY}`
-    : `https://eth-${networkName}.alchemyapi.io/v2/${ALCHEMY_KEY}`
+const HDWalletProvider = require('@truffle/hdwallet-provider')
+
 
 const GWEI = 1000 * 1000 * 1000
 

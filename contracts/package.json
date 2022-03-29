@@ -1,7 +1,5 @@
 {
   "scripts": {
-    "generate-types": "typechain --target=truffle-v5 'build/contracts/*.json'",
-    "postinstall": "truffle compile && npm run generate-types",
     "deploy": "truffle migrate --skip-dry-run",
     "deploy:local": "yarn deploy --network ganachecli",
     "deploy:rinkeby": "yarn deploy --network rinkeby",
@@ -20,10 +18,11 @@
     "deploy:mocks-kagla:kovan": "yarn deploy:mocks-kagla --network kovan",
     "deploy:mocks-kagla:astar": "yarn deploy:mocks-kagla --network astar",
     "deploy:mocks-kagla:shiden": "yarn deploy:mocks-kagla --network shiden",
-    "test": "npm run postinstall && truffle test --stacktrace-extra",
+    "test": "truffle test --stacktrace-extra",
     "test:light": "truffle test --stacktrace-extra --network ganachecli --compile-none",
     "prettier:check": "prettier -c 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'",
-    "prettier:write": "prettier --write 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'"
+    "prettier:write": "prettier --write 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'",
+    "hardhat": "npx hardhat"
   },
   "dependencies": {
     "@openzeppelin/contracts": "3.4.0",
@@ -33,17 +32,23 @@
     "jsonfile": "^6.1.0"
   },
   "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.5",
     "@openzeppelin/test-helpers": "^0.5.15",
-    "@typechain/truffle-v5": "^7.0.0",
+    "@typechain/ethers-v5": "^9.0.0",
+    "@typechain/hardhat": "^6.0.0",
     "@types/bn.js": "^5.1.0",
     "@types/chai": "^4.3.0",
     "@types/mocha": "^9.1.0",
+    "@types/node": "^17.0.23",
     "@types/web3": "^1.2.2",
     "dotenv": "^16.0.0",
+    "ethers": "^5.6.2",
+    "hardhat": "^2.9.2",
     "prettier": "^2.6.0",
     "prettier-plugin-solidity": "^1.0.0-beta.19",
     "truffle-plugin-verify": "^0.5.21",
+    "ts-node": "^10.7.0",
     "typechain": "^7.0.1",
-    "typescript": "^4.6.2"
+    "typescript": "^4.6.3"
   }
 }
