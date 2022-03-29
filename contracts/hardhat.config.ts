@@ -1,7 +1,8 @@
-const fs = require('fs')
-const path = require('path')
-const ethers = require('ethers')
-require('@nomiclabs/hardhat-ethers')
+import fs from "fs"
+import path from "path"
+import { ethers } from "ethers"
+import '@nomiclabs/hardhat-ethers'
+import { HardhatUserConfig, HttpNetworkConfig, NetworksConfig } from "hardhat/types"
 
 // load tasks
 const taskPaths = ['deploys', 'samples']
@@ -15,7 +16,7 @@ taskPaths.forEach((folder) => {
 })
 
 // define accounts for local
-const testAccounts = [
+const testAccounts: { secretKey: string, balance: string }[] = [
   {
     secretKey: '0xc5e8f61d1ab959b397eecc0a37a6517b8e67a0e7cf1f4bce5591f3ed80199122',
     balance: ethers.utils.parseEther("500.0").toString(),
@@ -53,7 +54,8 @@ const testAccounts = [
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
-module.exports = {
+
+const config: HardhatUserConfig = {
   solidity: {
     version: '0.6.12',
     settings: {
@@ -62,11 +64,8 @@ module.exports = {
   },
   defaultNetwork: "hardhat",
   networks: {
-    local: {
-      url: 'http://127.0.0.1:8545',
-      throwOnTransactionFailures: true,
-      throwOnCallFailures: true,
-      allowUnlimitedContractSize: true,
+    localhost: {
+      url: 'http://127.0.0.1:8545'
     },
     hardhat: {
       throwOnTransactionFailures: true,
@@ -79,3 +78,5 @@ module.exports = {
     }
   }
 }
+
+export default config
