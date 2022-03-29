@@ -1,13 +1,15 @@
 import fs from "fs"
 import path from "path"
 import { BigNumber, ethers } from "ethers"
-import '@nomiclabs/hardhat-ethers'
 import { HardhatUserConfig, NetworkUserConfig } from "hardhat/types"
 const {
   MNEMONIC,
   getAstarNetworkUrl,
   getEthereumNetworkUrl
 } = require("./utils/config_utils")
+
+import '@nomiclabs/hardhat-ethers'
+import '@typechain/hardhat'
 
 // load tasks
 const taskPaths = ['deploys', 'samples']
@@ -78,6 +80,10 @@ const config: HardhatUserConfig = {
     settings: {
       optimizer: { enabled: true, runs: 200 }
     }
+  },
+  typechain: {
+    outDir: 'types',
+    target: 'ethers-v5',
   },
   defaultNetwork: "hardhat",
   networks: {
