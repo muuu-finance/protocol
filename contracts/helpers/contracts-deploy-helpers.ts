@@ -1,6 +1,6 @@
 import { Contract, ContractTransaction, Signer } from "ethers"
 import { ContractKeys } from "../tasks/utils";
-import { Booster__factory, KaglaVoterProxy__factory, MuuuToken__factory } from '../types'
+import { Booster__factory, KaglaVoterProxy__factory, MuuuToken__factory, RewardFactory__factory, StashFactory__factory, TokenFactory__factory } from '../types'
 
 const waitForTx = async (tx: ContractTransaction) => await tx.wait(1);
 const loggingDeployedContract = (id: string, instance: Contract) => {
@@ -81,4 +81,44 @@ export const deployBooster = async ({
   ContractKeys.Booster
 )
 
+export const deployRewardFactory = async ({
+  deployer,
+  operator,
+  kgl,
+}: DeployCommonArgs & {
+  operator: string
+  kgl: string
+}) => withSaveAndVerify(
+  await new RewardFactory__factory(deployer).deploy(
+    operator,
+    kgl
+  ),
+  ContractKeys.RewardFactory
+)
 
+export const deployTokenFactory = async ({
+  deployer,
+  operator,
+}: DeployCommonArgs & {
+  operator: string
+}) => withSaveAndVerify(
+  await new TokenFactory__factory(deployer).deploy(
+    operator
+  ),
+  ContractKeys.TokenFactory
+)
+
+export const deployStashFactory = async ({
+  deployer,
+  operator,
+  rewardFactory,
+}: DeployCommonArgs & {
+  operator: string,
+  rewardFactory: string,
+}) => withSaveAndVerify(
+  await new StashFactory__factory(deployer).deploy(
+    operator,
+    rewardFactory
+  ),
+  ContractKeys.StashFactory
+)

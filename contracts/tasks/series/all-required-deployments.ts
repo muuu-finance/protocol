@@ -65,8 +65,15 @@ task(
       if (currentOwner != admin) {
         voterProxy.transferOwnership(admin, { from: currentOwner })
       }
-      MuuuToken__factory.connect(muuuTokenAddress, signer)
-        .mint(signer.address, ethers.utils.parseEther('10000.0').toString()) // TODO
+      // MuuuToken__factory.connect(muuuTokenAddress, signer)
+      //   .mint(signer.address, ethers.utils.parseEther('10000.0').toString()) // TODO
+
+      const rAddresses = await hre.run(`deploy-FactoryContracts`, {
+        deployerAddress: signer.address,
+        inMultiDeploymentFlow: true,
+        useAlreadyDeployed: useAlreadyDeployed,
+      })
+      console.log(rAddresses)
 
       console.log(`--- [all-required-developments] FINISHED ---`)
     },
