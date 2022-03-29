@@ -17,8 +17,8 @@ task("deploy-contracts", "Deploy contracts").setAction(async ({}, hre: HardhatRu
   await muKglToken.deployed();
   console.log(`MuKglToken deployed to: ${muKglToken.address}`);
 
-  const MuuuLockerV2 = await ethers.getContractFactory("MuuuLockerV2")
-  const muuuLockerV2 = await MuuuLockerV2.deploy();
-  await muuuLockerV2.deployed();
-  console.log(`MuuuLockerV2 deployed to: ${muuuLockerV2.address}`);
+  // const MuuuLockerV2 = await ethers.getContractFactory("MuuuLockerV2")
+  // const muuuLockerV2 = await MuuuLockerV2.deploy();
+  // await muuuLockerV2.deployed();
+  // console.log(`MuuuLockerV2 deployed to: ${muuuLockerV2.address}`);
 })
