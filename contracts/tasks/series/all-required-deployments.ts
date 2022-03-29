@@ -2,6 +2,7 @@ import fs from 'fs'
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { ContractKeys, TaskUtils } from '../utils'
+import { KaglaVoterProxy__factory, MuuuToken__factory } from '../../types'
 
 task(
   'all-required-developments',
@@ -42,20 +43,30 @@ task(
       // Deployments
       // TODO: pass other addresses to tasks
       const voterProxyAddress = await hre.run(`deploy-${ContractKeys.KaglaVoterProxy}`, {
-        deployer: signer,
+        deployerAddress: signer.address,
         inMultiDeploymentFlow: true,
         useAlreadyDeployed: useAlreadyDeployed,
       })
       const muuuTokenAddress = await hre.run(`deploy-${ContractKeys.MuuuToken}`, {
-        deployer: signer,
+        deployerAddress: signer.address,
         inMultiDeploymentFlow: true,
         useAlreadyDeployed: useAlreadyDeployed,
       })
       const boosterAddress = await hre.run(`deploy-${ContractKeys.Booster}`, {
-        deployer: signer,
+        deployerAddress: signer.address,
         inMultiDeploymentFlow: true,
         useAlreadyDeployed: useAlreadyDeployed,
       })
+
+      // L211-220
+      const admin = signer.address // TODO
+      const voterProxy = KaglaVoterProxy__factory.connect(voterProxyAddress, signer)
+      const currentOwner = await voterProxy.owner()
+      if (currentOwner != admin) {
+        voterProxy.transferOwnership(admin, { from: currentOwner })
+      }
+      MuuuToken__factory.connect(muuuTokenAddress, signer)
+        .mint(signer.address, ethers.utils.parseEther('10000.0').toString()) // TODO
 
       console.log(`--- [all-required-developments] FINISHED ---`)
     },
