@@ -8,6 +8,6 @@ task('accounts', 'Prints the list of accounts').setAction(async ({}, hre: Hardha
   for (const account of accounts) {
     console.log(`------------------------------------------`)
     console.log(`account ... ${await account.address}`)
-    console.log(`balance ... ${await account.getBalance()}`)
+    console.log(`balance ... ${hre.ethers.utils.formatUnits(await account.getBalance())}`)
   }
 })
