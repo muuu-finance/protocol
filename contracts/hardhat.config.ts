@@ -2,14 +2,19 @@ import fs from "fs"
 import path from "path"
 import { BigNumber, ethers } from "ethers"
 import '@nomiclabs/hardhat-ethers'
-import { HardhatUserConfig } from "hardhat/types"
+import { HardhatUserConfig, NetworkUserConfig } from "hardhat/types"
+const {
+  MNEMONIC,
+  getAstarNetworkUrl,
+  getEthereumNetworkUrl
+} = require("./utils/config_utils")
 
 // load tasks
 const taskPaths = ['deploys', 'samples']
 taskPaths.forEach((folder) => {
   const tasksPath = path.join(__dirname, 'tasks', folder)
   fs.readdirSync(tasksPath)
-    .filter((pth) => pth.includes('.js') || pth.includes(".ts"))
+    .filter((_path) => _path.includes(".ts"))
     .forEach((task) => {
       require(`${tasksPath}/${task}`)
     })
@@ -51,10 +56,22 @@ const testAccounts: { secretKey: string, balance: BigNumber }[] = [
   },
 ];
 
+const getCommonNetworkConfig = (
+  { url, chainId }: { url: string, chainId: number }
+): NetworkUserConfig => ({
+  url: url,
+  chainId: chainId,
+  accounts: {
+    mnemonic: MNEMONIC,
+    path: "m/44'/60'/0'/0",
+    initialIndex: 0,
+    count: 20,
+  }
+})
+
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
-
 const config: HardhatUserConfig = {
   solidity: {
     version: '0.6.12',
@@ -75,7 +92,27 @@ const config: HardhatUserConfig = {
         privateKey: v.secretKey,
         balance: v.balance.toString()
       }))
-    }
+    },
+    rinkeby: getCommonNetworkConfig({
+      url: getEthereumNetworkUrl('rinkeby'),
+      chainId: 4
+    }),
+    kovan: getCommonNetworkConfig({
+      url: getEthereumNetworkUrl('kovan'),
+      chainId: 42
+    }),
+    astar: getCommonNetworkConfig({
+      url: getAstarNetworkUrl('astar'),
+      chainId: 592
+    }),
+    shiden: getCommonNetworkConfig({
+      url: getAstarNetworkUrl('shiden'),
+      chainId: 336
+    }),
+    shibuya: getCommonNetworkConfig({
+      url: getAstarNetworkUrl('shibuya'),
+      chainId: 81
+    }),
   }
 }
 
