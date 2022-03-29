@@ -37,9 +37,22 @@ task(
         fs.writeFileSync(mockJson, JSON.stringify({}, null, 2))
       console.log('> TaskUtils.loadDeployedMockAddresses')
       console.log(TaskUtils.loadDeployedMockAddresses(network.name))
-
       await hre.run(`deploy-contracts`)
+
+      // Deployments
+      // TODO: pass other addresses to tasks
       await hre.run(`deploy-${ContractKeys.KaglaVoterProxy}`, {
+        deployer: signer,
+        inMultiDeploymentFlow: true,
+        useAlreadyDeployed: useAlreadyDeployed,
+      })
+      await hre.run(`deploy-${ContractKeys.MuuuToken}`, {
+        deployer: signer,
+        inMultiDeploymentFlow: true,
+        useAlreadyDeployed: useAlreadyDeployed,
+      })
+      await hre.run(`deploy-${ContractKeys.Booster}`, {
+        deployer: signer,
         inMultiDeploymentFlow: true,
         useAlreadyDeployed: useAlreadyDeployed,
       })
