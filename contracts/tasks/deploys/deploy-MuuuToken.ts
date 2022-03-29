@@ -1,10 +1,10 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import { deployKaglaVoterProxy } from "../../helpers/contracts-deploy-helpers"
+import { deployMuuuToken } from "../../helpers/contracts-deploy-helpers"
 import { ContractKeys } from '../utils'
 
-const CONTRACT_KEY = ContractKeys.KaglaVoterProxy
+const CONTRACT_KEY = ContractKeys.MuuuToken
 task(
   `deploy-${CONTRACT_KEY}`,
   `Deploy ${CONTRACT_KEY}`,
@@ -33,12 +33,9 @@ task(
       } 
 
       console.log(`> start deploy ${CONTRACT_KEY}`)
-      const instance = await deployKaglaVoterProxy({
+      const instance = await deployMuuuToken({
         deployer: _deployer,
-        kgl: ethers.constants.AddressZero, // TODO
-        votingEscrow: ethers.constants.AddressZero, // TODO
-        gaugeController: ethers.constants.AddressZero, // TODO
-        tokenMinter: ethers.constants.AddressZero, // TODO
+        proxy: ethers.constants.AddressZero, // TODO
       })
       console.log(`>> deployed ${CONTRACT_KEY}`)
 
