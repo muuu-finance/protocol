@@ -170,6 +170,9 @@ task(
         commonTaskArgs,
       )
 
+      console.log('> [temp skip] ClaimZap#setApprovals')
+      // await ClaimZap__factory.connect(claimZapAddress, signer).setApprovals()
+
       console.log(`--- [all-required-developments] FINISHED ---`)
     },
   )

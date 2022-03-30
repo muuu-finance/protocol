@@ -15,6 +15,7 @@ import {
   RewardFactory__factory,
   StashFactory__factory,
   TokenFactory__factory,
+  VestedEscrow__factory,
 } from '../types'
 
 const waitForTx = async (tx: ContractTransaction) => await tx.wait(1)
@@ -278,4 +279,29 @@ export const deployClaimZap = async ({
       locker,
     ),
     ContractKeys.ClaimZap,
+  )
+
+export const deployVestedEscrow = async ({
+  deployer,
+  rewardToken,
+  starttime,
+  endtime,
+  stakeContract,
+  fundAdmin,
+}: DeployCommonArgs & {
+  rewardToken: string
+  starttime: string
+  endtime: string
+  stakeContract: string
+  fundAdmin: string
+}) =>
+  withSaveAndVerify(
+    await new VestedEscrow__factory(deployer).deploy(
+      rewardToken,
+      starttime,
+      endtime,
+      stakeContract,
+      fundAdmin,
+    ),
+    ContractKeys.VestedEscrow,
   )
