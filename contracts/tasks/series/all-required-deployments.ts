@@ -119,10 +119,15 @@ task(
         `deploy-${ContractKeys.BaseRewardPool}`,
         commonTaskArgs,
       )
-
       const muuuRewardPoolAddress = await hre.run(
         `deploy-${ContractKeys.MuuuRewardPool}`,
         commonTaskArgs,
+      )
+
+      console.log('> Booster#setRewardContracts')
+      await Booster__factory.connect(boosterAddress, signer).setRewardContracts(
+        muKglRewardPoolAddress,
+        muuuRewardPoolAddress,
       )
 
       console.log(`--- [all-required-developments] FINISHED ---`)
