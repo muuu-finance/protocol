@@ -40,12 +40,16 @@ task(
       if (!fs.existsSync(json))
         fs.writeFileSync(json, JSON.stringify({}, null, 2))
       console.log('> TaskUtils.loadDeployedContractAddresses')
-      console.log(TaskUtils.loadDeployedContractAddresses(network.name))
+      console.log(
+        TaskUtils.loadDeployedContractAddresses({ network: network.name }),
+      )
       const mockJson = `./contract-mocks-${network.name}.json`
       if (!fs.existsSync(mockJson))
         fs.writeFileSync(mockJson, JSON.stringify({}, null, 2))
       console.log('> TaskUtils.loadDeployedMockAddresses')
-      console.log(TaskUtils.loadDeployedMockAddresses(network.name))
+      console.log(
+        TaskUtils.loadDeployedMockAddresses({ network: network.name }),
+      )
       await hre.run(`deploy-contracts`)
 
       // Deployments
@@ -235,7 +239,8 @@ task(
         muuuTokenAddress,
         signer,
       )
-      await muuuTokenInstance.transfer(merkleAirdropAddress, 10000) // TODO
+      console.log('> [temp skip] MuuuToken#transfer')
+      // await muuuTokenInstance.transfer(merkleAirdropAddress, 10000) // TODO
       console.log(
         `airdrop balance: ${await muuuTokenInstance.balanceOf(
           merkleAirdropAddress,
@@ -243,6 +248,7 @@ task(
       )
       const merkleRoot =
         '0x632a2ad201c5b95d3f75c1332afdcf489d4e6b4b7480cf878d8eba2aa87d5f73'
+      console.log('> [temp skip] MerkleAirdrop#setRoot')
       await MerkleAirdrop__factory.connect(
         merkleAirdropAddress,
         signer,
