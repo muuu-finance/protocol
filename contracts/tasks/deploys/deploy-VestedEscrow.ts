@@ -38,8 +38,8 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       const instance = await deployVestedEscrow({
         deployer: _deployer,
         rewardToken: ethers.constants.AddressZero, // TODO
-        starttime: '0',
-        endtime: '0',
+        starttime: '0', // TODO
+        endtime: '0', // TODO
         stakeContract: ethers.constants.AddressZero, // TODO
         fundAdmin: ethers.constants.AddressZero, // TODO
       })

@@ -170,8 +170,14 @@ task(
         commonTaskArgs,
       )
 
+      // contracts/migrations/1_deploy_contracts.js#L341
       console.log('> [temp skip] ClaimZap#setApprovals')
       // await ClaimZap__factory.connect(claimZapAddress, signer).setApprovals()
+
+      const vestedEscrowAddress = await hre.run(
+        `deploy-${ContractKeys.VestedEscrow}`,
+        commonTaskArgs,
+      )
 
       console.log(`--- [all-required-developments] FINISHED ---`)
     },
