@@ -3,6 +3,7 @@ import { ContractKeys } from '../tasks/utils'
 import {
   Booster__factory,
   KaglaVoterProxy__factory,
+  KglDepositor__factory,
   MuKglToken__factory,
   MuuuToken__factory,
   RewardFactory__factory,
@@ -129,4 +130,26 @@ export const deployMuKglToken = async ({ deployer }: DeployCommonArgs) =>
   withSaveAndVerify(
     await new MuKglToken__factory(deployer).deploy(),
     ContractKeys.MuKglToken,
+  )
+
+export const deployKglDepositor = async ({
+  deployer,
+  staker,
+  minter,
+  kgl,
+  votingEscrow,
+}: DeployCommonArgs & {
+  staker: string
+  minter: string
+  kgl: string
+  votingEscrow: string
+}) =>
+  withSaveAndVerify(
+    await new KglDepositor__factory(deployer).deploy(
+      staker,
+      minter,
+      kgl,
+      votingEscrow,
+    ),
+    ContractKeys.KaglaVoterProxy,
   )

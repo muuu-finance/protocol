@@ -82,6 +82,11 @@ task(
         commonTaskArgs,
       )
 
+      const kglDepositorAddress = await hre.run(
+        `deploy-${ContractKeys.KglDepositor}`,
+        commonTaskArgs,
+      )
+
       console.log(`--- [all-required-developments] FINISHED ---`)
     },
   )
