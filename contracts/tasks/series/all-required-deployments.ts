@@ -124,7 +124,7 @@ const _prepareAfterDeployingPoolManager = async ({
   console.log('> Booster#setPoolManager')
   await _boosterInstance.setPoolManager(poolManager)
   console.log('> Booster#setFactories')
-  await _boosterInstance.setFactories(rewardFactory, tokenFactory, stashFactory)
+  await _boosterInstance.setFactories(rewardFactory, stashFactory, tokenFactory)
   console.log('> Booster#setFeeInfo')
   await _boosterInstance.setFeeInfo()
 }
@@ -282,6 +282,63 @@ const isSkipDeploy = ({
   deployeds: DeployedContractAddresses
 }) => enableSkip && deployeds.system[key]
 
+// write added pools information to json
+const _writePoolInfosToJson = async ({
+  signer,
+  networkName,
+  boosterAddress,
+  kglTokenAddress,
+}: {
+  signer: SignerWithAddress
+  networkName: string
+  boosterAddress: string
+  kglTokenAddress: string
+}) => {
+  const poolsContracts = []
+  const _boosterInstance = await Booster__factory.connect(
+    boosterAddress,
+    signer,
+  )
+  const poolLength = await _boosterInstance.poolLength()
+  const list: {
+    lptoken: string
+    token: string
+    gauge: string
+    kglRewards: string
+    stash: string
+    shutdown: boolean
+    // Processed by the user
+    rewards?: any
+    name?: any
+    id?: number
+  }[] = []
+  for (let i = 0; i < poolLength.toNumber(); i++) {
+    list.push(await _boosterInstance.poolInfo(i))
+  }
+  for (let i = 0; i < list.length; i++) {
+    const kglrewards = list[i]['kglRewards']
+    const rewardList = []
+    rewardList.push({ rToken: kglTokenAddress, rAddress: kglrewards })
+    const { lptoken, token, gauge, kglRewards, stash, shutdown } = list[i]
+    poolsContracts.push({
+      lptoken,
+      token,
+      gauge,
+      kglRewards,
+      stash,
+      shutdown,
+      rewards: rewardList,
+      name: '3pool', // TODO
+      id: i,
+    })
+  }
+  TaskUtils.writeValueToGroup(
+    'pools',
+    poolsContracts,
+    TaskUtils.getFilePath({ network: networkName }),
+  )
+}
+
 task(
   'all-required-developments',
   'Deploy minimum necessary contracts to specified network',
@@ -356,7 +413,7 @@ task(
 
       // Deployments
       // TODO: pass other addresses to tasks
-      console.log(`--- start deployments & initialize / setups ---`)
+      console.log(`--- start: deployments & initialize / setups ---`)
       // TODO: consider about treasury
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,
@@ -519,11 +576,29 @@ task(
         },
       })
 
-      console.log(`--- finish deployments & initialize / setups ---`)
+      console.log(`--- finish: deployments & initialize / setups ---`)
 
-      // TODO: create pools
+      console.log(`--- start: add pools ---`)
 
-      console.log(`--- confirm addresses/pools ---`)
+      const poolName = '3pool'
+      await hre.run(`add-pool`, {
+        deployerAddress: signer.address,
+        poolName: poolName,
+        poolManagerAddress,
+        swap: constants.tokens['3Kgl'],
+        gauge: constants.kaglas.gauge,
+        stashVersion: '0',
+      })
+
+      await _writePoolInfosToJson({
+        signer,
+        networkName: network.name,
+        boosterAddress,
+        kglTokenAddress: constants.tokens.KGL,
+      })
+      console.log(`--- finish: add pools ---`)
+
+      console.log(`--- confirm: addresses/pools ---`)
       console.log(
         TaskUtils.loadDeployedContractAddresses({ network: network.name }),
       )

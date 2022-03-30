@@ -1,6 +1,6 @@
 import jsonfile from 'jsonfile'
 import { TaskUtils } from './utils'
-const { vested } = jsonfile.readFileSync('../migrations/distro.json')
+const { vested } = jsonfile.readFileSync('./migrations/distro.json')
 
 type ConstantsType = {
   tokens: {
