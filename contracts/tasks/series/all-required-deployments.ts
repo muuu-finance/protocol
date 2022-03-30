@@ -4,6 +4,8 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import {
   Booster__factory,
   KaglaVoterProxy__factory,
+  MerkleAirdropFactory__factory,
+  MerkleAirdrop__factory,
   MuKglToken__factory,
   MuuuToken__factory,
   VestedEscrow__factory,
@@ -201,6 +203,33 @@ task(
       console.log(
         `vesting initialLockedSupply: ${await vestedEscrowInstance.initialLockedSupply()}`,
       )
+
+      const merkleAirdropFactoryAddress = await hre.run(
+        `deploy-${ContractKeys.MerkleAirdropFactory}`,
+        commonTaskArgs,
+      )
+
+      console.log('> MerkleAirdropFactory#CreateMerkleAirdrop')
+      const tx = await MerkleAirdropFactory__factory.connect(
+        merkleAirdropFactoryAddress,
+        signer,
+      ).CreateMerkleAirdrop()
+      const rc = await tx.wait()
+      const merkleAirdropAddress = rc.events?.find(
+        (event) => event.event === 'Created',
+      )?.args?.drop
+      if (!merkleAirdropAddress) {
+        throw new Error(
+          "Cannot get MerkleAirdrop's address from tx by MerkleAirdropFactory#CreateMerkleAirdrop",
+        )
+      }
+
+      // contracts/migrations/1_deploy_contracts.js#L383-389
+      console.log('> MerkleAirdrop#setRewardToken')
+      await MerkleAirdrop__factory.connect(
+        merkleAirdropAddress,
+        signer,
+      ).setRewardToken(muuuTokenAddress)
 
       console.log(`--- [all-required-developments] FINISHED ---`)
     },

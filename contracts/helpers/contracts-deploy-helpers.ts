@@ -7,6 +7,7 @@ import {
   ClaimZap__factory,
   KaglaVoterProxy__factory,
   KglDepositor__factory,
+  MerkleAirdropFactory__factory,
   MuKglToken__factory,
   MuuuLockerV2__factory,
   MuuuRewardPool__factory,
@@ -304,4 +305,12 @@ export const deployVestedEscrow = async ({
       fundAdmin,
     ),
     ContractKeys.VestedEscrow,
+  )
+
+export const deployMerkleAirdropFactory = async ({
+  deployer,
+}: DeployCommonArgs) =>
+  withSaveAndVerify(
+    await new MerkleAirdropFactory__factory(deployer).deploy(),
+    ContractKeys.MerkleAirdropFactory,
   )
