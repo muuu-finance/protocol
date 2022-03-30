@@ -27,7 +27,7 @@ export class TaskUtils {
     `./contract-mocks-${network}.json`
 
   static resetContractAddressesJson = (network: string): void => {
-    const fileName = TaskUtils.getFilePath({ network: network })
+    const fileName = this.getFilePath({ network: network })
     if (fs.existsSync(fileName)) {
       const folderName = 'tmp'
       fs.mkdirSync(folderName, { recursive: true })
@@ -54,15 +54,57 @@ export class TaskUtils {
   static loadDeployedContractAddresses = (
     network: string,
   ): DeployedContractAddresses => {
-    const filePath = TaskUtils.getFilePath({ network: network })
+    const filePath = this.getFilePath({ network: network })
     return jsonfile.readFileSync(filePath) as DeployedContractAddresses
   }
 
   static loadDeployedMockAddresses = (
     network: string,
   ): DeployedMockAddresses => {
-    const filePath = TaskUtils.getMockFilePath(network)
+    const filePath = this.getMockFilePath(network)
     return jsonfile.readFileSync(filePath) as DeployedMockAddresses
+  }
+
+  static #updateJson = (
+    group: string,
+    name: string | null,
+    value: string,
+    obj: any,
+  ) => {
+    if (obj[group] === undefined) obj[group] = {}
+    if (name === null) {
+      obj[group] = value
+    } else {
+      if (obj[group][name] === undefined) obj[group][name] = {}
+      obj[group][name] = value
+    }
+  }
+
+  static writeContractAddress = (
+    group: string,
+    name: string | null,
+    value: string,
+    fileName: string,
+  ) => {
+    try {
+      const base = jsonfile.readFileSync(fileName)
+      this.#updateJson(group, name, value, base)
+      const output = JSON.stringify(base, null, 2)
+      fs.writeFileSync(fileName, output)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  static writeValueToGroup = (group: string, value: any, fileName: string) => {
+    try {
+      const base = jsonfile.readFileSync(fileName)
+      this.#updateJson(group, null, value, base)
+      const output = JSON.stringify(base, null, 2)
+      fs.writeFileSync(fileName, output)
+    } catch (e) {
+      console.log(e)
+    }
   }
 }
 
