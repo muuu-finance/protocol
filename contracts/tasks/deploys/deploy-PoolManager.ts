@@ -1,7 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployPoolManager } from '../../helpers/contracts-deploy-helpers'
-import { ContractKeys } from '../utils'
+import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.PoolManager
 task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
@@ -35,11 +35,19 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       }
 
       console.log(`> start deploy ${CONTRACT_KEY}`)
+
       const instance = await deployPoolManager({
         deployer: _deployer,
         pools: ethers.constants.AddressZero, // TODO
         addressProvider: ethers.constants.AddressZero, // TODO
       })
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'poolManager',
+        value: instance.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
+      })
+
       console.log(`>> deployed ${CONTRACT_KEY}\n`)
 
       if (!inMultiDeploymentFlow)

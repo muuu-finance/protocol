@@ -1,7 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployArbitratorVault } from '../../helpers/contracts-deploy-helpers'
-import { ContractKeys } from '../utils'
+import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.ArbitratorVault
 task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
@@ -35,10 +35,18 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       }
 
       console.log(`> start deploy ${CONTRACT_KEY}`)
+
       const instance = await deployArbitratorVault({
         deployer: _deployer,
         depositor: ethers.constants.AddressZero, // TODO
       })
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'arbitratorVault',
+        value: instance.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
+      })
+
       console.log(`>> deployed ${CONTRACT_KEY}\n`)
 
       if (!inMultiDeploymentFlow)

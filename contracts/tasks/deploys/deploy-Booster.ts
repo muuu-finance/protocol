@@ -1,7 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployBooster } from '../../helpers/contracts-deploy-helpers'
-import { ContractKeys } from '../utils'
+import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.Booster
 task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
@@ -35,6 +35,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       }
 
       console.log(`> start deploy ${CONTRACT_KEY}`)
+
       const instance = await deployBooster({
         deployer: _deployer,
         staker: ethers.constants.AddressZero, // TODO
@@ -42,6 +43,13 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         kgl: ethers.constants.AddressZero, // TODO
         registry: ethers.constants.AddressZero, // TODO
       })
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'booster',
+        value: instance.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
+      })
+
       console.log(`>> deployed ${CONTRACT_KEY}\n`)
 
       if (!inMultiDeploymentFlow)

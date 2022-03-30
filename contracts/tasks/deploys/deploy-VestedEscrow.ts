@@ -1,7 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployVestedEscrow } from '../../helpers/contracts-deploy-helpers'
-import { ContractKeys } from '../utils'
+import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.VestedEscrow
 task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
@@ -35,6 +35,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       }
 
       console.log(`> start deploy ${CONTRACT_KEY}`)
+
       const startTime = Math.floor(Date.now() / 1000) + 3600
       const instance = await deployVestedEscrow({
         deployer: _deployer,
@@ -44,6 +45,13 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         stakeContract: ethers.constants.AddressZero, // TODO
         fundAdmin: ethers.constants.AddressZero, // TODO
       })
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'vestedEscrow',
+        value: instance.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
+      })
+
       console.log(`>> deployed ${CONTRACT_KEY}\n`)
 
       if (!inMultiDeploymentFlow)

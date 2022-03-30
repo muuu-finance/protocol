@@ -1,7 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployMuuuRewardPool } from '../../helpers/contracts-deploy-helpers'
-import { ContractKeys } from '../utils'
+import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.MuuuRewardPool
 task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
@@ -35,6 +35,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       }
 
       console.log(`> start deploy ${CONTRACT_KEY}`)
+
       const instance = await deployMuuuRewardPool({
         deployer: _deployer,
         stakingToken: ethers.constants.AddressZero, // TODO
@@ -45,6 +46,13 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         operator: ethers.constants.AddressZero, // TODO
         rewardManager: ethers.constants.AddressZero, // TODO
       })
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'muuuRewards',
+        value: instance.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
+      })
+
       console.log(`>> deployed ${CONTRACT_KEY}\n`)
 
       if (!inMultiDeploymentFlow)

@@ -1,7 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployKaglaVoterProxy } from '../../helpers/contracts-deploy-helpers'
-import { ContractKeys } from '../utils'
+import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.KaglaVoterProxy
 task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
@@ -35,6 +35,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       }
 
       console.log(`> start deploy ${CONTRACT_KEY}`)
+
       const instance = await deployKaglaVoterProxy({
         deployer: _deployer,
         kgl: ethers.constants.AddressZero, // TODO
@@ -42,12 +43,12 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         gaugeController: ethers.constants.AddressZero, // TODO
         tokenMinter: ethers.constants.AddressZero, // TODO
       })
-      // TaskUtils.writeContractAddress(
-      //   ContractJsonGroups.system,
-      //   'voteProxy',
-      //   instance.address,
-      //   TaskUtils.getFilePath({ network: network.name }),
-      // )
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'voteProxy',
+        value: instance.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
+      })
 
       console.log(`>> deployed ${CONTRACT_KEY}\n`)
 

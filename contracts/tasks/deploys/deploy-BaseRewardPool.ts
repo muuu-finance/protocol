@@ -1,7 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployBaseRewardPool } from '../../helpers/contracts-deploy-helpers'
-import { ContractKeys } from '../utils'
+import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.BaseRewardPool
 task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
@@ -42,6 +42,12 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         rewardToken: ethers.constants.AddressZero, // TODO
         operator: ethers.constants.AddressZero, // TODO
         rewardManager: ethers.constants.AddressZero, // TODO
+      })
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'muKglRewards', // TODO: refactor?
+        value: instance.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
       })
       console.log(`>> deployed ${CONTRACT_KEY}\n`)
 

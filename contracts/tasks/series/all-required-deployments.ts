@@ -10,7 +10,7 @@ import {
   MuuuToken__factory,
   VestedEscrow__factory,
 } from '../../types'
-import { ContractKeys, TaskUtils } from '../utils'
+import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 task(
   'all-required-developments',
@@ -227,6 +227,12 @@ task(
           "Cannot get MerkleAirdrop's address from tx by MerkleAirdropFactory#CreateMerkleAirdrop",
         )
       }
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'airdrop',
+        value: merkleAirdropAddress,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
+      })
 
       // contracts/migrations/1_deploy_contracts.js#L383-389
       console.log('> MerkleAirdrop#setRewardToken')

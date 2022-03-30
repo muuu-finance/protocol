@@ -1,7 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployMuuuLockerV2 } from '../../helpers/contracts-deploy-helpers'
-import { ContractKeys } from '../utils'
+import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.MuuuLockerV2
 task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
@@ -37,6 +37,12 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       console.log(`> start deploy ${CONTRACT_KEY}`)
       const instance = await deployMuuuLockerV2({
         deployer: _deployer,
+      })
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'muuuLockerV2',
+        value: instance.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
       })
       console.log(`>> deployed ${CONTRACT_KEY}\n`)
 

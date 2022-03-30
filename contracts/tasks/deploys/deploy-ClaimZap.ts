@@ -1,7 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployClaimZap } from '../../helpers/contracts-deploy-helpers'
-import { ContractKeys } from '../utils'
+import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.ClaimZap
 task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
@@ -35,6 +35,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       }
 
       console.log(`> start deploy ${CONTRACT_KEY}`)
+
       const instance = await deployClaimZap({
         deployer: _deployer,
         kgl: ethers.constants.AddressZero, // TODO
@@ -45,6 +46,12 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         muuuRewards: ethers.constants.AddressZero, // TODO
         exchange: ethers.constants.AddressZero, // TODO
         locker: ethers.constants.AddressZero, // TODO
+      })
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'claimZap',
+        value: instance.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
       })
       console.log(`>> deployed ${CONTRACT_KEY}\n`)
 

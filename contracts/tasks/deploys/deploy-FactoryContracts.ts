@@ -5,7 +5,7 @@ import {
   deployStashFactory,
   deployTokenFactory,
 } from '../../helpers/contracts-deploy-helpers'
-import { ContractKeys } from '../utils'
+import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = 'FactoryContracts'
 task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
@@ -44,18 +44,38 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         operator: ethers.constants.AddressZero, // TODO
         kgl: ethers.constants.AddressZero, // TODO
       })
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'rFactory',
+        value: rFactoryInstance.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
+      })
       console.log(`>> deployed ${ContractKeys.RewardFactory}\n`)
+
       console.log(`> start deploy ${ContractKeys.TokenFactory}`)
       const tFactoryInstance = await deployTokenFactory({
         deployer: _deployer,
         operator: ethers.constants.AddressZero, // TODO
       })
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'tFactory',
+        value: tFactoryInstance.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
+      })
       console.log(`>> deployed ${ContractKeys.TokenFactory}\n`)
+
       console.log(`> start deploy ${ContractKeys.StashFactory}`)
       const sFactoryInstance = await deployStashFactory({
         deployer: _deployer,
         operator: ethers.constants.AddressZero, // TODO
         rewardFactory: rFactoryInstance.address, // TODO
+      })
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'sFactory',
+        value: sFactoryInstance.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
       })
       console.log(`>> deployed ${ContractKeys.StashFactory}\n`)
 
