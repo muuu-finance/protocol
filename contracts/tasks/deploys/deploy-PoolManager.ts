@@ -1,6 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployPoolManager } from '../../helpers/contracts-deploy-helpers'
+import { loadConstants } from '../constants'
 import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.PoolManager
@@ -34,12 +35,21 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         console.log(`useAlreadyDeployed flag: ${useAlreadyDeployed}`)
       }
 
+      // get constants / addresses / parameters
+      const deployeds = TaskUtils.loadDeployedContractAddresses({
+        network: network.name,
+      })
+      const constants = loadConstants({
+        network: network.name,
+        isUseMocks: true, // temp
+      })
+
       console.log(`> start deploy ${CONTRACT_KEY}`)
 
       const instance = await deployPoolManager({
         deployer: _deployer,
-        pools: ethers.constants.AddressZero, // TODO
-        addressProvider: ethers.constants.AddressZero, // TODO
+        pools: deployeds.system.booster,
+        addressProvider: constants.kaglas.addressProvider,
       })
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,

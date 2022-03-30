@@ -1,6 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployMuuuRewardPool } from '../../helpers/contracts-deploy-helpers'
+import { loadConstants } from '../constants'
 import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.MuuuRewardPool
@@ -34,17 +35,26 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         console.log(`useAlreadyDeployed flag: ${useAlreadyDeployed}`)
       }
 
+      // get constants / addresses / parameters
+      const deployeds = TaskUtils.loadDeployedContractAddresses({
+        network: network.name,
+      })
+      const constants = loadConstants({
+        network: network.name,
+        isUseMocks: true, // temp
+      })
+
       console.log(`> start deploy ${CONTRACT_KEY}`)
 
       const instance = await deployMuuuRewardPool({
         deployer: _deployer,
-        stakingToken: ethers.constants.AddressZero, // TODO
-        rewardToken: ethers.constants.AddressZero, // TODO
-        kglDeposits: ethers.constants.AddressZero, // TODO
-        muKglRewards: ethers.constants.AddressZero, // TODO
-        muKglToken: ethers.constants.AddressZero, // TODO
-        operator: ethers.constants.AddressZero, // TODO
-        rewardManager: ethers.constants.AddressZero, // TODO
+        stakingToken: deployeds.system.muuu,
+        rewardToken: constants.tokens.KGL,
+        kglDeposits: deployeds.system.kglDepositor,
+        muKglRewards: deployeds.system.muKglRewards,
+        muKglToken: deployeds.system.muKgl,
+        operator: deployeds.system.booster,
+        rewardManager: _deployer.address, // TODO
       })
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,

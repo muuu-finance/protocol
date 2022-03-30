@@ -19,6 +19,9 @@ type ConstantsType = {
     treasury: {
       address: string
     }
+    muKglRewards: {
+      uid: number
+    }
   }
 }
 
@@ -41,6 +44,9 @@ const local: ConstantsType = {
   contracts: {
     treasury: {
       address: '0xCdfc500F7f0FCe1278aECb0340b523cD55b3EBbb',
+    },
+    muKglRewards: {
+      uid: 0,
     },
   },
 }

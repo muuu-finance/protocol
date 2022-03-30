@@ -170,8 +170,8 @@ task(
         tokenFactoryAddress,
         stashFactoryAddress,
       )
-      console.log('> [temp skip] Booster#setFeeInfo')
-      // await Booster__factory.connect(boosterAddress, signer).setFeeInfo()
+      console.log('> Booster#setFeeInfo')
+      await Booster__factory.connect(boosterAddress, signer).setFeeInfo()
 
       const arbitratorVaultAddress = await hre.run(
         `deploy-${ContractKeys.ArbitratorVault}`,
