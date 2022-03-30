@@ -68,9 +68,10 @@ export class TaskUtils {
 
 export const ContractKeys = {
   KaglaVoterProxy: 'KaglaVoterProxy',
-  MuuuToken: "MuuuToken",
-  Booster: "Booster",
-  RewardFactory: "RewardFactory",
-  TokenFactory: "TokenFactory",
-  StashFactory: "StashFactory"
+  MuuuToken: 'MuuuToken',
+  Booster: 'Booster',
+  RewardFactory: 'RewardFactory',
+  TokenFactory: 'TokenFactory',
+  StashFactory: 'StashFactory',
+  MuKglToken: 'MuKglToken',
 }

@@ -1,16 +1,24 @@
-import { Contract, ContractTransaction, Signer } from "ethers"
-import { ContractKeys } from "../tasks/utils";
-import { Booster__factory, KaglaVoterProxy__factory, MuuuToken__factory, RewardFactory__factory, StashFactory__factory, TokenFactory__factory } from '../types'
+import { Contract, ContractTransaction, Signer } from 'ethers'
+import { ContractKeys } from '../tasks/utils'
+import {
+  Booster__factory,
+  KaglaVoterProxy__factory,
+  MuKglToken__factory,
+  MuuuToken__factory,
+  RewardFactory__factory,
+  StashFactory__factory,
+  TokenFactory__factory,
+} from '../types'
 
-const waitForTx = async (tx: ContractTransaction) => await tx.wait(1);
+const waitForTx = async (tx: ContractTransaction) => await tx.wait(1)
 const loggingDeployedContract = (id: string, instance: Contract) => {
-  console.log(`\n*** ${id} ***`);
-  console.log(`tx: ${instance.deployTransaction.hash}`);
-  console.log(`contract address: ${instance.address}`);
-  console.log(`deployer address: ${instance.deployTransaction.from}`);
-  console.log(`gas price: ${instance.deployTransaction.gasPrice}`);
-  console.log(`gas used: ${instance.deployTransaction.gasLimit}`);
-  console.log(`******\n`);
+  console.log(`\n*** ${id} ***`)
+  console.log(`tx: ${instance.deployTransaction.hash}`)
+  console.log(`contract address: ${instance.address}`)
+  console.log(`deployer address: ${instance.deployTransaction.from}`)
+  console.log(`gas price: ${instance.deployTransaction.gasPrice}`)
+  console.log(`gas used: ${instance.deployTransaction.gasLimit}`)
+  console.log(`******\n`)
 }
 
 const withSaveAndVerify = async <ContractType extends Contract>(
@@ -19,7 +27,7 @@ const withSaveAndVerify = async <ContractType extends Contract>(
   // args: (string | string[])[],
   // verify?: boolean
 ): Promise<ContractType> => {
-  await waitForTx(instance.deployTransaction);
+  await waitForTx(instance.deployTransaction)
   // TODO: write address to json
   loggingDeployedContract(id, instance)
   // if (verify) {} // TODO: verify contract
@@ -35,51 +43,50 @@ export const deployKaglaVoterProxy = async ({
   kgl,
   votingEscrow,
   gaugeController,
-  tokenMinter
+  tokenMinter,
 }: DeployCommonArgs & {
-  kgl: string,
-  votingEscrow: string,
-  gaugeController: string,
+  kgl: string
+  votingEscrow: string
+  gaugeController: string
   tokenMinter: string
-}) => withSaveAndVerify(
-  await new KaglaVoterProxy__factory(deployer).deploy(
-    kgl, votingEscrow, gaugeController, tokenMinter
-  ),
-  ContractKeys.KaglaVoterProxy
-)
+}) =>
+  withSaveAndVerify(
+    await new KaglaVoterProxy__factory(deployer).deploy(
+      kgl,
+      votingEscrow,
+      gaugeController,
+      tokenMinter,
+    ),
+    ContractKeys.KaglaVoterProxy,
+  )
 
 export const deployMuuuToken = async ({
   deployer,
   proxy,
 }: DeployCommonArgs & {
   proxy: string
-}) => withSaveAndVerify(
-  await new MuuuToken__factory(deployer).deploy(
-    proxy
-  ),
-  ContractKeys.MuuuToken
-)
+}) =>
+  withSaveAndVerify(
+    await new MuuuToken__factory(deployer).deploy(proxy),
+    ContractKeys.MuuuToken,
+  )
 
 export const deployBooster = async ({
   deployer,
   staker,
   minter,
   kgl,
-  registry
+  registry,
 }: DeployCommonArgs & {
   staker: string
   minter: string
   kgl: string
   registry: string
-}) => withSaveAndVerify(
-  await new Booster__factory(deployer).deploy(
-    staker,
-    minter,
-    kgl,
-    registry
-  ),
-  ContractKeys.Booster
-)
+}) =>
+  withSaveAndVerify(
+    await new Booster__factory(deployer).deploy(staker, minter, kgl, registry),
+    ContractKeys.Booster,
+  )
 
 export const deployRewardFactory = async ({
   deployer,
@@ -88,37 +95,38 @@ export const deployRewardFactory = async ({
 }: DeployCommonArgs & {
   operator: string
   kgl: string
-}) => withSaveAndVerify(
-  await new RewardFactory__factory(deployer).deploy(
-    operator,
-    kgl
-  ),
-  ContractKeys.RewardFactory
-)
+}) =>
+  withSaveAndVerify(
+    await new RewardFactory__factory(deployer).deploy(operator, kgl),
+    ContractKeys.RewardFactory,
+  )
 
 export const deployTokenFactory = async ({
   deployer,
   operator,
 }: DeployCommonArgs & {
   operator: string
-}) => withSaveAndVerify(
-  await new TokenFactory__factory(deployer).deploy(
-    operator
-  ),
-  ContractKeys.TokenFactory
-)
+}) =>
+  withSaveAndVerify(
+    await new TokenFactory__factory(deployer).deploy(operator),
+    ContractKeys.TokenFactory,
+  )
 
 export const deployStashFactory = async ({
   deployer,
   operator,
   rewardFactory,
 }: DeployCommonArgs & {
-  operator: string,
-  rewardFactory: string,
-}) => withSaveAndVerify(
-  await new StashFactory__factory(deployer).deploy(
-    operator,
-    rewardFactory
-  ),
-  ContractKeys.StashFactory
-)
+  operator: string
+  rewardFactory: string
+}) =>
+  withSaveAndVerify(
+    await new StashFactory__factory(deployer).deploy(operator, rewardFactory),
+    ContractKeys.StashFactory,
+  )
+
+export const deployMuKglToken = async ({ deployer }: DeployCommonArgs) =>
+  withSaveAndVerify(
+    await new MuKglToken__factory(deployer).deploy(),
+    ContractKeys.MuKglToken,
+  )
