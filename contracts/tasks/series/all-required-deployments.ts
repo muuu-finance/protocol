@@ -5,6 +5,8 @@ import {
   Booster__factory,
   KaglaVoterProxy__factory,
   MuKglToken__factory,
+  MuuuToken__factory,
+  VestedEscrow__factory,
 } from '../../types'
 import { ContractKeys, TaskUtils } from '../utils'
 
@@ -177,6 +179,27 @@ task(
       const vestedEscrowAddress = await hre.run(
         `deploy-${ContractKeys.VestedEscrow}`,
         commonTaskArgs,
+      )
+
+      // contracts/migrations/1_deploy_contracts.js#L359-369
+      const total = 10000
+      await MuuuToken__factory.connect(muuuTokenAddress, signer).approve(
+        vestedEscrowAddress,
+        total,
+      )
+      const vestedEscrowInstance = await VestedEscrow__factory.connect(
+        vestedEscrowAddress,
+        signer,
+      )
+      console.log('> [temp skip] VestedEscrow#addTokens')
+      // await vestedEscrowInstance.addTokens(total)
+      console.log('> VestedEscrow#fund')
+      await vestedEscrowInstance.fund([], [])
+      console.log(
+        `vesting unallocatedSupply: ${await vestedEscrowInstance.unallocatedSupply()}`,
+      )
+      console.log(
+        `vesting initialLockedSupply: ${await vestedEscrowInstance.initialLockedSupply()}`,
       )
 
       console.log(`--- [all-required-developments] FINISHED ---`)

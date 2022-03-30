@@ -35,11 +35,12 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       }
 
       console.log(`> start deploy ${CONTRACT_KEY}`)
+      const startTime = Math.floor(Date.now() / 1000) + 3600
       const instance = await deployVestedEscrow({
         deployer: _deployer,
         rewardToken: ethers.constants.AddressZero, // TODO
-        starttime: '0', // TODO
-        endtime: '0', // TODO
+        starttime: startTime.toString(), // TODO
+        endtime: (startTime + 1 * 364 * 86400).toString(), // TODO
         stakeContract: ethers.constants.AddressZero, // TODO
         fundAdmin: ethers.constants.AddressZero, // TODO
       })
