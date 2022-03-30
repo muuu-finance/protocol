@@ -22,13 +22,18 @@ const {
   MNEMONIC,
   ETHERSCAN_KEY,
   getAstarNetworkUrl,
-  getEthereumNetworkUrl
-} = require("./utils/config_utils")
+  getEthereumNetworkUrl,
+} = require('./utils/config_utils')
 
 const HDWalletProvider = require('@truffle/hdwallet-provider')
 
-
 const GWEI = 1000 * 1000 * 1000
+
+const localNetworkSettings = {
+  host: '127.0.0.1', // Localhost (default: none)
+  port: 8545, // Standard Ethereum port (default: none) -> use ganache
+  network_id: '*', // Any network (default: none)
+}
 
 module.exports = {
   /**
@@ -48,16 +53,9 @@ module.exports = {
     // tab if you use this network and you must also set the `host`, `port` and `network_id`
     // options below to some value.
     //
-    development: {
-      host: '127.0.0.1', // Localhost (default: none)
-      port: 8545, // Standard Ethereum port (default: none) -> use ganache
-      network_id: '*', // Any network (default: none)
-    },
-    skipMigration: {
-      host: '127.0.0.1',
-      port: 8545,
-      network_id: '*',
-    },
+    development: localNetworkSettings,
+    skipMigration: localNetworkSettings,
+    localhost: localNetworkSettings,
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
