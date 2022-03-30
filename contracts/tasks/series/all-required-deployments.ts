@@ -124,6 +124,7 @@ task(
         commonTaskArgs,
       )
 
+      // contracts/migrations/1_deploy_contracts.js#L284-286
       console.log('> Booster#setRewardContracts')
       await Booster__factory.connect(boosterAddress, signer).setRewardContracts(
         muKglRewardPoolAddress,
@@ -134,6 +135,20 @@ task(
         `deploy-${ContractKeys.PoolManager}`,
         commonTaskArgs,
       )
+
+      // contracts/migrations/1_deploy_contracts.js#L299-308
+      console.log('> Booster#setPoolManager')
+      await Booster__factory.connect(boosterAddress, signer).setPoolManager(
+        poolManagerAddress,
+      )
+      console.log('> Booster#setFactories')
+      await Booster__factory.connect(boosterAddress, signer).setFactories(
+        rewardFactoryAddress,
+        tokenFactoryAddress,
+        stashFactoryAddress,
+      )
+      console.log('> [temp skip] Booster#setFeeInfo')
+      // await Booster__factory.connect(boosterAddress, signer).setFeeInfo()
 
       console.log(`--- [all-required-developments] FINISHED ---`)
     },
