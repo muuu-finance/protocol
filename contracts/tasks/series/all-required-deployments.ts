@@ -1,7 +1,12 @@
 import fs from 'fs'
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import { KaglaVoterProxy__factory } from '../../types'
+import {
+  Booster__factory,
+  KaglaVoterProxy__factory,
+  KglDepositor__factory,
+  MuKglToken__factory,
+} from '../../types'
 import { ContractKeys, TaskUtils } from '../utils'
 
 task(
@@ -85,6 +90,22 @@ task(
       const kglDepositorAddress = await hre.run(
         `deploy-${ContractKeys.KglDepositor}`,
         commonTaskArgs,
+      )
+
+      // contracts/migrations/1_deploy_contracts.js#L251-255
+      console.log('> MuKglToken#setOperator')
+      MuKglToken__factory.connect(muKglTokenAddress, signer).setOperator(
+        kglDepositorAddress,
+      )
+      console.log('> KaglaVoterProxy#setDepositor')
+      KaglaVoterProxy__factory.connect(voterProxy.address, signer).setDepositor(
+        kglDepositorAddress,
+      )
+      console.log('> KglDepositor#initialLock')
+      KglDepositor__factory.connect(kglDepositorAddress, signer).initialLock()
+      console.log('> Booster#setTreasury')
+      Booster__factory.connect(boosterAddress, signer).setTreasury(
+        kglDepositorAddress,
       )
 
       console.log(`--- [all-required-developments] FINISHED ---`)
