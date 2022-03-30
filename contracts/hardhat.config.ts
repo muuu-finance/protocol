@@ -11,7 +11,7 @@ const {
 } = require('./utils/config_utils')
 
 // load tasks
-const taskPaths = ['series', 'deploys', 'samples']
+const taskPaths = ['series', 'deploys', 'migrations', 'samples']
 taskPaths.forEach((folder) => {
   const tasksPath = path.join(__dirname, 'tasks', folder)
   fs.readdirSync(tasksPath)
