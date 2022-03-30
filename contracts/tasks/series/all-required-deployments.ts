@@ -33,6 +33,9 @@ task(
       console.log(`useAlreadyDeployed flag: ${useAlreadyDeployed}`)
       if (useAlreadyDeployed) {
         console.log(`[NOTE] use already deployed contracts`)
+      } else {
+        // reset json to have deployed contracts' addresses
+        TaskUtils.resetContractAddressesJson({ network: network.name })
       }
 
       // DEBUG
@@ -60,6 +63,12 @@ task(
         useAlreadyDeployed: useAlreadyDeployed,
       }
 
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'treasury',
+        value: '0xCdfc500F7f0FCe1278aECb0340b523cD55b3EBbb', // temp
+        fileName: TaskUtils.getFilePath({ network: network.name }),
+      })
       const kaglaVoterProxyAddress = await hre.run(
         `deploy-${ContractKeys.KaglaVoterProxy}`,
         commonTaskArgs,
