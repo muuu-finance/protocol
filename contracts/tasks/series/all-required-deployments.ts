@@ -42,28 +42,24 @@ task(
 
       // Deployments
       // TODO: pass other addresses to tasks
-
-      const voterProxyAddress = await hre.run(
-        `deploy-${ContractKeys.KaglaVoterProxy}`,
-        {
-          deployerAddress: signer.address,
-          inMultiDeploymentFlow: true,
-          useAlreadyDeployed: useAlreadyDeployed,
-        },
-      )
-      const muuuTokenAddress = await hre.run(
-        `deploy-${ContractKeys.MuuuToken}`,
-        {
-          deployerAddress: signer.address,
-          inMultiDeploymentFlow: true,
-          useAlreadyDeployed: useAlreadyDeployed,
-        },
-      )
-      const boosterAddress = await hre.run(`deploy-${ContractKeys.Booster}`, {
+      const commonTaskArgs = {
         deployerAddress: signer.address,
         inMultiDeploymentFlow: true,
         useAlreadyDeployed: useAlreadyDeployed,
-      })
+      }
+
+      const voterProxyAddress = await hre.run(
+        `deploy-${ContractKeys.KaglaVoterProxy}`,
+        commonTaskArgs,
+      )
+      const muuuTokenAddress = await hre.run(
+        `deploy-${ContractKeys.MuuuToken}`,
+        commonTaskArgs,
+      )
+      const boosterAddress = await hre.run(
+        `deploy-${ContractKeys.Booster}`,
+        commonTaskArgs,
+      )
 
       // contracts/migrations/1_deploy_contracts.js#L211-220
       const admin = signer.address // TODO
@@ -79,19 +75,11 @@ task(
       //   .mint(signer.address, ethers.utils.parseEther('10000.0').toString()) // TODO
 
       const { rewardFactoryAddress, tokenFactoryAddress, stashFactoryAddress } =
-        await hre.run(`deploy-FactoryContracts`, {
-          deployerAddress: signer.address,
-          inMultiDeploymentFlow: true,
-          useAlreadyDeployed: useAlreadyDeployed,
-        })
+        await hre.run(`deploy-FactoryContracts`, commonTaskArgs)
 
       const muKglTokenAddress = await hre.run(
         `deploy-${ContractKeys.MuKglToken}`,
-        {
-          deployerAddress: signer.address,
-          inMultiDeploymentFlow: true,
-          useAlreadyDeployed: useAlreadyDeployed,
-        },
+        commonTaskArgs,
       )
 
       console.log(`--- [all-required-developments] FINISHED ---`)
