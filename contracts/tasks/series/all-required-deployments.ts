@@ -10,6 +10,7 @@ import {
   MuuuToken__factory,
   VestedEscrow__factory,
 } from '../../types'
+import { loadConstants } from '../constants'
 import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 task(
@@ -53,10 +54,14 @@ task(
       console.log(
         TaskUtils.loadDeployedMockAddresses({ network: network.name }),
       )
-      await hre.run(`deploy-contracts`)
 
       // Deployments
       // TODO: pass other addresses to tasks
+      const constants = loadConstants({
+        network: network.name,
+        isUseMocks: true, // temp
+      })
+
       const commonTaskArgs = {
         deployerAddress: signer.address,
         inMultiDeploymentFlow: true,
@@ -66,7 +71,7 @@ task(
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,
         name: 'treasury',
-        value: '0xCdfc500F7f0FCe1278aECb0340b523cD55b3EBbb', // temp
+        value: constants.contracts.treasury.address,
         fileName: TaskUtils.getFilePath({ network: network.name }),
       })
       const kaglaVoterProxyAddress = await hre.run(
@@ -93,11 +98,11 @@ task(
         console.log('> KaglaVoterProxy#transferOwnership')
         await voterProxy.transferOwnership(admin, { from: currentOwner })
       }
-      console.log('> [temp skip] MuuuToken#mint')
-      // await MuuuToken__factory.connect(muuuTokenAddress, signer).mint(
-      //   signer.address,
-      //   ethers.utils.parseEther('10000.0').toString(),
-      // )
+      console.log('> MuuuToken#mint')
+      await MuuuToken__factory.connect(muuuTokenAddress, signer).mint(
+        signer.address,
+        ethers.utils.parseEther('10000.0').toString(), // TODO
+      )
 
       const { rewardFactoryAddress, tokenFactoryAddress, stashFactoryAddress } =
         await hre.run(`deploy-FactoryContracts`, commonTaskArgs)

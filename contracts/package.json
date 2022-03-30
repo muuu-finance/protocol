@@ -22,7 +22,8 @@
     "test:light": "truffle test --stacktrace-extra --network ganachecli --compile-none",
     "prettier:check": "prettier -c 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'",
     "prettier:write": "prettier --write 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'",
-    "hardhat": "npx hardhat"
+    "hardhat": "npx hardhat",
+    "deploy-test:local": "yarn deploy:mocks-token --network localhost && yarn deploy:mocks-kagla --network localhost && yarn hardhat all-required-developments --network localhost"
   },
   "dependencies": {
     "@openzeppelin/contracts": "3.4.0",
