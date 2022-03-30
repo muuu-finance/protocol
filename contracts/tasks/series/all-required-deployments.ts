@@ -56,7 +56,7 @@ task(
         useAlreadyDeployed: useAlreadyDeployed,
       }
 
-      const voterProxyAddress = await hre.run(
+      const kaglaVoterProxyAddress = await hre.run(
         `deploy-${ContractKeys.KaglaVoterProxy}`,
         commonTaskArgs,
       )
@@ -72,7 +72,7 @@ task(
       // contracts/migrations/1_deploy_contracts.js#L211-220
       const admin = signer.address // TODO
       const voterProxy = KaglaVoterProxy__factory.connect(
-        voterProxyAddress,
+        kaglaVoterProxyAddress,
         signer,
       )
       const currentOwner = await voterProxy.owner()
