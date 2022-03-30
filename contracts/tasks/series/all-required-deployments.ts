@@ -150,6 +150,26 @@ task(
       console.log('> [temp skip] Booster#setFeeInfo')
       // await Booster__factory.connect(boosterAddress, signer).setFeeInfo()
 
+      const arbitratorVaultAddress = await hre.run(
+        `deploy-${ContractKeys.ArbitratorVault}`,
+        commonTaskArgs,
+      )
+
+      // contracts/migrations/1_deploy_contracts.js#L313
+      console.log('> Booster#setArbitrator')
+      await Booster__factory.connect(boosterAddress, signer).setArbitrator(
+        arbitratorVaultAddress,
+      )
+
+      const muuuLockerV2Address = await hre.run(
+        `deploy-${ContractKeys.MuuuLockerV2}`,
+        commonTaskArgs,
+      )
+      const claimZapAddress = await hre.run(
+        `deploy-${ContractKeys.ClaimZap}`,
+        commonTaskArgs,
+      )
+
       console.log(`--- [all-required-developments] FINISHED ---`)
     },
   )

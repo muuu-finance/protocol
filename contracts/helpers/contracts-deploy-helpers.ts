@@ -1,11 +1,14 @@
 import { Contract, ContractTransaction, Signer } from 'ethers'
 import { ContractKeys } from '../tasks/utils'
 import {
+  ArbitratorVault__factory,
   BaseRewardPool__factory,
   Booster__factory,
+  ClaimZap__factory,
   KaglaVoterProxy__factory,
   KglDepositor__factory,
   MuKglToken__factory,
+  MuuuLockerV2__factory,
   MuuuRewardPool__factory,
   MuuuToken__factory,
   PoolManager__factory,
@@ -224,4 +227,55 @@ export const deployPoolManager = async ({
   withSaveAndVerify(
     await new PoolManager__factory(deployer).deploy(pools, addressProvider),
     ContractKeys.PoolManager,
+  )
+
+export const deployArbitratorVault = async ({
+  deployer,
+  depositor,
+}: DeployCommonArgs & {
+  depositor: string
+}) =>
+  withSaveAndVerify(
+    await new ArbitratorVault__factory(deployer).deploy(depositor),
+    ContractKeys.ArbitratorVault,
+  )
+
+export const deployMuuuLockerV2 = async ({ deployer }: DeployCommonArgs) =>
+  withSaveAndVerify(
+    await new MuuuLockerV2__factory(deployer).deploy(),
+    ContractKeys.MuuuLockerV2,
+  )
+
+export const deployClaimZap = async ({
+  deployer,
+  kgl,
+  muuu,
+  muKgl,
+  kglDeposit,
+  muKglRewards,
+  muuuRewards,
+  exchange,
+  locker,
+}: DeployCommonArgs & {
+  kgl: string
+  muuu: string
+  muKgl: string
+  kglDeposit: string
+  muKglRewards: string
+  muuuRewards: string
+  exchange: string
+  locker: string
+}) =>
+  withSaveAndVerify(
+    await new ClaimZap__factory(deployer).deploy(
+      kgl,
+      muuu,
+      muKgl,
+      kglDeposit,
+      muKglRewards,
+      muuuRewards,
+      exchange,
+      locker,
+    ),
+    ContractKeys.ClaimZap,
   )
