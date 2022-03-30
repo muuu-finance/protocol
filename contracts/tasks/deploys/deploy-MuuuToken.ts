@@ -34,11 +34,16 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         console.log(`useAlreadyDeployed flag: ${useAlreadyDeployed}`)
       }
 
+      // get constants / addresses / parameters
+      const deployeds = TaskUtils.loadDeployedContractAddresses({
+        network: network.name,
+      })
+
       console.log(`> start deploy ${CONTRACT_KEY}`)
 
       const instance = await deployMuuuToken({
         deployer: _deployer,
-        proxy: ethers.constants.AddressZero, // TODO
+        proxy: deployeds.system.voteProxy,
       })
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,

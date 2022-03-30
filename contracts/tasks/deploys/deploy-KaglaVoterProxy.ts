@@ -1,6 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployKaglaVoterProxy } from '../../helpers/contracts-deploy-helpers'
+import { loadConstants } from '../constants'
 import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.KaglaVoterProxy
@@ -34,13 +35,19 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         console.log(`useAlreadyDeployed flag: ${useAlreadyDeployed}`)
       }
 
+      // get constants / addresses / parameters
+      const constants = loadConstants({
+        network: network.name,
+        isUseMocks: true, // temp
+      })
+
       console.log(`> start deploy ${CONTRACT_KEY}`)
 
       const instance = await deployKaglaVoterProxy({
         deployer: _deployer,
-        kgl: ethers.constants.AddressZero, // TODO
-        votingEscrow: ethers.constants.AddressZero, // TODO
-        gaugeController: ethers.constants.AddressZero, // TODO
+        kgl: constants.tokens.KGL,
+        votingEscrow: constants.kaglas.votingEscrow,
+        gaugeController: constants.kaglas.gauge,
         tokenMinter: ethers.constants.AddressZero, // TODO
       })
       TaskUtils.writeContractAddress({
