@@ -23,9 +23,16 @@ task(
     'useAlreadyDeployed',
     'Use already deployed contracts, get addresses from json to have deployed contract addresses',
   )
+  .addFlag(
+    'useMockContracts',
+    'Use mock contracts, get addresses from json to mock contract addresses',
+  )
   .setAction(
     async (
-      { useAlreadyDeployed }: { useAlreadyDeployed: boolean },
+      {
+        useAlreadyDeployed: _useAlreadyDeployed,
+        useMockContracts: _useMockContracts,
+      }: { useAlreadyDeployed: boolean; useMockContracts: boolean },
       hre: HardhatRuntimeEnvironment,
     ) => {
       console.log(`--- [all-required-developments] START ---`)
@@ -33,12 +40,24 @@ task(
       console.log(`network: ${network.name}`)
       const [signer] = await ethers.getSigners()
       console.log(`deployer: ${await signer.getAddress()}`)
-      console.log(`useAlreadyDeployed flag: ${useAlreadyDeployed}`)
-      if (useAlreadyDeployed) {
+      console.log(`useMockContracts flag: ${_useMockContracts}`)
+      console.log(`useAlreadyDeployed flag: ${_useAlreadyDeployed}`)
+      if (_useAlreadyDeployed) {
         console.log(`[NOTE] use already deployed contracts`)
       } else {
         // reset json to have deployed contracts' addresses
         TaskUtils.resetContractAddressesJson({ network: network.name })
+      }
+      // Prepares
+      const constants = loadConstants({
+        network: network.name,
+        isUseMocks: _useMockContracts,
+      })
+      const commonTaskArgs = {
+        deployerAddress: signer.address,
+        inMultiDeploymentFlow: true,
+        useAlreadyDeployed: _useAlreadyDeployed,
+        useMockContracts: _useMockContracts,
       }
 
       // DEBUG
@@ -49,27 +68,20 @@ task(
       console.log(
         TaskUtils.loadDeployedContractAddresses({ network: network.name }),
       )
-      const mockJson = `./contract-mocks-${network.name}.json`
-      if (!fs.existsSync(mockJson))
-        fs.writeFileSync(mockJson, JSON.stringify({}, null, 2))
-      console.log('> TaskUtils.loadDeployedMockAddresses')
-      console.log(
-        TaskUtils.loadDeployedMockAddresses({ network: network.name }),
-      )
+      if (_useMockContracts) {
+        const mockJson = `./contract-mocks-${network.name}.json`
+        if (!fs.existsSync(mockJson))
+          fs.writeFileSync(mockJson, JSON.stringify({}, null, 2))
+        console.log('> TaskUtils.loadDeployedMockAddresses')
+        console.log(
+          TaskUtils.loadDeployedMockAddresses({ network: network.name }),
+        )
+      }
 
       // Deployments
       // TODO: pass other addresses to tasks
-      const constants = loadConstants({
-        network: network.name,
-        isUseMocks: true, // temp
-      })
-
-      const commonTaskArgs = {
-        deployerAddress: signer.address,
-        inMultiDeploymentFlow: true,
-        useAlreadyDeployed: useAlreadyDeployed,
-      }
-
+      console.log(`--- start deployments & initialize / setups ---`)
+      // TODO: consider about treasury
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,
         name: 'treasury',
@@ -275,9 +287,14 @@ task(
         merkleAirdropAddress,
         signer,
       ).setRoot(merkleRoot)
+      console.log(`--- finish deployments & initialize / setups ---`)
 
       // TODO: create pools
 
+      console.log(`--- confirm addresses/pools ---`)
+      console.log(
+        TaskUtils.loadDeployedContractAddresses({ network: network.name }),
+      )
       console.log(`--- [all-required-developments] FINISHED ---`)
     },
   )

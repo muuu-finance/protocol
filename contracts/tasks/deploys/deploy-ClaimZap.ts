@@ -18,10 +18,12 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         deployerAddress,
         inMultiDeploymentFlow,
         useAlreadyDeployed,
+        useMockContracts,
       }: {
         deployerAddress: string
         inMultiDeploymentFlow: boolean
         useAlreadyDeployed: boolean
+        useMockContracts: boolean
       },
       hre: HardhatRuntimeEnvironment,
     ) => {
@@ -33,6 +35,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         console.log(`--- [deploy-${CONTRACT_KEY}] START ---`)
         console.log(`network: ${network.name}`)
         console.log(`useAlreadyDeployed flag: ${useAlreadyDeployed}`)
+        console.log(`useMockContracts flag: ${useMockContracts}`)
       }
 
       // get constants / addresses / parameters
@@ -41,7 +44,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       })
       const constants = loadConstants({
         network: network.name,
-        isUseMocks: true, // temp
+        isUseMocks: useMockContracts,
       })
 
       console.log(`> start deploy ${CONTRACT_KEY}`)

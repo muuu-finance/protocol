@@ -1,4 +1,3 @@
-import { ethers } from 'ethers'
 import { TaskUtils } from './utils'
 
 type ConstantsType = {
@@ -31,18 +30,18 @@ type ConstantsType = {
 const local: ConstantsType = {
   tokens: {
     // need overrides by loading json
-    KGL: ethers.constants.AddressZero,
-    '3Kgl': ethers.constants.AddressZero,
-    DAI: ethers.constants.AddressZero,
-    WETH: ethers.constants.AddressZero,
+    KGL: '',
+    '3Kgl': '',
+    DAI: '',
+    WETH: '',
   },
   kaglas: {
     // need overrides by loading json
-    votingEscrow: ethers.constants.AddressZero,
-    gauge: ethers.constants.AddressZero,
-    feeDistributor: ethers.constants.AddressZero,
-    registry: ethers.constants.AddressZero,
-    addressProvider: ethers.constants.AddressZero,
+    votingEscrow: '',
+    gauge: '',
+    feeDistributor: '',
+    registry: '',
+    addressProvider: '',
   },
   contracts: {
     treasury: {
