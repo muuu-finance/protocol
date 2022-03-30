@@ -1,4 +1,6 @@
+import jsonfile from 'jsonfile'
 import { TaskUtils } from './utils'
+const { vested } = jsonfile.readFileSync('../migrations/distro.json')
 
 type ConstantsType = {
   tokens: {
@@ -24,6 +26,14 @@ type ConstantsType = {
     vestedEscrow: {
       period: number
     }
+    merkleAirdrop: {
+      merkleRoot: string
+    }
+  }
+  vested: {
+    // ref: distro.json
+    addresses: string[] // include team, invester, treasury
+    amounts: string[] // include team, invester, treasury
   }
 }
 
@@ -53,6 +63,20 @@ const local: ConstantsType = {
     vestedEscrow: {
       period: 1 * 364 * 86400,
     },
+    merkleAirdrop: {
+      merkleRoot:
+        '0x632a2ad201c5b95d3f75c1332afdcf489d4e6b4b7480cf878d8eba2aa87d5f73',
+    },
+  },
+  vested: {
+    addresses: vested.team.addresses.concat(
+      vested.investor.addresses,
+      vested.treasury.addresses,
+    ),
+    amounts: vested.team.amounts.concat(
+      vested.investor.amounts,
+      vested.treasury.amounts,
+    ),
   },
 }
 

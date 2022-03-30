@@ -1,4 +1,5 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
+import { BigNumber } from 'ethers'
 import fs from 'fs'
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
@@ -14,8 +15,11 @@ import {
   VestedEscrow__factory,
 } from '../../types'
 import { loadConstants } from '../constants'
+import { DeployedContractAddresses } from '../types'
 import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
+// Functions
+// -- Procedures
 const _transferOwnershipInVoterProxy = async ({
   signer,
   adminAddress,
@@ -25,15 +29,14 @@ const _transferOwnershipInVoterProxy = async ({
   adminAddress: string
   kaglaVoterProxyAddress: string
 }) => {
-  const admin = adminAddress // TODO
   const voterProxy = KaglaVoterProxy__factory.connect(
     kaglaVoterProxyAddress,
     signer,
   )
   const currentOwner = await voterProxy.owner()
-  if (currentOwner != admin) {
+  if (currentOwner != adminAddress) {
     console.log('> KaglaVoterProxy#transferOwnership')
-    await voterProxy.transferOwnership(admin, { from: currentOwner })
+    await voterProxy.transferOwnership(adminAddress, { from: currentOwner })
   }
 }
 
@@ -44,12 +47,12 @@ const _mintMuuuToken = async ({
 }: {
   signer: SignerWithAddress
   muuuTokenAddress: string
-  amount: string
+  amount: BigNumber
 }) => {
   console.log('> MuuuToken#mint')
   await MuuuToken__factory.connect(muuuTokenAddress, signer).mint(
     signer.address,
-    amount,
+    amount.toString(),
   )
 }
 
@@ -163,7 +166,7 @@ const _prepareAfterDeployingVestedEscrow = async ({
 }: {
   signer: SignerWithAddress
   variables: {
-    amount: number
+    amount: BigNumber
     vestedAddresses: string[]
     vestedAmount: string[]
   }
@@ -174,7 +177,7 @@ const _prepareAfterDeployingVestedEscrow = async ({
 }) => {
   await MuuuToken__factory.connect(addresses.muuuToken, signer).approve(
     addresses.vestedEscrow,
-    variables.amount,
+    variables.amount.toString(),
   )
   const vestedEscrowInstance = await VestedEscrow__factory.connect(
     addresses.vestedEscrow,
@@ -242,7 +245,7 @@ const _prepareAfterDeployingMerkleAirdrop = async ({
 }: {
   signer: SignerWithAddress
   variables: {
-    amount: number
+    amount: BigNumber
     merkleRoot: string
   }
   addresses: {
@@ -259,7 +262,7 @@ const _prepareAfterDeployingMerkleAirdrop = async ({
 
   const muuuTokenInstance = await MuuuToken__factory.connect(muuuToken, signer)
   console.log('> MuuuToken#transfer')
-  await muuuTokenInstance.transfer(merkleAirdrop, variables.amount)
+  await muuuTokenInstance.transfer(merkleAirdrop, variables.amount.toString())
   console.log(
     `airdrop balance: ${await muuuTokenInstance.balanceOf(merkleAirdrop)}`,
   )
@@ -268,6 +271,16 @@ const _prepareAfterDeployingMerkleAirdrop = async ({
     variables.merkleRoot,
   )
 }
+// -- Utilities
+const isSkipDeploy = ({
+  enableSkip,
+  key,
+  deployeds,
+}: {
+  enableSkip: string
+  key: string
+  deployeds: DeployedContractAddresses
+}) => enableSkip && deployeds.system[key]
 
 task(
   'all-required-developments',
@@ -314,6 +327,15 @@ task(
         useMockContracts: _useMockContracts,
       }
 
+      const adminAddress = signer.address // TODO: from constants
+      const totalVested: BigNumber = constants.vested.amounts.reduce(
+        (previousValue, currentValue) =>
+          BigNumber.from(previousValue).add(BigNumber.from(currentValue)),
+        BigNumber.from('0'),
+      ) // calculate total amounts
+      const vekglAmount = BigNumber.from(0) // TODO: from constants
+      const mintAmount = totalVested.add(vekglAmount) // TODO: consider lpincentives, vecrv, teamcvxLpSeed?
+
       // DEBUG
       const json = `./contracts-${network.name}.json`
       if (!fs.existsSync(json))
@@ -342,6 +364,7 @@ task(
         value: constants.contracts.treasury.address,
         fileName: TaskUtils.getFilePath({ network: network.name }),
       })
+
       const kaglaVoterProxyAddress = await hre.run(
         `deploy-${ContractKeys.KaglaVoterProxy}`,
         commonTaskArgs,
@@ -358,13 +381,13 @@ task(
       // contracts/migrations/1_deploy_contracts.js#L211-220
       await _transferOwnershipInVoterProxy({
         signer,
-        adminAddress: signer.address, // TODO
+        adminAddress,
         kaglaVoterProxyAddress: kaglaVoterProxyAddress,
       })
       await _mintMuuuToken({
         signer,
         muuuTokenAddress: muuuTokenAddress,
-        amount: ethers.utils.parseEther('10000.0').toString(), // TODO
+        amount: mintAmount,
       })
 
       const { rewardFactoryAddress, tokenFactoryAddress, stashFactoryAddress } =
@@ -462,9 +485,9 @@ task(
       await _prepareAfterDeployingVestedEscrow({
         signer,
         variables: {
-          amount: 10000, // TODO
-          vestedAddresses: [], // TODO
-          vestedAmount: [], // TODO
+          amount: totalVested,
+          vestedAddresses: constants.vested.addresses,
+          vestedAmount: constants.vested.amounts,
         },
         addresses: {
           muuuToken: muuuTokenAddress,
@@ -487,9 +510,8 @@ task(
       await _prepareAfterDeployingMerkleAirdrop({
         signer,
         variables: {
-          amount: 10000, // TODO
-          merkleRoot:
-            '0x632a2ad201c5b95d3f75c1332afdcf489d4e6b4b7480cf878d8eba2aa87d5f73', // TODO
+          amount: vekglAmount,
+          merkleRoot: constants.contracts.merkleAirdrop.merkleRoot,
         },
         addresses: {
           muuuToken: muuuTokenAddress,
