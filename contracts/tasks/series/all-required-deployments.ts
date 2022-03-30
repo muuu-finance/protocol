@@ -1,8 +1,8 @@
 import fs from 'fs'
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
+import { KaglaVoterProxy__factory } from '../../types'
 import { ContractKeys, TaskUtils } from '../utils'
-import { KaglaVoterProxy__factory, MuuuToken__factory } from '../../types'
 
 task(
   'all-required-developments',
@@ -42,25 +42,35 @@ task(
 
       // Deployments
       // TODO: pass other addresses to tasks
-      const voterProxyAddress = await hre.run(`deploy-${ContractKeys.KaglaVoterProxy}`, {
-        deployerAddress: signer.address,
-        inMultiDeploymentFlow: true,
-        useAlreadyDeployed: useAlreadyDeployed,
-      })
-      const muuuTokenAddress = await hre.run(`deploy-${ContractKeys.MuuuToken}`, {
-        deployerAddress: signer.address,
-        inMultiDeploymentFlow: true,
-        useAlreadyDeployed: useAlreadyDeployed,
-      })
+
+      const voterProxyAddress = await hre.run(
+        `deploy-${ContractKeys.KaglaVoterProxy}`,
+        {
+          deployerAddress: signer.address,
+          inMultiDeploymentFlow: true,
+          useAlreadyDeployed: useAlreadyDeployed,
+        },
+      )
+      const muuuTokenAddress = await hre.run(
+        `deploy-${ContractKeys.MuuuToken}`,
+        {
+          deployerAddress: signer.address,
+          inMultiDeploymentFlow: true,
+          useAlreadyDeployed: useAlreadyDeployed,
+        },
+      )
       const boosterAddress = await hre.run(`deploy-${ContractKeys.Booster}`, {
         deployerAddress: signer.address,
         inMultiDeploymentFlow: true,
         useAlreadyDeployed: useAlreadyDeployed,
       })
 
-      // L211-220
+      // contracts/migrations/1_deploy_contracts.js#L211-220
       const admin = signer.address // TODO
-      const voterProxy = KaglaVoterProxy__factory.connect(voterProxyAddress, signer)
+      const voterProxy = KaglaVoterProxy__factory.connect(
+        voterProxyAddress,
+        signer,
+      )
       const currentOwner = await voterProxy.owner()
       if (currentOwner != admin) {
         voterProxy.transferOwnership(admin, { from: currentOwner })
@@ -68,12 +78,21 @@ task(
       // MuuuToken__factory.connect(muuuTokenAddress, signer)
       //   .mint(signer.address, ethers.utils.parseEther('10000.0').toString()) // TODO
 
-      const rAddresses = await hre.run(`deploy-FactoryContracts`, {
-        deployerAddress: signer.address,
-        inMultiDeploymentFlow: true,
-        useAlreadyDeployed: useAlreadyDeployed,
-      })
-      console.log(rAddresses)
+      const { rewardFactoryAddress, tokenFactoryAddress, stashFactoryAddress } =
+        await hre.run(`deploy-FactoryContracts`, {
+          deployerAddress: signer.address,
+          inMultiDeploymentFlow: true,
+          useAlreadyDeployed: useAlreadyDeployed,
+        })
+
+      const muKglTokenAddress = await hre.run(
+        `deploy-${ContractKeys.MuKglToken}`,
+        {
+          deployerAddress: signer.address,
+          inMultiDeploymentFlow: true,
+          useAlreadyDeployed: useAlreadyDeployed,
+        },
+      )
 
       console.log(`--- [all-required-developments] FINISHED ---`)
     },
