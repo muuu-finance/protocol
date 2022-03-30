@@ -8,6 +8,7 @@ import {
   MuKglToken__factory,
   MuuuRewardPool__factory,
   MuuuToken__factory,
+  PoolManager__factory,
   RewardFactory__factory,
   StashFactory__factory,
   TokenFactory__factory,
@@ -210,4 +211,17 @@ export const deployMuuuRewardPool = async ({
       rewardManager,
     ),
     ContractKeys.MuuuRewardPool,
+  )
+
+export const deployPoolManager = async ({
+  deployer,
+  pools,
+  addressProvider,
+}: DeployCommonArgs & {
+  pools: string
+  addressProvider: string
+}) =>
+  withSaveAndVerify(
+    await new PoolManager__factory(deployer).deploy(pools, addressProvider),
+    ContractKeys.PoolManager,
   )

@@ -130,6 +130,11 @@ task(
         muuuRewardPoolAddress,
       )
 
+      const poolManagerAddress = await hre.run(
+        `deploy-${ContractKeys.PoolManager}`,
+        commonTaskArgs,
+      )
+
       console.log(`--- [all-required-developments] FINISHED ---`)
     },
   )
