@@ -4,7 +4,6 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import {
   Booster__factory,
   KaglaVoterProxy__factory,
-  KglDepositor__factory,
   MuKglToken__factory,
 } from '../../types'
 import { ContractKeys, TaskUtils } from '../utils'
@@ -74,9 +73,9 @@ task(
       )
       const currentOwner = await voterProxy.owner()
       if (currentOwner != admin) {
-        voterProxy.transferOwnership(admin, { from: currentOwner })
+        await voterProxy.transferOwnership(admin, { from: currentOwner })
       }
-      // MuuuToken__factory.connect(muuuTokenAddress, signer)
+      // await MuuuToken__factory.connect(muuuTokenAddress, signer)
       //   .mint(signer.address, ethers.utils.parseEther('10000.0').toString()) // TODO
 
       const { rewardFactoryAddress, tokenFactoryAddress, stashFactoryAddress } =
@@ -94,17 +93,21 @@ task(
 
       // contracts/migrations/1_deploy_contracts.js#L251-255
       console.log('> MuKglToken#setOperator')
-      MuKglToken__factory.connect(muKglTokenAddress, signer).setOperator(
+      await MuKglToken__factory.connect(muKglTokenAddress, signer).setOperator(
         kglDepositorAddress,
       )
       console.log('> KaglaVoterProxy#setDepositor')
-      KaglaVoterProxy__factory.connect(voterProxy.address, signer).setDepositor(
-        kglDepositorAddress,
-      )
-      console.log('> KglDepositor#initialLock')
-      KglDepositor__factory.connect(kglDepositorAddress, signer).initialLock()
+      await KaglaVoterProxy__factory.connect(
+        voterProxy.address,
+        signer,
+      ).setDepositor(kglDepositorAddress)
+      console.log('> [temp skip] KglDepositor#initialLock')
+      // await KglDepositor__factory.connect(
+      //   kglDepositorAddress,
+      //   signer,
+      // ).initialLock()
       console.log('> Booster#setTreasury')
-      Booster__factory.connect(boosterAddress, signer).setTreasury(
+      await Booster__factory.connect(boosterAddress, signer).setTreasury(
         kglDepositorAddress,
       )
 
