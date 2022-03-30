@@ -1,3 +1,4 @@
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import fs from 'fs'
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
@@ -14,6 +15,259 @@ import {
 } from '../../types'
 import { loadConstants } from '../constants'
 import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
+
+const _transferOwnershipInVoterProxy = async ({
+  signer,
+  adminAddress,
+  kaglaVoterProxyAddress,
+}: {
+  signer: SignerWithAddress
+  adminAddress: string
+  kaglaVoterProxyAddress: string
+}) => {
+  const admin = adminAddress // TODO
+  const voterProxy = KaglaVoterProxy__factory.connect(
+    kaglaVoterProxyAddress,
+    signer,
+  )
+  const currentOwner = await voterProxy.owner()
+  if (currentOwner != admin) {
+    console.log('> KaglaVoterProxy#transferOwnership')
+    await voterProxy.transferOwnership(admin, { from: currentOwner })
+  }
+}
+
+const _mintMuuuToken = async ({
+  signer,
+  muuuTokenAddress,
+  amount,
+}: {
+  signer: SignerWithAddress
+  muuuTokenAddress: string
+  amount: string
+}) => {
+  console.log('> MuuuToken#mint')
+  await MuuuToken__factory.connect(muuuTokenAddress, signer).mint(
+    signer.address,
+    amount,
+  )
+}
+
+// contracts/migrations/1_deploy_contracts.js#L251-255
+const _prepareAfterDeployingKglDepositor = async ({
+  signer,
+  addresses,
+}: {
+  signer: SignerWithAddress
+  addresses: {
+    kaglaVoterProxy: string
+    booster: string
+    muKglToken: string
+    kglDepositor: string
+  }
+}) => {
+  const { kaglaVoterProxy, booster, muKglToken, kglDepositor } = addresses
+  console.log('> MuKglToken#setOperator')
+  await MuKglToken__factory.connect(muKglToken, signer).setOperator(
+    kglDepositor,
+  )
+  console.log('> KaglaVoterProxy#setDepositor')
+  await KaglaVoterProxy__factory.connect(kaglaVoterProxy, signer).setDepositor(
+    kglDepositor,
+  )
+  console.log('> KglDepositor#initialLock')
+  await KglDepositor__factory.connect(kglDepositor, signer).initialLock()
+  console.log('> Booster#setTreasury')
+  await Booster__factory.connect(booster, signer).setTreasury(kglDepositor)
+}
+
+// contracts/migrations/1_deploy_contracts.js#L284-286
+const _setRewardContractsToBooster = async ({
+  signer,
+  addresses,
+}: {
+  signer: SignerWithAddress
+  addresses: {
+    booster: string
+    muKglRewardPool: string
+    muuuRewardPool: string
+  }
+}) => {
+  const { booster, muKglRewardPool, muuuRewardPool } = addresses
+  console.log('> Booster#setRewardContracts')
+  await Booster__factory.connect(booster, signer).setRewardContracts(
+    muKglRewardPool,
+    muuuRewardPool,
+  )
+}
+
+// contracts/migrations/1_deploy_contracts.js#L299-308
+const _prepareAfterDeployingPoolManager = async ({
+  signer,
+  addresses,
+}: {
+  signer: SignerWithAddress
+  addresses: {
+    booster: string
+    poolManager: string
+    rewardFactory: string
+    tokenFactory: string
+    stashFactory: string
+  }
+}) => {
+  const { booster, poolManager, rewardFactory, tokenFactory, stashFactory } =
+    addresses
+  const _boosterInstance = await Booster__factory.connect(booster, signer)
+  console.log('> Booster#setPoolManager')
+  await _boosterInstance.setPoolManager(poolManager)
+  console.log('> Booster#setFactories')
+  await _boosterInstance.setFactories(rewardFactory, tokenFactory, stashFactory)
+  console.log('> Booster#setFeeInfo')
+  await _boosterInstance.setFeeInfo()
+}
+
+// contracts/migrations/1_deploy_contracts.js#L313
+const _setArbitratorToBooster = async ({
+  signer,
+  addresses,
+}: {
+  signer: SignerWithAddress
+  addresses: {
+    booster: string
+    arbitratorVault: string
+  }
+}) => {
+  console.log('> Booster#setArbitrator')
+  await Booster__factory.connect(addresses.booster, signer).setArbitrator(
+    addresses.arbitratorVault,
+  )
+}
+
+// contracts/migrations/1_deploy_contracts.js#L341
+const _setApprovalsInClaimZap = async ({
+  signer,
+  claimZapAddress,
+}: {
+  signer: SignerWithAddress
+  claimZapAddress: string
+}) => {
+  console.log('> ClaimZap#setApprovals')
+  await ClaimZap__factory.connect(claimZapAddress, signer).setApprovals()
+}
+
+// contracts/migrations/1_deploy_contracts.js#L359-369
+const _prepareAfterDeployingVestedEscrow = async ({
+  signer,
+  variables,
+  addresses,
+}: {
+  signer: SignerWithAddress
+  variables: {
+    amount: number
+    vestedAddresses: string[]
+    vestedAmount: string[]
+  }
+  addresses: {
+    muuuToken: string
+    vestedEscrow: string
+  }
+}) => {
+  await MuuuToken__factory.connect(addresses.muuuToken, signer).approve(
+    addresses.vestedEscrow,
+    variables.amount,
+  )
+  const vestedEscrowInstance = await VestedEscrow__factory.connect(
+    addresses.vestedEscrow,
+    signer,
+  )
+  console.log('> VestedEscrow#addTokens')
+  await vestedEscrowInstance.addTokens(variables.amount)
+  console.log('> VestedEscrow#fund')
+  await vestedEscrowInstance.fund(
+    variables.vestedAddresses,
+    variables.vestedAmount,
+  )
+  console.log(
+    `vesting unallocatedSupply: ${await vestedEscrowInstance.unallocatedSupply()}`,
+  )
+  console.log(
+    `vesting initialLockedSupply: ${await vestedEscrowInstance.initialLockedSupply()}`,
+  )
+}
+
+const _createMerkleAirdropFromFactory = async ({
+  signer,
+  networkName,
+  merkleAirdropFactoryAddress,
+}: {
+  signer: SignerWithAddress
+  networkName: string
+  merkleAirdropFactoryAddress: string
+}): Promise<string> => {
+  console.log('> MerkleAirdropFactory#CreateMerkleAirdrop')
+
+  // create MerkleAirdrop
+  const tx = await MerkleAirdropFactory__factory.connect(
+    merkleAirdropFactoryAddress,
+    signer,
+  ).CreateMerkleAirdrop()
+
+  // get created MerkleAirdrop address
+  const rc = await tx.wait()
+  const merkleAirdropAddress = rc.events?.find(
+    (event) => event.event === 'Created',
+  )?.args?.drop
+  if (!merkleAirdropAddress) {
+    throw new Error(
+      "Cannot get MerkleAirdrop's address from tx by MerkleAirdropFactory#CreateMerkleAirdrop",
+    )
+  }
+
+  // write address to json
+  TaskUtils.writeContractAddress({
+    group: ContractJsonGroups.system,
+    name: 'airdrop',
+    value: merkleAirdropAddress,
+    fileName: TaskUtils.getFilePath({ network: networkName }),
+  })
+
+  return merkleAirdropAddress
+}
+
+// contracts/migrations/1_deploy_contracts.js#L383-389
+const _prepareAfterDeployingMerkleAirdrop = async ({
+  signer,
+  variables,
+  addresses,
+}: {
+  signer: SignerWithAddress
+  variables: {
+    amount: number
+    merkleRoot: string
+  }
+  addresses: {
+    muuuToken: string
+    merkleAirdrop: string
+  }
+}) => {
+  const { muuuToken, merkleAirdrop } = addresses
+
+  console.log('> MerkleAirdrop#setRewardToken')
+  await MerkleAirdrop__factory.connect(merkleAirdrop, signer).setRewardToken(
+    muuuToken,
+  )
+
+  const muuuTokenInstance = await MuuuToken__factory.connect(muuuToken, signer)
+  console.log('> MuuuToken#transfer')
+  await muuuTokenInstance.transfer(merkleAirdrop, variables.amount)
+  console.log(
+    `airdrop balance: ${await muuuTokenInstance.balanceOf(merkleAirdrop)}`,
+  )
+  console.log('> MerkleAirdrop#setRoot')
+  await MerkleAirdrop__factory.connect(merkleAirdrop, signer).setRoot(
+    variables.merkleRoot,
+  )
+}
 
 task(
   'all-required-developments',
@@ -102,21 +356,16 @@ task(
       )
 
       // contracts/migrations/1_deploy_contracts.js#L211-220
-      const admin = signer.address // TODO
-      const voterProxy = KaglaVoterProxy__factory.connect(
-        kaglaVoterProxyAddress,
+      await _transferOwnershipInVoterProxy({
         signer,
-      )
-      const currentOwner = await voterProxy.owner()
-      if (currentOwner != admin) {
-        console.log('> KaglaVoterProxy#transferOwnership')
-        await voterProxy.transferOwnership(admin, { from: currentOwner })
-      }
-      console.log('> MuuuToken#mint')
-      await MuuuToken__factory.connect(muuuTokenAddress, signer).mint(
-        signer.address,
-        ethers.utils.parseEther('10000.0').toString(), // TODO
-      )
+        adminAddress: signer.address, // TODO
+        kaglaVoterProxyAddress: kaglaVoterProxyAddress,
+      })
+      await _mintMuuuToken({
+        signer,
+        muuuTokenAddress: muuuTokenAddress,
+        amount: ethers.utils.parseEther('10000.0').toString(), // TODO
+      })
 
       const { rewardFactoryAddress, tokenFactoryAddress, stashFactoryAddress } =
         await hre.run(`deploy-FactoryContracts`, commonTaskArgs)
@@ -131,25 +380,15 @@ task(
         commonTaskArgs,
       )
 
-      // contracts/migrations/1_deploy_contracts.js#L251-255
-      console.log('> MuKglToken#setOperator')
-      await MuKglToken__factory.connect(muKglTokenAddress, signer).setOperator(
-        kglDepositorAddress,
-      )
-      console.log('> KaglaVoterProxy#setDepositor')
-      await KaglaVoterProxy__factory.connect(
-        voterProxy.address,
+      await _prepareAfterDeployingKglDepositor({
         signer,
-      ).setDepositor(kglDepositorAddress)
-      console.log('> KglDepositor#initialLock')
-      await KglDepositor__factory.connect(
-        kglDepositorAddress,
-        signer,
-      ).initialLock()
-      console.log('> Booster#setTreasury')
-      await Booster__factory.connect(boosterAddress, signer).setTreasury(
-        kglDepositorAddress,
-      )
+        addresses: {
+          kaglaVoterProxy: kaglaVoterProxyAddress,
+          booster: boosterAddress,
+          muKglToken: muKglTokenAddress,
+          kglDepositor: kglDepositorAddress,
+        },
+      })
 
       const muKglRewardPoolAddress = await hre.run(
         `deploy-${ContractKeys.BaseRewardPool}`,
@@ -160,31 +399,30 @@ task(
         commonTaskArgs,
       )
 
-      // contracts/migrations/1_deploy_contracts.js#L284-286
-      console.log('> Booster#setRewardContracts')
-      await Booster__factory.connect(boosterAddress, signer).setRewardContracts(
-        muKglRewardPoolAddress,
-        muuuRewardPoolAddress,
-      )
+      await _setRewardContractsToBooster({
+        signer,
+        addresses: {
+          booster: boosterAddress,
+          muKglRewardPool: muKglRewardPoolAddress,
+          muuuRewardPool: muuuRewardPoolAddress,
+        },
+      })
 
       const poolManagerAddress = await hre.run(
         `deploy-${ContractKeys.PoolManager}`,
         commonTaskArgs,
       )
 
-      // contracts/migrations/1_deploy_contracts.js#L299-308
-      console.log('> Booster#setPoolManager')
-      await Booster__factory.connect(boosterAddress, signer).setPoolManager(
-        poolManagerAddress,
-      )
-      console.log('> Booster#setFactories')
-      await Booster__factory.connect(boosterAddress, signer).setFactories(
-        rewardFactoryAddress,
-        tokenFactoryAddress,
-        stashFactoryAddress,
-      )
-      console.log('> Booster#setFeeInfo')
-      await Booster__factory.connect(boosterAddress, signer).setFeeInfo()
+      await _prepareAfterDeployingPoolManager({
+        signer,
+        addresses: {
+          booster: boosterAddress,
+          poolManager: poolManagerAddress,
+          rewardFactory: rewardFactoryAddress,
+          tokenFactory: tokenFactoryAddress,
+          stashFactory: stashFactoryAddress,
+        },
+      })
 
       const arbitratorVaultAddress = await hre.run(
         `deploy-${ContractKeys.ArbitratorVault}`,
@@ -192,10 +430,13 @@ task(
       )
 
       // contracts/migrations/1_deploy_contracts.js#L313
-      console.log('> Booster#setArbitrator')
-      await Booster__factory.connect(boosterAddress, signer).setArbitrator(
-        arbitratorVaultAddress,
-      )
+      await _setArbitratorToBooster({
+        signer,
+        addresses: {
+          booster: boosterAddress,
+          arbitratorVault: arbitratorVaultAddress,
+        },
+      })
 
       const muuuLockerV2Address = await hre.run(
         `deploy-${ContractKeys.MuuuLockerV2}`,
@@ -207,8 +448,10 @@ task(
       )
 
       // contracts/migrations/1_deploy_contracts.js#L341
-      console.log('> ClaimZap#setApprovals')
-      await ClaimZap__factory.connect(claimZapAddress, signer).setApprovals()
+      await _setApprovalsInClaimZap({
+        signer,
+        claimZapAddress,
+      })
 
       const vestedEscrowAddress = await hre.run(
         `deploy-${ContractKeys.VestedEscrow}`,
@@ -216,77 +459,44 @@ task(
       )
 
       // contracts/migrations/1_deploy_contracts.js#L359-369
-      const total = 10000
-      await MuuuToken__factory.connect(muuuTokenAddress, signer).approve(
-        vestedEscrowAddress,
-        total,
-      )
-      const vestedEscrowInstance = await VestedEscrow__factory.connect(
-        vestedEscrowAddress,
+      await _prepareAfterDeployingVestedEscrow({
         signer,
-      )
-      console.log('> VestedEscrow#addTokens')
-      await vestedEscrowInstance.addTokens(total)
-      console.log('> VestedEscrow#fund')
-      await vestedEscrowInstance.fund([], [])
-      console.log(
-        `vesting unallocatedSupply: ${await vestedEscrowInstance.unallocatedSupply()}`,
-      )
-      console.log(
-        `vesting initialLockedSupply: ${await vestedEscrowInstance.initialLockedSupply()}`,
-      )
+        variables: {
+          amount: 10000, // TODO
+          vestedAddresses: [], // TODO
+          vestedAmount: [], // TODO
+        },
+        addresses: {
+          muuuToken: muuuTokenAddress,
+          vestedEscrow: vestedEscrowAddress,
+        },
+      })
 
       const merkleAirdropFactoryAddress = await hre.run(
         `deploy-${ContractKeys.MerkleAirdropFactory}`,
         commonTaskArgs,
       )
 
-      console.log('> MerkleAirdropFactory#CreateMerkleAirdrop')
-      const tx = await MerkleAirdropFactory__factory.connect(
-        merkleAirdropFactoryAddress,
+      const merkleAirdropAddress = await _createMerkleAirdropFromFactory({
         signer,
-      ).CreateMerkleAirdrop()
-      const rc = await tx.wait()
-      const merkleAirdropAddress = rc.events?.find(
-        (event) => event.event === 'Created',
-      )?.args?.drop
-      if (!merkleAirdropAddress) {
-        throw new Error(
-          "Cannot get MerkleAirdrop's address from tx by MerkleAirdropFactory#CreateMerkleAirdrop",
-        )
-      }
-      TaskUtils.writeContractAddress({
-        group: ContractJsonGroups.system,
-        name: 'airdrop',
-        value: merkleAirdropAddress,
-        fileName: TaskUtils.getFilePath({ network: network.name }),
+        networkName: network.name,
+        merkleAirdropFactoryAddress,
       })
 
       // contracts/migrations/1_deploy_contracts.js#L383-389
-      console.log('> MerkleAirdrop#setRewardToken')
-      await MerkleAirdrop__factory.connect(
-        merkleAirdropAddress,
+      await _prepareAfterDeployingMerkleAirdrop({
         signer,
-      ).setRewardToken(muuuTokenAddress)
+        variables: {
+          amount: 10000, // TODO
+          merkleRoot:
+            '0x632a2ad201c5b95d3f75c1332afdcf489d4e6b4b7480cf878d8eba2aa87d5f73', // TODO
+        },
+        addresses: {
+          muuuToken: muuuTokenAddress,
+          merkleAirdrop: merkleAirdropAddress,
+        },
+      })
 
-      const muuuTokenInstance = await MuuuToken__factory.connect(
-        muuuTokenAddress,
-        signer,
-      )
-      console.log('> MuuuToken#transfer')
-      await muuuTokenInstance.transfer(merkleAirdropAddress, 10000) // TODO
-      console.log(
-        `airdrop balance: ${await muuuTokenInstance.balanceOf(
-          merkleAirdropAddress,
-        )}`,
-      )
-      const merkleRoot =
-        '0x632a2ad201c5b95d3f75c1332afdcf489d4e6b4b7480cf878d8eba2aa87d5f73'
-      console.log('> MerkleAirdrop#setRoot')
-      await MerkleAirdrop__factory.connect(
-        merkleAirdropAddress,
-        signer,
-      ).setRoot(merkleRoot)
       console.log(`--- finish deployments & initialize / setups ---`)
 
       // TODO: create pools
