@@ -44,20 +44,20 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         operator: ethers.constants.AddressZero, // TODO
         kgl: ethers.constants.AddressZero, // TODO
       })
-      console.log(`>> deployed ${ContractKeys.RewardFactory}`)
+      console.log(`>> deployed ${ContractKeys.RewardFactory}\n`)
       console.log(`> start deploy ${ContractKeys.TokenFactory}`)
       const tFactoryInstance = await deployTokenFactory({
         deployer: _deployer,
         operator: ethers.constants.AddressZero, // TODO
       })
-      console.log(`>> deployed ${ContractKeys.TokenFactory}`)
+      console.log(`>> deployed ${ContractKeys.TokenFactory}\n`)
       console.log(`> start deploy ${ContractKeys.StashFactory}`)
       const sFactoryInstance = await deployStashFactory({
         deployer: _deployer,
         operator: ethers.constants.AddressZero, // TODO
         rewardFactory: rFactoryInstance.address, // TODO
       })
-      console.log(`>> deployed ${ContractKeys.StashFactory}`)
+      console.log(`>> deployed ${ContractKeys.StashFactory}\n`)
 
       if (!inMultiDeploymentFlow)
         console.log(`--- [deploy-${CONTRACT_KEY}] FINISHED ---`)

@@ -42,7 +42,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         kgl: ethers.constants.AddressZero, // TODO
         votingEscrow: ethers.constants.AddressZero, // TODO
       })
-      console.log(`>> deployed ${CONTRACT_KEY}`)
+      console.log(`>> deployed ${CONTRACT_KEY}\n`)
 
       if (!inMultiDeploymentFlow)
         console.log(`--- [deploy-${CONTRACT_KEY}] FINISHED ---`)

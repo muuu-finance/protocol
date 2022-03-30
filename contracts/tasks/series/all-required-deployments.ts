@@ -73,10 +73,14 @@ task(
       )
       const currentOwner = await voterProxy.owner()
       if (currentOwner != admin) {
+        console.log('> KaglaVoterProxy#transferOwnership')
         await voterProxy.transferOwnership(admin, { from: currentOwner })
       }
-      // await MuuuToken__factory.connect(muuuTokenAddress, signer)
-      //   .mint(signer.address, ethers.utils.parseEther('10000.0').toString()) // TODO
+      console.log('> [temp skip] MuuuToken#mint')
+      // await MuuuToken__factory.connect(muuuTokenAddress, signer).mint(
+      //   signer.address,
+      //   ethers.utils.parseEther('10000.0').toString(),
+      // )
 
       const { rewardFactoryAddress, tokenFactoryAddress, stashFactoryAddress } =
         await hre.run(`deploy-FactoryContracts`, commonTaskArgs)

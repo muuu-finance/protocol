@@ -39,7 +39,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         deployer: _deployer,
         proxy: ethers.constants.AddressZero, // TODO
       })
-      console.log(`>> deployed ${CONTRACT_KEY}`)
+      console.log(`>> deployed ${CONTRACT_KEY}\n`)
 
       if (!inMultiDeploymentFlow)
         console.log(`--- [deploy-${CONTRACT_KEY}] FINISHED ---`)

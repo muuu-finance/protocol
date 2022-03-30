@@ -38,7 +38,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       const instance = await deployMuKglToken({
         deployer: _deployer,
       })
-      console.log(`>> deployed ${CONTRACT_KEY}`)
+      console.log(`>> deployed ${CONTRACT_KEY}\n`)
 
       if (!inMultiDeploymentFlow)
         console.log(`--- [deploy-${CONTRACT_KEY}] FINISHED ---`)
