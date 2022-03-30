@@ -108,6 +108,16 @@ task(
         kglDepositorAddress,
       )
 
+      const muKglRewardPoolAddress = await hre.run(
+        `deploy-${ContractKeys.BaseRewardPool}`,
+        commonTaskArgs,
+      )
+
+      const muuuRewardPoolAddress = await hre.run(
+        `deploy-${ContractKeys.MuuuRewardPool}`,
+        commonTaskArgs,
+      )
+
       console.log(`--- [all-required-developments] FINISHED ---`)
     },
   )

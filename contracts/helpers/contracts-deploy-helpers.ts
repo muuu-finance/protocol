@@ -1,10 +1,12 @@
 import { Contract, ContractTransaction, Signer } from 'ethers'
 import { ContractKeys } from '../tasks/utils'
 import {
+  BaseRewardPool__factory,
   Booster__factory,
   KaglaVoterProxy__factory,
   KglDepositor__factory,
   MuKglToken__factory,
+  MuuuRewardPool__factory,
   MuuuToken__factory,
   RewardFactory__factory,
   StashFactory__factory,
@@ -152,4 +154,60 @@ export const deployKglDepositor = async ({
       votingEscrow,
     ),
     ContractKeys.KaglaVoterProxy,
+  )
+
+export const deployBaseRewardPool = async ({
+  deployer,
+  pid,
+  stakingToken,
+  rewardToken,
+  operator,
+  rewardManager,
+}: DeployCommonArgs & {
+  pid: number
+  stakingToken: string
+  rewardToken: string
+  operator: string
+  rewardManager: string
+}) =>
+  withSaveAndVerify(
+    await new BaseRewardPool__factory(deployer).deploy(
+      pid,
+      stakingToken,
+      rewardToken,
+      operator,
+      rewardManager,
+    ),
+    ContractKeys.BaseRewardPool,
+  )
+
+export const deployMuuuRewardPool = async ({
+  deployer,
+  stakingToken,
+  rewardToken,
+  kglDeposits,
+  muKglRewards,
+  muKglToken,
+  operator,
+  rewardManager,
+}: DeployCommonArgs & {
+  stakingToken: string
+  rewardToken: string
+  kglDeposits: string
+  muKglRewards: string
+  muKglToken: string
+  operator: string
+  rewardManager: string
+}) =>
+  withSaveAndVerify(
+    await new MuuuRewardPool__factory(deployer).deploy(
+      stakingToken,
+      rewardToken,
+      kglDeposits,
+      muKglRewards,
+      muKglToken,
+      operator,
+      rewardManager,
+    ),
+    ContractKeys.MuuuRewardPool,
   )
