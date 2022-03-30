@@ -231,6 +231,25 @@ task(
         signer,
       ).setRewardToken(muuuTokenAddress)
 
+      const muuuTokenInstance = await MuuuToken__factory.connect(
+        muuuTokenAddress,
+        signer,
+      )
+      await muuuTokenInstance.transfer(merkleAirdropAddress, 10000) // TODO
+      console.log(
+        `airdrop balance: ${await muuuTokenInstance.balanceOf(
+          merkleAirdropAddress,
+        )}`,
+      )
+      const merkleRoot =
+        '0x632a2ad201c5b95d3f75c1332afdcf489d4e6b4b7480cf878d8eba2aa87d5f73'
+      await MerkleAirdrop__factory.connect(
+        merkleAirdropAddress,
+        signer,
+      ).setRoot(merkleRoot)
+
+      // TODO: create pools
+
       console.log(`--- [all-required-developments] FINISHED ---`)
     },
   )
