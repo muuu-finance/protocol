@@ -23,10 +23,14 @@ export class TaskUtils {
       : `${commonFilePath}.${EXTENSTION}`
   }
 
-  static getMockFilePath = (network: string): string =>
+  static getMockFilePath = ({ network }: { network: string }): string =>
     `./contract-mocks-${network}.json`
 
-  static resetContractAddressesJson = (network: string): void => {
+  static resetContractAddressesJson = ({
+    network,
+  }: {
+    network: string
+  }): void => {
     const fileName = this.getFilePath({ network: network })
     if (fs.existsSync(fileName)) {
       const folderName = 'tmp'
@@ -51,26 +55,35 @@ export class TaskUtils {
     fs.writeFileSync(fileName, JSON.stringify({}, null, 2))
   }
 
-  static loadDeployedContractAddresses = (
-    network: string,
-  ): DeployedContractAddresses => {
+  static loadDeployedContractAddresses = ({
+    network,
+  }: {
+    network: string
+  }): DeployedContractAddresses => {
     const filePath = this.getFilePath({ network: network })
     return jsonfile.readFileSync(filePath) as DeployedContractAddresses
   }
 
-  static loadDeployedMockAddresses = (
-    network: string,
-  ): DeployedMockAddresses => {
-    const filePath = this.getMockFilePath(network)
+  static loadDeployedMockAddresses = ({
+    network,
+  }: {
+    network: string
+  }): DeployedMockAddresses => {
+    const filePath = this.getMockFilePath({ network: network })
     return jsonfile.readFileSync(filePath) as DeployedMockAddresses
   }
 
-  static #updateJson = (
-    group: string,
-    name: string | null,
-    value: string,
-    obj: any,
-  ) => {
+  static #updateJson = ({
+    group,
+    name,
+    value,
+    obj,
+  }: {
+    group: string
+    name: string | null
+    value: any
+    obj: any
+  }) => {
     if (obj[group] === undefined) obj[group] = {}
     if (name === null) {
       obj[group] = value
@@ -80,15 +93,25 @@ export class TaskUtils {
     }
   }
 
-  static writeContractAddress = (
-    group: string,
-    name: string | null,
-    value: string,
-    fileName: string,
-  ) => {
+  static writeContractAddress = ({
+    group,
+    name,
+    value,
+    fileName,
+  }: {
+    group: string
+    name: string | null
+    value: string
+    fileName: string
+  }) => {
     try {
       const base = jsonfile.readFileSync(fileName)
-      this.#updateJson(group, name, value, base)
+      this.#updateJson({
+        group: group,
+        name: name,
+        value: value,
+        obj: base,
+      })
       const output = JSON.stringify(base, null, 2)
       fs.writeFileSync(fileName, output)
     } catch (e) {
@@ -99,13 +122,18 @@ export class TaskUtils {
   static writeValueToGroup = (group: string, value: any, fileName: string) => {
     try {
       const base = jsonfile.readFileSync(fileName)
-      this.#updateJson(group, null, value, base)
+      this.#updateJson({ group: group, name: null, value: value, obj: base })
       const output = JSON.stringify(base, null, 2)
       fs.writeFileSync(fileName, output)
     } catch (e) {
       console.log(e)
     }
   }
+}
+
+export const ContractJsonGroups = {
+  system: 'system',
+  pools: 'pools',
 }
 
 export const ContractKeys = {

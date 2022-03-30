@@ -42,6 +42,13 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         gaugeController: ethers.constants.AddressZero, // TODO
         tokenMinter: ethers.constants.AddressZero, // TODO
       })
+      // TaskUtils.writeContractAddress(
+      //   ContractJsonGroups.system,
+      //   'voteProxy',
+      //   instance.address,
+      //   TaskUtils.getFilePath({ network: network.name }),
+      // )
+
       console.log(`>> deployed ${CONTRACT_KEY}\n`)
 
       if (!inMultiDeploymentFlow)
