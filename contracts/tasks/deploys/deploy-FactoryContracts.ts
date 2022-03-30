@@ -5,6 +5,7 @@ import {
   deployStashFactory,
   deployTokenFactory,
 } from '../../helpers/contracts-deploy-helpers'
+import { loadConstants } from '../constants'
 import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = 'FactoryContracts'
@@ -38,11 +39,20 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         console.log(`useAlreadyDeployed flag: ${useAlreadyDeployed}`)
       }
 
+      // get constants / addresses / parameters
+      const deployeds = TaskUtils.loadDeployedContractAddresses({
+        network: network.name,
+      })
+      const constants = loadConstants({
+        network: network.name,
+        isUseMocks: true, // temp
+      })
+
       console.log(`> start deploy ${ContractKeys.RewardFactory}`)
       const rFactoryInstance = await deployRewardFactory({
         deployer: _deployer,
-        operator: ethers.constants.AddressZero, // TODO
-        kgl: ethers.constants.AddressZero, // TODO
+        operator: deployeds.system.booster,
+        kgl: constants.tokens.KGL,
       })
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,
@@ -55,7 +65,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       console.log(`> start deploy ${ContractKeys.TokenFactory}`)
       const tFactoryInstance = await deployTokenFactory({
         deployer: _deployer,
-        operator: ethers.constants.AddressZero, // TODO
+        operator: deployeds.system.booster,
       })
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,
@@ -68,7 +78,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       console.log(`> start deploy ${ContractKeys.StashFactory}`)
       const sFactoryInstance = await deployStashFactory({
         deployer: _deployer,
-        operator: ethers.constants.AddressZero, // TODO
+        operator: deployeds.system.booster,
         rewardFactory: rFactoryInstance.address, // TODO
       })
       TaskUtils.writeContractAddress({

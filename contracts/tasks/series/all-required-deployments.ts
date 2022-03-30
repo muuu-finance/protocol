@@ -4,6 +4,7 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import {
   Booster__factory,
   KaglaVoterProxy__factory,
+  KglDepositor__factory,
   MerkleAirdropFactory__factory,
   MerkleAirdrop__factory,
   MuKglToken__factory,
@@ -127,11 +128,11 @@ task(
         voterProxy.address,
         signer,
       ).setDepositor(kglDepositorAddress)
-      console.log('> [temp skip] KglDepositor#initialLock')
-      // await KglDepositor__factory.connect(
-      //   kglDepositorAddress,
-      //   signer,
-      // ).initialLock()
+      console.log('> KglDepositor#initialLock')
+      await KglDepositor__factory.connect(
+        kglDepositorAddress,
+        signer,
+      ).initialLock()
       console.log('> Booster#setTreasury')
       await Booster__factory.connect(boosterAddress, signer).setTreasury(
         kglDepositorAddress,

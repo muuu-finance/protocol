@@ -1,6 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployKglDepositor } from '../../helpers/contracts-deploy-helpers'
+import { loadConstants } from '../constants'
 import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.KglDepositor
@@ -34,14 +35,23 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         console.log(`useAlreadyDeployed flag: ${useAlreadyDeployed}`)
       }
 
+      // get constants / addresses / parameters
+      const deployeds = TaskUtils.loadDeployedContractAddresses({
+        network: network.name,
+      })
+      const constants = loadConstants({
+        network: network.name,
+        isUseMocks: true, // temp
+      })
+
       console.log(`> start deploy ${CONTRACT_KEY}`)
 
       const instance = await deployKglDepositor({
         deployer: _deployer,
-        staker: ethers.constants.AddressZero, // TODO
-        minter: ethers.constants.AddressZero, // TODO
-        kgl: ethers.constants.AddressZero, // TODO
-        votingEscrow: ethers.constants.AddressZero, // TODO
+        staker: deployeds.system.voteProxy,
+        minter: deployeds.system.muKgl,
+        kgl: constants.tokens.KGL,
+        votingEscrow: constants.kaglas.votingEscrow,
       })
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,
