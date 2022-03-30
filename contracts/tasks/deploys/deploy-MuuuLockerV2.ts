@@ -35,6 +35,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       }
 
       console.log(`> start deploy ${CONTRACT_KEY}`)
+
       const instance = await deployMuuuLockerV2({
         deployer: _deployer,
       })
@@ -44,6 +45,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         value: instance.address,
         fileName: TaskUtils.getFilePath({ network: network.name }),
       })
+
       console.log(`>> deployed ${CONTRACT_KEY}\n`)
 
       if (!inMultiDeploymentFlow)

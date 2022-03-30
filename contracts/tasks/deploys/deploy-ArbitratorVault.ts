@@ -34,11 +34,16 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         console.log(`useAlreadyDeployed flag: ${useAlreadyDeployed}`)
       }
 
+      // get constants / addresses / parameters
+      const deployeds = TaskUtils.loadDeployedContractAddresses({
+        network: network.name,
+      })
+
       console.log(`> start deploy ${CONTRACT_KEY}`)
 
       const instance = await deployArbitratorVault({
         deployer: _deployer,
-        depositor: ethers.constants.AddressZero, // TODO
+        depositor: deployeds.system.booster,
       })
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,

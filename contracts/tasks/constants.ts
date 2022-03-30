@@ -22,6 +22,9 @@ type ConstantsType = {
     muKglRewards: {
       uid: number
     }
+    vestedEscrow: {
+      period: number
+    }
   }
 }
 
@@ -47,6 +50,9 @@ const local: ConstantsType = {
     },
     muKglRewards: {
       uid: 0,
+    },
+    vestedEscrow: {
+      period: 1 * 364 * 86400,
     },
   },
 }

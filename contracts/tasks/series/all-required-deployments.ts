@@ -3,6 +3,7 @@ import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import {
   Booster__factory,
+  ClaimZap__factory,
   KaglaVoterProxy__factory,
   KglDepositor__factory,
   MerkleAirdropFactory__factory,
@@ -194,8 +195,8 @@ task(
       )
 
       // contracts/migrations/1_deploy_contracts.js#L341
-      console.log('> [temp skip] ClaimZap#setApprovals')
-      // await ClaimZap__factory.connect(claimZapAddress, signer).setApprovals()
+      console.log('> ClaimZap#setApprovals')
+      await ClaimZap__factory.connect(claimZapAddress, signer).setApprovals()
 
       const vestedEscrowAddress = await hre.run(
         `deploy-${ContractKeys.VestedEscrow}`,
@@ -212,8 +213,8 @@ task(
         vestedEscrowAddress,
         signer,
       )
-      console.log('> [temp skip] VestedEscrow#addTokens')
-      // await vestedEscrowInstance.addTokens(total)
+      console.log('> VestedEscrow#addTokens')
+      await vestedEscrowInstance.addTokens(total)
       console.log('> VestedEscrow#fund')
       await vestedEscrowInstance.fund([], [])
       console.log(
@@ -260,8 +261,8 @@ task(
         muuuTokenAddress,
         signer,
       )
-      console.log('> [temp skip] MuuuToken#transfer')
-      // await muuuTokenInstance.transfer(merkleAirdropAddress, 10000) // TODO
+      console.log('> MuuuToken#transfer')
+      await muuuTokenInstance.transfer(merkleAirdropAddress, 10000) // TODO
       console.log(
         `airdrop balance: ${await muuuTokenInstance.balanceOf(
           merkleAirdropAddress,
@@ -269,7 +270,7 @@ task(
       )
       const merkleRoot =
         '0x632a2ad201c5b95d3f75c1332afdcf489d4e6b4b7480cf878d8eba2aa87d5f73'
-      console.log('> [temp skip] MerkleAirdrop#setRoot')
+      console.log('> MerkleAirdrop#setRoot')
       await MerkleAirdrop__factory.connect(
         merkleAirdropAddress,
         signer,

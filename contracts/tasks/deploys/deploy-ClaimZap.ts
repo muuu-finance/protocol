@@ -1,6 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployClaimZap } from '../../helpers/contracts-deploy-helpers'
+import { loadConstants } from '../constants'
 import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.ClaimZap
@@ -34,18 +35,27 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         console.log(`useAlreadyDeployed flag: ${useAlreadyDeployed}`)
       }
 
+      // get constants / addresses / parameters
+      const deployeds = TaskUtils.loadDeployedContractAddresses({
+        network: network.name,
+      })
+      const constants = loadConstants({
+        network: network.name,
+        isUseMocks: true, // temp
+      })
+
       console.log(`> start deploy ${CONTRACT_KEY}`)
 
       const instance = await deployClaimZap({
         deployer: _deployer,
-        kgl: ethers.constants.AddressZero, // TODO
-        muuu: ethers.constants.AddressZero, // TODO
-        muKgl: ethers.constants.AddressZero, // TODO
-        kglDeposit: ethers.constants.AddressZero, // TODO
-        muKglRewards: ethers.constants.AddressZero, // TODO
-        muuuRewards: ethers.constants.AddressZero, // TODO
-        exchange: ethers.constants.AddressZero, // TODO
-        locker: ethers.constants.AddressZero, // TODO
+        kgl: constants.tokens.KGL,
+        muuu: deployeds.system.muuu,
+        muKgl: deployeds.system.muKgl,
+        kglDeposit: deployeds.system.kglDepositor,
+        muKglRewards: deployeds.system.muKglRewards,
+        muuuRewards: deployeds.system.muuuRewards,
+        exchange: constants.contracts.treasury.address,
+        locker: deployeds.system.muuuLockerV2,
       })
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,

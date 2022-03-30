@@ -1,6 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployVestedEscrow } from '../../helpers/contracts-deploy-helpers'
+import { loadConstants } from '../constants'
 import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.VestedEscrow
@@ -34,16 +35,27 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         console.log(`useAlreadyDeployed flag: ${useAlreadyDeployed}`)
       }
 
+      // get constants / addresses / parameters
+      const deployeds = TaskUtils.loadDeployedContractAddresses({
+        network: network.name,
+      })
+      const constants = loadConstants({
+        network: network.name,
+        isUseMocks: true, // temp
+      })
+
       console.log(`> start deploy ${CONTRACT_KEY}`)
 
-      const startTime = Math.floor(Date.now() / 1000) + 3600
+      const startTime = Math.floor(Date.now() / 1000) + 3600 // TODO
       const instance = await deployVestedEscrow({
         deployer: _deployer,
-        rewardToken: ethers.constants.AddressZero, // TODO
-        starttime: startTime.toString(), // TODO
-        endtime: (startTime + 1 * 364 * 86400).toString(), // TODO
-        stakeContract: ethers.constants.AddressZero, // TODO
-        fundAdmin: ethers.constants.AddressZero, // TODO
+        rewardToken: deployeds.system.muuu,
+        starttime: startTime.toString(),
+        endtime: (
+          startTime + constants.contracts.vestedEscrow.period
+        ).toString(),
+        stakeContract: deployeds.system.muuuRewards,
+        fundAdmin: _deployer.address, // TODO
       })
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,
