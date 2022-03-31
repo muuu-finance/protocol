@@ -50,10 +50,11 @@ const _mintMuuuToken = async ({
   amount: BigNumber
 }) => {
   console.log('> MuuuToken#mint')
-  await MuuuToken__factory.connect(muuuTokenAddress, signer).mint(
+  const tx = await MuuuToken__factory.connect(muuuTokenAddress, signer).mint(
     signer.address,
     amount.toString(),
   )
+  await tx.wait()
 }
 
 // contracts/migrations/1_deploy_contracts.js#L251-255
@@ -71,17 +72,25 @@ const _prepareAfterDeployingKglDepositor = async ({
 }) => {
   const { kaglaVoterProxy, booster, muKglToken, kglDepositor } = addresses
   console.log('> MuKglToken#setOperator')
-  await MuKglToken__factory.connect(muKglToken, signer).setOperator(
-    kglDepositor,
-  )
+  await(
+    await MuKglToken__factory.connect(muKglToken, signer).setOperator(
+      kglDepositor,
+    )
+  ).wait()
   console.log('> KaglaVoterProxy#setDepositor')
-  await KaglaVoterProxy__factory.connect(kaglaVoterProxy, signer).setDepositor(
-    kglDepositor,
-  )
+  await(
+    await KaglaVoterProxy__factory.connect(kaglaVoterProxy, signer).setDepositor(
+      kglDepositor,
+    )
+  ).wait()
   console.log('> KglDepositor#initialLock')
-  await KglDepositor__factory.connect(kglDepositor, signer).initialLock()
+  await(
+    await KglDepositor__factory.connect(kglDepositor, signer).initialLock()
+  ).wait()
   console.log('> Booster#setTreasury')
-  await Booster__factory.connect(booster, signer).setTreasury(kglDepositor)
+  await(
+    await Booster__factory.connect(booster, signer).setTreasury(kglDepositor)
+  ).wait()
 }
 
 // contracts/migrations/1_deploy_contracts.js#L284-286
@@ -98,10 +107,12 @@ const _setRewardContractsToBooster = async ({
 }) => {
   const { booster, muKglRewardPool, muuuRewardPool } = addresses
   console.log('> Booster#setRewardContracts')
-  await Booster__factory.connect(booster, signer).setRewardContracts(
-    muKglRewardPool,
-    muuuRewardPool,
-  )
+  await(
+    await Booster__factory.connect(booster, signer).setRewardContracts(
+      muKglRewardPool,
+      muuuRewardPool,
+    )
+  ).wait()
 }
 
 // contracts/migrations/1_deploy_contracts.js#L299-308
@@ -122,11 +133,11 @@ const _prepareAfterDeployingPoolManager = async ({
     addresses
   const _boosterInstance = await Booster__factory.connect(booster, signer)
   console.log('> Booster#setPoolManager')
-  await _boosterInstance.setPoolManager(poolManager)
+  await(await _boosterInstance.setPoolManager(poolManager)).wait()
   console.log('> Booster#setFactories')
-  await _boosterInstance.setFactories(rewardFactory, stashFactory, tokenFactory)
+  await(await _boosterInstance.setFactories(rewardFactory, stashFactory, tokenFactory)).wait()
   console.log('> Booster#setFeeInfo')
-  await _boosterInstance.setFeeInfo()
+  await(await _boosterInstance.setFeeInfo()).wait()
 }
 
 // contracts/migrations/1_deploy_contracts.js#L313
@@ -141,9 +152,10 @@ const _setArbitratorToBooster = async ({
   }
 }) => {
   console.log('> Booster#setArbitrator')
-  await Booster__factory.connect(addresses.booster, signer).setArbitrator(
+  const tx = await Booster__factory.connect(addresses.booster, signer).setArbitrator(
     addresses.arbitratorVault,
   )
+  await tx.wait()
 }
 
 // contracts/migrations/1_deploy_contracts.js#L341
@@ -155,7 +167,8 @@ const _setApprovalsInClaimZap = async ({
   claimZapAddress: string
 }) => {
   console.log('> ClaimZap#setApprovals')
-  await ClaimZap__factory.connect(claimZapAddress, signer).setApprovals()
+  const tx = await ClaimZap__factory.connect(claimZapAddress, signer).setApprovals()
+  await tx.wait()
 }
 
 // contracts/migrations/1_deploy_contracts.js#L359-369
@@ -175,21 +188,25 @@ const _prepareAfterDeployingVestedEscrow = async ({
     vestedEscrow: string
   }
 }) => {
-  await MuuuToken__factory.connect(addresses.muuuToken, signer).approve(
-    addresses.vestedEscrow,
-    variables.amount.toString(),
-  )
+  await (
+    await MuuuToken__factory.connect(addresses.muuuToken, signer).approve(
+      addresses.vestedEscrow,
+      variables.amount.toString(),
+    )
+  ).wait()
   const vestedEscrowInstance = await VestedEscrow__factory.connect(
     addresses.vestedEscrow,
     signer,
   )
   console.log('> VestedEscrow#addTokens')
-  await vestedEscrowInstance.addTokens(variables.amount)
+  await (await vestedEscrowInstance.addTokens(variables.amount)).wait()
   console.log('> VestedEscrow#fund')
-  await vestedEscrowInstance.fund(
-    variables.vestedAddresses,
-    variables.vestedAmount,
-  )
+  await (
+    await vestedEscrowInstance.fund(
+      variables.vestedAddresses,
+      variables.vestedAmount
+    )
+  ).wait()
   console.log(
     `vesting unallocatedSupply: ${await vestedEscrowInstance.unallocatedSupply()}`,
   )
@@ -256,20 +273,26 @@ const _prepareAfterDeployingMerkleAirdrop = async ({
   const { muuuToken, merkleAirdrop } = addresses
 
   console.log('> MerkleAirdrop#setRewardToken')
-  await MerkleAirdrop__factory.connect(merkleAirdrop, signer).setRewardToken(
-    muuuToken,
-  )
+  await(
+    await MerkleAirdrop__factory.connect(merkleAirdrop, signer).setRewardToken(
+      muuuToken,
+    )
+  ).wait()
 
   const muuuTokenInstance = await MuuuToken__factory.connect(muuuToken, signer)
   console.log('> MuuuToken#transfer')
-  await muuuTokenInstance.transfer(merkleAirdrop, variables.amount.toString())
+  await(
+    await muuuTokenInstance.transfer(merkleAirdrop, variables.amount.toString())
+  ).wait()
   console.log(
     `airdrop balance: ${await muuuTokenInstance.balanceOf(merkleAirdrop)}`,
   )
   console.log('> MerkleAirdrop#setRoot')
-  await MerkleAirdrop__factory.connect(merkleAirdrop, signer).setRoot(
-    variables.merkleRoot,
-  )
+  await(
+    await MerkleAirdrop__factory.connect(merkleAirdrop, signer).setRoot(
+      variables.merkleRoot,
+    )
+  ).wait()
 }
 // -- Utilities
 const isSkipDeploy = ({

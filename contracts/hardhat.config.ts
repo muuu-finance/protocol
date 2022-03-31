@@ -65,15 +65,30 @@ const testAccounts: { secretKey: string; balance: BigNumber }[] = [
   },
 ]
 
+const AstarNetworks = ["astar", "shiden", "shibuya"] as const
+const EthereumNetworks = ["rinkeby", "kovan"] as const
+type tNetwork = typeof AstarNetworks[number] | typeof EthereumNetworks[number]
+const GWEI = 1000 * 1000 * 1000;
+const gasPrices: { [key in tNetwork]: number } = {
+  rinkeby: 3 * GWEI,
+  kovan: 3 * GWEI,
+  astar: 1 * GWEI,
+  shiden: 1 * GWEI,
+  shibuya: 3 * GWEI
+}
+
 const getCommonNetworkConfig = ({
-  url,
+  networkName,
   chainId,
 }: {
-  url: string
+  networkName: tNetwork
   chainId: number
 }): NetworkUserConfig => ({
-  url: url,
+  url: AstarNetworks.some((n) => n === networkName)
+    ? getAstarNetworkUrl(networkName)
+    : getEthereumNetworkUrl(networkName),
   chainId: chainId,
+  gasPrice: gasPrices[networkName],
   accounts: {
     mnemonic: MNEMONIC,
     path: "m/44'/60'/0'/0",
@@ -100,34 +115,36 @@ const config: HardhatUserConfig = {
   networks: {
     localhost: {
       url: 'http://127.0.0.1:8545',
+      gasPrice: 65 * GWEI,
     },
     hardhat: {
       throwOnTransactionFailures: true,
       throwOnCallFailures: true,
       allowUnlimitedContractSize: true,
+      gasPrice: 65 * GWEI,
       accounts: testAccounts.map((v) => ({
         privateKey: v.secretKey,
         balance: v.balance.toString(),
       })),
     },
     rinkeby: getCommonNetworkConfig({
-      url: getEthereumNetworkUrl('rinkeby'),
+      networkName: 'rinkeby',
       chainId: 4,
     }),
     kovan: getCommonNetworkConfig({
-      url: getEthereumNetworkUrl('kovan'),
+      networkName: 'kovan',
       chainId: 42,
     }),
     astar: getCommonNetworkConfig({
-      url: getAstarNetworkUrl('astar'),
+      networkName: 'astar',
       chainId: 592,
     }),
     shiden: getCommonNetworkConfig({
-      url: getAstarNetworkUrl('shiden'),
+      networkName: 'shiden',
       chainId: 336,
     }),
     shibuya: getCommonNetworkConfig({
-      url: getAstarNetworkUrl('shibuya'),
+      networkName: 'shibuya',
       chainId: 81,
     }),
   },

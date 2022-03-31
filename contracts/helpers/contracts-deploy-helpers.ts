@@ -159,7 +159,7 @@ export const deployKglDepositor = async ({
       kgl,
       votingEscrow,
     ),
-    ContractKeys.KaglaVoterProxy,
+    ContractKeys.KglDepositor,
   )
 
 export const deployBaseRewardPool = async ({
