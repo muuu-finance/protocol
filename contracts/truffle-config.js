@@ -114,23 +114,7 @@ module.exports = {
     // production: true    // Treats this network as if it was a public net. (default: false)
     // }
     ganachecli: {
-      host: '127.0.0.1',
-      port: 8545,
-      network_id: '*',
-      gas: 6721975,
-      gasPrice: 120000000000,
-    },
-    uitest: {
-      host: '127.0.0.1',
-      port: 8545,
-      network_id: '1',
-      gas: 6721975,
-      gasPrice: 120000000000,
-    },
-    debug: {
-      host: '127.0.0.1',
-      port: 8545,
-      network_id: '1',
+      ...localNetworkSettings,
       gas: 6721975,
       gasPrice: 120000000000,
     },
