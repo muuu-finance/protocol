@@ -34,11 +34,12 @@ task('add-pool', 'Add pool by using PoolManager')
         (await ethers.getSigners())[0]
 
       console.log(`--- [add-pool] START PoolName: ${poolName} ---`)
-      await PoolManager__factory.connect(poolManagerAddress, _deployer).addPool(
+      const tx = await PoolManager__factory.connect(poolManagerAddress, _deployer).addPool(
         swap,
         gauge,
         stashVersion,
       )
+      await tx.wait()
       console.log(`--- [add-pool] FINISHED ---`)
     },
   )
