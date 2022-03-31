@@ -1,8 +1,7 @@
-import jsonfile from 'jsonfile'
 import { TaskUtils } from '../utils'
 import { local } from './local'
+import { shiden } from './shiden'
 import { ConstantsType } from './types'
-const { vested } = jsonfile.readFileSync('./migrations/distro.json')
 
 const constantsMap: { [key in string]: ConstantsType } = {
   hardhat: local,
@@ -10,7 +9,7 @@ const constantsMap: { [key in string]: ConstantsType } = {
   // kovan: undefined,
   // rinkeby: undefined,
   // astar: undefined,
-  // shiden: undefined,
+  shiden: shiden,
   // shibuya: undefined,
 }
 
@@ -18,7 +17,7 @@ export const loadConstants = ({
   network,
   isUseMocks,
 }: {
-  network: string
+  network: string // tNetwork
   isUseMocks?: boolean
 }): ConstantsType => {
   const constants = constantsMap[network]
