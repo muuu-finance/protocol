@@ -14,7 +14,7 @@ export type ConstantsType = {
   }
   pools?: {
     name: string
-    lpToken: string
+    swap: string
     gauge: string
   }[]
   contracts: {
