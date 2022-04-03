@@ -311,11 +311,13 @@ const _writePoolInfosToJson = async ({
   networkName,
   boosterAddress,
   kglTokenAddress,
+  pools
 }: {
   signer: SignerWithAddress
   networkName: string
   boosterAddress: string
   kglTokenAddress: string
+  pools?: { name: string, swap: string, gauge: string }[]
 }) => {
   const poolsContracts = []
   const _boosterInstance = await Booster__factory.connect(
@@ -343,6 +345,8 @@ const _writePoolInfosToJson = async ({
     const rewardList = []
     rewardList.push({ rToken: kglTokenAddress, rAddress: kglrewards })
     const { lptoken, token, gauge, kglRewards, stash, shutdown } = list[i]
+
+    const _name = pools?.find(p => p.gauge.toLowerCase() === gauge.toLowerCase())?.name ?? `mock pool ${i}`
     poolsContracts.push({
       lptoken,
       token,
@@ -351,7 +355,7 @@ const _writePoolInfosToJson = async ({
       stash,
       shutdown,
       rewards: rewardList,
-      name: '3pool', // TODO
+      name: _name,
       id: i,
     })
   }
@@ -603,22 +607,39 @@ task(
 
       console.log(`--- start: add pools ---`)
 
-      const poolName = '3pool'
-      await hre.run(`add-pool`, {
-        deployerAddress: signer.address,
-        poolName: poolName,
-        poolManagerAddress,
-        swap: constants.tokens['3Kgl'],
-        gauge: constants.kaglas.gauge,
-        stashVersion: '0',
-      })
+      if (_useMockContracts) {
+        await hre.run(`add-pool`, {
+          deployerAddress: signer.address,
+          poolName: '3pool',
+          poolManagerAddress,
+          swap: constants.tokens['3Kgl'],
+          gauge: constants.kaglas.gauge,
+          stashVersion: '0',
+        })
+      }
+
+      if (constants.pools && constants.pools.length != 0) {
+        console.log(`Scheduled to be added: count ${constants.pools.length}`)
+        for (const _p of constants.pools) {
+          await hre.run(`add-pool`, {
+            deployerAddress: signer.address,
+            poolName: _p.name,
+            poolManagerAddress,
+            swap: _p.swap,
+            gauge: _p.gauge,
+            stashVersion: '0',
+          })
+        }
+      }
 
       await _writePoolInfosToJson({
         signer,
         networkName: network.name,
         boosterAddress,
         kglTokenAddress: constants.tokens.KGL,
+        pools: constants.pools ?? undefined
       })
+
       console.log(`--- finish: add pools ---`)
 
       console.log(`--- confirm: addresses/pools ---`)
