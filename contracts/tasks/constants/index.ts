@@ -1,4 +1,5 @@
 import { TaskUtils } from '../utils'
+import { astar } from './astar'
 import { local } from './local'
 import { shiden } from './shiden'
 import { ConstantsType } from './types'
@@ -8,7 +9,7 @@ const constantsMap: { [key in string]: ConstantsType } = {
   localhost: local,
   // kovan: undefined,
   // rinkeby: undefined,
-  // astar: undefined,
+  astar: astar,
   shiden: shiden,
   // shibuya: undefined,
 }
