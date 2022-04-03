@@ -3,20 +3,35 @@ import { ConstantsType } from './types'
 
 export const shiden: ConstantsType = {
   tokens: {
-    // need overrides by loading json
-    KGL: '',
+    KGL: '0x039F7Ef55595923C78c2c3bBa41625eBa6F667b9',
     '3Kgl': '',
     DAI: '',
     WETH: '',
   },
   kaglas: {
-    // need overrides by loading json
-    votingEscrow: '',
-    gauge: '',
+    votingEscrow: '0xDFe3C797977a0B40C90E7c2869407327a4208654',
+    gauge: '0xBEDcfA1EB6cf39dd829207147692C0eaeCe32065',
     feeDistributor: '',
     registry: '',
-    addressProvider: '',
+    addressProvider: '0x762b149eA23070d6F021F70CB8877d2248278855',
   },
+  pools: [
+    {
+      name: "3KGL",
+      lpToken: "0x99799cAB58C5591ee10015F12173C1104eB23225",
+      gauge: "0xe616CD383Af18aEde6024e9BFB54B9Cd1D7aC385",
+    },
+    {
+      name: "l3KGL",
+      lpToken: "0x3328E82bB102809e91A072851a5BcBa86215E5E4",
+      gauge: "0xd5e4DEcE9fC2328f0658717682A9b703b496F073",
+    },
+    {
+      name: "BUSD3KGL",
+      lpToken: "0xaA85Ebb591077e11246422ea941c503b473b5299",
+      gauge: "0xcBeD93bB370376e4EA7D08d3d4FDEdDc5A84b1ed",
+    }
+  ],
   contracts: {
     treasury: {
       address: '0x175d905470e85279899C37F89000b195f3d0c0C5', // dummy
