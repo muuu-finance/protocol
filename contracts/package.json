@@ -1,5 +1,8 @@
 {
   "scripts": {
+    "hardhat": "npx hardhat",
+    "truffle": "npx truffle",
+    "compile": "yarn hardhat compile && yarn truffle compile",
     "deploy": "yarn hardhat all-required-developments",
     "deploy:local": "yarn deploy --network localhost",
     "deploy:rinkeby": "yarn deploy --network rinkeby",
@@ -26,8 +29,7 @@
     "test": "truffle test --stacktrace-extra",
     "test:light": "truffle test --stacktrace-extra --network ganachecli --compile-none",
     "prettier:check": "prettier -c 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'",
-    "prettier:write": "prettier --write 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'",
-    "hardhat": "npx hardhat"
+    "prettier:write": "prettier --write 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'"
   },
   "dependencies": {
     "@openzeppelin/contracts": "3.4.0",
