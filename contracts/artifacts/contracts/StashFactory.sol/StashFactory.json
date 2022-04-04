@@ -1,0 +1,87 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "StashFactory",
+  "sourceName": "contracts/StashFactory.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_operator",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_rewardFactory",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_pid",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_gauge",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_staker",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_stashVersion",
+          "type": "uint256"
+        }
+      ],
+      "name": "CreateStash",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "operator",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "rewardFactory",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b506040516101d53803806101d58339818101604052604081101561003357600080fd5b508051602090910151600080546001600160a01b039384166001600160a01b0319918216179091556001805493909216921691909117905561015b8061007a6000396000f3fe608060405234801561001057600080fd5b50600436106100415760003560e01c8063245e4bf014610046578063570ca7351461006a57806399cb12de14610072575b600080fd5b61004e6100ae565b604080516001600160a01b039092168252519081900360200190f35b61004e6100bd565b61004e6004803603608081101561008857600080fd5b508035906001600160a01b036020820135811691604081013590911690606001356100cc565b6001546001600160a01b031681565b6000546001600160a01b031681565b600080546001600160a01b0316331461011a576040805162461bcd60e51b815260206004820152600b60248201526a08585d5d1a1bdc9a5e995960aa1b604482015290519081900360640190fd5b50600094935050505056fea26469706673582212203c237bb82d0a376033ac42b022dc599410f7f3ff835aaddb1641eabd0849ca9864736f6c634300060c0033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100415760003560e01c8063245e4bf014610046578063570ca7351461006a57806399cb12de14610072575b600080fd5b61004e6100ae565b604080516001600160a01b039092168252519081900360200190f35b61004e6100bd565b61004e6004803603608081101561008857600080fd5b508035906001600160a01b036020820135811691604081013590911690606001356100cc565b6001546001600160a01b031681565b6000546001600160a01b031681565b600080546001600160a01b0316331461011a576040805162461bcd60e51b815260206004820152600b60248201526a08585d5d1a1bdc9a5e995960aa1b604482015290519081900360640190fd5b50600094935050505056fea26469706673582212203c237bb82d0a376033ac42b022dc599410f7f3ff835aaddb1641eabd0849ca9864736f6c634300060c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

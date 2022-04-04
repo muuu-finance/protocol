@@ -1,0 +1,94 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "MockKaglaVoteEscrow",
+  "sourceName": "contracts/mocks/MockKaglaVoteEscrow.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "addr",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_value",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_unlock_time",
+          "type": "uint256"
+        }
+      ],
+      "name": "create_lock",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "increase_amount",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_unlock_time",
+          "type": "uint256"
+        }
+      ],
+      "name": "increase_unlock_time",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "smart_wallet_checker",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b50610157806100206000396000f3fe608060405234801561001057600080fd5b50600436106100625760003560e01c80633ccfd60b146100675780634957677c1461007157806365fc38731461008e57806370a08231146100b15780637175d4f7146100e9578063eff7a61214610071575b600080fd5b61006f61010d565b005b61006f6004803603602081101561008757600080fd5b503561010f565b61006f600480360360408110156100a457600080fd5b5080359060200135610112565b6100d7600480360360208110156100c757600080fd5b50356001600160a01b0316610116565b60408051918252519081900360200190f35b6100f161011c565b604080516001600160a01b039092168252519081900360200190f35b565b50565b5050565b50600090565b60009056fea2646970667358221220da48040a781e2a88f8ff974333cdf92aed3badddae7ffd85a89aa24eda46cbd264736f6c634300060c0033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100625760003560e01c80633ccfd60b146100675780634957677c1461007157806365fc38731461008e57806370a08231146100b15780637175d4f7146100e9578063eff7a61214610071575b600080fd5b61006f61010d565b005b61006f6004803603602081101561008757600080fd5b503561010f565b61006f600480360360408110156100a457600080fd5b5080359060200135610112565b6100d7600480360360208110156100c757600080fd5b50356001600160a01b0316610116565b60408051918252519081900360200190f35b6100f161011c565b604080516001600160a01b039092168252519081900360200190f35b565b50565b5050565b50600090565b60009056fea2646970667358221220da48040a781e2a88f8ff974333cdf92aed3badddae7ffd85a89aa24eda46cbd264736f6c634300060c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

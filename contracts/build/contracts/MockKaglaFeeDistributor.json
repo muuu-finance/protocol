@@ -1,0 +1,542 @@
+{
+  "contractName": "MockKaglaFeeDistributor",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "token",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "claim",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_token\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"claim\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"token\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/mocks/MockKaglaFeeDistributor.sol\":\"MockKaglaFeeDistributor\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/mocks/MockKaglaFeeDistributor.sol\":{\"keccak256\":\"0x33341145c9b1285fa12b84747ea052ccbe41fcaeb748dc1c7fc35fd3d6d7989b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://90aadd3d24a5954dd52ecc6472bfff5995e4b4a34e7db8312486013bf495198c\",\"dweb:/ipfs/QmVCuw9AftcYPmtGzhHmePyQUfibt9D8FqUcAYKPqzvkh7\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b5060405161010c38038061010c8339818101604052602081101561003357600080fd5b5051600080546001600160a01b039092166001600160a01b031990921691909117905560a8806100646000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80634e71d92d146037578063fc0c546a14603f575b600080fd5b603d6061565b005b60456063565b604080516001600160a01b039092168252519081900360200190f35b565b6000546001600160a01b03168156fea2646970667358221220fc846f48d60aa802cb2fc4f91b8b357d8218a7395b4e41f20679a9127f929ce064736f6c634300060c0033",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060325760003560e01c80634e71d92d146037578063fc0c546a14603f575b600080fd5b603d6061565b005b60456063565b604080516001600160a01b039092168252519081900360200190f35b565b6000546001600160a01b03168156fea2646970667358221220fc846f48d60aa802cb2fc4f91b8b357d8218a7395b4e41f20679a9127f929ce064736f6c634300060c0033",
+  "immutableReferences": {},
+  "sourceMap": "259:156:90:-:0;;;321:60;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;321:60:90;362:5;:14;;-1:-1:-1;;;;;362:14:90;;;-1:-1:-1;;;;;;362:14:90;;;;;;;;;259:156;;;;;;",
+  "deployedSourceMap": "259:156:90:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;385:28;;;:::i;:::-;;296:20;;;:::i;:::-;;;;-1:-1:-1;;;;;296:20:90;;;;;;;;;;;;;;385:28;:::o;296:20::-;;;-1:-1:-1;;;;;296:20:90;;:::o",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity 0.6.12;\n\n// Mock for Kagla FeeDistributor\n// refs\n// - https://kagla.readthedocs.io/dao-fees.html#dao-fees-distributor\n// - https://github.com/kaglafi/kagla-dao-contracts/blob/master/contracts/FeeDistributor.vy\ncontract MockKaglaFeeDistributor {\n  address public token;\n\n  constructor(address _token) public {\n    token = _token;\n  }\n\n  function claim() external {}\n}\n",
+  "sourcePath": "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/mocks/MockKaglaFeeDistributor.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/mocks/MockKaglaFeeDistributor.sol",
+    "exportedSymbols": {
+      "MockKaglaFeeDistributor": [
+        29536
+      ]
+    },
+    "id": 29537,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 29519,
+        "literals": [
+          "solidity",
+          "0.6",
+          ".12"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:90"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 29536,
+        "linearizedBaseContracts": [
+          29536
+        ],
+        "name": "MockKaglaFeeDistributor",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "functionSelector": "fc0c546a",
+            "id": 29521,
+            "mutability": "mutable",
+            "name": "token",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 29536,
+            "src": "296:20:90",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 29520,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "296:7:90",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 29530,
+              "nodeType": "Block",
+              "src": "356:25:90",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 29528,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 29526,
+                      "name": "token",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 29521,
+                      "src": "362:5:90",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 29527,
+                      "name": "_token",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 29523,
+                      "src": "370:6:90",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "362:14:90",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 29529,
+                  "nodeType": "ExpressionStatement",
+                  "src": "362:14:90"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 29531,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 29524,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 29523,
+                  "mutability": "mutable",
+                  "name": "_token",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 29531,
+                  "src": "333:14:90",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 29522,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "333:7:90",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "332:16:90"
+            },
+            "returnParameters": {
+              "id": 29525,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "356:0:90"
+            },
+            "scope": 29536,
+            "src": "321:60:90",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 29534,
+              "nodeType": "Block",
+              "src": "411:2:90",
+              "statements": []
+            },
+            "documentation": null,
+            "functionSelector": "4e71d92d",
+            "id": 29535,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "claim",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 29532,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "399:2:90"
+            },
+            "returnParameters": {
+              "id": 29533,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "411:0:90"
+            },
+            "scope": 29536,
+            "src": "385:28:90",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 29537,
+        "src": "259:156:90"
+      }
+    ],
+    "src": "32:384:90"
+  },
+  "legacyAST": {
+    "attributes": {
+      "absolutePath": "project:/contracts/mocks/MockKaglaFeeDistributor.sol",
+      "exportedSymbols": {
+        "MockKaglaFeeDistributor": [
+          29536
+        ]
+      },
+      "license": "MIT"
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "0.6",
+            ".12"
+          ]
+        },
+        "id": 29519,
+        "name": "PragmaDirective",
+        "src": "32:23:90"
+      },
+      {
+        "attributes": {
+          "abstract": false,
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "contract",
+          "documentation": null,
+          "fullyImplemented": true,
+          "linearizedBaseContracts": [
+            29536
+          ],
+          "name": "MockKaglaFeeDistributor",
+          "scope": 29537
+        },
+        "children": [
+          {
+            "attributes": {
+              "constant": false,
+              "functionSelector": "fc0c546a",
+              "mutability": "mutable",
+              "name": "token",
+              "overrides": null,
+              "scope": 29536,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "address",
+              "value": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "address",
+                  "stateMutability": "nonpayable",
+                  "type": "address"
+                },
+                "id": 29520,
+                "name": "ElementaryTypeName",
+                "src": "296:7:90"
+              }
+            ],
+            "id": 29521,
+            "name": "VariableDeclaration",
+            "src": "296:20:90"
+          },
+          {
+            "attributes": {
+              "documentation": null,
+              "implemented": true,
+              "isConstructor": true,
+              "kind": "constructor",
+              "modifiers": [
+                null
+              ],
+              "name": "",
+              "overrides": null,
+              "scope": 29536,
+              "stateMutability": "nonpayable",
+              "virtual": false,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "_token",
+                      "overrides": null,
+                      "scope": 29531,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 29522,
+                        "name": "ElementaryTypeName",
+                        "src": "333:7:90"
+                      }
+                    ],
+                    "id": 29523,
+                    "name": "VariableDeclaration",
+                    "src": "333:14:90"
+                  }
+                ],
+                "id": 29524,
+                "name": "ParameterList",
+                "src": "332:16:90"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 29525,
+                "name": "ParameterList",
+                "src": "356:0:90"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "address"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 29521,
+                              "type": "address",
+                              "value": "token"
+                            },
+                            "id": 29526,
+                            "name": "Identifier",
+                            "src": "362:5:90"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 29523,
+                              "type": "address",
+                              "value": "_token"
+                            },
+                            "id": 29527,
+                            "name": "Identifier",
+                            "src": "370:6:90"
+                          }
+                        ],
+                        "id": 29528,
+                        "name": "Assignment",
+                        "src": "362:14:90"
+                      }
+                    ],
+                    "id": 29529,
+                    "name": "ExpressionStatement",
+                    "src": "362:14:90"
+                  }
+                ],
+                "id": 29530,
+                "name": "Block",
+                "src": "356:25:90"
+              }
+            ],
+            "id": 29531,
+            "name": "FunctionDefinition",
+            "src": "321:60:90"
+          },
+          {
+            "attributes": {
+              "documentation": null,
+              "functionSelector": "4e71d92d",
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "claim",
+              "overrides": null,
+              "scope": 29536,
+              "stateMutability": "nonpayable",
+              "virtual": false,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 29532,
+                "name": "ParameterList",
+                "src": "399:2:90"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 29533,
+                "name": "ParameterList",
+                "src": "411:0:90"
+              },
+              {
+                "attributes": {
+                  "statements": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 29534,
+                "name": "Block",
+                "src": "411:2:90"
+              }
+            ],
+            "id": 29535,
+            "name": "FunctionDefinition",
+            "src": "385:28:90"
+          }
+        ],
+        "id": 29536,
+        "name": "ContractDefinition",
+        "src": "259:156:90"
+      }
+    ],
+    "id": 29537,
+    "name": "SourceUnit",
+    "src": "32:384:90"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.6.12+commit.27d51765.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.6",
+  "updatedAt": "2022-04-04T03:30:07.455Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

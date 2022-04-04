@@ -1,0 +1,105 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "MockGaugeController",
+  "sourceName": "contracts/mocks/MockGaugeController.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "int128",
+          "name": "",
+          "type": "int128"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "add_gauge",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_gauge",
+          "type": "address"
+        }
+      ],
+      "name": "get_gauge_weight",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_gauge",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_weight",
+          "type": "uint256"
+        }
+      ],
+      "name": "vote_for_gauge_weights",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_voteproxy",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_gauge",
+          "type": "address"
+        }
+      ],
+      "name": "vote_user_slopes",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b50610189806100206000396000f3fe608060405234801561001057600080fd5b506004361061004c5760003560e01c80630f467f981461005157806318dfe9211461009d5780634e791a3a146100d4578063d71363281461010c575b600080fd5b61007f6004803603604081101561006757600080fd5b506001600160a01b0381358116916020013516610138565b60408051938452602084019290925282820152519081900360600190f35b6100d2600480360360608110156100b357600080fd5b506001600160a01b03813516906020810135600f0b9060400135610144565b005b6100fa600480360360208110156100ea57600080fd5b50356001600160a01b0316610149565b60408051918252519081900360200190f35b6100d26004803603604081101561012257600080fd5b506001600160a01b03813516906020013561014f565b60016000809250925092565b505050565b50600190565b505056fea26469706673582212208c5678fd89ecfc249bcb0cca2edd7ebd298bb3e18f03d8a1e11dd187a853d54164736f6c634300060c0033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004c5760003560e01c80630f467f981461005157806318dfe9211461009d5780634e791a3a146100d4578063d71363281461010c575b600080fd5b61007f6004803603604081101561006757600080fd5b506001600160a01b0381358116916020013516610138565b60408051938452602084019290925282820152519081900360600190f35b6100d2600480360360608110156100b357600080fd5b506001600160a01b03813516906020810135600f0b9060400135610144565b005b6100fa600480360360208110156100ea57600080fd5b50356001600160a01b0316610149565b60408051918252519081900360200190f35b6100d26004803603604081101561012257600080fd5b506001600160a01b03813516906020013561014f565b60016000809250925092565b505050565b50600190565b505056fea26469706673582212208c5678fd89ecfc249bcb0cca2edd7ebd298bb3e18f03d8a1e11dd187a853d54164736f6c634300060c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

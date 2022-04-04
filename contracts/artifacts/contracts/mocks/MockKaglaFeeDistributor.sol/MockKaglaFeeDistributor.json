@@ -1,0 +1,42 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "MockKaglaFeeDistributor",
+  "sourceName": "contracts/mocks/MockKaglaFeeDistributor.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "claim",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "token",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b5060405161010c38038061010c8339818101604052602081101561003357600080fd5b5051600080546001600160a01b039092166001600160a01b031990921691909117905560a8806100646000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80634e71d92d146037578063fc0c546a14603f575b600080fd5b603d6061565b005b60456063565b604080516001600160a01b039092168252519081900360200190f35b565b6000546001600160a01b03168156fea2646970667358221220768f1809c8cafe9c390652572151b3dceedef0adffdcdb3cc0f92cba7a8c476f64736f6c634300060c0033",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060325760003560e01c80634e71d92d146037578063fc0c546a14603f575b600080fd5b603d6061565b005b60456063565b604080516001600160a01b039092168252519081900360200190f35b565b6000546001600160a01b03168156fea2646970667358221220768f1809c8cafe9c390652572151b3dceedef0adffdcdb3cc0f92cba7a8c476f64736f6c634300060c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

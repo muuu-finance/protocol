@@ -1,0 +1,571 @@
+{
+  "contractName": "EpsDistro",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "exit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"exit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/EpsInterface.sol\":\"EpsDistro\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/interfaces/EpsInterface.sol\":{\"keccak256\":\"0x0d21073bec7bf5834fec2b9533fab5d452cef75b0dcac2f448fe48d9983bf331\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://9296d8f0f3476f3c87efba2b2db16f0edde7988547f3995cf44ae299610682e3\",\"dweb:/ipfs/QmeyHyWLauPc6hPhGyMgN7FCqLkiCw8UyNU2ZbqKzVF3hz\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity 0.6.12;\n\ninterface EpsMerkel {\n  function claim(\n    uint256 merkleIndex,\n    uint256 index,\n    uint256 amount,\n    bytes32[] calldata proof\n  ) external;\n}\n\ninterface EpsDistro {\n  function exit() external;\n}\n",
+  "sourcePath": "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/EpsInterface.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/interfaces/EpsInterface.sol",
+    "exportedSymbols": {
+      "EpsDistro": [
+        27969
+      ],
+      "EpsMerkel": [
+        27965
+      ]
+    },
+    "id": 27970,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 27952,
+        "literals": [
+          "solidity",
+          "0.6",
+          ".12"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:65"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 27965,
+        "linearizedBaseContracts": [
+          27965
+        ],
+        "name": "EpsMerkel",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "ea25e176",
+            "id": 27964,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "claim",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 27962,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 27954,
+                  "mutability": "mutable",
+                  "name": "merkleIndex",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 27964,
+                  "src": "101:19:65",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 27953,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "101:7:65",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 27956,
+                  "mutability": "mutable",
+                  "name": "index",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 27964,
+                  "src": "126:13:65",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 27955,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "126:7:65",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 27958,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 27964,
+                  "src": "145:14:65",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 27957,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "145:7:65",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 27961,
+                  "mutability": "mutable",
+                  "name": "proof",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 27964,
+                  "src": "165:24:65",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_calldata_ptr",
+                    "typeString": "bytes32[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 27959,
+                      "name": "bytes32",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "165:7:65",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "id": 27960,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "165:9:65",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
+                      "typeString": "bytes32[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "95:98:65"
+            },
+            "returnParameters": {
+              "id": 27963,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "202:0:65"
+            },
+            "scope": 27965,
+            "src": "81:122:65",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 27970,
+        "src": "57:148:65"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 27969,
+        "linearizedBaseContracts": [
+          27969
+        ],
+        "name": "EpsDistro",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "e9fad8ee",
+            "id": 27968,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "exit",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 27966,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "244:2:65"
+            },
+            "returnParameters": {
+              "id": 27967,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "255:0:65"
+            },
+            "scope": 27969,
+            "src": "231:25:65",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 27970,
+        "src": "207:51:65"
+      }
+    ],
+    "src": "32:227:65"
+  },
+  "legacyAST": {
+    "attributes": {
+      "absolutePath": "project:/contracts/interfaces/EpsInterface.sol",
+      "exportedSymbols": {
+        "EpsDistro": [
+          27969
+        ],
+        "EpsMerkel": [
+          27965
+        ]
+      },
+      "license": "MIT"
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "0.6",
+            ".12"
+          ]
+        },
+        "id": 27952,
+        "name": "PragmaDirective",
+        "src": "32:23:65"
+      },
+      {
+        "attributes": {
+          "abstract": false,
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "interface",
+          "documentation": null,
+          "fullyImplemented": false,
+          "linearizedBaseContracts": [
+            27965
+          ],
+          "name": "EpsMerkel",
+          "scope": 27970
+        },
+        "children": [
+          {
+            "attributes": {
+              "body": null,
+              "documentation": null,
+              "functionSelector": "ea25e176",
+              "implemented": false,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "claim",
+              "overrides": null,
+              "scope": 27965,
+              "stateMutability": "nonpayable",
+              "virtual": false,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "merkleIndex",
+                      "overrides": null,
+                      "scope": 27964,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 27953,
+                        "name": "ElementaryTypeName",
+                        "src": "101:7:65"
+                      }
+                    ],
+                    "id": 27954,
+                    "name": "VariableDeclaration",
+                    "src": "101:19:65"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "index",
+                      "overrides": null,
+                      "scope": 27964,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 27955,
+                        "name": "ElementaryTypeName",
+                        "src": "126:7:65"
+                      }
+                    ],
+                    "id": 27956,
+                    "name": "VariableDeclaration",
+                    "src": "126:13:65"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "amount",
+                      "overrides": null,
+                      "scope": 27964,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 27957,
+                        "name": "ElementaryTypeName",
+                        "src": "145:7:65"
+                      }
+                    ],
+                    "id": 27958,
+                    "name": "VariableDeclaration",
+                    "src": "145:14:65"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "proof",
+                      "overrides": null,
+                      "scope": 27964,
+                      "stateVariable": false,
+                      "storageLocation": "calldata",
+                      "type": "bytes32[]",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "length": null,
+                          "type": "bytes32[]"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "name": "bytes32",
+                              "type": "bytes32"
+                            },
+                            "id": 27959,
+                            "name": "ElementaryTypeName",
+                            "src": "165:7:65"
+                          }
+                        ],
+                        "id": 27960,
+                        "name": "ArrayTypeName",
+                        "src": "165:9:65"
+                      }
+                    ],
+                    "id": 27961,
+                    "name": "VariableDeclaration",
+                    "src": "165:24:65"
+                  }
+                ],
+                "id": 27962,
+                "name": "ParameterList",
+                "src": "95:98:65"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 27963,
+                "name": "ParameterList",
+                "src": "202:0:65"
+              }
+            ],
+            "id": 27964,
+            "name": "FunctionDefinition",
+            "src": "81:122:65"
+          }
+        ],
+        "id": 27965,
+        "name": "ContractDefinition",
+        "src": "57:148:65"
+      },
+      {
+        "attributes": {
+          "abstract": false,
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "interface",
+          "documentation": null,
+          "fullyImplemented": false,
+          "linearizedBaseContracts": [
+            27969
+          ],
+          "name": "EpsDistro",
+          "scope": 27970
+        },
+        "children": [
+          {
+            "attributes": {
+              "body": null,
+              "documentation": null,
+              "functionSelector": "e9fad8ee",
+              "implemented": false,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "exit",
+              "overrides": null,
+              "scope": 27969,
+              "stateMutability": "nonpayable",
+              "virtual": false,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 27966,
+                "name": "ParameterList",
+                "src": "244:2:65"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 27967,
+                "name": "ParameterList",
+                "src": "255:0:65"
+              }
+            ],
+            "id": 27968,
+            "name": "FunctionDefinition",
+            "src": "231:25:65"
+          }
+        ],
+        "id": 27969,
+        "name": "ContractDefinition",
+        "src": "207:51:65"
+      }
+    ],
+    "id": 27970,
+    "name": "SourceUnit",
+    "src": "32:227:65"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.6.12+commit.27d51765.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.6",
+  "updatedAt": "2022-04-04T03:30:07.399Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

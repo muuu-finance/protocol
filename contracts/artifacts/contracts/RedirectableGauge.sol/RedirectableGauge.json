@@ -1,0 +1,125 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "RedirectableGauge",
+  "sourceName": "contracts/RedirectableGauge.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_account",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "claim_rewards",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "deposit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "redirectMap",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_token",
+          "type": "uint256"
+        }
+      ],
+      "name": "reward_tokens",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_receiver",
+          "type": "address"
+        }
+      ],
+      "name": "set_rewards_receiver",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "withdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b50610207806100206000396000f3fe608060405234801561001057600080fd5b506004361061007d5760003560e01c80638fdc44fb1161005b5780638fdc44fb14610112578063b6b55f2514610082578063bdf9811614610138578063e6f1daf2146101725761007d565b80632e1a7d4d1461008257806354c49fe9146100a157806370a08231146100da575b600080fd5b61009f6004803603602081101561009857600080fd5b503561017a565b005b6100be600480360360208110156100b757600080fd5b503561017d565b604080516001600160a01b039092168252519081900360200190f35b610100600480360360208110156100f057600080fd5b50356001600160a01b031661017d565b60408051918252519081900360200190f35b6100be6004803603602081101561012857600080fd5b50356001600160a01b0316610183565b61015e6004803603602081101561014e57600080fd5b50356001600160a01b031661019e565b604080519115158252519081900360200190f35b61009f6101cf565b50565b50600090565b6000602081905290815260409020546001600160a01b031681565b33600090815260208190526040902080546001600160a01b0383166001600160a01b03199091161790556001919050565b56fea26469706673582212204094d16e0f901192c0693c8a07311b906369d6f31d529c46f4ef81fb5560dcd964736f6c634300060c0033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061007d5760003560e01c80638fdc44fb1161005b5780638fdc44fb14610112578063b6b55f2514610082578063bdf9811614610138578063e6f1daf2146101725761007d565b80632e1a7d4d1461008257806354c49fe9146100a157806370a08231146100da575b600080fd5b61009f6004803603602081101561009857600080fd5b503561017a565b005b6100be600480360360208110156100b757600080fd5b503561017d565b604080516001600160a01b039092168252519081900360200190f35b610100600480360360208110156100f057600080fd5b50356001600160a01b031661017d565b60408051918252519081900360200190f35b6100be6004803603602081101561012857600080fd5b50356001600160a01b0316610183565b61015e6004803603602081101561014e57600080fd5b50356001600160a01b031661019e565b604080519115158252519081900360200190f35b61009f6101cf565b50565b50600090565b6000602081905290815260409020546001600160a01b031681565b33600090815260208190526040902080546001600160a01b0383166001600160a01b03199091161790556001919050565b56fea26469706673582212204094d16e0f901192c0693c8a07311b906369d6f31d529c46f4ef81fb5560dcd964736f6c634300060c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
