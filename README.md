@@ -30,6 +30,7 @@ L contracts-*.json // addresses to production contracts for each network
 # Prerequisite
 # - global install truffle
 cd contracts
+yarn compile
 
 # In local development (when using ganache cli)
 # Prerequisite

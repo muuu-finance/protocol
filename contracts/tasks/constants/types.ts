@@ -2,16 +2,21 @@ export type ConstantsType = {
   tokens: {
     KGL: string
     '3Kgl': string
-    DAI: string
-    WETH: string
+    DAI: string // for test / mock
+    WETH: string // for test / mock
   }
   kaglas: {
     votingEscrow: string
     gauge: string
-    feeDistributor: string
-    registry: string
+    feeDistributor: string // for test / mock
+    registry: string // for test / mock
     addressProvider: string
   }
+  pools?: {
+    name: string
+    swap: string
+    gauge: string
+  }[]
   contracts: {
     treasury: {
       address: string
