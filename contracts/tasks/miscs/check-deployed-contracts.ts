@@ -10,17 +10,20 @@ type CheckFunctionArgs = {
   providerOrSigner: SignerWithAddress | ethers.providers.JsonRpcProvider,
 }
 
-const checkERC20Token = async (args: CheckFunctionArgs & { name: string }) => {
-  console.log(`--- [start] ${args.name} ---`)
-  console.log(`> address ... ${args.address}`)
+const checkERC20Token = async (args: CheckFunctionArgs & { name?: string }) => {
+  if (args.name) {
+    console.log(`--- [start] ${args.name} ---`)
+    console.log(`> address ... ${args.address}`)
+  }
   const _instance = await ERC20__factory.connect(args.address, args.providerOrSigner)
   const targets = [
     { label: "name", fn: _instance.name },
     { label: "symbol", fn: _instance.symbol },
     { label: "decimals", fn: _instance.decimals },
+    { label: "totalSupply", fn: _instance.totalSupply },
   ]
   for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
-  console.log(`--- [end] ${args.name} ---`)
+  if (args.name) console.log(`--- [end] ${args.name} ---`)
 }
 
 const checkKaglaVoterProxy = async (args: CheckFunctionArgs) => {
@@ -43,12 +46,9 @@ const checkKaglaVoterProxy = async (args: CheckFunctionArgs) => {
 const checkMuuuToken = async (args: CheckFunctionArgs) => {
   console.log(`--- [start] MuuuToken ---`)
   console.log(`> address ... ${args.address}`)
+  await checkERC20Token(args)
   const _instance = await MuuuToken__factory.connect(args.address, args.providerOrSigner)
   const targets = [
-    { label: "name", fn: _instance.name },
-    { label: "symbol", fn: _instance.symbol },
-    { label: "decimals", fn: _instance.decimals },
-    { label: "totalSupply", fn: _instance.totalSupply },
     { label: "operator", fn: _instance.operator },
     { label: "vekglProxy", fn: _instance.vekglProxy },
     { label: "maxSupply", fn: _instance.maxSupply },
