@@ -2,7 +2,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "ethers";
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { Booster__factory, ERC20__factory, KaglaVoterProxy__factory, MuKglToken__factory, MuuuToken__factory } from "../../types";
+import { Booster__factory, ERC20__factory, KaglaVoterProxy__factory, KglDepositor__factory, MuKglToken__factory, MuuuToken__factory } from "../../types";
 import { TaskUtils } from "../utils";
 
 type CheckFunctionArgs = {
@@ -107,6 +107,25 @@ const checkMuKglToken = async (args: CheckFunctionArgs) => {
   console.log(`--- [end] MuKglToken ---`)
 }
 
+const checkKglDepositor = async (args: CheckFunctionArgs) => {
+  console.log(`--- [start] KglDepositor ---`)
+  console.log(`> address ... ${args.address}`)
+  const _instance = await KglDepositor__factory.connect(args.address, args.providerOrSigner)
+  const targets = [
+    { label: "kgl", fn: _instance.kgl },
+    { label: "votingEscrow", fn: _instance.votingEscrow },
+    { label: "lockIncentive", fn: _instance.lockIncentive },
+    { label: "FEE_DENOMINATOR", fn: _instance.FEE_DENOMINATOR },
+    { label: "feeManager", fn: _instance.feeManager },
+    { label: "staker", fn: _instance.staker },
+    { label: "minter", fn: _instance.minter },
+    { label: "incentiveKgl", fn: _instance.incentiveKgl },
+    { label: "unlockTime", fn: _instance.unlockTime },
+  ]
+  for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
+  console.log(`--- [end] KglDepositor ---`)
+}
+
 task('check-deployed-contracts', 'Check deployed contracts').setAction(
   async ({}, hre: HardhatRuntimeEnvironment) => {
     const { network, ethers } = hre
@@ -135,6 +154,11 @@ task('check-deployed-contracts', 'Check deployed contracts').setAction(
 
     await checkMuKglToken({
       address: system.muKgl,
+      providerOrSigner: ethers.provider
+    })
+
+    await checkKglDepositor({
+      address: system.kglDepositor,
       providerOrSigner: ethers.provider
     })
 
