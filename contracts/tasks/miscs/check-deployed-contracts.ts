@@ -2,7 +2,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "ethers";
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { Booster__factory, ERC20__factory, MuuuToken__factory } from "../../types";
+import { Booster__factory, ERC20__factory, KaglaVoterProxy__factory, MuuuToken__factory } from "../../types";
 import { TaskUtils } from "../utils";
 
 type CheckFunctionArgs = {
@@ -21,6 +21,23 @@ const checkERC20Token = async (args: CheckFunctionArgs & { name: string }) => {
   ]
   for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
   console.log(`--- [end] ${args.name} ---`)
+}
+
+const checkKaglaVoterProxy = async (args: CheckFunctionArgs) => {
+  console.log(`--- [start] KaglaVoterProxy ---`)
+  console.log(`> address ... ${args.address}`)
+  const _instance = await KaglaVoterProxy__factory.connect(args.address, args.providerOrSigner)
+  const targets = [
+    { label: "name", fn: _instance.getName },
+    { label: "kgl", fn: _instance.kgl },
+    { label: "votingEscrow", fn: _instance.votingEscrow },
+    { label: "gaugeController", fn: _instance.gaugeController },
+    { label: "tokenMinter", fn: _instance.tokenMinter },
+    { label: "operator", fn: _instance.operator },
+    { label: "depositor", fn: _instance.depositor },
+  ]
+  for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
+  console.log(`--- [end] KaglaVoterProxy ---`)
 }
 
 const checkMuuuToken = async (args: CheckFunctionArgs) => {
@@ -89,6 +106,11 @@ task('check-deployed-contracts', 'Check deployed contracts').setAction(
 
     const { system } = TaskUtils.loadDeployedContractAddresses({
       network: network.name,
+    })
+
+    await checkKaglaVoterProxy({
+      address: system.voteProxy,
+      providerOrSigner: ethers.provider
     })
 
     await checkMuuuToken({
