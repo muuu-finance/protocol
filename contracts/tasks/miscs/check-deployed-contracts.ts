@@ -1,17 +1,52 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { BigNumber, ethers } from "ethers";
 import { task } from "hardhat/config";
+import { ContractType } from "hardhat/internal/hardhat-network/stack-traces/model";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { Booster__factory } from "../../types";
-import { TaskUtils } from "../utils";
+import { Booster__factory, ERC20__factory, MuuuToken__factory } from "../../types";
+import { ContractKeys, TaskUtils } from "../utils";
 
 
 type CheckFunctionArgs = {
   address: string,
   providerOrSigner: SignerWithAddress | ethers.providers.JsonRpcProvider,
 }
+
+const checkERC20Token = async (args: CheckFunctionArgs & { name: string }) => {
+  console.log(`--- [start] ${args.name} ---`)
+  console.log(`> address ... ${args.address}`)
+  const _instance = await ERC20__factory.connect(args.address, args.providerOrSigner)
+  const targets = [
+    { label: "name", fn: _instance.name },
+    { label: "symbol", fn: _instance.symbol },
+    { label: "decimals", fn: _instance.decimals },
+  ]
+  for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
+  console.log(`--- [end] ${args.name} ---`)
+}
+
+const checkMuuuToken = async (args: CheckFunctionArgs) => {
+  console.log(`--- [start] MuuuToken ---`)
+  console.log(`> address ... ${args.address}`)
+  const _instance = await MuuuToken__factory.connect(args.address, args.providerOrSigner)
+  const targets = [
+    { label: "name", fn: _instance.name },
+    { label: "symbol", fn: _instance.symbol },
+    { label: "decimals", fn: _instance.decimals },
+    { label: "totalSupply", fn: _instance.totalSupply },
+    { label: "operator", fn: _instance.operator },
+    { label: "vekglProxy", fn: _instance.vekglProxy },
+    { label: "maxSupply", fn: _instance.maxSupply },
+    { label: "totalCliffs", fn: _instance.totalCliffs },
+    { label: "reductionPerCliff", fn: _instance.reductionPerCliff },
+  ]
+  for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
+  console.log(`--- [end] MuuuToken ---`)
+}
+
 const checkBooster = async (args: CheckFunctionArgs) => {
   console.log(`--- [start] Booster ---`)
+  console.log(`> address ... ${args.address}`)
   const _instance = await Booster__factory.connect(args.address, args.providerOrSigner)
   const targets = [
     { label: "kgl", fn: _instance.kgl },
@@ -56,6 +91,11 @@ task('check-deployed-contracts', 'Check deployed contracts').setAction(
 
     const { system } = TaskUtils.loadDeployedContractAddresses({
       network: network.name,
+    })
+
+    await checkMuuuToken({
+      address: system.muuu,
+      providerOrSigner: ethers.provider
     })
 
     await checkBooster({
