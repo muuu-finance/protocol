@@ -1,11 +1,9 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { task } from "hardhat/config";
-import { ContractType } from "hardhat/internal/hardhat-network/stack-traces/model";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { Booster__factory, ERC20__factory, MuuuToken__factory } from "../../types";
-import { ContractKeys, TaskUtils } from "../utils";
-
+import { TaskUtils } from "../utils";
 
 type CheckFunctionArgs = {
   address: string,
