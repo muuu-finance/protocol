@@ -2,7 +2,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "ethers";
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { Booster__factory, ERC20__factory, KaglaVoterProxy__factory, MuuuToken__factory } from "../../types";
+import { Booster__factory, ERC20__factory, KaglaVoterProxy__factory, MuKglToken__factory, MuuuToken__factory } from "../../types";
 import { TaskUtils } from "../utils";
 
 type CheckFunctionArgs = {
@@ -97,6 +97,16 @@ const checkBooster = async (args: CheckFunctionArgs) => {
   console.log(`--- [end] Booster ---`)
 }
 
+const checkMuKglToken = async (args: CheckFunctionArgs) => {
+  console.log(`--- [start] MuKglToken ---`)
+  console.log(`> address ... ${args.address}`)
+  await checkERC20Token(args)
+  const _instance = await MuKglToken__factory.connect(args.address, args.providerOrSigner)
+  const targets = [ { label: "operator", fn: _instance.operator } ]
+  for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
+  console.log(`--- [end] MuKglToken ---`)
+}
+
 task('check-deployed-contracts', 'Check deployed contracts').setAction(
   async ({}, hre: HardhatRuntimeEnvironment) => {
     const { network, ethers } = hre
@@ -120,6 +130,11 @@ task('check-deployed-contracts', 'Check deployed contracts').setAction(
 
     await checkBooster({
       address: system.booster,
+      providerOrSigner: ethers.provider
+    })
+
+    await checkMuKglToken({
+      address: system.muKgl,
       providerOrSigner: ethers.provider
     })
 
