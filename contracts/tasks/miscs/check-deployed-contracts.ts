@@ -2,7 +2,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "ethers";
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { BaseRewardPool__factory, Booster__factory, ERC20__factory, KaglaVoterProxy__factory, KglDepositor__factory, MuKglToken__factory, MuuuRewardPool__factory, MuuuToken__factory, PoolManager__factory } from "../../types";
+import { ArbitratorVault__factory, BaseRewardPool__factory, Booster__factory, ERC20__factory, KaglaVoterProxy__factory, KglDepositor__factory, MuKglToken__factory, MuuuRewardPool__factory, MuuuToken__factory, PoolManager__factory } from "../../types";
 import { TaskUtils } from "../utils";
 
 type CheckFunctionArgs = {
@@ -206,6 +206,18 @@ const checkPoolManager = async (args: CheckFunctionArgs) => {
   console.log(`--- [end] PoolManager ---`)
 }
 
+const checkArbitratorVault = async (args: CheckFunctionArgs) => {
+  console.log(`--- [start] ArbitratorVault ---`)
+  console.log(`> address ... ${args.address}`)
+  const _instance = await ArbitratorVault__factory.connect(args.address, args.providerOrSigner)
+  const targets = [
+    { label: "operator", fn: _instance.operator },
+    { label: "depositor", fn: _instance.depositor },
+  ]
+  for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
+  console.log(`--- [end] ArbitratorVault ---`)
+}
+
 task('check-deployed-contracts', 'Check deployed contracts').setAction(
   async ({}, hre: HardhatRuntimeEnvironment) => {
     const { network, ethers } = hre
@@ -254,6 +266,11 @@ task('check-deployed-contracts', 'Check deployed contracts').setAction(
     })
 
     await checkPoolManager({
+      address: system.poolManager,
+      providerOrSigner: ethers.provider,
+    })
+
+    await checkArbitratorVault({
       address: system.poolManager,
       providerOrSigner: ethers.provider,
     })
