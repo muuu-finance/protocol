@@ -2,7 +2,7 @@
   "scripts": {
     "hardhat": "npx hardhat",
     "truffle": "npx truffle",
-    "compile": "yarn hardhat compile && yarn truffle compile",
+    "compile": "yarn truffle compile && SKIP_LOAD=true yarn hardhat compile",
     "deploy": "yarn hardhat all-required-developments",
     "deploy:local": "yarn deploy --network localhost",
     "deploy:rinkeby": "yarn deploy --network rinkeby",

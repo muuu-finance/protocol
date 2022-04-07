@@ -10,6 +10,19 @@ const {
   getEthereumNetworkUrl,
 } = require('./utils/config_utils')
 
+// Prevent to load scripts before compilation and typechain
+const SKIP_LOAD = process.env.SKIP_LOAD === 'true'
+if (!SKIP_LOAD) {
+  const taskPaths = ['series', 'deploys', 'migrations', 'samples']
+  taskPaths.forEach((folder) => {
+    const tasksPath = path.join(__dirname, 'tasks', folder)
+    fs.readdirSync(tasksPath)
+      .filter((_path) => _path.includes('.ts'))
+      .forEach((task) => {
+        require(`${tasksPath}/${task}`)
+      })
+  })
+}
 // load tasks
 const taskPaths = ['series', 'deploys', 'migrations', 'miscs', 'samples']
 taskPaths.forEach((folder) => {
@@ -65,10 +78,10 @@ const testAccounts: { secretKey: string; balance: BigNumber }[] = [
   },
 ]
 
-const AstarNetworks = ["astar", "shiden", "shibuya"] as const
-const EthereumNetworks = ["rinkeby", "kovan"] as const
+const AstarNetworks = ['astar', 'shiden', 'shibuya'] as const
+const EthereumNetworks = ['rinkeby', 'kovan'] as const
 type tNetwork = typeof AstarNetworks[number] | typeof EthereumNetworks[number]
-const GWEI = 1000 * 1000 * 1000;
+const GWEI = 1000 * 1000 * 1000
 const gasPrices: { [key in tNetwork]: number } = {
   rinkeby: 3 * GWEI,
   kovan: 3 * GWEI,
