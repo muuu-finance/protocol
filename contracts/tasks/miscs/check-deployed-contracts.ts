@@ -2,7 +2,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "ethers";
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { BaseRewardPool__factory, Booster__factory, ERC20__factory, KaglaVoterProxy__factory, KglDepositor__factory, MuKglToken__factory, MuuuToken__factory } from "../../types";
+import { BaseRewardPool__factory, Booster__factory, ERC20__factory, KaglaVoterProxy__factory, KglDepositor__factory, MuKglToken__factory, MuuuRewardPool__factory, MuuuToken__factory, PoolManager__factory } from "../../types";
 import { TaskUtils } from "../utils";
 
 type CheckFunctionArgs = {
@@ -158,6 +158,54 @@ const checkBaseRewardPool = async (args: CheckFunctionArgs & { name: string }) =
   console.log(`--- [end] ${args.name} ---`)
 }
 
+const checkMuuuRewardPool = async (args: CheckFunctionArgs) => {
+  console.log(`--- [start] MuuuRewardPool ---`)
+  console.log(`> address ... ${args.address}`)
+  const _instance = await MuuuRewardPool__factory.connect(args.address, args.providerOrSigner)
+  const targets = [
+    { label: "rewardToken", fn: _instance.rewardToken },
+    { label: "stakingToken", fn: _instance.stakingToken },
+    { label: "duration", fn: _instance.duration },
+    { label: "FEE_DENOMINATOR", fn: _instance.FEE_DENOMINATOR },
+    { label: "operator", fn: _instance.operator },
+    { label: "kglDeposits", fn: _instance.kglDeposits },
+    { label: "muKglRewards", fn: _instance.muKglRewards },
+    { label: "muKglToken", fn: _instance.muKglToken },
+    { label: "rewardManager", fn: _instance.rewardManager },
+    { label: "periodFinish", fn: _instance.periodFinish },
+    { label: "rewardRate", fn: _instance.rewardRate },
+    { label: "lastUpdateTime", fn: _instance.lastUpdateTime },
+    { label: "rewardPerTokenStored", fn: _instance.rewardPerTokenStored },
+    { label: "queuedRewards", fn: _instance.queuedRewards },
+    { label: "currentRewards", fn: _instance.currentRewards },
+    { label: "historicalRewards", fn: _instance.historicalRewards },
+    { label: "newRewardRatio", fn: _instance.newRewardRatio },
+    { label: "totalSupply", fn: _instance.totalSupply },
+    { label: "lastTimeRewardApplicable", fn: _instance.lastTimeRewardApplicable },
+    { label: "rewardPerToken", fn: _instance.rewardPerToken },
+  ]
+  for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
+  const _extraRewardsLength = Number(await _instance.extraRewardsLength())
+  console.log(`extraRewardsLength ... ${_extraRewardsLength}`)
+  if (_extraRewardsLength > 0) {
+    for (let i = 0; i < _extraRewardsLength; i++) console.log(`extraRewards:${i} ... ${await _instance.extraRewards(i)}`)
+  }
+  console.log(`--- [end] MuuuRewardPool ---`)
+}
+
+const checkPoolManager = async (args: CheckFunctionArgs) => {
+  console.log(`--- [start] PoolManager ---`)
+  console.log(`> address ... ${args.address}`)
+  const _instance = await PoolManager__factory.connect(args.address, args.providerOrSigner)
+  const targets = [
+    { label: "operator", fn: _instance.operator },
+    { label: "pools", fn: _instance.pools },
+    { label: "addressProvider", fn: _instance.addressProvider },
+  ]
+  for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
+  console.log(`--- [end] PoolManager ---`)
+}
+
 task('check-deployed-contracts', 'Check deployed contracts').setAction(
   async ({}, hre: HardhatRuntimeEnvironment) => {
     const { network, ethers } = hre
@@ -198,6 +246,16 @@ task('check-deployed-contracts', 'Check deployed contracts').setAction(
       address: system.muKglRewards,
       providerOrSigner: ethers.provider,
       name: "muKglRewards"
+    })
+
+    await checkMuuuRewardPool({
+      address: system.muuuRewards,
+      providerOrSigner: ethers.provider,
+    })
+
+    await checkPoolManager({
+      address: system.poolManager,
+      providerOrSigner: ethers.provider,
     })
 
     console.log(`------- END -------`)
