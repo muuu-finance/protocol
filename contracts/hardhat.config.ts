@@ -24,6 +24,15 @@ if (!SKIP_LOAD) {
   })
 }
 // load tasks
+const taskPaths = ['series', 'deploys', 'migrations', 'miscs', 'samples']
+taskPaths.forEach((folder) => {
+  const tasksPath = path.join(__dirname, 'tasks', folder)
+  fs.readdirSync(tasksPath)
+    .filter((_path) => _path.includes('.ts'))
+    .forEach((task) => {
+      require(`${tasksPath}/${task}`)
+    })
+})
 
 // define accounts for local
 const testAccounts: { secretKey: string; balance: BigNumber }[] = [
