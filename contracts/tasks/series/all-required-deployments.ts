@@ -20,24 +20,29 @@ import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 // Functions
 // -- Procedures
-const _transferOwnershipInVoterProxy = async ({
+const _transferOwnershipAndSetOperatorInVoterProxy = async ({
   signer,
   adminAddress,
-  kaglaVoterProxyAddress,
+  addresses,
 }: {
   signer: SignerWithAddress
   adminAddress: string
-  kaglaVoterProxyAddress: string
+  addresses: {
+    booster: string
+    kaglaVoterProxy: string
+  }
 }) => {
   const voterProxy = KaglaVoterProxy__factory.connect(
-    kaglaVoterProxyAddress,
+    addresses.kaglaVoterProxy,
     signer,
   )
   const currentOwner = await voterProxy.owner()
   if (currentOwner != adminAddress) {
     console.log('> KaglaVoterProxy#transferOwnership')
-    await voterProxy.transferOwnership(adminAddress, { from: currentOwner })
+    await (await voterProxy.transferOwnership(adminAddress, { from: currentOwner })).wait()
   }
+  console.log('> KaglaVoterProxy#setOperator')
+  await (await voterProxy.setOperator(addresses.booster)).wait()
 }
 
 const _mintMuuuToken = async ({
@@ -463,10 +468,13 @@ task(
       )
 
       // contracts/migrations/1_deploy_contracts.js#L211-220
-      await _transferOwnershipInVoterProxy({
+      await _transferOwnershipAndSetOperatorInVoterProxy({
         signer,
         adminAddress,
-        kaglaVoterProxyAddress: kaglaVoterProxyAddress,
+        addresses: {
+          booster: boosterAddress,
+          kaglaVoterProxy: kaglaVoterProxyAddress,
+        }
       })
       await _mintMuuuToken({
         signer,
