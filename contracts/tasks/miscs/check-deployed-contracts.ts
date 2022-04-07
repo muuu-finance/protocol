@@ -2,7 +2,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "ethers";
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { ArbitratorVault__factory, BaseRewardPool__factory, Booster__factory, ERC20__factory, KaglaVoterProxy__factory, KglDepositor__factory, MuKglToken__factory, MuuuRewardPool__factory, MuuuToken__factory, PoolManager__factory } from "../../types";
+import { ArbitratorVault__factory, BaseRewardPool__factory, Booster__factory, ERC20__factory, KaglaVoterProxy__factory, KglDepositor__factory, MuKglToken__factory, MuuuLockerV2__factory, MuuuRewardPool__factory, MuuuToken__factory, PoolManager__factory } from "../../types";
 import { TaskUtils } from "../utils";
 
 type CheckFunctionArgs = {
@@ -218,6 +218,41 @@ const checkArbitratorVault = async (args: CheckFunctionArgs) => {
   console.log(`--- [end] ArbitratorVault ---`)
 }
 
+const checkMuuuLockerV2 = async (args: CheckFunctionArgs) => {
+  console.log(`--- [start] MuuuLockerV2 ---`)
+  console.log(`> address ... ${args.address}`)
+  const _instance = await MuuuLockerV2__factory.connect(args.address, args.providerOrSigner)
+  const targets = [
+    { label: "stakingToken", fn: _instance.stakingToken },
+    { label: "muKgl", fn: _instance.muKgl },
+    { label: "rewardsDuration", fn: _instance.rewardsDuration },
+    { label: "lockDuration", fn: _instance.lockDuration },
+    { label: "lockedSupply", fn: _instance.lockedSupply },
+    { label: "boostedSupply", fn: _instance.boostedSupply },
+    { label: "boostPayment", fn: _instance.boostPayment },
+    { label: "maximumBoostPayment", fn: _instance.maximumBoostPayment },
+    { label: "boostRate", fn: _instance.boostRate },
+    { label: "nextMaximumBoostPayment", fn: _instance.nextMaximumBoostPayment },
+    { label: "nextBoostRate", fn: _instance.nextBoostRate },
+    { label: "denominator", fn: _instance.denominator },
+    { label: "minimumStake", fn: _instance.minimumStake },
+    { label: "maximumStake", fn: _instance.maximumStake },
+    { label: "stakingProxy", fn: _instance.stakingProxy },
+    { label: "mukglStaking", fn: _instance.mukglStaking },
+    { label: "stakeOffsetOnLock", fn: _instance.stakeOffsetOnLock },
+    { label: "kickRewardPerEpoch", fn: _instance.kickRewardPerEpoch },
+    { label: "kickRewardEpochDelay", fn: _instance.kickRewardEpochDelay },
+    { label: "name", fn: _instance.name },
+    { label: "symbol", fn: _instance.symbol },
+    { label: "decimals", fn: _instance.decimals },
+    { label: "version", fn: _instance.version },
+    { label: "totalSupply", fn: _instance.totalSupply },
+    { label: "epochCount", fn: _instance.epochCount },
+  ]
+  for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
+  console.log(`--- [end] MuuuLockerV2 ---`)
+}
+
 task('check-deployed-contracts', 'Check deployed contracts').setAction(
   async ({}, hre: HardhatRuntimeEnvironment) => {
     const { network, ethers } = hre
@@ -271,7 +306,12 @@ task('check-deployed-contracts', 'Check deployed contracts').setAction(
     })
 
     await checkArbitratorVault({
-      address: system.poolManager,
+      address: system.arbitratorVault,
+      providerOrSigner: ethers.provider,
+    })
+
+    await checkMuuuLockerV2({
+      address: system.muuuLockerV2,
       providerOrSigner: ethers.provider,
     })
 
