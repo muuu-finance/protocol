@@ -56,11 +56,11 @@ export const shiden: ConstantsType = {
       "0xE5b0710729AC8126C48afff9AB857DCC09886fEc"
     ],
     amounts: [
-      ethers.utils.parseEther("100000.0").toString(),
+      ethers.utils.parseEther("1000000.0").toString(),
+      ethers.utils.parseEther("500000.0").toString(),
+      ethers.utils.parseEther("300000.0").toString(),
+      ethers.utils.parseEther("150000.0").toString(),
       ethers.utils.parseEther("50000.0").toString(),
-      ethers.utils.parseEther("30000.0").toString(),
-      ethers.utils.parseEther("15000.0").toString(),
-      ethers.utils.parseEther("5000.0").toString(),
     ],
   },
 }
