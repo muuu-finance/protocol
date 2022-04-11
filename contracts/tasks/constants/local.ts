@@ -1,3 +1,4 @@
+import { ethers } from 'ethers'
 import jsonfile from 'jsonfile'
 import { ConstantsType } from './types'
 const { vested } = jsonfile.readFileSync('./migrations/distro.json')
@@ -14,6 +15,7 @@ export const local: ConstantsType = {
     // need overrides by loading json
     votingEscrow: '',
     gauge: '',
+    minter: ethers.constants.AddressZero, // no deployed mock
     feeDistributor: '',
     registry: '',
     addressProvider: '',

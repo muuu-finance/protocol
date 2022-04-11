@@ -10,6 +10,7 @@ export const astar: ConstantsType = {
   kaglas: {
     votingEscrow: '0xDFe3C797977a0B40C90E7c2869407327a4208654',
     gauge: '0xBEDcfA1EB6cf39dd829207147692C0eaeCe32065',
+    minter: "0x210c5BE93182d02A666392996f62244001e6E04d",
     feeDistributor: '', // not used
     registry: '', // not used
     addressProvider: '0x762b149eA23070d6F021F70CB8877d2248278855',
