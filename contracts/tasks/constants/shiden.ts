@@ -4,16 +4,16 @@ import { ConstantsType } from './types'
 export const shiden: ConstantsType = {
   tokens: {
     KGL: '0x039F7Ef55595923C78c2c3bBa41625eBa6F667b9',
-    '3Kgl': '',
-    DAI: '',
-    WETH: '',
+    '3Kgl': '', // only use when using mock
+    DAI: '', // only use when using mock
+    WETH: '', // only use when using mock
   },
   kaglas: {
     votingEscrow: '0xDFe3C797977a0B40C90E7c2869407327a4208654',
     gauge: '0xBEDcfA1EB6cf39dd829207147692C0eaeCe32065',
     minter: "0x5dE0CF708F7753F176F1d23229c0EE50a23872f7",
-    feeDistributor: '',
-    registry: '',
+    feeDistributor: '', // only use when using mock
+    registry: '', // only use when using mock
     addressProvider: '0x762b149eA23070d6F021F70CB8877d2248278855',
   },
   pools: [
