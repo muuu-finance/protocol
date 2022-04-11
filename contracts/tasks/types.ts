@@ -11,7 +11,7 @@ export type DeployedContractAddresses = {
     rewards: { [key in string]: string }[]
     name: string
     id: number
-  }
+  }[]
 }
 
 export type DeployedMockAddresses = {
