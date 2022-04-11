@@ -8,6 +8,7 @@ export type ConstantsType = {
   kaglas: {
     votingEscrow: string
     gauge: string
+    minter: string
     feeDistributor: string // for test / mock
     registry: string // for test / mock
     addressProvider: string
