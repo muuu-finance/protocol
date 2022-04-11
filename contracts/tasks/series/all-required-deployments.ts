@@ -7,6 +7,7 @@ import {
   Booster__factory,
   ClaimZap__factory,
   KaglaVoterProxy__factory,
+  KglDepositor__factory,
   MerkleAirdropFactory__factory,
   MerkleAirdrop__factory,
   MuKglToken__factory,
