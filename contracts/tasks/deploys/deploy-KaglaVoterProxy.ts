@@ -55,7 +55,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         kgl: constants.tokens.KGL,
         votingEscrow: constants.kaglas.votingEscrow,
         gaugeController: constants.kaglas.gauge,
-        tokenMinter: ethers.constants.AddressZero, // TODO
+        tokenMinter: constants.kaglas.minter
       })
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,
