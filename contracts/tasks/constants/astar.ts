@@ -2,18 +2,18 @@ import { ConstantsType } from './types'
 
 export const astar: ConstantsType = {
   tokens: {
-    KGL: '0x039F7Ef55595923C78c2c3bBa41625eBa6F667b9',
+    KGL: '0x257f1a047948f73158DaDd03eB84b34498bCDc60',
     '3Kgl': '', // not used
     DAI: '', // not used
     WETH: '', // not used
   },
   kaglas: {
-    votingEscrow: '0xDFe3C797977a0B40C90E7c2869407327a4208654',
-    gauge: '0xBEDcfA1EB6cf39dd829207147692C0eaeCe32065',
+    votingEscrow: '', // need
+    gauge: '0x1f857fB3bCb72F03cB210f62602fD45eE1caeBdf',
     minter: "0x210c5BE93182d02A666392996f62244001e6E04d",
     feeDistributor: '', // not used
     registry: '', // not used
-    addressProvider: '0x762b149eA23070d6F021F70CB8877d2248278855',
+    addressProvider: '0x5a0ad8337E5C6895b3893E80c8333859DAcf7c01',
   },
   pools: [
     {
