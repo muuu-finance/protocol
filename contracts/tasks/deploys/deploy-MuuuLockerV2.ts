@@ -1,6 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployMuuuLockerV2 } from '../../helpers/contracts-deploy-helpers'
+import { loadConstants } from '../constants'
 import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.MuuuLockerV2
@@ -11,16 +12,22 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
     'useAlreadyDeployed',
     'Use already deployed contracts, get addresses from json to have deployed contract addresses',
   )
+  .addFlag(
+    'useMockContracts',
+    'Use mock contracts, get addresses from json to mock contract addresses',
+  )
   .setAction(
     async (
       {
         deployerAddress,
         inMultiDeploymentFlow,
         useAlreadyDeployed,
+        useMockContracts,
       }: {
         deployerAddress: string
         inMultiDeploymentFlow: boolean
         useAlreadyDeployed: boolean
+        useMockContracts: boolean
       },
       hre: HardhatRuntimeEnvironment,
     ) => {
@@ -34,10 +41,23 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         console.log(`useAlreadyDeployed flag: ${useAlreadyDeployed}`)
       }
 
+      // get constants / addresses / parameters
+      const deployeds = TaskUtils.loadDeployedContractAddresses({
+        network: network.name,
+      })
+      const constants = loadConstants({
+        network: network.name,
+        isUseMocks: useMockContracts,
+      })
+
       console.log(`> start deploy ${CONTRACT_KEY}`)
 
       const instance = await deployMuuuLockerV2({
         deployer: _deployer,
+        stakingToken: deployeds.system.muuu,
+        muKgl: deployeds.system.muKgl,
+        boostPayment: constants.contracts.treasury.address,
+        mukglStaking: deployeds.system.muKglRewards,
       })
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,
