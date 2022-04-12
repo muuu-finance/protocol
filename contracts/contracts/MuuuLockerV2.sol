@@ -61,8 +61,8 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
   }
 
   //token constants
-  IERC20 public constant stakingToken = IERC20(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B); //muuu
-  address public constant muKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
+  IERC20 public stakingToken; // muuu
+  address public muKgl;
 
   //rewards
   address[] public rewardTokens;
@@ -91,7 +91,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
   mapping(address => LockedBalance[]) public userLocks;
 
   //boost
-  address public boostPayment = address(0x1389388d01708118b497f59521f6943Be2541bb7);
+  address public boostPayment; // Treasury Vault
   uint256 public maximumBoostPayment = 0;
   uint256 public boostRate = 10000;
   uint256 public nextMaximumBoostPayment = 0;
@@ -102,7 +102,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
   uint256 public minimumStake = 10000;
   uint256 public maximumStake = 10000;
   address public stakingProxy;
-  address public constant mukglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
+  address public mukglStaking; // muKglRewards
   uint256 public constant stakeOffsetOnLock = 500; //allow broader range for staking when depositing
 
   //management
@@ -119,10 +119,20 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
 
   /* ========== CONSTRUCTOR ========== */
 
-  constructor() public Ownable() {
+  constructor(
+    IERC20 _stakingToken,
+    address _muKgl,
+    address _boostPayment,
+    address _mukglStaking
+  ) public Ownable() {
     _name = "Vote Locked Muuu Token";
     _symbol = "vlMUUU";
     _decimals = 18;
+
+    stakingToken = _stakingToken;
+    muKgl = _muKgl;
+    boostPayment = _boostPayment;
+    mukglStaking = _mukglStaking;
 
     uint256 currentEpoch = block.timestamp.div(rewardsDuration).mul(rewardsDuration);
     epochs.push(Epoch({ supply: 0, date: uint32(currentEpoch) }));

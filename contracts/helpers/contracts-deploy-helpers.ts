@@ -242,9 +242,25 @@ export const deployArbitratorVault = async ({
     ContractKeys.ArbitratorVault,
   )
 
-export const deployMuuuLockerV2 = async ({ deployer }: DeployCommonArgs) =>
+export const deployMuuuLockerV2 = async ({
+  deployer,
+  stakingToken,
+  muKgl,
+  boostPayment,
+  mukglStaking,
+}: DeployCommonArgs & {
+  stakingToken: string
+  muKgl: string
+  boostPayment: string
+  mukglStaking: string
+}) =>
   withSaveAndVerify(
-    await new MuuuLockerV2__factory(deployer).deploy(),
+    await new MuuuLockerV2__factory(deployer).deploy(
+      stakingToken,
+      muKgl,
+      boostPayment,
+      mukglStaking,
+    ),
     ContractKeys.MuuuLockerV2,
   )
 

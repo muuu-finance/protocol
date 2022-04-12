@@ -20,7 +20,7 @@ export type ConstantsType = {
   }[]
   contracts: {
     treasury: {
-      address: string
+      address: string // TreasuryFunds
     }
     muKglRewards: {
       uid: number
