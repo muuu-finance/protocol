@@ -61,7 +61,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
   }
 
   //token constants
-  IERC20 public stakingToken; //muuu
+  IERC20 public stakingToken; // muuu
   address public muKgl;
 
   //rewards
