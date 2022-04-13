@@ -26,6 +26,8 @@ contract Booster is Ownable {
   uint256 public platformFee = 0; //possible fee to build treasury
   uint256 public constant MaxFees = 2000;
   uint256 public constant FEE_DENOMINATOR = 10000;
+  uint256 public rewardMultiplier = 8250; // 0.0825
+  uint256 public constant MULTIPLIER_DENOMINATOR = 100000;
 
   address public feeManager;
   address public poolManager;
@@ -190,6 +192,11 @@ contract Booster is Ownable {
   function setRegistry(address _registry) external {
     require(msg.sender == owner(), "!auth");
     registry = _registry;
+  }
+
+  function setRewardMultiplier(uint256 _rewardMultiplier) external onlyOwner {
+    require(_rewardMultiplier > 0 &&  _rewardMultiplier <= MULTIPLIER_DENOMINATOR , "rewardMultiplier should be 0-100000");
+    rewardMultiplier = _rewardMultiplier;
   }
 
   /// END SETTER SECTION ///
@@ -512,6 +519,7 @@ contract Booster is Ownable {
     address rewardContract = poolInfo[_pid].kglRewards;
     require(msg.sender == rewardContract || msg.sender == lockRewards, "!auth");
 
+    _amount = _amount.mul(rewardMultiplier).div(MULTIPLIER_DENOMINATOR);
     //mint reward tokens
     ITokenMinter(minter).mint(_address, _amount);
 
