@@ -14,8 +14,6 @@ contract Booster is Ownable {
   using SafeMath for uint256;
 
   address public kgl;
-  // TODO: extract
-  // address public constant registry = address(0x0000000022D53366457F9d5E68Ec105046FC4383);
   uint256 public constant distributionAddressId = 4;
   address public constant voteOwnership = address(0xE478de485ad2fe566d49342Cbd03E49ed7DB3356);
   address public constant voteParameter = address(0xBCfF8B0b9419b9A88c44546519b1e909cF330399);
