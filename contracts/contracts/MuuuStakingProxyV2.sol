@@ -32,15 +32,15 @@ contract MuuuStakingProxyV2 {
   using Address for address;
   using SafeMath for uint256;
 
-  //tokens
-  address public constant kgl = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
-  address public constant muuu = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
-  address public constant muKgl = address(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
+  // tokens' addreesses
+  address public immutable kgl;
+  address public immutable muuu;
+  address public immutable muKgl;
 
-  //muuu addresses
-  address public constant muuuStaking = address(0xCF50b810E57Ac33B91dCF525C6ddd9881B139332);
-  address public constant muKglStaking = address(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
-  address public constant kglDeposit = address(0x8014595F2AB54cD7c604B00E9fb932176fDc86Ae);
+  // muuu addresses
+  address public immutable muuuStaking;
+  address public immutable muKglStaking;
+  address public immutable kglDeposit;
   uint256 public constant denominator = 10000;
 
   address public immutable rewards;
@@ -55,10 +55,24 @@ contract MuuuStakingProxyV2 {
   event AddDistributor(address indexed _distro, bool _valid);
   event RewardsDistributed(address indexed token, uint256 amount);
 
-  constructor(address _rewards) public {
+  constructor(
+    address _rewards,
+    address _kgl,
+    address _muuu,
+    address _muKgl,
+    address _muuuStaking,
+    address _muKglStaking,
+    address _kglDeposit
+  ) public {
     rewards = _rewards;
     owner = msg.sender;
     distributors[msg.sender] = true;
+    kgl = _kgl;
+    muuu = _muuu;
+    muKgl = _muKgl;
+    muuuStaking = _muuuStaking;
+    muKglStaking = _muKglStaking;
+    kglDeposit = _kglDeposit;
   }
 
   function setPendingOwner(address _po) external {

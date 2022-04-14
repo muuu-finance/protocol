@@ -11,6 +11,7 @@ import {
   MuKglToken__factory,
   MuuuLockerV2__factory,
   MuuuRewardPool__factory,
+  MuuuStakingProxyV2__factory,
   MuuuToken__factory,
   PoolManager__factory,
   RewardFactory__factory,
@@ -262,6 +263,37 @@ export const deployMuuuLockerV2 = async ({
       mukglStaking,
     ),
     ContractKeys.MuuuLockerV2,
+  )
+
+export const deployMuuuStakingProxyV2 = async ({
+  deployer,
+  rewards,
+  kgl,
+  muuu,
+  muKgl,
+  muuuStaking,
+  muKglStaking,
+  kglDeposit,
+}: DeployCommonArgs & {
+  rewards: string
+  kgl: string
+  muuu: string
+  muKgl: string
+  muuuStaking: string
+  muKglStaking: string
+  kglDeposit: string
+}) =>
+  withSaveAndVerify(
+    await new MuuuStakingProxyV2__factory(deployer).deploy(
+      rewards,
+      kgl,
+      muuu,
+      muKgl,
+      muuuStaking,
+      muKglStaking,
+      kglDeposit,
+    ),
+    ContractKeys.MuuuStakingProxyV2,
   )
 
 export const deployClaimZap = async ({

@@ -32,15 +32,24 @@ L contracts-*.json // addresses to production contracts for each network
 cd contracts
 yarn compile
 
-# In local development (when using ganache cli)
+# In local development with mocks (with created local network)
 # Prerequisite
 # - install ganache cli & launch
+#   - ex: ganache / npx hardhat node
 yarn deploy:mocks-token:local
 yarn deploy:mocks-kagla:local
-yarn deploy:local
+yarn deploy:with-mocks:local
+yarn deploy-locker:with-mocks:local
+# Or
+yarn deploy:full:local # exec all commands as mentioned above
 
 # In global network
 cp .env.template .env
 # & add params to .env
-truffle migrate --network shibuya
+# update environments parameters in contracts/tasks/constants/...
+yarn deploy:Nnnn
+yarn deploy-locker:Nnnn
+
+# If you want to check deployed contracts
+yarn check-deployed-contracts:Nnnn
 ```
