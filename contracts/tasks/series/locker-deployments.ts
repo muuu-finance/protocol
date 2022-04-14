@@ -1,7 +1,6 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { MuuuLockerV2__factory, MuuuStakingProxyV2__factory } from '../../types'
-import { loadConstants } from '../constants'
 import { ContractKeys, TaskUtils } from '../utils'
 
 task('locker-deployments', 'Deploy necessary contracts to lock, vote function')
@@ -21,10 +20,6 @@ task('locker-deployments', 'Deploy necessary contracts to lock, vote function')
       console.log(`deployer: ${await signer.getAddress()}`)
       console.log(`useMockContracts flag: ${_useMockContracts}`)
 
-      const constants = loadConstants({
-        network: network.name,
-        isUseMocks: _useMockContracts,
-      })
       const deployeds = TaskUtils.loadDeployedContractAddresses({
         network: network.name,
       })
@@ -61,7 +56,7 @@ task('locker-deployments', 'Deploy necessary contracts to lock, vote function')
       console.log(`> MuuuLockerV2#addReward`)
       await (
         await lockerInstance.addReward(
-          deployeds.system.mgKgl,
+          deployeds.system.muKgl,
           stakingProxyAddress,
           true,
         )
@@ -72,6 +67,7 @@ task('locker-deployments', 'Deploy necessary contracts to lock, vote function')
       ).wait()
       console.log(`> MuuuLockerV2#setApprovals`)
       await (await lockerInstance.setApprovals()).wait()
+      console.log(`> [skip] MuuuLockerV2#transferOwnership`)
       // await (await lockerInstance.transferOwnership(multisig)).wait()
       console.log(`Locker's owner: ${await lockerInstance.owner()}`)
 
