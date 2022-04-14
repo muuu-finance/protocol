@@ -150,6 +150,7 @@ export const ContractKeys = {
   PoolManager: 'PoolManager',
   ArbitratorVault: 'ArbitratorVault',
   MuuuLockerV2: 'MuuuLockerV2',
+  MuuuStakingProxyV2: 'MuuuStakingProxyV2',
   ClaimZap: 'ClaimZap',
   VestedEscrow: 'VestedEscrow',
   MerkleAirdropFactory: 'MerkleAirdropFactory',
