@@ -12,7 +12,7 @@ const SUPPORTED_NETWORK = ["astar", "shiden", "localhost"] as const
 type SupportedNetwork = typeof SUPPORTED_NETWORK[number]
 
 // parameters
-const EOA = ""
+const EOA = "0x50414Ac6431279824df9968855181474c919a94B"
 const addressProviderAddress: { [key in SupportedNetwork]: string } = {
   astar: "",
   shiden: "0x762b149eA23070d6F021F70CB8877d2248278855",
@@ -33,12 +33,11 @@ task("check-stats-with-user", "Check Stats with user").setAction(
       network: network,
     })
 
-    const booster = await Booster__factory.connect(system.booster, ethers.provider)
+    const booster = Booster__factory.connect(system.booster, ethers.provider)
     const poolCount = await booster.poolLength()
     const poolInfos = await Promise.all([...Array(poolCount.toNumber())].map(
       (_, i) => booster.poolInfo(i)
     ))
-
     const registryAddress = await (new ethers.Contract(
       addressProviderAddress[network],
       new ethers.utils.Interface(ABI_ADDRESS_PROVIDER),
@@ -50,22 +49,22 @@ task("check-stats-with-user", "Check Stats with user").setAction(
       ethers.provider
     )
 
+    const [kgl, muuu] = await Promise.all([
+      getStatsInKGL(EOA, booster, ethers),
+      getStatsInMUUU(EOA, booster, ethers)
+    ])
+
     console.log("--- KGL")
-    console.log(await getStatsInKGL(EOA, booster, ethers))
-
+    console.log(kgl)
     console.log("--- pools")
-    for (const p of poolInfos) {
-      const result = await getStatsInPool(
-        EOA,
-        BaseRewardPool__factory.connect(p.kglRewards, ethers.provider),
-        registry,
-        ERC20__factory.connect(p.lptoken, ethers.provider)
-      )
-      console.log(result)
-    }
-
+    for (const p of poolInfos) console.log(await getStatsInPool(
+      EOA,
+      BaseRewardPool__factory.connect(p.kglRewards, ethers.provider),
+      registry,
+      ERC20__factory.connect(p.lptoken, ethers.provider)
+    ))
     console.log("--- MUUU")
-    console.log(await getStatsInMUUU(EOA, booster, ethers))
+    console.log(muuu)
 
     console.log(`------- [check:stats-with-user] FINISHED -------`)
   }
