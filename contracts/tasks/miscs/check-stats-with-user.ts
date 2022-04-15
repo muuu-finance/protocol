@@ -1,6 +1,6 @@
 import { task } from "hardhat/config"
-import { HardhatRuntimeEnvironment } from "hardhat/types"
-import { BaseRewardPool, BaseRewardPool__factory, Booster__factory, ERC20, ERC20__factory } from "../../types"
+import { HardhatEthersHelpers, HardhatRuntimeEnvironment } from "hardhat/types"
+import { BaseRewardPool, BaseRewardPool__factory, Booster, Booster__factory, ERC20, ERC20__factory } from "../../types"
 import { TaskUtils } from "../utils"
 import jsonfile from 'jsonfile'
 import { BigNumber, Contract, ethers } from "ethers"
@@ -50,19 +50,53 @@ task("check-stats-with-user", "Check Stats with user").setAction(
       ethers.provider
     )
 
+    console.log("--- KGL")
+    console.log(await getStatsInKGL(EOA, booster, ethers))
+
     console.log("--- pools")
     for (const p of poolInfos) {
-      console.log(await getStatsInPool(
+      const result = await getStatsInPool(
         EOA,
         BaseRewardPool__factory.connect(p.kglRewards, ethers.provider),
         registry,
         ERC20__factory.connect(p.lptoken, ethers.provider)
-      ))
+      )
+      console.log(result)
     }
+
+    console.log("--- MUUU")
+    console.log(await getStatsInMUUU(EOA, booster, ethers))
 
     console.log(`------- [check:stats-with-user] FINISHED -------`)
   }
 )
+
+const getStatsInKGL = async (eoa: string, booster: Booster, _ethers: typeof ethers & HardhatEthersHelpers) => {
+  const [muKglRewardsAddress, feeRewardsAddress] = await Promise.all([
+    booster.lockRewards(),
+    booster.lockFees()
+  ])
+  const muKglRewards = BaseRewardPool__factory.connect(muKglRewardsAddress, _ethers.provider)
+  const feeRewards = BaseRewardPool__factory.connect(feeRewardsAddress, _ethers.provider)
+  const datas = await Promise.all([
+    muKglRewards.totalSupply().then(v => ethers.utils.formatUnits(v)),
+    muKglRewards.rewardRate().then(v => ethers.utils.formatUnits(v)),
+    muKglRewards.earned(eoa).then(v => ethers.utils.formatUnits(v)),
+    feeRewards.rewardRate().then(v => ethers.utils.formatUnits(v)),
+    feeRewards.earned(eoa).then(v => ethers.utils.formatUnits(v)),
+  ])
+  return {
+    muKGL: {
+      totalSupply: datas[0],
+      rewardRate: datas[1],
+      earned: datas[2]
+    },
+    "3KGL": {
+      rewardRate: datas[3],
+      earned: datas[4]
+    }
+  }
+}
 
 const getStatsInPool = async (eoa: string, rewardPool: BaseRewardPool, registry: Contract, lpToken: ERC20) => {
   const datas = await Promise.all([
@@ -80,5 +114,22 @@ const getStatsInPool = async (eoa: string, rewardPool: BaseRewardPool, registry:
     name: datas[3],
     symbol: datas[4],
     virtualPrice: datas[5],
+  }
+}
+
+const getStatsInMUUU = async (eoa: string, booster: Booster, _ethers: typeof ethers & HardhatEthersHelpers) => {
+  const muuuRewardsAddress = await booster.stakerRewards()
+  const muuuRewards = BaseRewardPool__factory.connect(muuuRewardsAddress, _ethers.provider)
+  const datas = await Promise.all([
+    muuuRewards.totalSupply().then(v => _ethers.utils.formatUnits(v)),
+    muuuRewards.rewardRate().then(v => _ethers.utils.formatUnits(v)),
+    muuuRewards.earned(eoa).then(v => _ethers.utils.formatUnits(v)),
+  ])
+  return {
+    MUUU: {
+      totalSupply: datas[0],
+      rewardRate: datas[1],
+      earned: datas[2]
+    },
   }
 }
