@@ -458,9 +458,9 @@ contract Booster is Ownable {
     uint256 kglBal = IERC20(kgl).balanceOf(address(this));
 
     if (kglBal > 0) {
-      uint256 _lockIncentive = kglBal.mul(lockIncentive).div(FEE_DENOMINATOR); // 1000/10k = 10%
-      uint256 _stakerIncentive = kglBal.mul(stakerIncentive).div(FEE_DENOMINATOR); // 450/10k = 4.5%
-      uint256 _callIncentive = kglBal.mul(earmarkIncentive).div(FEE_DENOMINATOR); // 50/10k = 0.5%
+      uint256 _lockIncentive = kglBal.mul(lockIncentive).div(FEE_DENOMINATOR);
+      uint256 _stakerIncentive = kglBal.mul(stakerIncentive).div(FEE_DENOMINATOR);
+      uint256 _callIncentive = kglBal.mul(earmarkIncentive).div(FEE_DENOMINATOR);
 
       //send treasury
       if (treasury != address(0) && treasury != address(this) && platformFee > 0) {
