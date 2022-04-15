@@ -37,6 +37,8 @@
     "check-deployed-contracts:local": "yarn hardhat check-deployed-contracts --network localhost",
     "check-deployed-contracts:astar": "yarn check-deployed-contracts --network astar",
     "check-deployed-contracts:shiden": "yarn check-deployed-contracts --network shiden",
+    "execute-earmarks:shiden": "yarn hardhat execute-earmarks --network shiden --boosteraddress 0x4e4100e1dEA74eB8779B1B8F0Db091e93cB8AeC2",
+    "execute-earmarks:astar": "yarn hardhat execute-earmarks --network astar --boosteraddress 0x4e4100e1dEA74eB8779B1B8F0Db091e93cB8AeC2",
     "test": "truffle test --stacktrace-extra",
     "test:light": "truffle test --stacktrace-extra --network ganachecli --compile-none",
     "prettier:check": "prettier -c 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'",
