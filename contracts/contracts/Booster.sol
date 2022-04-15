@@ -19,9 +19,9 @@ contract Booster is Ownable {
   address public constant voteParameter = address(0xBCfF8B0b9419b9A88c44546519b1e909cF330399);
 
   uint256 public lockIncentive = 1000; //incentive to kgl stakers
-  uint256 public stakerIncentive = 450; //incentive to native token stakers
-  uint256 public earmarkIncentive = 50; //incentive to users who spend gas to make calls
-  uint256 public platformFee = 0; //possible fee to build treasury
+  uint256 public stakerIncentive = 500; //incentive to native token stakers
+  uint256 public earmarkIncentive = 10; //incentive to users who spend gas to make calls
+  uint256 public platformFee = 100; //possible fee to build treasury
   uint256 public constant MaxFees = 2000;
   uint256 public constant FEE_DENOMINATOR = 10000;
   uint256 public rewardMultiplier = 8250; // 0.0825
@@ -458,9 +458,9 @@ contract Booster is Ownable {
     uint256 kglBal = IERC20(kgl).balanceOf(address(this));
 
     if (kglBal > 0) {
-      uint256 _lockIncentive = kglBal.mul(lockIncentive).div(FEE_DENOMINATOR);
-      uint256 _stakerIncentive = kglBal.mul(stakerIncentive).div(FEE_DENOMINATOR);
-      uint256 _callIncentive = kglBal.mul(earmarkIncentive).div(FEE_DENOMINATOR);
+      uint256 _lockIncentive = kglBal.mul(lockIncentive).div(FEE_DENOMINATOR); // 1000/10k = 10%
+      uint256 _stakerIncentive = kglBal.mul(stakerIncentive).div(FEE_DENOMINATOR); // 450/10k = 4.5%
+      uint256 _callIncentive = kglBal.mul(earmarkIncentive).div(FEE_DENOMINATOR); // 50/10k = 0.5%
 
       //send treasury
       if (treasury != address(0) && treasury != address(this) && platformFee > 0) {
