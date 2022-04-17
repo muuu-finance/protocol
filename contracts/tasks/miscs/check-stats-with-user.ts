@@ -1,6 +1,6 @@
 import { task } from "hardhat/config"
 import { HardhatEthersHelpers, HardhatRuntimeEnvironment } from "hardhat/types"
-import { BaseRewardPool, BaseRewardPool__factory, Booster, Booster__factory, ERC20, ERC20__factory } from "../../types"
+import { BaseRewardPool, BaseRewardPool__factory, Booster, Booster__factory, ERC20, ERC20__factory, MuuuLockerV2, MuuuLockerV2__factory, MuuuToken__factory } from "../../types"
 import { TaskUtils } from "../utils"
 import jsonfile from 'jsonfile'
 import { BigNumber, Contract, ethers } from "ethers"
@@ -25,6 +25,7 @@ task("check-stats-with-user", "Check Stats with user").setAction(
     const { network: _network, ethers } = hre
     console.log(`------- [check:stats-with-user] START -------`)
     console.log(`network ... ${_network.name}`)
+    console.log(`check target ... ${EOA}`)
 
     if (!(SUPPORTED_NETWORK as ReadonlyArray<string>).includes(_network.name)) throw new Error(`Support only ${SUPPORTED_NETWORK} ...`)
     const network = _network.name as SupportedNetwork
@@ -49,9 +50,24 @@ task("check-stats-with-user", "Check Stats with user").setAction(
       ethers.provider
     )
 
-    const [kgl, muuu] = await Promise.all([
+    const muuuToken = MuuuToken__factory.connect(system.muuu, ethers.provider)
+    const [maxSupply, totalSupply] = await Promise.all([
+      muuuToken.maxSupply().then(v => ethers.utils.formatUnits(v)),
+      muuuToken.totalSupply().then(v => ethers.utils.formatUnits(v))
+    ])
+    console.log("--- About MuuuToken")
+    console.log(`maxSupply: ${maxSupply}`)
+    console.log(`totalSupply: ${totalSupply}`)
+
+    const [kgl, muuu, lockMuuu] = await Promise.all([
       getStatsInKGL(EOA, booster, ethers),
-      getStatsInMUUU(EOA, booster, ethers)
+      getStatsInMUUU(EOA, booster, ethers),
+      getStatsInLockMUUU(
+        EOA,
+        MuuuLockerV2__factory.connect(system.muuuLockerV2, ethers.provider),
+        system.muKgl,
+        ethers
+      )
     ])
 
     console.log("--- KGL")
@@ -65,6 +81,8 @@ task("check-stats-with-user", "Check Stats with user").setAction(
     ))
     console.log("--- MUUU")
     console.log(muuu)
+    console.log("--- Lock MUUU")
+    console.log(lockMuuu)
 
     console.log(`------- [check:stats-with-user] FINISHED -------`)
   }
@@ -125,10 +143,22 @@ const getStatsInMUUU = async (eoa: string, booster: Booster, _ethers: typeof eth
     muuuRewards.earned(eoa).then(v => _ethers.utils.formatUnits(v)),
   ])
   return {
-    MUUU: {
-      totalSupply: datas[0],
-      rewardRate: datas[1],
-      earned: datas[2]
-    },
+    totalSupply: datas[0],
+    rewardRate: datas[1],
+    earned: datas[2]
+  }
+}
+
+const getStatsInLockMUUU = async (eoa: string, locker: MuuuLockerV2, muKglAddress: string, _ethers: typeof ethers & HardhatEthersHelpers) => {
+  const datas = await Promise.all([
+    locker.boostedSupply().then(v => _ethers.utils.formatUnits(v)),
+    locker.rewardData(muKglAddress).then(v => _ethers.utils.formatUnits(v.rewardRate)),
+    locker.claimableRewards(eoa).then(v => _ethers.utils.formatUnits(v[0].amount))
+  ])
+
+  return {
+    totalSupply: datas[0],
+    rewardRate: datas[1],
+    earned: datas[2],
   }
 }
