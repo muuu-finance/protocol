@@ -61,6 +61,11 @@ contract Booster is Ownable {
 
   event Deposited(address indexed user, uint256 indexed poolid, uint256 amount);
   event Withdrawn(address indexed user, uint256 indexed poolid, uint256 amount);
+  event PoolAdded(address lptoken, address gauge, uint256 stashVersion);
+  event PoolShutdown(uint256 pid);
+  event RewardsEarmarked(uint256 pid);
+  event FeesEarmarked();
+
 
   constructor(
     address _staker,
@@ -242,6 +247,7 @@ contract Booster is Ownable {
       IStaker(staker).setStashAccess(stash, true);
       IRewardFactory(rewardFactory).setAccess(stash, true);
     }
+    emit PoolAdded(_lptoken, _gauge, _stashVersion);
     return true;
   }
 
@@ -255,6 +261,7 @@ contract Booster is Ownable {
 
     pool.shutdown = true;
     gaugeMap[pool.gauge] = false;
+    emit PoolShutdown(_pid);
     return true;
   }
 
@@ -494,6 +501,7 @@ contract Booster is Ownable {
   function earmarkRewards(uint256 _pid) external returns (bool) {
     require(!isShutdown, "shutdown");
     _earmarkRewards(_pid);
+    emit RewardsEarmarked(_pid);
     return true;
   }
 
@@ -505,6 +513,7 @@ contract Booster is Ownable {
     uint256 _balance = IERC20(feeToken).balanceOf(address(this));
     IERC20(feeToken).safeTransfer(lockFees, _balance);
     IRewards(lockFees).queueNewRewards(_balance);
+    emit FeesEarmarked();
     return true;
   }
 

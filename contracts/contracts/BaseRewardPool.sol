@@ -77,6 +77,7 @@ contract BaseRewardPool {
   event Staked(address indexed user, uint256 amount);
   event Withdrawn(address indexed user, uint256 amount);
   event RewardPaid(address indexed user, uint256 reward);
+  event RewardsQueued(uint256 rewards);
 
   constructor(
     uint256 pid_,
@@ -299,6 +300,7 @@ contract BaseRewardPool {
     } else {
       queuedRewards = _rewards;
     }
+    emit RewardsQueued(_rewards);
     return true;
   }
 
