@@ -6,6 +6,7 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import {
   Booster__factory,
   ClaimZap__factory,
+  ERC20__factory,
   KaglaVoterProxy__factory,
   KglDepositor__factory,
   MerkleAirdropFactory__factory,
@@ -68,16 +69,21 @@ const _mintMuuuToken = async ({
 const _prepareAfterDeployingKglDepositor = async ({
   signer,
   addresses,
+  variables
 }: {
   signer: SignerWithAddress
   addresses: {
     kaglaVoterProxy: string
     booster: string
+    kglToken: string
     muKglToken: string
     kglDepositor: string
+  },
+  variables: {
+    transferingKglAmount: string
   }
 }) => {
-  const { kaglaVoterProxy, booster, muKglToken, kglDepositor } = addresses
+  const { kaglaVoterProxy, booster, kglToken, muKglToken, kglDepositor } = addresses
   console.log('> MuKglToken#setOperator')
   await (
     await MuKglToken__factory.connect(muKglToken, signer).setOperator(
@@ -91,6 +97,11 @@ const _prepareAfterDeployingKglDepositor = async ({
       signer,
     ).setDepositor(kglDepositor)
   ).wait()
+  console.log("> Preprocessing KglDepositor#initialLock - transfer kgl from deployer to VoterProxy")
+  await (await ERC20__factory.connect(kglToken, signer).transfer(
+    kaglaVoterProxy,
+    variables.transferingKglAmount
+  )).wait()
   console.log('> KglDepositor#initialLock')
   await(
     await KglDepositor__factory.connect(kglDepositor, signer).initialLock()
@@ -515,9 +526,13 @@ task(
         addresses: {
           kaglaVoterProxy: kaglaVoterProxyAddress,
           booster: boosterAddress,
+          kglToken: constants.tokens.KGL,
           muKglToken: muKglTokenAddress,
           kglDepositor: kglDepositorAddress,
         },
+        variables: {
+          transferingKglAmount: "1"
+        }
       })
 
       const muKglRewardPoolAddress = await hre.run(
