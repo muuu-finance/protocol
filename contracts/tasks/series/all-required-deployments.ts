@@ -39,7 +39,9 @@ const _transferOwnershipAndSetOperatorInVoterProxy = async ({
   const currentOwner = await voterProxy.owner()
   if (currentOwner != adminAddress) {
     console.log('> KaglaVoterProxy#transferOwnership')
-    await (await voterProxy.transferOwnership(adminAddress, { from: currentOwner })).wait()
+    await (
+      await voterProxy.transferOwnership(adminAddress, { from: currentOwner })
+    ).wait()
   }
   console.log('> KaglaVoterProxy#setOperator')
   await (await voterProxy.setOperator(addresses.booster)).wait()
@@ -77,23 +79,24 @@ const _prepareAfterDeployingKglDepositor = async ({
 }) => {
   const { kaglaVoterProxy, booster, muKglToken, kglDepositor } = addresses
   console.log('> MuKglToken#setOperator')
-  await(
+  await (
     await MuKglToken__factory.connect(muKglToken, signer).setOperator(
       kglDepositor,
     )
   ).wait()
   console.log('> KaglaVoterProxy#setDepositor')
-  await(
-    await KaglaVoterProxy__factory.connect(kaglaVoterProxy, signer).setDepositor(
-      kglDepositor,
-    )
+  await (
+    await KaglaVoterProxy__factory.connect(
+      kaglaVoterProxy,
+      signer,
+    ).setDepositor(kglDepositor)
   ).wait()
   console.log('> KglDepositor#initialLock')
   await(
     await KglDepositor__factory.connect(kglDepositor, signer).initialLock()
   ).wait()
   console.log('> Booster#setTreasury')
-  await(
+  await (
     await Booster__factory.connect(booster, signer).setTreasury(kglDepositor)
   ).wait()
 }
@@ -112,7 +115,7 @@ const _setRewardContractsToBooster = async ({
 }) => {
   const { booster, muKglRewardPool, muuuRewardPool } = addresses
   console.log('> Booster#setRewardContracts')
-  await(
+  await (
     await Booster__factory.connect(booster, signer).setRewardContracts(
       muKglRewardPool,
       muuuRewardPool,
@@ -138,9 +141,15 @@ const _prepareAfterDeployingPoolManager = async ({
     addresses
   const _boosterInstance = await Booster__factory.connect(booster, signer)
   console.log('> Booster#setPoolManager')
-  await(await _boosterInstance.setPoolManager(poolManager)).wait()
+  await (await _boosterInstance.setPoolManager(poolManager)).wait()
   console.log('> Booster#setFactories')
-  await(await _boosterInstance.setFactories(rewardFactory, stashFactory, tokenFactory)).wait()
+  await (
+    await _boosterInstance.setFactories(
+      rewardFactory,
+      stashFactory,
+      tokenFactory,
+    )
+  ).wait()
   console.log('> Booster#setFeeInfo')
   await(await _boosterInstance.setFeeInfo()).wait()
 }
@@ -157,9 +166,10 @@ const _setArbitratorToBooster = async ({
   }
 }) => {
   console.log('> Booster#setArbitrator')
-  const tx = await Booster__factory.connect(addresses.booster, signer).setArbitrator(
-    addresses.arbitratorVault,
-  )
+  const tx = await Booster__factory.connect(
+    addresses.booster,
+    signer,
+  ).setArbitrator(addresses.arbitratorVault)
   await tx.wait()
 }
 
@@ -172,7 +182,10 @@ const _setApprovalsInClaimZap = async ({
   claimZapAddress: string
 }) => {
   console.log('> ClaimZap#setApprovals')
-  const tx = await ClaimZap__factory.connect(claimZapAddress, signer).setApprovals()
+  const tx = await ClaimZap__factory.connect(
+    claimZapAddress,
+    signer,
+  ).setApprovals()
   await tx.wait()
 }
 
@@ -209,7 +222,7 @@ const _prepareAfterDeployingVestedEscrow = async ({
   await (
     await vestedEscrowInstance.fund(
       variables.vestedAddresses,
-      variables.vestedAmount
+      variables.vestedAmount,
     )
   ).wait()
   console.log(
@@ -278,7 +291,7 @@ const _prepareAfterDeployingMerkleAirdrop = async ({
   const { muuuToken, merkleAirdrop } = addresses
 
   console.log('> MerkleAirdrop#setRewardToken')
-  await(
+  await (
     await MerkleAirdrop__factory.connect(merkleAirdrop, signer).setRewardToken(
       muuuToken,
     )
@@ -286,14 +299,14 @@ const _prepareAfterDeployingMerkleAirdrop = async ({
 
   const muuuTokenInstance = await MuuuToken__factory.connect(muuuToken, signer)
   console.log('> MuuuToken#transfer')
-  await(
+  await (
     await muuuTokenInstance.transfer(merkleAirdrop, variables.amount.toString())
   ).wait()
   console.log(
     `airdrop balance: ${await muuuTokenInstance.balanceOf(merkleAirdrop)}`,
   )
   console.log('> MerkleAirdrop#setRoot')
-  await(
+  await (
     await MerkleAirdrop__factory.connect(merkleAirdrop, signer).setRoot(
       variables.merkleRoot,
     )
@@ -316,13 +329,13 @@ const _writePoolInfosToJson = async ({
   networkName,
   boosterAddress,
   kglTokenAddress,
-  pools
+  pools,
 }: {
   signer: SignerWithAddress
   networkName: string
   boosterAddress: string
   kglTokenAddress: string
-  pools?: { name: string, swap: string, gauge: string }[]
+  pools?: { name: string; swap: string; gauge: string }[]
 }) => {
   const poolsContracts = []
   const _boosterInstance = await Booster__factory.connect(
@@ -351,7 +364,9 @@ const _writePoolInfosToJson = async ({
     rewardList.push({ rToken: kglTokenAddress, rAddress: kglrewards })
     const { lptoken, token, gauge, kglRewards, stash, shutdown } = list[i]
 
-    const _name = pools?.find(p => p.gauge.toLowerCase() === gauge.toLowerCase())?.name ?? `mock pool ${i}`
+    const _name =
+      pools?.find((p) => p.gauge.toLowerCase() === gauge.toLowerCase())?.name ??
+      `mock pool ${i}`
     poolsContracts.push({
       lptoken,
       token,
@@ -474,7 +489,7 @@ task(
         addresses: {
           booster: boosterAddress,
           kaglaVoterProxy: kaglaVoterProxyAddress,
-        }
+        },
       })
       await _mintMuuuToken({
         signer,
@@ -645,7 +660,7 @@ task(
         networkName: network.name,
         boosterAddress,
         kglTokenAddress: constants.tokens.KGL,
-        pools: constants.pools ?? undefined
+        pools: constants.pools ?? undefined,
       })
 
       console.log(`--- finish: add pools ---`)
