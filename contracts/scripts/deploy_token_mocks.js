@@ -61,6 +61,10 @@ module.exports = async (callback) => {
     console.log(`- - - - - -`)
     writeContractAddress(GROUP, symbol, token.address, filePath)
   }
+
+  await kglToken.mint(web3.utils.toWei('1', 'ether'))
+  console.log(`> & mint kgl to deployer`)
+
   console.log(`> addresses in ${filePath}`)
   console.log(readContractAddresses(filePath))
   console.log(`--- FINISHED ---`)
