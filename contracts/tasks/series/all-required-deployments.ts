@@ -21,6 +21,22 @@ import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 // Functions
 // -- Procedures
+const _validateBeforeDeployments = async ({
+  signer,
+  kglToken
+}: {
+  signer: SignerWithAddress
+  kglToken: string
+}): Promise<boolean> => {
+  // check - deployer has kgl
+  const kglBalance = await ERC20__factory.connect(kglToken, signer).balanceOf(signer.address)
+  if (kglBalance.lte(0)) {
+    console.log("[ERROR] Deployer has greater than 0 kgls")
+    return false
+  }
+  return true
+}
+
 const _transferOwnershipAndSetOperatorInVoterProxy = async ({
   signer,
   adminAddress,
@@ -422,14 +438,10 @@ task(
       console.log(`network: ${network.name}`)
       const [signer] = await ethers.getSigners()
       console.log(`deployer: ${await signer.getAddress()}`)
+
       console.log(`useMockContracts flag: ${_useMockContracts}`)
       console.log(`useAlreadyDeployed flag: ${_useAlreadyDeployed}`)
-      if (_useAlreadyDeployed) {
-        console.log(`[NOTE] use already deployed contracts`)
-      } else {
-        // reset json to have deployed contracts' addresses
-        TaskUtils.resetContractAddressesJson({ network: network.name })
-      }
+
       // Prepares
       const constants = loadConstants({
         network: network.name,
@@ -441,6 +453,20 @@ task(
         useAlreadyDeployed: _useAlreadyDeployed,
         useMockContracts: _useMockContracts,
       }
+
+      const isContinue = await _validateBeforeDeployments({
+        signer: signer,
+        kglToken: constants.tokens.KGL
+      })
+      if (!isContinue) return
+
+      if (_useAlreadyDeployed) {
+        console.log(`[NOTE] use already deployed contracts`)
+      } else {
+        // reset json to have deployed contracts' addresses
+        TaskUtils.resetContractAddressesJson({ network: network.name })
+      }
+
 
       const adminAddress = signer.address // TODO: from constants
       const totalVested: BigNumber = constants.vested.amounts.reduce(
