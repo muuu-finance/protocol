@@ -474,8 +474,8 @@ task(
           BigNumber.from(previousValue).add(BigNumber.from(currentValue)),
         BigNumber.from('0'),
       ) // calculate total amounts
-      const vekglAmount = BigNumber.from(0) // TODO: from constants
-      const mintAmount = totalVested.add(vekglAmount) // TODO: consider lpincentives, vecrv, teamcvxLpSeed?
+      const premine = BigNumber.from(constants.premine)
+      const mintAmount = totalVested.add(premine)
 
       // DEBUG
       const json = `./contracts-${network.name}.json`
