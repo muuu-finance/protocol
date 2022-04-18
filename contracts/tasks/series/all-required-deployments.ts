@@ -609,11 +609,6 @@ task(
         },
       })
 
-      const muuuLockerV2Address = await hre.run(
-        `deploy-${ContractKeys.MuuuLockerV2}`,
-        commonTaskArgs,
-      )
-
       // [NOTE] skip to deploy ClaimZap
       // const claimZapAddress = await hre.run(
       //   `deploy-${ContractKeys.ClaimZap}`,
