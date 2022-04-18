@@ -5,13 +5,13 @@ pragma experimental ABIEncoderV2;
 import "./interfaces/ILockedMuuu.sol";
 
 contract VotingBalanceV2Gauges {
-  address public locker;
+  address public immutable locker;
   uint256 public constant rewardsDuration = 86400 * 7;
 
   constructor(
     address _locker
   ) public {
-    _locker = locker;
+    locker = _locker;
   }
 
   function balanceOf(address _account) external view returns (uint256) {
