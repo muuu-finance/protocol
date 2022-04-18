@@ -40,6 +40,10 @@ task('locker-deployments', 'Deploy necessary contracts to lock, vote function')
         `deploy-${ContractKeys.MuuuStakingProxyV2}`,
         commonTaskArgs,
       )
+      await hre.run(
+        `deploy-${ContractKeys.VotingBalanceV2Gauges}`,
+        commonTaskArgs,
+      )
       console.log(`--- finish: deployments ---`)
 
       console.log(`--- start: initialize / setups ---`)
