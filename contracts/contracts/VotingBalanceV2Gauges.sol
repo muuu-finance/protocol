@@ -7,7 +7,6 @@ import "./interfaces/ILockedMuuu.sol";
 contract VotingBalanceV2Gauges {
   address public locker;
   uint256 public constant rewardsDuration = 86400 * 7;
-  uint256 public constant lockDuration = rewardsDuration * 17;
 
   constructor(
     address _locker
