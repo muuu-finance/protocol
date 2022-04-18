@@ -1,3 +1,4 @@
+import { ethers } from 'ethers'
 import { ConstantsType } from './types'
 
 export const astar: ConstantsType = {
@@ -47,7 +48,8 @@ export const astar: ConstantsType = {
         '0x632a2ad201c5b95d3f75c1332afdcf489d4e6b4b7480cf878d8eba2aa87d5f73', // TODO
     },
   },
-  vested: { // TODO
+  premine: ethers.utils.parseEther((50 * 1_000_000).toString()).toString(),
+  vested: { // dummy
     addresses: [],
     amounts: [],
   },

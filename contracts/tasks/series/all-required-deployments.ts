@@ -474,8 +474,8 @@ task(
           BigNumber.from(previousValue).add(BigNumber.from(currentValue)),
         BigNumber.from('0'),
       ) // calculate total amounts
-      const vekglAmount = BigNumber.from(0) // TODO: from constants
-      const mintAmount = totalVested.add(vekglAmount) // TODO: consider lpincentives, vecrv, teamcvxLpSeed?
+      const premine = BigNumber.from(constants.premine)
+      const mintAmount = totalVested.add(premine)
 
       // DEBUG
       const json = `./contracts-${network.name}.json`
@@ -609,20 +609,16 @@ task(
         },
       })
 
-      const muuuLockerV2Address = await hre.run(
-        `deploy-${ContractKeys.MuuuLockerV2}`,
-        commonTaskArgs,
-      )
-      const claimZapAddress = await hre.run(
-        `deploy-${ContractKeys.ClaimZap}`,
-        commonTaskArgs,
-      )
-
-      // contracts/migrations/1_deploy_contracts.js#L341
-      await _setApprovalsInClaimZap({
-        signer,
-        claimZapAddress,
-      })
+      // [NOTE] skip to deploy ClaimZap
+      // const claimZapAddress = await hre.run(
+      //   `deploy-${ContractKeys.ClaimZap}`,
+      //   commonTaskArgs,
+      // )
+      // // contracts/migrations/1_deploy_contracts.js#L341
+      // await _setApprovalsInClaimZap({
+      //   signer,
+      //   claimZapAddress,
+      // })
 
       const vestedEscrowAddress = await hre.run(
         `deploy-${ContractKeys.VestedEscrow}`,
@@ -643,29 +639,28 @@ task(
         },
       })
 
-      const merkleAirdropFactoryAddress = await hre.run(
-        `deploy-${ContractKeys.MerkleAirdropFactory}`,
-        commonTaskArgs,
-      )
-
-      const merkleAirdropAddress = await _createMerkleAirdropFromFactory({
-        signer,
-        networkName: network.name,
-        merkleAirdropFactoryAddress,
-      })
-
-      // contracts/migrations/1_deploy_contracts.js#L383-389
-      await _prepareAfterDeployingMerkleAirdrop({
-        signer,
-        variables: {
-          amount: vekglAmount,
-          merkleRoot: constants.contracts.merkleAirdrop.merkleRoot,
-        },
-        addresses: {
-          muuuToken: muuuTokenAddress,
-          merkleAirdrop: merkleAirdropAddress,
-        },
-      })
+      // [NOTE] skip to deploy MerkleAirdropFactory, create MerkleAirdrop
+      // const merkleAirdropFactoryAddress = await hre.run(
+      //   `deploy-${ContractKeys.MerkleAirdropFactory}`,
+      //   commonTaskArgs,
+      // )
+      // const merkleAirdropAddress = await _createMerkleAirdropFromFactory({
+      //   signer,
+      //   networkName: network.name,
+      //   merkleAirdropFactoryAddress,
+      // })
+      // // contracts/migrations/1_deploy_contracts.js#L383-389
+      // await _prepareAfterDeployingMerkleAirdrop({
+      //   signer,
+      //   variables: {
+      //     amount: vekglAmount,
+      //     merkleRoot: constants.contracts.merkleAirdrop.merkleRoot,
+      //   },
+      //   addresses: {
+      //     muuuToken: muuuTokenAddress,
+      //     merkleAirdrop: merkleAirdropAddress,
+      //   },
+      // })
 
       console.log(`--- finish: deployments & initialize / setups ---`)
 
