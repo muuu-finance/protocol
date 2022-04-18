@@ -6,14 +6,18 @@ import "./interfaces/ILockedMuuu.sol";
 
 contract VotingBalanceV2Gauges {
   address public constant oldlocker = address(0xD18140b4B819b895A3dba5442F959fA44994AF50);
-  address public constant locker = address(0x72a19342e8F1838460eBFCCEf09F6585e32db86E);
+  address public locker;
   uint256 public constant rewardsDuration = 86400 * 7;
   uint256 public constant lockDuration = rewardsDuration * 17;
 
   bool public UseOldLocker = true;
   address public constant owner = address(0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB);
 
-  constructor() public {}
+  constructor(
+    address _locker
+  ) public {
+    _locker = locker;
+  }
 
   function setUseOldLocker(bool _use) external {
     require(msg.sender == owner, "!auth");
