@@ -613,16 +613,17 @@ task(
         `deploy-${ContractKeys.MuuuLockerV2}`,
         commonTaskArgs,
       )
-      const claimZapAddress = await hre.run(
-        `deploy-${ContractKeys.ClaimZap}`,
-        commonTaskArgs,
-      )
 
-      // contracts/migrations/1_deploy_contracts.js#L341
-      await _setApprovalsInClaimZap({
-        signer,
-        claimZapAddress,
-      })
+      // [NOTE] skip to deploy ClaimZap
+      // const claimZapAddress = await hre.run(
+      //   `deploy-${ContractKeys.ClaimZap}`,
+      //   commonTaskArgs,
+      // )
+      // // contracts/migrations/1_deploy_contracts.js#L341
+      // await _setApprovalsInClaimZap({
+      //   signer,
+      //   claimZapAddress,
+      // })
 
       const vestedEscrowAddress = await hre.run(
         `deploy-${ContractKeys.VestedEscrow}`,
