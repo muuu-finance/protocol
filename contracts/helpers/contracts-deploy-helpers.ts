@@ -18,6 +18,7 @@ import {
   StashFactory__factory,
   TokenFactory__factory,
   VestedEscrow__factory,
+  VotingBalanceV2Gauges__factory,
 } from '../types'
 
 const waitForTx = async (tx: ContractTransaction) => await tx.wait(1)
@@ -294,6 +295,19 @@ export const deployMuuuStakingProxyV2 = async ({
       kglDeposit,
     ),
     ContractKeys.MuuuStakingProxyV2,
+  )
+
+export const deployVotingBalanceV2Gauges = async ({
+  deployer,
+  locker
+}: DeployCommonArgs & {
+  locker: string
+}) =>
+  withSaveAndVerify(
+    await new VotingBalanceV2Gauges__factory(deployer).deploy(
+      locker
+    ),
+    ContractKeys.VotingBalanceV2Gauges,
   )
 
 export const deployClaimZap = async ({
