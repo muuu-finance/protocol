@@ -53,7 +53,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       })
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,
-        name: 'muuuStakingProxyV2',
+        name: 'votingBalanceV2Gauges',
         value: instance.address,
         fileName: TaskUtils.getFilePath({ network: network.name }),
       })
