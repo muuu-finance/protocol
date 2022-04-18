@@ -639,29 +639,28 @@ task(
         },
       })
 
-      const merkleAirdropFactoryAddress = await hre.run(
-        `deploy-${ContractKeys.MerkleAirdropFactory}`,
-        commonTaskArgs,
-      )
-
-      const merkleAirdropAddress = await _createMerkleAirdropFromFactory({
-        signer,
-        networkName: network.name,
-        merkleAirdropFactoryAddress,
-      })
-
-      // contracts/migrations/1_deploy_contracts.js#L383-389
-      await _prepareAfterDeployingMerkleAirdrop({
-        signer,
-        variables: {
-          amount: vekglAmount,
-          merkleRoot: constants.contracts.merkleAirdrop.merkleRoot,
-        },
-        addresses: {
-          muuuToken: muuuTokenAddress,
-          merkleAirdrop: merkleAirdropAddress,
-        },
-      })
+      // [NOTE] skip to deploy MerkleAirdropFactory, create MerkleAirdrop
+      // const merkleAirdropFactoryAddress = await hre.run(
+      //   `deploy-${ContractKeys.MerkleAirdropFactory}`,
+      //   commonTaskArgs,
+      // )
+      // const merkleAirdropAddress = await _createMerkleAirdropFromFactory({
+      //   signer,
+      //   networkName: network.name,
+      //   merkleAirdropFactoryAddress,
+      // })
+      // // contracts/migrations/1_deploy_contracts.js#L383-389
+      // await _prepareAfterDeployingMerkleAirdrop({
+      //   signer,
+      //   variables: {
+      //     amount: vekglAmount,
+      //     merkleRoot: constants.contracts.merkleAirdrop.merkleRoot,
+      //   },
+      //   addresses: {
+      //     muuuToken: muuuTokenAddress,
+      //     merkleAirdrop: merkleAirdropAddress,
+      //   },
+      // })
 
       console.log(`--- finish: deployments & initialize / setups ---`)
 
