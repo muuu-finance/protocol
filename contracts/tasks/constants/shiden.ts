@@ -48,20 +48,9 @@ export const shiden: ConstantsType = {
         '0x632a2ad201c5b95d3f75c1332afdcf489d4e6b4b7480cf878d8eba2aa87d5f73', // dummy
     },
   },
+  premine: ethers.utils.parseEther((50 * 1_000_000).toString()).toString(),
   vested: { // dummy
-    addresses: [
-      "0x6543076E4315bd82129105890Bc49c18f496a528",
-      "0xb5Bb46b67529f934b33f1CB610C84d574c9d7658",
-      "0x5750fA3Aa4Af7F8a0cD094D0FfC4FBEF0E1CE208",
-      "0x50414Ac6431279824df9968855181474c919a94B",
-      "0xE5b0710729AC8126C48afff9AB857DCC09886fEc"
-    ],
-    amounts: [
-      ethers.utils.parseEther("1000000.0").toString(),
-      ethers.utils.parseEther("500000.0").toString(),
-      ethers.utils.parseEther("300000.0").toString(),
-      ethers.utils.parseEther("150000.0").toString(),
-      ethers.utils.parseEther("50000.0").toString(),
-    ],
+    addresses: [],
+    amounts: [],
   },
 }

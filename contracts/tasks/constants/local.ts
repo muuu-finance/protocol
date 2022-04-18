@@ -35,14 +35,20 @@ export const local: ConstantsType = {
         '0x632a2ad201c5b95d3f75c1332afdcf489d4e6b4b7480cf878d8eba2aa87d5f73',
     },
   },
+  premine: ethers.utils.parseEther((50 * 1_000_000).toString()).toString(),
   vested: {
-    addresses: vested.team.addresses.concat(
-      vested.investor.addresses,
-      vested.treasury.addresses,
-    ),
-    amounts: vested.team.amounts.concat(
-      vested.investor.amounts,
-      vested.treasury.amounts,
-    ),
+    addresses: [],
+    amounts: [],
   },
 }
+
+// vested: {
+//   addresses: vested.team.addresses.concat(
+//     vested.investor.addresses,
+//     vested.treasury.addresses,
+//   ),
+//   amounts: vested.team.amounts.concat(
+//     vested.investor.amounts,
+//     vested.treasury.amounts,
+//   ),
+// },
