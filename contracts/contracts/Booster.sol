@@ -15,8 +15,8 @@ contract Booster is Ownable {
 
   address public kgl;
   uint256 public constant distributionAddressId = 4;
-  address public constant voteOwnership = address(0xE478de485ad2fe566d49342Cbd03E49ed7DB3356);
-  address public constant voteParameter = address(0xBCfF8B0b9419b9A88c44546519b1e909cF330399);
+  address public voteOwnership;
+  address public voteParameter;
 
   uint256 public lockIncentive = 1000; //incentive to kgl stakers
   uint256 public stakerIncentive = 450; //incentive to native token stakers
@@ -84,6 +84,8 @@ contract Booster is Ownable {
     minter = _minter;
     kgl = _kgl;
     registry = _registry;
+    voteOwnership = address(0);
+    voteParameter = address(0);
   }
 
   /// SETTER SECTION ///
@@ -200,6 +202,16 @@ contract Booster is Ownable {
   function setRewardMultiplier(uint256 _rewardMultiplier) external onlyOwner {
     require(_rewardMultiplier > 0 &&  _rewardMultiplier <= MULTIPLIER_DENOMINATOR , "rewardMultiplier should be 0-100000");
     rewardMultiplier = _rewardMultiplier;
+  }
+
+  function setVoteOwnership(address _voteOwnership) external onlyOwner {
+    require(_voteOwnership != address(0), "voteOwnership should not be zero address");
+    voteOwnership = _voteOwnership;
+  }
+
+  function setVoteParameter(address _voteParameter) external onlyOwner {
+    require(_voteParameter != address(0), "voteParameter should not be zero address");
+    voteParameter = _voteParameter;
   }
 
   /// END SETTER SECTION ///
