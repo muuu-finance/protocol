@@ -10,7 +10,7 @@ import { TaskUtils } from '../utils'
 
 task(
   'execute-vote-gauge-weight',
-  'Execute earmarkRewards and earmarkFees',
+  'Execute voteGaugeWeight',
 ).setAction(async ({}, hre: HardhatRuntimeEnvironment) => {
   const { network, ethers } = hre
   if (
