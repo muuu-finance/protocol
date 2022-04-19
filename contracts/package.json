@@ -44,6 +44,8 @@
     "execute-earmarks:astar": "yarn hardhat execute-earmarks --network astar --boosteraddress 0x4e4100e1dEA74eB8779B1B8F0Db091e93cB8AeC2",
     "execute-distribute-for-locker:shiden": "yarn hardhat execute-distribute-for-locker --network shiden --stakingproxy-address 0xcCfC4d1d5A5d3158A76F3142586Cbb0e630cE68f --locker-address 0xc02D0DD39A93C14652678204CD825111FF4485b9 --mukgl-address 0xEe78333AF2162A4B097943867Ad05Cc9bCb6CC75",
     "execute-distribute-for-locker:astar": "yarn hardhat execute-distribute-for-locker --network astar --stakingproxy-address 0x0000000000000000000000000000000000000000 --locker-address 0x0000000000000000000000000000000000000000 --mukgl-address 0x0000000000000000000000000000000000000000",
+    "execute-vote-gauge-weight:shiden": "yarn hardhat -- execute-vote-gauge-weight --network shiden",
+    "execute-vote-gauge-weight:astar": "yarn hardhat -- execute-vote-gauge-weight --network astar",
     "test": "truffle test --stacktrace-extra",
     "test:light": "truffle test --stacktrace-extra --network ganachecli --compile-none",
     "prettier:check": "prettier -c 'migrations/**/*.js' 'contracts/**/*.sol' 'test/**/*.js'",
