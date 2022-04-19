@@ -595,19 +595,19 @@ task(
         },
       })
 
-      const arbitratorVaultAddress = await hre.run(
-        `deploy-${ContractKeys.ArbitratorVault}`,
-        commonTaskArgs,
-      )
-
-      // contracts/migrations/1_deploy_contracts.js#L313
-      await _setArbitratorToBooster({
-        signer,
-        addresses: {
-          booster: boosterAddress,
-          arbitratorVault: arbitratorVaultAddress,
-        },
-      })
+      // [NOTE] skip to deploy ArbitratorVault
+      // const arbitratorVaultAddress = await hre.run(
+      //   `deploy-${ContractKeys.ArbitratorVault}`,
+      //   commonTaskArgs,
+      // )
+      // // contracts/migrations/1_deploy_contracts.js#L313
+      // await _setArbitratorToBooster({
+      //   signer,
+      //   addresses: {
+      //     booster: boosterAddress,
+      //     arbitratorVault: arbitratorVaultAddress,
+      //   },
+      // })
 
       // [NOTE] skip to deploy ClaimZap
       // const claimZapAddress = await hre.run(
@@ -620,24 +620,24 @@ task(
       //   claimZapAddress,
       // })
 
-      const vestedEscrowAddress = await hre.run(
-        `deploy-${ContractKeys.VestedEscrow}`,
-        commonTaskArgs,
-      )
-
-      // contracts/migrations/1_deploy_contracts.js#L359-369
-      await _prepareAfterDeployingVestedEscrow({
-        signer,
-        variables: {
-          amount: totalVested,
-          vestedAddresses: constants.vested.addresses,
-          vestedAmount: constants.vested.amounts,
-        },
-        addresses: {
-          muuuToken: muuuTokenAddress,
-          vestedEscrow: vestedEscrowAddress,
-        },
-      })
+      // [NOTE] skip to deploy VestedEscrow
+      // const vestedEscrowAddress = await hre.run(
+      //   `deploy-${ContractKeys.VestedEscrow}`,
+      //   commonTaskArgs,
+      // )
+      // // contracts/migrations/1_deploy_contracts.js#L359-369
+      // await _prepareAfterDeployingVestedEscrow({
+      //   signer,
+      //   variables: {
+      //     amount: totalVested,
+      //     vestedAddresses: constants.vested.addresses,
+      //     vestedAmount: constants.vested.amounts,
+      //   },
+      //   addresses: {
+      //     muuuToken: muuuTokenAddress,
+      //     vestedEscrow: vestedEscrowAddress,
+      //   },
+      // })
 
       // [NOTE] skip to deploy MerkleAirdropFactory, create MerkleAirdrop
       // const merkleAirdropFactoryAddress = await hre.run(
