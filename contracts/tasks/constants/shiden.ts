@@ -35,7 +35,7 @@ export const shiden: ConstantsType = {
   ],
   contracts: {
     treasury: {
-      address: '0x175d905470e85279899C37F89000b195f3d0c0C5', // dummy
+      address: '0xCdfc500F7f0FCe1278aECb0340b523cD55b3EBbb',
     },
     muKglRewards: {
       uid: 0,
