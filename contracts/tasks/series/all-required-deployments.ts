@@ -23,15 +23,25 @@ import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 // -- Procedures
 const _validateBeforeDeployments = async ({
   signer,
-  kglToken
+  kglToken,
+  premine
 }: {
   signer: SignerWithAddress
   kglToken: string
+  premine: {
+    total: string
+    holders: { [key in string]: string }
+  }
 }): Promise<boolean> => {
   // check - deployer has kgl
   const kglBalance = await ERC20__factory.connect(kglToken, signer).balanceOf(signer.address)
   if (kglBalance.lte(0)) {
     console.log("[ERROR] Deployer has greater than 0 kgls")
+    return false
+  }
+  const totalFromHolders = Object.values(premine.holders).reduce((pV, cV) => pV.add(BigNumber.from(cV)), BigNumber.from("0"))
+  if (!BigNumber.from(premine.total).eq(totalFromHolders)) {
+    console.log("[ERROR] Premine total does not match to calculated total from holders")
     return false
   }
   return true
@@ -456,7 +466,8 @@ task(
 
       const isContinue = await _validateBeforeDeployments({
         signer: signer,
-        kglToken: constants.tokens.KGL
+        kglToken: constants.tokens.KGL,
+        premine: constants.premine
       })
       if (!isContinue) return
 
