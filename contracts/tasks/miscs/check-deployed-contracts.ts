@@ -1,5 +1,5 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import {
@@ -80,6 +80,21 @@ const checkMuuuToken = async (args: CheckFunctionArgs) => {
   ]
   for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
   console.log(`--- [end] MuuuToken ---`)
+}
+
+const checkPreminedMuuu = async (args: CheckFunctionArgs & { treasuryAddress: string } ) => {
+  console.log(`--- [start] check Premined MUUU ---`)
+  const _instance = await MuuuToken__factory.connect(
+    args.address,
+    args.providerOrSigner,
+  )
+  const formatted = (v: BigNumber) => ethers.utils.formatEther(v)
+
+  console.log(`maxSupply ... ${formatted(await _instance.maxSupply())}`)
+  console.log(`totalSupply ... ${formatted(await _instance.totalSupply())}`)
+  console.log(`treasury(${args.treasuryAddress}) ... ${formatted(await _instance.balanceOf(args.treasuryAddress))}`)
+
+  console.log(`--- [end] check Premined MUUU ---`)
 }
 
 const checkBooster = async (args: CheckFunctionArgs) => {
@@ -429,6 +444,12 @@ task('check-deployed-contracts', 'Check deployed contracts').setAction(
     await checkVotingBalanceV2Gauges({
       address: system.votingBalanceV2Gauges,
       providerOrSigner: ethers.provider,
+    })
+
+    await checkPreminedMuuu({
+      address: system.muuu,
+      providerOrSigner: ethers.provider,
+      treasuryAddress: system.treasury
     })
 
     console.log(`------- END -------`)
