@@ -23,15 +23,25 @@ import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 // -- Procedures
 const _validateBeforeDeployments = async ({
   signer,
-  kglToken
+  kglToken,
+  premine
 }: {
   signer: SignerWithAddress
   kglToken: string
+  premine: {
+    total: string
+    holders: { [key in string]: string }
+  }
 }): Promise<boolean> => {
   // check - deployer has kgl
   const kglBalance = await ERC20__factory.connect(kglToken, signer).balanceOf(signer.address)
   if (kglBalance.lte(0)) {
     console.log("[ERROR] Deployer has greater than 0 kgls")
+    return false
+  }
+  const totalFromHolders = Object.values(premine.holders).reduce((pV, cV) => pV.add(BigNumber.from(cV)), BigNumber.from("0"))
+  if (!BigNumber.from(premine.total).eq(totalFromHolders)) {
+    console.log("[ERROR] Premine total does not match to calculated total from holders")
     return false
   }
   return true
@@ -43,7 +53,7 @@ const _transferOwnershipAndSetOperatorInVoterProxy = async ({
   addresses,
 }: {
   signer: SignerWithAddress
-  adminAddress: string
+  adminAddress?: string
   addresses: {
     booster: string
     kaglaVoterProxy: string
@@ -54,7 +64,7 @@ const _transferOwnershipAndSetOperatorInVoterProxy = async ({
     signer,
   )
   const currentOwner = await voterProxy.owner()
-  if (currentOwner != adminAddress) {
+  if (adminAddress && currentOwner != adminAddress) {
     console.log('> KaglaVoterProxy#transferOwnership')
     await (
       await voterProxy.transferOwnership(adminAddress, { from: currentOwner })
@@ -78,6 +88,25 @@ const _mintMuuuToken = async ({
     signer.address,
     amount.toString(),
   )
+  await tx.wait()
+}
+
+const _transferPreminedMuuuToken = async ({
+  signer,
+  muuuTokenAddress,
+  premineHolders,
+  treasuryAddress
+}: {
+  signer: SignerWithAddress
+  muuuTokenAddress: string
+  premineHolders: {
+    deployer: string,
+    treasury: string,
+  }
+  treasuryAddress: string
+}) => {
+  console.log('> MuuuToken#transfer (from deployer to treasury)')
+  const tx = await MuuuToken__factory.connect(muuuTokenAddress, signer).transfer(treasuryAddress, premineHolders.treasury)
   await tx.wait()
 }
 
@@ -456,7 +485,8 @@ task(
 
       const isContinue = await _validateBeforeDeployments({
         signer: signer,
-        kglToken: constants.tokens.KGL
+        kglToken: constants.tokens.KGL,
+        premine: constants.premine
       })
       if (!isContinue) return
 
@@ -467,15 +497,8 @@ task(
         TaskUtils.resetContractAddressesJson({ network: network.name })
       }
 
-
       const adminAddress = signer.address // TODO: from constants
-      const totalVested: BigNumber = constants.vested.amounts.reduce(
-        (previousValue, currentValue) =>
-          BigNumber.from(previousValue).add(BigNumber.from(currentValue)),
-        BigNumber.from('0'),
-      ) // calculate total amounts
-      const premine = BigNumber.from(constants.premine)
-      const mintAmount = totalVested.add(premine)
+      const mintAmount = BigNumber.from(constants.premine.total)
 
       // DEBUG
       const json = `./contracts-${network.name}.json`
@@ -532,6 +555,13 @@ task(
         signer,
         muuuTokenAddress: muuuTokenAddress,
         amount: mintAmount,
+      })
+      // custom operation
+      await _transferPreminedMuuuToken({
+        signer,
+        muuuTokenAddress: muuuTokenAddress,
+        premineHolders: constants.premine.holders,
+        treasuryAddress: constants.contracts.treasury.address
       })
 
       const { rewardFactoryAddress, tokenFactoryAddress, stashFactoryAddress } =

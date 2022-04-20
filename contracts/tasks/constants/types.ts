@@ -32,10 +32,12 @@ export type ConstantsType = {
       merkleRoot: string
     }
   }
-  premine: string,
-  vested: {
-    // ref: distro.json
-    addresses: string[] // include team, invester, treasury
-    amounts: string[] // include team, invester, treasury
-  }
+  adminAddress: string | null,
+  premine: {
+    total: string,
+    holders: {
+      deployer: string,
+      treasury: string,
+    }
+  },
 }
