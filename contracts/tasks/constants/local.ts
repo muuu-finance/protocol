@@ -36,10 +36,6 @@ export const local: ConstantsType = {
     },
   },
   premine: ethers.utils.parseEther((50 * 1_000_000).toString()).toString(),
-  vested: {
-    addresses: [],
-    amounts: [],
-  },
 }
 
 // vested: {
