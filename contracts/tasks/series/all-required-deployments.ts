@@ -91,6 +91,25 @@ const _mintMuuuToken = async ({
   await tx.wait()
 }
 
+const _transferPreminedMuuuToken = async ({
+  signer,
+  muuuTokenAddress,
+  premineHolders,
+  treasuryAddress
+}: {
+  signer: SignerWithAddress
+  muuuTokenAddress: string
+  premineHolders: {
+    deployer: string,
+    treasury: string,
+  }
+  treasuryAddress: string
+}) => {
+  console.log('> MuuuToken#transfer (from deployer to treasury)')
+  const tx = await MuuuToken__factory.connect(muuuTokenAddress, signer).transfer(treasuryAddress, premineHolders.treasury)
+  await tx.wait()
+}
+
 // contracts/migrations/1_deploy_contracts.js#L251-255
 const _prepareAfterDeployingKglDepositor = async ({
   signer,
@@ -536,6 +555,13 @@ task(
         signer,
         muuuTokenAddress: muuuTokenAddress,
         amount: mintAmount,
+      })
+      // custom operation
+      await _transferPreminedMuuuToken({
+        signer,
+        muuuTokenAddress: muuuTokenAddress,
+        premineHolders: constants.premine.holders,
+        treasuryAddress: constants.contracts.treasury.address
       })
 
       const { rewardFactoryAddress, tokenFactoryAddress, stashFactoryAddress } =
