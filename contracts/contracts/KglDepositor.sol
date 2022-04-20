@@ -16,7 +16,7 @@ contract KglDepositor is Ownable {
   address public kgl;
   address public votingEscrow;
 
-  uint256 private constant MAXTIME = 4 * 364 * 86400;
+  uint256 private constant MAXTIME = 2 * 364 * 86400;
   uint256 private constant WEEK = 7 * 86400;
 
   uint256 public lockIncentive = 10; //incentive to users who spend gas to lock kgl
