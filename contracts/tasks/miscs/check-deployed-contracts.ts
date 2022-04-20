@@ -411,10 +411,10 @@ task('check-deployed-contracts', 'Check deployed contracts').setAction(
       providerOrSigner: ethers.provider,
     })
 
-    await checkArbitratorVault({
-      address: system.arbitratorVault,
-      providerOrSigner: ethers.provider,
-    })
+    // await checkArbitratorVault({
+    //   address: system.arbitratorVault,
+    //   providerOrSigner: ethers.provider,
+    // })
 
     await checkMuuuLockerV2({
       address: system.muuuLockerV2,
