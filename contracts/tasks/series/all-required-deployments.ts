@@ -468,7 +468,7 @@ task(
       }
 
       const adminAddress = signer.address // TODO: from constants
-      const mintAmount = BigNumber.from(constants.premine)
+      const mintAmount = BigNumber.from(constants.premine.total)
 
       // DEBUG
       const json = `./contracts-${network.name}.json`

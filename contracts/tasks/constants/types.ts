@@ -33,5 +33,11 @@ export type ConstantsType = {
     }
   }
   adminAddress: string | null,
-  premine: string,
+  premine: {
+    total: string,
+    holders: {
+      deployer: string,
+      treasury: string,
+    }
+  },
 }
