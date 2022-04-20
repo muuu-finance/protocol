@@ -33,9 +33,4 @@ export type ConstantsType = {
     }
   }
   premine: string,
-  vested: {
-    // ref: distro.json
-    addresses: string[] // include team, invester, treasury
-    amounts: string[] // include team, invester, treasury
-  }
 }

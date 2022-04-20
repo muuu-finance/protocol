@@ -49,8 +49,4 @@ export const shiden: ConstantsType = {
     },
   },
   premine: ethers.utils.parseEther((50 * 1_000_000).toString()).toString(),
-  vested: { // dummy
-    addresses: [],
-    amounts: [],
-  },
 }
