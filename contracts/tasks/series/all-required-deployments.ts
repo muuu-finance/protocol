@@ -43,7 +43,7 @@ const _transferOwnershipAndSetOperatorInVoterProxy = async ({
   addresses,
 }: {
   signer: SignerWithAddress
-  adminAddress: string
+  adminAddress?: string
   addresses: {
     booster: string
     kaglaVoterProxy: string
@@ -54,7 +54,7 @@ const _transferOwnershipAndSetOperatorInVoterProxy = async ({
     signer,
   )
   const currentOwner = await voterProxy.owner()
-  if (currentOwner != adminAddress) {
+  if (adminAddress && currentOwner != adminAddress) {
     console.log('> KaglaVoterProxy#transferOwnership')
     await (
       await voterProxy.transferOwnership(adminAddress, { from: currentOwner })

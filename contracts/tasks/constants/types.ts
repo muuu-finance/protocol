@@ -32,5 +32,6 @@ export type ConstantsType = {
       merkleRoot: string
     }
   }
+  adminAddress: string | null,
   premine: string,
 }
