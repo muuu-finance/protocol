@@ -467,15 +467,8 @@ task(
         TaskUtils.resetContractAddressesJson({ network: network.name })
       }
 
-
       const adminAddress = signer.address // TODO: from constants
-      const totalVested: BigNumber = constants.vested.amounts.reduce(
-        (previousValue, currentValue) =>
-          BigNumber.from(previousValue).add(BigNumber.from(currentValue)),
-        BigNumber.from('0'),
-      ) // calculate total amounts
-      const premine = BigNumber.from(constants.premine)
-      const mintAmount = totalVested.add(premine)
+      const mintAmount = BigNumber.from(constants.premine)
 
       // DEBUG
       const json = `./contracts-${network.name}.json`
