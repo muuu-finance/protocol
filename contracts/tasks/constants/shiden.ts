@@ -49,5 +49,11 @@ export const shiden: ConstantsType = {
     },
   },
   adminAddress: null,
-  premine: ethers.utils.parseEther((50 * 1_000_000).toString()).toString(),
+  premine: {
+    total: ethers.utils.parseEther((50 * 1_000_000).toString()).toString(),
+    holders: {
+      deployer: ethers.utils.parseEther((40 * 1_000_000).toString()).toString(),
+      treasury: ethers.utils.parseEther((10 * 1_000_000).toString()).toString(),
+    }
+  }
 }
