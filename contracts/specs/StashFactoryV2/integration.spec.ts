@@ -99,24 +99,31 @@ describe('StashFactoryV2 - integration', () => {
   })
 
   describe("StashFactoryV2#CreateStash", () => {
-    it("success", async () => {
-      const { booster, deployer, sFactory } = await fullSetup()
-      await setImplementationToStashFactoryV2({
-        stashFactoryV2: sFactory,
-        operator: deployer,
-        deployer
+    describe("success", async () => {
+      const setupWithSettingImplementation = async () => {
+        const { booster, deployer, sFactory } = await fullSetup()
+        await setImplementationToStashFactoryV2({
+          stashFactoryV2: sFactory,
+          operator: deployer,
+          deployer
+        })
+        return { booster, deployer }
+      }
+
+      it("until Booster#addPool", async () => {
+        const { booster, deployer } = await setupWithSettingImplementation()
+  
+        const lpToken = await new ERC20__factory(deployer).deploy(
+          'Dummy LP Token',
+          'DUMMY',
+        )
+        const gauge = createRandomAddress()
+        await expect(booster.connect(deployer).addPool(
+          lpToken.address,
+          gauge,
+          3
+        )).to.emit(booster, "PoolAdded").withArgs(lpToken.address, gauge, 3)
       })
-      
-      const lpToken = await new ERC20__factory(deployer).deploy(
-        'Dummy LP Token',
-        'DUMMY',
-      )
-      const gauge = createRandomAddress()
-      await expect(booster.connect(deployer).addPool(
-        lpToken.address,
-        gauge,
-        3
-      )).to.emit(booster, "PoolAdded").withArgs(lpToken.address, gauge, 3)
     })
   })
 })
