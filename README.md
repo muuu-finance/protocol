@@ -26,6 +26,8 @@ L contracts-*.json // addresses to production contracts for each network
 
 #### Launch
 
+**Local**
+
 ```bash
 # Prerequisite
 # - global install truffle
@@ -43,10 +45,22 @@ yarn deploy-locker:with-mocks:local
 # Or
 yarn deploy:full:local # exec all commands as mentioned above
 
+# if use TreasuryFunds
+yarn deploy-treasury-funds:local
+# update treasury's address in contracts/tasks/constants/local.ts
+yarn deploy:full:local
+```
+
+**Global Network**
+
+```bash
 # In global network
 cp .env.template .env
 # & add params to .env
 # update environments parameters in contracts/tasks/constants/...
+
+yarn deploy-treasury-funds:Nnnn
+# update treasury's address in contracts/tasks/constants/Nnnn.ts
 yarn deploy:Nnnn
 yarn deploy-locker:Nnnn
 
