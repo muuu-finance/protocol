@@ -159,32 +159,8 @@ describe('StashFactoryV2 - integration', () => {
         expect(_gauge).to.equal(gauge.address)
         expect(_rewardFactory).to.equal(await booster.rewardFactory())
       })
-    })
 
-    describe("failure", () => {
-      it("when no setImplementation", async () => {
-        const { deployer, booster } = await fullSetup()
-
-        const { lpToken, gauge } = await generateInputForAddPool(deployer)
-        await expect(booster.connect(deployer).addPool(
-          lpToken.address,
-          gauge.address,
-          3
-        )).to.be.revertedWith("0 impl")
-      })
-
-      it("when stashVersion = 3", async () => {
-        const { deployer, booster } = await fullSetup()
-
-        const { lpToken, gauge } = await generateInputForAddPool(deployer)
-        await expect(booster.connect(deployer).addPool(
-          lpToken.address,
-          gauge.address,
-          3
-        )).to.be.revertedWith("0 impl")
-      })
-
-      describe("when stashVersion != 3", () => {
+      describe("when stashVersion != 3, poolInfo.stash is zero address", () => {
         const boolInfoAfterAddingPool = async (_stashVersion: number) => {
           const { booster, deployer } = await setupWithSettingImplementation()
           const { lpToken, gauge } = await generateInputForAddPool(deployer)
@@ -216,6 +192,31 @@ describe('StashFactoryV2 - integration', () => {
           async () => await expect((await boolInfoAfterAddingPool(4)).stash)
             .to.equal(ethers.constants.AddressZero)
         )
+      })
+    })
+
+    describe("failure", () => {
+      it("when no setImplementation", async () => {
+        const { deployer, booster } = await fullSetup()
+
+        const { lpToken, gauge } = await generateInputForAddPool(deployer)
+        await expect(booster.connect(deployer).addPool(
+          lpToken.address,
+          gauge.address,
+          3
+        )).to.be.revertedWith("0 impl")
+      })
+
+      it("when stashVersion = 3 & fake gauge", async () => {
+        const { deployer, booster } = await fullSetup()
+
+        const { lpToken } = await generateInputForAddPool(deployer)
+        const gauge = createRandomAddress()
+        await expect(booster.connect(deployer).addPool(
+          lpToken.address,
+          gauge,
+          3
+        )).to.be.revertedWith("0 impl")
       })
     })
   })
