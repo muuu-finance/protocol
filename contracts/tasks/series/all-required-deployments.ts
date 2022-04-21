@@ -3,6 +3,7 @@ import { BigNumber } from 'ethers'
 import fs from 'fs'
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
+import { deployExtraRewardStashV3 } from '../../helpers/contracts-deploy-helpers'
 import {
   Booster__factory,
   ClaimZap__factory,
@@ -13,6 +14,7 @@ import {
   MerkleAirdrop__factory,
   MuKglToken__factory,
   MuuuToken__factory,
+  StashFactoryV2__factory,
   VestedEscrow__factory,
 } from '../../types'
 import { loadConstants } from '../constants'
@@ -108,6 +110,28 @@ const _transferPreminedMuuuToken = async ({
   console.log('> MuuuToken#transfer (from deployer to treasury)')
   const tx = await MuuuToken__factory.connect(muuuTokenAddress, signer).transfer(treasuryAddress, premineHolders.treasury)
   await tx.wait()
+}
+
+const _setImplementationToStashFactory = async ({
+  signer,
+  networkName,
+  stashFactoryV2Address
+}: {
+  signer: SignerWithAddress
+  networkName: string
+  stashFactoryV2Address: string
+}) => {
+  console.log('> deploy ExtraRewardStashV3 for setting to StashFactoryV2')
+  const v3Impl = await deployExtraRewardStashV3({ deployer: signer })
+  TaskUtils.writeContractAddress({
+    group: ContractJsonGroups.system,
+    name: 'extraRewardStashV3',
+    value: v3Impl.address,
+    fileName: TaskUtils.getFilePath({ network: networkName }),
+  })
+  const _instance = StashFactoryV2__factory.connect(stashFactoryV2Address, signer)
+  console.log('> StashFactoryV2#setImplementation')
+  await (await _instance.setImplementation(v3Impl.address)).wait()
 }
 
 // contracts/migrations/1_deploy_contracts.js#L251-255
@@ -562,6 +586,13 @@ task(
 
       const { rewardFactoryAddress, tokenFactoryAddress, stashFactoryAddress } =
         await hre.run(`deploy-FactoryContracts`, commonTaskArgs)
+
+      // custom operation
+      await _setImplementationToStashFactory({
+        signer,
+        networkName: network.name,
+        stashFactoryV2Address: stashFactoryAddress
+      })
 
       const muKglTokenAddress = await hre.run(
         `deploy-${ContractKeys.MuKglToken}`,

@@ -1,8 +1,9 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import {
+  deployProxyFactory,
   deployRewardFactory,
-  deployStashFactory,
+  deployStashFactoryV2,
   deployTokenFactory,
 } from '../../helpers/contracts-deploy-helpers'
 import { loadConstants } from '../constants'
@@ -82,11 +83,22 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
       })
       console.log(`>> deployed ${ContractKeys.TokenFactory}\n`)
 
-      console.log(`> start deploy ${ContractKeys.StashFactory}`)
-      const sFactoryInstance = await deployStashFactory({
+      console.log(`> start deploy ${ContractKeys.ProxyFactory}`)
+      const proxyFactory = await deployProxyFactory({ deployer: _deployer })
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'proxyFactory',
+        value: proxyFactory.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
+      })
+      console.log(`>> deployed ${ContractKeys.ProxyFactory}\n`)
+
+      console.log(`> start deploy ${ContractKeys.StashFactoryV2}`)
+      const sFactoryInstance = await deployStashFactoryV2({
         deployer: _deployer,
         operator: deployeds.system.booster,
-        rewardFactory: rFactoryInstance.address, // TODO
+        rewardFactory: rFactoryInstance.address,
+        proxyFactory: proxyFactory.address
       })
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,
@@ -94,7 +106,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         value: sFactoryInstance.address,
         fileName: TaskUtils.getFilePath({ network: network.name }),
       })
-      console.log(`>> deployed ${ContractKeys.StashFactory}\n`)
+      console.log(`>> deployed ${ContractKeys.StashFactoryV2}\n`)
 
       if (!inMultiDeploymentFlow)
         console.log(`--- [deploy-${CONTRACT_KEY}] FINISHED ---`)
