@@ -56,12 +56,10 @@ export const deployTreasuryFunds = async ({
   operator
 }: DeployCommonArgs & {
   operator: string
-}) => {
-  withSaveAndVerify(
-    await new TreasuryFunds__factory(deployer).deploy(operator),
-    ContractKeys.TreasuryFunds,
-  )
-}
+}) => withSaveAndVerify(
+  await new TreasuryFunds__factory(deployer).deploy(operator),
+  ContractKeys.TreasuryFunds,
+)
 
 export const deployKaglaVoterProxy = async ({
   deployer,
