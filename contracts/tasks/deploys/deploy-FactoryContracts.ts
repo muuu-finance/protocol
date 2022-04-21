@@ -85,6 +85,12 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
 
       console.log(`> start deploy ${ContractKeys.ProxyFactory}`)
       const proxyFactory = await deployProxyFactory({ deployer: _deployer })
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'proxyFactory',
+        value: proxyFactory.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
+      })
       console.log(`>> deployed ${ContractKeys.ProxyFactory}\n`)
 
       console.log(`> start deploy ${ContractKeys.StashFactoryV2}`)
