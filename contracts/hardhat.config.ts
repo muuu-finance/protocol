@@ -1,4 +1,5 @@
 import '@nomiclabs/hardhat-ethers'
+import "@nomiclabs/hardhat-waffle";
 import '@typechain/hardhat'
 import { BigNumber, ethers } from 'ethers'
 import fs from 'fs'
