@@ -1,4 +1,5 @@
 import '@nomiclabs/hardhat-ethers'
+import "@nomiclabs/hardhat-waffle";
 import '@typechain/hardhat'
 import { BigNumber, ethers } from 'ethers'
 import fs from 'fs'
@@ -109,6 +110,9 @@ const config: HardhatUserConfig = {
     settings: {
       optimizer: { enabled: true, runs: 200 },
     },
+  },
+  paths: {
+    tests: './specs',
   },
   typechain: {
     outDir: 'types',
