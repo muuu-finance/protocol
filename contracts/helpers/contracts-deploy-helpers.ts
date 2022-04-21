@@ -138,19 +138,6 @@ export const deployTokenFactory = async ({
     ContractKeys.TokenFactory,
   )
 
-export const deployStashFactory = async ({
-  deployer,
-  operator,
-  rewardFactory,
-}: DeployCommonArgs & {
-  operator: string
-  rewardFactory: string
-}) =>
-  withSaveAndVerify(
-    await new StashFactory__factory(deployer).deploy(operator, rewardFactory),
-    ContractKeys.StashFactory,
-  )
-
 export const deployStashFactoryV2 = async ({
     deployer,
     operator,
