@@ -14,7 +14,9 @@ import {
   MuuuStakingProxyV2__factory,
   MuuuToken__factory,
   PoolManager__factory,
+  ProxyFactory__factory,
   RewardFactory__factory,
+  StashFactoryV2__factory,
   StashFactory__factory,
   TokenFactory__factory,
   TreasuryFunds__factory,
@@ -147,6 +149,30 @@ export const deployStashFactory = async ({
     await new StashFactory__factory(deployer).deploy(operator, rewardFactory),
     ContractKeys.StashFactory,
   )
+
+export const deployStashFactoryV2 = async ({
+    deployer,
+    operator,
+    rewardFactory,
+    proxyFactory
+  }: DeployCommonArgs & {
+    operator: string
+    rewardFactory: string
+    proxyFactory: string
+  }) =>
+    withSaveAndVerify(
+      await new StashFactoryV2__factory(deployer).deploy(
+        operator,
+        rewardFactory,
+        proxyFactory
+      ),
+      ContractKeys.StashFactoryV2,
+    )
+
+export const deployProxyFactory = async ({ deployer }: DeployCommonArgs) => withSaveAndVerify(
+  await new ProxyFactory__factory(deployer).deploy(),
+  ContractKeys.ProxyFactory
+)
 
 export const deployMuKglToken = async ({ deployer }: DeployCommonArgs) =>
   withSaveAndVerify(
