@@ -54,7 +54,7 @@ describe('StashFactoryV2', () => {
     expect(v3Impl).to.equal(ethers.constants.AddressZero)
   })
 
-  describe(",setImplementation", () => {
+  describe(".setImplementation", () => {
     it("when executer is operator", async () => {
       const [_, operator] = await ethers.getSigners()
       const booster = await deployBooster(operator)
@@ -91,6 +91,22 @@ describe('StashFactoryV2', () => {
           createRandomAddress(),
         )
       ).to.be.revertedWith("!auth")
+    })
+  })
+
+  describe(".CreateStash", () => {
+    it("when executor is not operator", async () => {
+      const { deployer, stashFactoryV2 } = await prepare()
+      const _instance = stashFactoryV2.connect(deployer)
+
+      await expect(
+        _instance.CreateStash(
+          0,
+          ethers.constants.AddressZero,
+          ethers.constants.AddressZero,
+          0
+        )
+      ).to.be.revertedWith("!authorized")
     })
   })
 })
