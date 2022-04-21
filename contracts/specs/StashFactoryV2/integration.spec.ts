@@ -162,6 +162,52 @@ describe('StashFactoryV2 - integration', () => {
         expect(_rewardFactory).to.equal(await booster.rewardFactory())
       })
     })
+
+    describe("failure", () => {
+      it("when no setImplementation", async () => {
+        const { deployer, booster } = await fullSetup()
+
+        const { lpToken, gauge } = await generateInputForAddPool(deployer)
+        await expect(booster.connect(deployer).addPool(
+          lpToken.address,
+          gauge,
+          3
+        )).to.be.revertedWith("0 impl")
+      })
+
+      describe("when stashVersion != 3", () => {
+        const addPool = async (_stashVersion: number) => {
+          const { booster, deployer } = await setupWithSettingImplementation()
+          const { lpToken, gauge } = await generateInputForAddPool(deployer)
+          return booster.connect(deployer).addPool(
+            lpToken.address,
+            gauge,
+            _stashVersion
+          )
+        }
+
+        it(
+          "when stashVersion = 0",
+          async () => await expect(addPool(0))
+            .to.be.revertedWith("stash version mismatch")
+        )
+        it(
+          "when stashVersion = 1",
+          async () => await expect(addPool(1))
+            .to.be.revertedWith("0 impl")
+        )
+        it(
+          "when stashVersion = 2",
+          async () => await expect(addPool(2))
+            .to.be.revertedWith("stash version mismatch")
+        )
+        it(
+          "when stashVersion = 4",
+          async () => await expect(addPool(4))
+            .to.be.revertedWith("stash version mismatch")
+        )
+      })
+    })
   })
 
   describe("ExtraRewardStashV3#setExtraReward after added pool", () => {
