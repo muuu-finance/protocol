@@ -19,9 +19,9 @@ contract Booster is Ownable {
   address public voteParameter;
 
   uint256 public lockIncentive = 1000; //incentive to kgl stakers
-  uint256 public stakerIncentive = 450; //incentive to native token stakers
-  uint256 public earmarkIncentive = 50; //incentive to users who spend gas to make calls
-  uint256 public nativeTokenLockIncentive = 0; //incentive to native token lockers (in addition to stakerIncentive)
+  uint256 public stakerIncentive = 500; //incentive to native token stakers
+  uint256 public earmarkIncentive = 0; //incentive to users who spend gas to make calls
+  uint256 public nativeTokenLockIncentive = 100; //incentive to native token lockers (in addition to stakerIncentive)
   uint256 public constant MaxFees = 2000;
   uint256 public constant FEE_DENOMINATOR = 10000;
   uint256 public rewardMultiplier = 8250; // 0.0825

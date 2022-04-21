@@ -47,7 +47,7 @@ contract MuuuStakingProxyV2 {
 
   address public owner;
   address public pendingOwner;
-  uint256 public callIncentive = 100;
+  uint256 public callIncentive = 0;
 
   mapping(address => bool) public distributors;
   bool public UseDistributors = true;
@@ -170,9 +170,11 @@ contract MuuuStakingProxyV2 {
     if (muKglBal > 0) {
       uint256 incentiveAmount = muKglBal.mul(callIncentive).div(denominator);
       muKglBal = muKglBal.sub(incentiveAmount);
-
-      //send incentives
-      IERC20(muKgl).safeTransfer(msg.sender, incentiveAmount);
+      
+      if (incentiveAmount > 0) {
+        //send incentives
+        IERC20(muKgl).safeTransfer(msg.sender, incentiveAmount);
+      }
 
       //update rewards
       IMuuuLocker(rewards).notifyRewardAmount(muKgl, muKglBal);
