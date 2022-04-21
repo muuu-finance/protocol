@@ -15,6 +15,7 @@ import {
   MuuuStakingProxyV2__factory,
   MuuuToken__factory,
   PoolManager__factory,
+  TreasuryFunds__factory,
   VotingBalanceV2Gauges__factory,
 } from '../../types'
 import { TaskUtils } from '../utils'
@@ -367,6 +368,18 @@ const checkVotingBalanceV2Gauges = async (args: CheckFunctionArgs) => {
   console.log(`--- [end] VotingBalanceV2Gauges ---`)
 }
 
+const checkTreasuryFunds = async (args: CheckFunctionArgs) => {
+  console.log(`--- [start] TreasuryFunds ---`)
+  console.log(`> address ... ${args.address}`)
+  const _instance = await TreasuryFunds__factory.connect(
+    args.address,
+    args.providerOrSigner,
+  )
+  const targets = [ { label: 'operator', fn: _instance.operator } ]
+  for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
+  console.log(`--- [end] TreasuryFunds ---`)
+}
+
 task('check-deployed-contracts', 'Check deployed contracts').setAction(
   async ({}, hre: HardhatRuntimeEnvironment) => {
     const { network, ethers } = hre
@@ -450,6 +463,11 @@ task('check-deployed-contracts', 'Check deployed contracts').setAction(
       address: system.muuu,
       providerOrSigner: ethers.provider,
       treasuryAddress: system.treasury
+    })
+
+    await checkTreasuryFunds({
+      address: system.treasury,
+      providerOrSigner: ethers.provider,
     })
 
     console.log(`------- END -------`)

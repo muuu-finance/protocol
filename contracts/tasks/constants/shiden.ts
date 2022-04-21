@@ -35,7 +35,9 @@ export const shiden: ConstantsType = {
   ],
   contracts: {
     treasury: {
-      address: '0xCdfc500F7f0FCe1278aECb0340b523cD55b3EBbb',
+      address: '0xCdfc500F7f0FCe1278aECb0340b523cD55b3EBbb', // set TreasuryFunds address after deployed
+      operator: '' // if possible, set TreasuryFunds's operator before deployed
+
     },
     muKglRewards: {
       uid: 0,

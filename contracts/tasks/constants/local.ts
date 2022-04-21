@@ -22,6 +22,7 @@ export const local: ConstantsType = {
   contracts: {
     treasury: {
       address: '0xCdfc500F7f0FCe1278aECb0340b523cD55b3EBbb',
+      operator: undefined
     },
     muKglRewards: {
       uid: 0,

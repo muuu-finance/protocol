@@ -17,6 +17,7 @@ import {
   RewardFactory__factory,
   StashFactory__factory,
   TokenFactory__factory,
+  TreasuryFunds__factory,
   VestedEscrow__factory,
   VotingBalanceV2Gauges__factory,
 } from '../types'
@@ -49,6 +50,17 @@ type DeployCommonArgs = {
   deployer: Signer
   verify?: boolean
 }
+
+export const deployTreasuryFunds = async ({
+  deployer,
+  operator
+}: DeployCommonArgs & {
+  operator: string
+}) => withSaveAndVerify(
+  await new TreasuryFunds__factory(deployer).deploy(operator),
+  ContractKeys.TreasuryFunds,
+)
+
 export const deployKaglaVoterProxy = async ({
   deployer,
   kgl,
