@@ -72,11 +72,7 @@ const setImplementationToStashFactoryV2 = async ({stashFactoryV2, operator, depl
   const _instance = stashFactoryV2.connect(operator)
   const v3 = await new ExtraRewardStashV3__factory(deployer).deploy()
   await v3.deployTransaction.wait()
-  await (await _instance.setImplementation(
-    ethers.constants.AddressZero,
-    ethers.constants.AddressZero,
-    v3.address
-  ))
+  await (await _instance.setImplementation(v3.address))
   return {
     v3Implementation: v3
   }
