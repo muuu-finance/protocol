@@ -252,7 +252,7 @@ module.exports = function (deployer, network, accounts) {
     })
     .then(() => voter.setDepositor(deposit.address))
     .then(() => deposit.initialLock())
-    .then(() => booster.setTreasury(deposit.address))
+    .then(() => booster.setLockerStakingProxy(deposit.address)) // temp
     .then(() =>
       deployer.deploy(
         BaseRewardPool,
@@ -282,8 +282,8 @@ module.exports = function (deployer, network, accounts) {
       muuuRewards = instance
       addContract('system', 'muuuRewards', muuuRewards.address)
       return booster.setRewardContracts(
-        muKglRewards.address,
-        muuuRewards.address,
+        muKglRewards.address, // BaseRewardPool
+        muuuRewards.address, // muuuRewardPool
       )
     })
     .then(() =>
