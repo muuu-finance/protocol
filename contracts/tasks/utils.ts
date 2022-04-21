@@ -137,6 +137,7 @@ export const ContractJsonGroups = {
 }
 
 export const ContractKeys = {
+  TreasuryFunds: 'TreasuryFunds',
   KaglaVoterProxy: 'KaglaVoterProxy',
   MuuuToken: 'MuuuToken',
   Booster: 'Booster',
