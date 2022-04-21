@@ -59,8 +59,9 @@ const fullSetup = async () => {
   ))
 
   return {
-    booster,
     deployer,
+    booster,
+    voterProxy,
     rFactory,
     sFactory,
     tFactory,
@@ -99,18 +100,18 @@ describe('StashFactoryV2 - integration', () => {
   })
 
   describe("StashFactoryV2#CreateStash", () => {
-    describe("success", async () => {
-      const setupWithSettingImplementation = async () => {
-        const { booster, deployer, sFactory } = await fullSetup()
-        await setImplementationToStashFactoryV2({
-          stashFactoryV2: sFactory,
-          operator: deployer,
-          deployer
-        })
-        return { booster, deployer }
-      }
+    const setupWithSettingImplementation = async () => {
+      const { deployer, booster, sFactory } = await fullSetup()
+      await setImplementationToStashFactoryV2({
+        stashFactoryV2: sFactory,
+        operator: deployer,
+        deployer
+      })
+      return { deployer, booster }
+    }
 
-      it("until Booster#addPool", async () => {
+    describe("success", async () => {
+      it("success & emit event (PoolAdded) by Booster#addPool", async () => {
         const { booster, deployer } = await setupWithSettingImplementation()
   
         const lpToken = await new ERC20__factory(deployer).deploy(
@@ -123,6 +124,38 @@ describe('StashFactoryV2 - integration', () => {
           gauge,
           3
         )).to.emit(booster, "PoolAdded").withArgs(lpToken.address, gauge, 3)
+      })
+
+      it("check created ExtraRewardStashV3", async () => {
+        const { deployer, booster } = await setupWithSettingImplementation()
+  
+        // Booster#addPool
+        const lpToken = await new ERC20__factory(deployer).deploy(
+          'Dummy LP Token',
+          'DUMMY',
+        )
+        const gauge = createRandomAddress()
+        await (await booster.connect(deployer).addPool(
+          lpToken.address,
+          gauge,
+          3
+        )).wait()
+
+        const poolInfo = await booster.connect(ethers.provider).poolInfo(0)
+        expect(poolInfo.lptoken).to.equal(lpToken.address)
+        const stashInstance = ExtraRewardStashV3__factory.connect(poolInfo.stash, ethers.provider)
+        const [_pid, _operator, _staker, _gauge, _rewardFactory] = await Promise.all([
+          stashInstance.pid(),
+          stashInstance.operator(),
+          stashInstance.staker(),
+          stashInstance.gauge(),
+          stashInstance.rewardFactory(),
+        ])
+        expect(_pid).to.equal(0)
+        expect(_operator).to.equal(booster.address)
+        expect(_staker).to.equal(await booster.staker())
+        expect(_gauge).to.equal(gauge)
+        expect(_rewardFactory).to.equal(await booster.rewardFactory())
       })
     })
   })
