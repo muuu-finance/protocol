@@ -237,7 +237,10 @@ contract Booster is Ownable {
     //create a reward contract for kgl rewards
     address newRewardPool = IRewardFactory(rewardFactory).CreateKglRewards(pid, token);
     //create a stash to handle extra incentives
-    address stash = IStashFactory(stashFactory).CreateStash(pid, _gauge, staker, _stashVersion);
+    address stash = address(0);
+    if (_stashVersion != 0) {
+      stash = IStashFactory(stashFactory).CreateStash(pid, _gauge, staker, _stashVersion);
+    }
 
     //add the new pool
     poolInfo.push(
