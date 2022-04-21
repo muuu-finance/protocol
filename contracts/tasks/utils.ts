@@ -143,7 +143,6 @@ export const ContractKeys = {
   Booster: 'Booster',
   RewardFactory: 'RewardFactory',
   TokenFactory: 'TokenFactory',
-  StashFactory: 'StashFactory',
   StashFactoryV2: 'StashFactoryV2',
   ProxyFactory: "ProxyFactory",
   ExtraRewardStashV3: "ExtraRewardStashV3",
