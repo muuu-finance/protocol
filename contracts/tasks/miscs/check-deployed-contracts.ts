@@ -119,7 +119,7 @@ const checkBooster = async (args: CheckFunctionArgs) => {
     { label: 'stashFactory', fn: _instance.stashFactory },
     { label: 'tokenFactory', fn: _instance.tokenFactory },
     { label: 'voteDelegate', fn: _instance.voteDelegate },
-    { label: 'treasury', fn: _instance.treasury },
+    { label: 'lockerStakingProxy', fn: _instance.lockerStakingProxy },
     { label: 'stakerRewards', fn: _instance.stakerRewards },
     { label: 'lockRewards', fn: _instance.lockRewards },
     { label: 'lockFees', fn: _instance.lockFees },
