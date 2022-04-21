@@ -172,35 +172,36 @@ describe('StashFactoryV2 - integration', () => {
       })
 
       describe("when stashVersion != 3", () => {
-        const addPool = async (_stashVersion: number) => {
+        const boolInfoAfterAddingPool = async (_stashVersion: number) => {
           const { booster, deployer } = await setupWithSettingImplementation()
           const { lpToken, gauge } = await generateInputForAddPool(deployer)
-          return booster.connect(deployer).addPool(
+          await (await booster.connect(deployer).addPool(
             lpToken.address,
             gauge,
             _stashVersion
-          )
+          )).wait()
+          return await booster.connect(ethers.provider).poolInfo(0)
         }
 
         it(
           "when stashVersion = 0",
-          async () => await expect(addPool(0))
-            .to.be.revertedWith("stash version mismatch")
+          async () => await expect((await boolInfoAfterAddingPool(0)).stash)
+            .to.equal(ethers.constants.AddressZero)
         )
         it(
           "when stashVersion = 1",
-          async () => await expect(addPool(1))
-            .to.be.revertedWith("0 impl")
+          async () => await expect((await boolInfoAfterAddingPool(1)).stash)
+            .to.equal(ethers.constants.AddressZero)
         )
         it(
           "when stashVersion = 2",
-          async () => await expect(addPool(2))
-            .to.be.revertedWith("stash version mismatch")
+          async () => await expect((await boolInfoAfterAddingPool(2)).stash)
+            .to.equal(ethers.constants.AddressZero)
         )
         it(
           "when stashVersion = 4",
-          async () => await expect(addPool(4))
-            .to.be.revertedWith("stash version mismatch")
+          async () => await expect((await boolInfoAfterAddingPool(4)).stash)
+            .to.equal(ethers.constants.AddressZero)
         )
       })
     })
