@@ -2,7 +2,7 @@ import { expect } from "chai"
 import { Signer, Wallet } from "ethers";
 import { ethers } from "hardhat"
 import * as DeployHelper from "../../helpers/contracts-deploy-helpers";
-import { Booster, ERC20__factory, ExtraRewardStashV3__factory, ProxyFactory__factory, StashFactoryV2, StashFactoryV2__factory } from "../../types"
+import { BaseRewardPool__factory, Booster, ERC20__factory, ExtraRewardStashV3__factory, ProxyFactory__factory, StashFactoryV2, StashFactoryV2__factory } from "../../types"
 
 const createRandomAddress = () => Wallet.createRandom().address;
 
@@ -82,6 +82,17 @@ const setImplementationToStashFactoryV2 = async ({stashFactoryV2, operator, depl
   }
 }
 
+const generateInputForAddPool = async (deployer: Signer) => {
+  const lpToken = await new ERC20__factory(deployer).deploy(
+    'Dummy LP Token',
+    'DUMMY',
+  )
+  const gauge = createRandomAddress()
+  return {
+    lpToken, gauge
+  }
+}
+
 describe('StashFactoryV2 - integration', () => {
   it("check booster status by fullSetup", async () => {
     const { booster, deployer, rFactory, sFactory, tFactory } = await fullSetup()
@@ -114,11 +125,7 @@ describe('StashFactoryV2 - integration', () => {
       it("success & emit event (PoolAdded) by Booster#addPool", async () => {
         const { booster, deployer } = await setupWithSettingImplementation()
   
-        const lpToken = await new ERC20__factory(deployer).deploy(
-          'Dummy LP Token',
-          'DUMMY',
-        )
-        const gauge = createRandomAddress()
+        const { lpToken, gauge } = await generateInputForAddPool(deployer)
         await expect(booster.connect(deployer).addPool(
           lpToken.address,
           gauge,
@@ -130,17 +137,14 @@ describe('StashFactoryV2 - integration', () => {
         const { deployer, booster } = await setupWithSettingImplementation()
   
         // Booster#addPool
-        const lpToken = await new ERC20__factory(deployer).deploy(
-          'Dummy LP Token',
-          'DUMMY',
-        )
-        const gauge = createRandomAddress()
+        const { lpToken, gauge } = await generateInputForAddPool(deployer)
         await (await booster.connect(deployer).addPool(
           lpToken.address,
           gauge,
           3
         )).wait()
 
+        // check ExtraRewardStashV3 created by Booster#addPool
         const poolInfo = await booster.connect(ethers.provider).poolInfo(0)
         expect(poolInfo.lptoken).to.equal(lpToken.address)
         const stashInstance = ExtraRewardStashV3__factory.connect(poolInfo.stash, ethers.provider)
@@ -157,6 +161,76 @@ describe('StashFactoryV2 - integration', () => {
         expect(_gauge).to.equal(gauge)
         expect(_rewardFactory).to.equal(await booster.rewardFactory())
       })
+    })
+  })
+
+  describe("ExtraRewardStashV3#setExtraReward after added pool", () => {
+    const setupUntilAddPool = async () => {
+      const { deployer, booster, sFactory } = await fullSetup()
+      await setImplementationToStashFactoryV2({
+        stashFactoryV2: sFactory,
+        operator: deployer,
+        deployer
+      })
+      const { lpToken, gauge } = await generateInputForAddPool(deployer)
+      await (await booster.connect(deployer).addPool(
+        lpToken.address,
+        gauge,
+        3
+      )).wait()
+      const poolInfo = await booster.connect(ethers.provider).poolInfo(0)
+      const extraRewardStashV3 = ExtraRewardStashV3__factory.connect(poolInfo.stash, ethers.provider)
+
+      return { deployer, booster, extraRewardStashV3 }
+    }
+
+    it("success", async () => {
+      const { deployer, booster, extraRewardStashV3 } = await setupUntilAddPool()
+
+      // check prerequisites
+      expect(deployer.address).to.equal(await booster.owner())
+
+      // create mock token to use extra reward
+      const extraRewardTokens = await Promise.all([
+        new ERC20__factory(deployer).deploy(
+          'ExtraRewardTokenA',
+          'extraA',
+        ),
+        new ERC20__factory(deployer).deploy(
+          'ExtraRewardTokenB',
+          'extraB',
+        )
+      ])
+      const [extraRewardTokenA, extraRewardTokenB] = extraRewardTokens
+      await Promise.all([
+        extraRewardTokenA.deployTransaction.wait(),
+        extraRewardTokenB.deployTransaction.wait()
+      ])
+
+      // testing
+      const _extraRewardStashV3 = extraRewardStashV3.connect(deployer)
+      await (await _extraRewardStashV3.setExtraReward(extraRewardTokenA.address)).wait()
+      await (await _extraRewardStashV3.setExtraReward(extraRewardTokenB.address)).wait()
+
+      // check
+      expect(await _extraRewardStashV3.tokenCount()).to.equal(2)
+
+      const poolInfo = await booster.connect(ethers.provider).poolInfo(0)
+      const kglRewards = BaseRewardPool__factory.connect(poolInfo.kglRewards, ethers.provider)
+      const extraRewardsLength = await kglRewards.extraRewardsLength()
+      expect(extraRewardsLength.toNumber()).to.equal(2)
+
+      const tokenInfos = await Promise.all([
+        _extraRewardStashV3.tokenInfo(extraRewardTokenA.address),
+        _extraRewardStashV3.tokenInfo(extraRewardTokenB.address),
+      ])
+      const extraRewardsInKglRewards = await Promise.all(
+        [...Array(extraRewardsLength.toNumber())].map((_, i) => kglRewards.extraRewards(i))
+      )
+      for (const [i, tokenInfo] of tokenInfos.entries()) {
+        expect(tokenInfo.token).to.equal(extraRewardTokens[i].address)
+        expect(tokenInfo.rewardAddress).to.equal(extraRewardsInKglRewards[i])
+      }
     })
   })
 })
