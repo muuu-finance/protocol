@@ -1,7 +1,6 @@
 import { ethers } from 'ethers'
 import jsonfile from 'jsonfile'
 import { ConstantsType } from './types'
-const { vested } = jsonfile.readFileSync('./migrations/distro.json')
 
 export const local: ConstantsType = {
   tokens: {
