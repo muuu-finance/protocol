@@ -119,8 +119,10 @@ const _setImplementationToStashFactory = async ({
   signer: SignerWithAddress
   stashFactoryV2Address: string
 }) => {
+  console.log('> deploy ExtraRewardStashV3 for setting to StashFactoryV2')
   const v3Impl = await deployExtraRewardStashV3({ deployer: signer })
   const _instance = StashFactoryV2__factory.connect(stashFactoryV2Address, signer)
+  console.log('> StashFactoryV2#setImplementation')
   await (await _instance.setImplementation(v3Impl.address)).wait()
 }
 
