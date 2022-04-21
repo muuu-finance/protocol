@@ -28,7 +28,7 @@ const setupContracts = async () => {
     ZERO_ADDRESS,
     ZERO_ADDRESS,
   )
-  const muuuToken = await MuuuToken.new(kaglaVoterProxy.address)
+  const muuuToken = await MuuuToken.new()
 
   const threeKglToken = await MockMintableERC20.new(
     'Kagle USDC/USDT/DAI',

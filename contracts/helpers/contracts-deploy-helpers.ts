@@ -86,14 +86,9 @@ export const deployKaglaVoterProxy = async ({
     ContractKeys.KaglaVoterProxy,
   )
 
-export const deployMuuuToken = async ({
-  deployer,
-  proxy,
-}: DeployCommonArgs & {
-  proxy: string
-}) =>
+export const deployMuuuToken = async ({ deployer }: DeployCommonArgs) =>
   withSaveAndVerify(
-    await new MuuuToken__factory(deployer).deploy(proxy),
+    await new MuuuToken__factory(deployer).deploy(),
     ContractKeys.MuuuToken,
   )
 

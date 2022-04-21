@@ -8,31 +8,37 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract MuuuToken is ERC20 {
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract MuuuToken is ERC20, Ownable {
   using SafeERC20 for IERC20;
   using Address for address;
   using SafeMath for uint256;
-
-  address public operator;
-  address public vekglProxy;
 
   uint256 public maxSupply = 100 * 1000000 * 1e18; //100mil
   uint256 public totalCliffs = 1000;
   uint256 public reductionPerCliff;
 
-  constructor(address _proxy) public ERC20("Muuu Token", "MUUU") {
-    operator = msg.sender;
-    vekglProxy = _proxy;
+  mapping(address => bool) public minterList;
+
+  constructor() public ERC20("Muuu Token", "MUUU") {
+    minterList[msg.sender] = true;
     reductionPerCliff = maxSupply.div(totalCliffs);
   }
 
-  //get current operator off proxy incase there was a change
-  function updateOperator() public {
-    operator = IStaker(vekglProxy).operator();
+  function addMinter(address _voterProxy) external onlyOwner {
+    // The address is supposed to be VorterProxy and have booster address as a owner.
+    address booster = IStaker(_voterProxy).operator();
+    require(booster != address(0), "Zero address cannot be set.");
+    minterList[booster] = true;
+  }
+
+  function removeMinter(address _minter) external onlyOwner {
+    minterList[_minter] = false;
   }
 
   function mint(address _to, uint256 _amount) external {
-    if (msg.sender != operator) {
+    if (!minterList[msg.sender]) {
       //dont error just return. if a shutdown happens, rewards on old system
       //can still be claimed, just wont mint muuu
       return;
@@ -42,8 +48,7 @@ contract MuuuToken is ERC20 {
     if (supply == 0) {
       //premine, one time only
       _mint(_to, _amount);
-      //automatically switch operators
-      updateOperator();
+      minterList[msg.sender] = false;
       return;
     }
 

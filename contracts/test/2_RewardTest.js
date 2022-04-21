@@ -70,7 +70,7 @@ const setupContracts = async (accounts) => {
     mockGaugeController.address,
     mockMinter.address,
   )
-  const muuu = await MuuuToken.new(voterProxy.address)
+  const muuu = await MuuuToken.new()
   const booster = await Booster.new(
     voterProxy.address,
     muuu.address,
