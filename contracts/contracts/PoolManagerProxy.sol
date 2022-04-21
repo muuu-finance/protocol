@@ -8,13 +8,14 @@ Immutable pool manager proxy to enforce that there are no multiple pools of the 
 as well as new lp tokens are not gauge tokens
 */
 contract PoolManagerProxy {
-  address public constant pools = address(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
+  address public pools;
   address public owner;
   address public operator;
 
-  constructor() public {
+  constructor(address _pools) public {
     owner = msg.sender;
     operator = msg.sender;
+    pools = _pools;
   }
 
   modifier onlyOwner() {
@@ -35,6 +36,10 @@ contract PoolManagerProxy {
   //set operator - only OWNER
   function setOperator(address _operator) external onlyOwner {
     operator = _operator;
+  }
+
+  function setPools(address _pools) external onlyOwner {
+    pools = _pools;
   }
 
   // sealed to be immutable
