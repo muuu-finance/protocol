@@ -36,12 +36,12 @@ contract Booster is Ownable {
   address public tokenFactory;
   address public rewardArbitrator;
   address public voteDelegate;
-  address public lockerStakingProxy;
+  address public lockerStakingProxy; // stakingProxy for Locker
   address public stakerRewards; //muuu rewards
   address public lockRewards; //muKgl rewards(kgl)
   address public lockFees; //muKgl vekgl fees
-  address public feeDistro;
-  address public feeToken;
+  address public feeDistro; // FeeDisributor
+  address public feeToken; // fee token from FeeDisributor
   address public registry;
 
   bool public isShutdown;
@@ -78,9 +78,9 @@ contract Booster is Ownable {
     voteDelegate = msg.sender;
     feeManager = msg.sender;
     poolManager = msg.sender;
-    feeDistro = address(0); //address(0xA464e6DCda8AC41e03616F95f4BC98a13b8922Dc);
-    feeToken = address(0); //address(0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490);
-    lockerStakingProxy = address(0); // stakingProxy for Locker
+    feeDistro = address(0); // set by #setFeeInfo
+    feeToken = address(0); // set by #setFeeInfo
+    lockerStakingProxy = address(0);
     minter = _minter;
     kgl = _kgl;
     registry = _registry;
