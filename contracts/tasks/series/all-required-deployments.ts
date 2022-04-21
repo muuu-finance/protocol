@@ -114,13 +114,21 @@ const _transferPreminedMuuuToken = async ({
 
 const _setImplementationToStashFactory = async ({
   signer,
+  networkName,
   stashFactoryV2Address
 }: {
   signer: SignerWithAddress
+  networkName: string
   stashFactoryV2Address: string
 }) => {
   console.log('> deploy ExtraRewardStashV3 for setting to StashFactoryV2')
   const v3Impl = await deployExtraRewardStashV3({ deployer: signer })
+  TaskUtils.writeContractAddress({
+    group: ContractJsonGroups.system,
+    name: 'extraRewardStashV3',
+    value: v3Impl.address,
+    fileName: TaskUtils.getFilePath({ network: networkName }),
+  })
   const _instance = StashFactoryV2__factory.connect(stashFactoryV2Address, signer)
   console.log('> StashFactoryV2#setImplementation')
   await (await _instance.setImplementation(v3Impl.address)).wait()
@@ -582,6 +590,7 @@ task(
       // custom operation
       await _setImplementationToStashFactory({
         signer,
+        networkName: network.name,
         stashFactoryV2Address: stashFactoryAddress
       })
 
