@@ -35,7 +35,8 @@ export const astar: ConstantsType = {
   ],
   contracts: {
     treasury: {
-      address: '', // TODO
+      address: '', // set TreasuryFunds address after deployed
+      operator: '' // if possible, set TreasuryFunds's operator before deployed
     },
     muKglRewards: {
       uid: 0,
