@@ -2,7 +2,7 @@ import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployPoolManagerProxy, deployPoolManagerSecondaryProxy, deployPoolManagerV3 } from '../../helpers/contracts-deploy-helpers'
 import { loadConstants } from '../constants'
-import { ContractKeys, TaskUtils } from '../utils'
+import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.PoolManagerProxy
 task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
@@ -57,16 +57,36 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         deployer: _deployer,
         pools: deployeds.system.booster
       })
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'poolManagerProxy',
+        value: poolManagerProxy.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
+      })
+
       const poolManagerSecondaryProxy = await deployPoolManagerSecondaryProxy({
         deployer: _deployer,
         gaugeController: constants.kaglas.gauge,
         pools: poolManagerProxy.address,
         booster: deployeds.system.booster
       })
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'poolManagerSecondaryProxy',
+        value: poolManagerSecondaryProxy.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
+      })
+
       const poolManagerV3 = await deployPoolManagerV3({
         deployer: _deployer,
         gaugeController: constants.kaglas.gauge,
         pools: poolManagerSecondaryProxy.address
+      })
+      TaskUtils.writeContractAddress({
+        group: ContractJsonGroups.system,
+        name: 'poolManagerV3',
+        value: poolManagerV3.address,
+        fileName: TaskUtils.getFilePath({ network: network.name }),
       })
       console.log(`--- finish: deployments ---`)
 
@@ -81,6 +101,9 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
 
       if (!inMultiDeploymentFlow)
         console.log(`--- [deploy-${CONTRACT_KEY}] FINISHED ---`)
-      return poolManagerProxy.address
+      return {
+        poolManagerAddress: poolManagerV3.address,
+        poolManagerProxyAddress: poolManagerProxy.address
+      }
     },
   )
