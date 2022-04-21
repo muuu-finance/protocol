@@ -121,7 +121,7 @@ describe('StashFactoryV2 - integration', () => {
       return { deployer, booster }
     }
 
-    describe("success", async () => {
+    describe("success", () => {
       it("success & emit event (PoolAdded) by Booster#addPool", async () => {
         const { booster, deployer } = await setupWithSettingImplementation()
   
