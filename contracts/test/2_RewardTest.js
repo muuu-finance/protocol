@@ -95,7 +95,7 @@ const setupContracts = async (accounts) => {
   await muKglToken.setOperator(kglDepositor.address)
   await voterProxy.setDepositor(kglDepositor.address)
   await kglDepositor.initialLock()
-  await booster.setTreasury(kglDepositor.address)
+  await booster.setLockerStakingProxy(kglDepositor.address) // temp
 
   const muKglRewardsContract = await BaseRewardPool.new(
     0,

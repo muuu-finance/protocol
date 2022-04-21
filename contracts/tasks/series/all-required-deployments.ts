@@ -151,10 +151,6 @@ const _prepareAfterDeployingKglDepositor = async ({
   await(
     await KglDepositor__factory.connect(kglDepositor, signer).initialLock()
   ).wait()
-  console.log('> Booster#setTreasury')
-  await (
-    await Booster__factory.connect(booster, signer).setTreasury(kglDepositor)
-  ).wait()
 }
 
 // contracts/migrations/1_deploy_contracts.js#L284-286
