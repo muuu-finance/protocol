@@ -1,8 +1,8 @@
 import { expect } from "chai"
 import { Signer, Wallet } from "ethers";
 import { ethers } from "hardhat"
-import * as DeployHelper from "../helpers/contracts-deploy-helpers";
-import { StashFactoryV2__factory } from "../types"
+import * as DeployHelper from "../../helpers/contracts-deploy-helpers";
+import { StashFactoryV2__factory } from "../../types"
 
 const createRandomAddress = () => Wallet.createRandom().address;
 
@@ -28,7 +28,7 @@ const prepare = async ({ operator, rewardFactory, proxyFactory }: { operator?: s
   }
 }
 
-describe('StashFactoryV2', () => {
+describe('StashFactoryV2 - unit', () => {
   it(".constructor", async () => {
     const inputtedOperator = createRandomAddress();
     const inputtedRewardFactory = createRandomAddress();
