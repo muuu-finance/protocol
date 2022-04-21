@@ -218,7 +218,7 @@ module.exports = function (deployer, network, accounts) {
     })
     .then(() => voter.setOperator(booster.address))
     .then(() => muuu.mint(accounts[0], premine.toString()))
-    .then(() => muuu.addMinter(booster.address)
+    .then(() => muuu.addMinter(voter.address)
     .then(() => deployer.deploy(RewardFactory, booster.address, kgl.address))
     .then((instance) => {
       rFactory = instance

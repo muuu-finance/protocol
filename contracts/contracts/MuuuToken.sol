@@ -26,8 +26,9 @@ contract MuuuToken is ERC20, Ownable {
     reductionPerCliff = maxSupply.div(totalCliffs);
   }
 
-  function addMinter(address _minter) external onlyOwner {
-    minterList[_minter] = true;
+  function addMinter(address _voterProxy) external onlyOwner {
+    // The address is supposed to be VorterProxy and have booster address as a owner.
+    minterList[IStaker(_voterProxy).operator()] = true;
   }
 
   function removeMinter(address _minter) external onlyOwner {

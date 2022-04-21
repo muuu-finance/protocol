@@ -600,7 +600,7 @@ task(
       await _addBoosterToMinter({
         signer,
         muuuTokenAddress: muuuTokenAddress,
-        minterAddress: boosterAddress,
+        minterAddress: kaglaVoterProxyAddress,
       })
 
       const { rewardFactoryAddress, tokenFactoryAddress, stashFactoryAddress } =
