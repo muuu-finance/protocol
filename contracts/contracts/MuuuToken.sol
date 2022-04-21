@@ -28,7 +28,9 @@ contract MuuuToken is ERC20, Ownable {
 
   function addMinter(address _voterProxy) external onlyOwner {
     // The address is supposed to be VorterProxy and have booster address as a owner.
-    minterList[IStaker(_voterProxy).operator()] = true;
+    address booster = IStaker(_voterProxy).operator();
+    require(booster != address(0), "Zero address cannot be set.");
+    minterList[booster] = true;
   }
 
   function removeMinter(address _minter) external onlyOwner {
