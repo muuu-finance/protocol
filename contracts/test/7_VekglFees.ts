@@ -48,7 +48,7 @@ const setupContracts = async () => {
     '3Kgl',
     18,
   )
-  const muuuToken = await MuuuToken.new(kaglaVoterProxy.address)
+  const muuuToken = await MuuuToken.new()
   const booster = await Booster.new(
     kaglaVoterProxy.address,
     muuuToken.address,

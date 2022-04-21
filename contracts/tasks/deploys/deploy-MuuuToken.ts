@@ -43,7 +43,6 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
 
       const instance = await deployMuuuToken({
         deployer: _deployer,
-        proxy: deployeds.system.voteProxy,
       })
       TaskUtils.writeContractAddress({
         group: ContractJsonGroups.system,
