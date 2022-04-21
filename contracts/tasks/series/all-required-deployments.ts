@@ -658,8 +658,8 @@ task(
         },
       })
 
-      const poolManagerAddress = await hre.run(
-        `deploy-${ContractKeys.PoolManager}`,
+      const { poolManagerAddress, poolManagerProxyAddress } = await hre.run(
+        `deploy-${ContractKeys.PoolManagerProxy}`,
         commonTaskArgs,
       )
 
@@ -667,7 +667,7 @@ task(
         signer,
         addresses: {
           booster: boosterAddress,
-          poolManager: poolManagerAddress,
+          poolManager: poolManagerProxyAddress,
           rewardFactory: rewardFactoryAddress,
           tokenFactory: tokenFactoryAddress,
           stashFactory: stashFactoryAddress,
