@@ -18,7 +18,6 @@ import {
   ProxyFactory__factory,
   RewardFactory__factory,
   StashFactoryV2__factory,
-  StashFactory__factory,
   TokenFactory__factory,
   TreasuryFunds__factory,
   VestedEscrow__factory,
