@@ -21,7 +21,7 @@ contract Booster is Ownable {
   uint256 public lockIncentive = 1000; //incentive to kgl stakers
   uint256 public stakerIncentive = 450; //incentive to native token stakers
   uint256 public earmarkIncentive = 50; //incentive to users who spend gas to make calls
-  uint256 public platformFee = 0; //possible fee to build treasury
+  uint256 public nativeTokenLockIncentive = 0; //incentive to native token lockers (in addition to stakerIncentive)
   uint256 public constant MaxFees = 2000;
   uint256 public constant FEE_DENOMINATOR = 10000;
   uint256 public rewardMultiplier = 8250; // 0.0825
@@ -165,11 +165,11 @@ contract Booster is Ownable {
     uint256 _lockFees,
     uint256 _stakerFees,
     uint256 _callerFees,
-    uint256 _platform
+    uint256 _nativeTokenLockFees
   ) external {
     require(msg.sender == feeManager, "!auth");
 
-    uint256 total = _lockFees.add(_stakerFees).add(_callerFees).add(_platform);
+    uint256 total = _lockFees.add(_stakerFees).add(_callerFees).add(_nativeTokenLockFees);
     require(total <= MaxFees, ">MaxFees");
 
     //values must be within certain ranges
@@ -180,12 +180,12 @@ contract Booster is Ownable {
       _stakerFees <= 600 &&
       _callerFees >= 10 &&
       _callerFees <= 100 &&
-      _platform <= 200
+      _nativeTokenLockFees <= 200
     ) {
       lockIncentive = _lockFees;
       stakerIncentive = _stakerFees;
       earmarkIncentive = _callerFees;
-      platformFee = _platform;
+      nativeTokenLockIncentive = _nativeTokenLockFees;
     }
   }
 
@@ -482,11 +482,11 @@ contract Booster is Ownable {
       uint256 _callIncentive = kglBal.mul(earmarkIncentive).div(FEE_DENOMINATOR);
 
       //send treasury
-      if (treasury != address(0) && treasury != address(this) && platformFee > 0) {
+      if (treasury != address(0) && treasury != address(this) && nativeTokenLockIncentive > 0) {
         //only subtract after address condition check
-        uint256 _platform = kglBal.mul(platformFee).div(FEE_DENOMINATOR);
-        kglBal = kglBal.sub(_platform);
-        IERC20(kgl).safeTransfer(treasury, _platform);
+        uint256 _nativeTokenLockIncentive = kglBal.mul(nativeTokenLockIncentive).div(FEE_DENOMINATOR);
+        kglBal = kglBal.sub(_nativeTokenLockIncentive);
+        IERC20(kgl).safeTransfer(treasury, _nativeTokenLockIncentive);
       }
 
       //remove incentives from balance
