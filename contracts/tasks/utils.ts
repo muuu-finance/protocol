@@ -146,6 +146,7 @@ export const ContractKeys = {
   StashFactory: 'StashFactory',
   StashFactoryV2: 'StashFactoryV2',
   ProxyFactory: "ProxyFactory",
+  ExtraRewardStashV3: "ExtraRewardStashV3",
   MuKglToken: 'MuKglToken',
   KglDepositor: 'KglDepositor',
   BaseRewardPool: 'BaseRewardPool',

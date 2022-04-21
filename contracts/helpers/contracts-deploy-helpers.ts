@@ -5,6 +5,7 @@ import {
   BaseRewardPool__factory,
   Booster__factory,
   ClaimZap__factory,
+  ExtraRewardStashV3__factory,
   KaglaVoterProxy__factory,
   KglDepositor__factory,
   MerkleAirdropFactory__factory,
@@ -172,6 +173,11 @@ export const deployStashFactoryV2 = async ({
 export const deployProxyFactory = async ({ deployer }: DeployCommonArgs) => withSaveAndVerify(
   await new ProxyFactory__factory(deployer).deploy(),
   ContractKeys.ProxyFactory
+)
+
+export const deployExtraRewardStashV3 = async ({ deployer }: DeployCommonArgs) => withSaveAndVerify(
+  await new ExtraRewardStashV3__factory(deployer).deploy(),
+  ContractKeys.ExtraRewardStashV3
 )
 
 export const deployMuKglToken = async ({ deployer }: DeployCommonArgs) =>
