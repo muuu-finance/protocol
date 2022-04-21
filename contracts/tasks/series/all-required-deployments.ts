@@ -109,6 +109,9 @@ const _transferPreminedMuuuToken = async ({
 }) => {
   console.log('> MuuuToken#transfer (from deployer to treasury)')
   const tx = await MuuuToken__factory.connect(muuuTokenAddress, signer).transfer(treasuryAddress, premineHolders.treasury)
+  await tx.wait()
+}
+
 const _addBoosterToMinter = async ({
   signer,
   muuuTokenAddress,
