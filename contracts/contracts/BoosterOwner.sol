@@ -64,10 +64,10 @@ Allow arbitrary calls to other contracts, but limit how calls are made to Booste
 
 */
 contract BoosterOwner {
-  address public constant booster = address(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
-  address public constant stashFactory = address(0x884da067B66677e72530df91eabb6e3CE69c2bE4);
-  address public constant rescueStash = address(0x01140351069af98416cC08b16424b9E765436531);
-  address public immutable poolManager;
+  address public booster;
+  address public stashFactory;
+  address public rescueStash;
+  address public poolManager;
   address public owner;
   address public pendingowner;
   bool public isSealed;
@@ -83,15 +83,30 @@ contract BoosterOwner {
   event AcceptedOwnership(address newOwner);
   event OwnershipSealed();
 
-  constructor(address _poolManager) public {
-    //default to multisig
-    owner = address(0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB);
+  constructor(address _booster, address _stashFactory, address _rescueStash, address _poolManager) public {
+    owner = msg.sender;
+    booster = _booster;
+    stashFactory = _stashFactory;
+    rescueStash = _rescueStash;
     poolManager = _poolManager;
   }
 
   modifier onlyOwner() {
     require(owner == msg.sender, "!owner");
     _;
+  }
+
+  function setBooster(address _booster) external onlyOwner {
+    booster = _booster;
+  }
+  function setStashFactory(address _stashFactory) external onlyOwner {
+    stashFactory = _stashFactory;
+  }
+  function setRescueStash(address _rescueStash) external onlyOwner {
+    rescueStash = _rescueStash;
+  }
+  function setPoolManager(address _poolManager) external onlyOwner {
+    poolManager = _poolManager;
   }
 
   function transferOwnership(address _owner) external onlyOwner {
