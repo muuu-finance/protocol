@@ -10,7 +10,7 @@
     "outDir": "dist",
     "resolveJsonModule": true
   },
-  "include": ["./tasks", "./test", "./types"],
+  "include": ["./tasks", "./test", "./types", "./specs"],
   "exclude": ["node_modules"],
   "files": ["./hardhat.config.ts"]
 }

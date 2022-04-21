@@ -110,6 +110,9 @@ const config: HardhatUserConfig = {
       optimizer: { enabled: true, runs: 200 },
     },
   },
+  paths: {
+    tests: './specs',
+  },
   typechain: {
     outDir: 'types',
     target: 'ethers-v5',
