@@ -15,6 +15,7 @@ import {
   MuuuStakingProxyV2__factory,
   MuuuToken__factory,
   PoolManager__factory,
+  StashFactoryV2__factory,
   TreasuryFunds__factory,
   VotingBalanceV2Gauges__factory,
 } from '../../types'
@@ -137,6 +138,22 @@ const checkBooster = async (args: CheckFunctionArgs) => {
     console.log(await _instance.poolInfo(i))
   }
   console.log(`--- [end] Booster ---`)
+}
+
+const checkStashFactoryV2 = async (args: CheckFunctionArgs) => {
+  console.log(`--- [start] StashFactoryV2 ---`)
+  const _instance = await StashFactoryV2__factory.connect(
+    args.address,
+    args.providerOrSigner
+  )
+  const targets = [
+    { label: 'operator', fn: _instance.operator },
+    { label: 'rewardFactory', fn: _instance.rewardFactory },
+    { label: 'proxyFactory', fn: _instance.proxyFactory },
+    { label: 'v3Implementation', fn: _instance.v3Implementation }
+  ]
+  for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
+  console.log(`--- [end] StashFactoryV2 ---`)
 }
 
 const checkMuKglToken = async (args: CheckFunctionArgs) => {
@@ -410,6 +427,11 @@ task('check-deployed-contracts', 'Check deployed contracts').setAction(
 
     await checkBooster({
       address: system.booster,
+      providerOrSigner: ethers.provider,
+    })
+
+    await checkStashFactoryV2({
+      address: system.sFactory,
       providerOrSigner: ethers.provider,
     })
 
