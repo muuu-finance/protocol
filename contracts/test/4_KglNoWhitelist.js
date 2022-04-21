@@ -43,7 +43,7 @@ const setupContracts = async () => {
     votingEscrow.address,
   )
 
-  const muuuToken = await MuuuToken.new(kaglaVoterProxy.address)
+  const muuuToken = await MuuuToken.new()
   const kaglaGauge = await await MockKaglaGauge.new(threeKglToken.address)
   const addressProvider = await MockAddressProvider.new(
     (

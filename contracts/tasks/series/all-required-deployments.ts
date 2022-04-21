@@ -109,6 +109,20 @@ const _transferPreminedMuuuToken = async ({
 }) => {
   console.log('> MuuuToken#transfer (from deployer to treasury)')
   const tx = await MuuuToken__factory.connect(muuuTokenAddress, signer).transfer(treasuryAddress, premineHolders.treasury)
+const _addBoosterToMinter = async ({
+  signer,
+  muuuTokenAddress,
+  minterAddress,
+}: {
+  signer: SignerWithAddress
+  muuuTokenAddress: string
+  minterAddress: string
+}) => {
+  console.log('> MuuuToken#addMinter (set booster as minter)')
+  const tx = await MuuuToken__factory.connect(
+    muuuTokenAddress,
+    signer,
+  ).addMinter(minterAddress)
   await tx.wait()
 }
 
@@ -582,6 +596,11 @@ task(
         muuuTokenAddress: muuuTokenAddress,
         premineHolders: constants.premine.holders,
         treasuryAddress: constants.contracts.treasury.address
+      })
+      await _addBoosterToMinter({
+        signer,
+        muuuTokenAddress: muuuTokenAddress,
+        minterAddress: boosterAddress,
       })
 
       const { rewardFactoryAddress, tokenFactoryAddress, stashFactoryAddress } =

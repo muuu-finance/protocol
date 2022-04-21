@@ -9,9 +9,7 @@ task('deploy-contracts', 'Deploy contracts').setAction(
     const [signer] = await ethers.getSigners()
     console.log(`deployer: ${await signer.getAddress()}`)
 
-    const muuuToken = await new MuuuToken__factory(signer).deploy(
-      ethers.constants.AddressZero,
-    )
+    const muuuToken = await new MuuuToken__factory(signer).deploy()
     await muuuToken.deployTransaction.wait()
     console.log(`MuuuToken deployed to: ${muuuToken.address}`)
 

@@ -74,8 +74,6 @@ const checkMuuuToken = async (args: CheckFunctionArgs) => {
     args.providerOrSigner,
   )
   const targets = [
-    { label: 'operator', fn: _instance.operator },
-    { label: 'vekglProxy', fn: _instance.vekglProxy },
     { label: 'maxSupply', fn: _instance.maxSupply },
     { label: 'totalCliffs', fn: _instance.totalCliffs },
     { label: 'reductionPerCliff', fn: _instance.reductionPerCliff },
