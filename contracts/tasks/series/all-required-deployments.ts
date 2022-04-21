@@ -752,7 +752,7 @@ task(
           poolManagerAddress,
           swap: constants.tokens['3Kgl'],
           gauge: constants.kaglas.gauge,
-          stashVersion: '0',
+          stashVersion: '3',
         })
       }
 
@@ -765,7 +765,7 @@ task(
             poolManagerAddress,
             swap: _p.swap,
             gauge: _p.gauge,
-            stashVersion: '0',
+            stashVersion: '3',
           })
         }
       }
