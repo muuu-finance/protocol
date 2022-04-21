@@ -19,8 +19,9 @@ export type ConstantsType = {
     gauge: string
   }[]
   contracts: {
-    treasury: {
-      address: string // TreasuryFunds
+    treasury: { // TreasuryFunds
+      address: string
+      operator?: string
     }
     muKglRewards: {
       uid: number
