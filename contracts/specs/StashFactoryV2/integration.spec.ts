@@ -2,7 +2,7 @@ import { expect } from "chai"
 import { Signer, Wallet } from "ethers";
 import { ethers } from "hardhat"
 import * as DeployHelper from "../../helpers/contracts-deploy-helpers";
-import { BaseRewardPool__factory, Booster, ERC20__factory, ExtraRewardStashV3__factory, ProxyFactory__factory, StashFactoryV2, StashFactoryV2__factory } from "../../types"
+import { BaseRewardPool__factory, Booster, ERC20__factory, ExtraRewardStashV3__factory, MockKaglaLiquidityGaugeV3__factory, ProxyFactory__factory, StashFactoryV2, StashFactoryV2__factory } from "../../types"
 
 const createRandomAddress = () => Wallet.createRandom().address;
 
@@ -83,7 +83,9 @@ const generateInputForAddPool = async (deployer: Signer) => {
     'Dummy LP Token',
     'DUMMY',
   )
-  const gauge = createRandomAddress()
+  await lpToken.deployTransaction.wait()
+  const gauge = await new MockKaglaLiquidityGaugeV3__factory(deployer).deploy()
+  await gauge.deployTransaction.wait()
   return {
     lpToken, gauge
   }
@@ -124,9 +126,9 @@ describe('StashFactoryV2 - integration', () => {
         const { lpToken, gauge } = await generateInputForAddPool(deployer)
         await expect(booster.connect(deployer).addPool(
           lpToken.address,
-          gauge,
+          gauge.address,
           3
-        )).to.emit(booster, "PoolAdded").withArgs(lpToken.address, gauge, 3)
+        )).to.emit(booster, "PoolAdded").withArgs(lpToken.address, gauge.address, 3)
       })
 
       it("check created ExtraRewardStashV3", async () => {
@@ -136,7 +138,7 @@ describe('StashFactoryV2 - integration', () => {
         const { lpToken, gauge } = await generateInputForAddPool(deployer)
         await (await booster.connect(deployer).addPool(
           lpToken.address,
-          gauge,
+          gauge.address,
           3
         )).wait()
 
@@ -154,7 +156,7 @@ describe('StashFactoryV2 - integration', () => {
         expect(_pid).to.equal(0)
         expect(_operator).to.equal(booster.address)
         expect(_staker).to.equal(await booster.staker())
-        expect(_gauge).to.equal(gauge)
+        expect(_gauge).to.equal(gauge.address)
         expect(_rewardFactory).to.equal(await booster.rewardFactory())
       })
     })
@@ -166,7 +168,18 @@ describe('StashFactoryV2 - integration', () => {
         const { lpToken, gauge } = await generateInputForAddPool(deployer)
         await expect(booster.connect(deployer).addPool(
           lpToken.address,
-          gauge,
+          gauge.address,
+          3
+        )).to.be.revertedWith("0 impl")
+      })
+
+      it("when stashVersion = 3", async () => {
+        const { deployer, booster } = await fullSetup()
+
+        const { lpToken, gauge } = await generateInputForAddPool(deployer)
+        await expect(booster.connect(deployer).addPool(
+          lpToken.address,
+          gauge.address,
           3
         )).to.be.revertedWith("0 impl")
       })
@@ -177,7 +190,7 @@ describe('StashFactoryV2 - integration', () => {
           const { lpToken, gauge } = await generateInputForAddPool(deployer)
           await (await booster.connect(deployer).addPool(
             lpToken.address,
-            gauge,
+            gauge.address,
             _stashVersion
           )).wait()
           return await booster.connect(ethers.provider).poolInfo(0)
@@ -218,7 +231,7 @@ describe('StashFactoryV2 - integration', () => {
       const { lpToken, gauge } = await generateInputForAddPool(deployer)
       await (await booster.connect(deployer).addPool(
         lpToken.address,
-        gauge,
+        gauge.address,
         3
       )).wait()
       const poolInfo = await booster.connect(ethers.provider).poolInfo(0)
