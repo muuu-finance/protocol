@@ -36,7 +36,7 @@ contract Booster is Ownable {
   address public tokenFactory;
   address public rewardArbitrator;
   address public voteDelegate;
-  address public treasury;
+  address public lockerStakingProxy;
   address public stakerRewards; //muuu rewards
   address public lockRewards; //muKgl rewards(kgl)
   address public lockFees; //muKgl vekgl fees
@@ -80,7 +80,7 @@ contract Booster is Ownable {
     poolManager = msg.sender;
     feeDistro = address(0); //address(0xA464e6DCda8AC41e03616F95f4BC98a13b8922Dc);
     feeToken = address(0); //address(0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490);
-    treasury = address(0);
+    lockerStakingProxy = address(0); // stakingProxy for Locker
     minter = _minter;
     kgl = _kgl;
     registry = _registry;
@@ -189,9 +189,9 @@ contract Booster is Ownable {
     }
   }
 
-  function setTreasury(address _treasury) external {
+  function setLockerStakingProxy(address _lockerStakingProxy) external {
     require(msg.sender == feeManager, "!auth");
-    treasury = _treasury;
+    lockerStakingProxy = _lockerStakingProxy;
   }
 
   function setRegistry(address _registry) external {
@@ -481,12 +481,12 @@ contract Booster is Ownable {
       uint256 _stakerIncentive = kglBal.mul(stakerIncentive).div(FEE_DENOMINATOR);
       uint256 _callIncentive = kglBal.mul(earmarkIncentive).div(FEE_DENOMINATOR);
 
-      //send treasury
-      if (treasury != address(0) && treasury != address(this) && nativeTokenLockIncentive > 0) {
+      //send stakingProxy for locker
+      if (lockerStakingProxy != address(0) && lockerStakingProxy != address(this) && nativeTokenLockIncentive > 0) {
         //only subtract after address condition check
         uint256 _nativeTokenLockIncentive = kglBal.mul(nativeTokenLockIncentive).div(FEE_DENOMINATOR);
         kglBal = kglBal.sub(_nativeTokenLockIncentive);
-        IERC20(kgl).safeTransfer(treasury, _nativeTokenLockIncentive);
+        IERC20(kgl).safeTransfer(lockerStakingProxy, _nativeTokenLockIncentive);
       }
 
       //remove incentives from balance
