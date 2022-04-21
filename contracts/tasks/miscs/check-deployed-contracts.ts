@@ -142,6 +142,7 @@ const checkBooster = async (args: CheckFunctionArgs) => {
 
 const checkStashFactoryV2 = async (args: CheckFunctionArgs) => {
   console.log(`--- [start] StashFactoryV2 ---`)
+  console.log(`> address ... ${args.address}`)
   const _instance = await StashFactoryV2__factory.connect(
     args.address,
     args.providerOrSigner
