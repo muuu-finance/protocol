@@ -12,19 +12,25 @@ Changes:
 */
 
 contract PoolManagerV3 {
-  address public constant gaugeController = address(0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB);
+  address public gaugeController;
   address public immutable pools;
 
   address public operator;
 
-  constructor(address _pools) public {
+  constructor(address _pools, address _gaugeController) public {
     operator = msg.sender;
     pools = _pools;
+    gaugeController = _gaugeController;
   }
 
   function setOperator(address _operator) external {
     require(msg.sender == operator, "!auth");
     operator = _operator;
+  }
+
+  function setGaugeController(address _gaugeController) external {
+    require(msg.sender == operator, "!auth");
+    gaugeController = _gaugeController;
   }
 
   //add a new kagla pool to the system. (default stash to v3)
