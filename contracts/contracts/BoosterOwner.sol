@@ -50,11 +50,7 @@ interface IOwner {
   function setRewardHook(address _hook) external;
 
   //stash factory
-  function setImplementation(
-    address _v1,
-    address _v2,
-    address _v3
-  ) external;
+  function setImplementation(address _v3) external;
 
   //vote extension
   function revertControl() external;
@@ -221,11 +217,7 @@ contract BoosterOwner {
   }
 
   //stash factory - set implementation
-  function setStashFactoryImplementation(
-    address _v1,
-    address _v2,
-    address _v3
-  ) external onlyOwner {
-    IOwner(stashFactory).setImplementation(_v1, _v2, _v3);
+  function setStashFactoryImplementation(address _v3) external onlyOwner {
+    IOwner(stashFactory).setImplementation(_v3);
   }
 }
