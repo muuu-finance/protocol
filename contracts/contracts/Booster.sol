@@ -178,7 +178,7 @@ contract Booster is Ownable {
       _lockFees <= 1500 &&
       _stakerFees >= 300 &&
       _stakerFees <= 600 &&
-      _callerFees >= 10 &&
+      _callerFees >= 0 &&
       _callerFees <= 100 &&
       _nativeTokenLockFees <= 200
     ) {
