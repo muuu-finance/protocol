@@ -13,18 +13,21 @@ of lp tokens are returned to the booster contract for withdrawal
 contract PoolManagerSecondaryProxy {
   using SafeMath for uint256;
 
-  address public constant gaugeController = address(0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB);
-  address public constant pools = address(0x5F47010F230cE1568BeA53a06eBAF528D05c5c1B);
-  address public constant booster = address(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
+  address public gaugeController;
+  address public pools;
+  address public booster;
   address public owner;
   address public operator;
   bool public isShutdown;
 
   mapping(address => bool) public usedMap;
 
-  constructor() public {
+  constructor(address _gaugeController, address _pools, address _booster) public {
     owner = msg.sender;
     operator = msg.sender;
+    gaugeController = _gaugeController;
+    pools = _pools;
+    booster = _booster;
   }
 
   modifier onlyOwner() {
@@ -45,6 +48,18 @@ contract PoolManagerSecondaryProxy {
   //set operator - only OWNER
   function setOperator(address _operator) external onlyOwner {
     operator = _operator;
+  }
+
+  function setGaugeController(address _gaugeController) external onlyOwner {
+    gaugeController = _gaugeController;
+  }
+
+  function setPools(address _pools) external onlyOwner {
+    pools = _pools;
+  }
+
+  function setBooster(address _booster) external onlyOwner {
+    booster = _booster;
   }
 
   //manual set an address to used state

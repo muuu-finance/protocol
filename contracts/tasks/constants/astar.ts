@@ -10,7 +10,8 @@ export const astar: ConstantsType = {
   },
   kaglas: {
     votingEscrow: '', // need
-    gauge: '0x1f857fB3bCb72F03cB210f62602fD45eE1caeBdf',
+    gaugeController: '0x1f857fB3bCb72F03cB210f62602fD45eE1caeBdf',
+    liquidityGauge: '', // not used
     minter: "0x210c5BE93182d02A666392996f62244001e6E04d",
     feeDistributor: '', // not used
     registry: '', // not used

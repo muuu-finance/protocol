@@ -60,6 +60,16 @@ const deployMockKaglaGauge = async ({
   })
 }
 
+const deployMockKaglaGaugeController = async ({
+  deployer,
+  artifacts,
+}) => {
+  const MockGaugeController = artifacts.require('MockGaugeController')
+  return await MockGaugeController.new({
+    from: deployer,
+  })
+}
+
 const deployMockKaglaVotingEscrow = async ({ deployer, artifacts }) =>
   await artifacts.require('MockKaglaVoteEscrow').new({ from: deployer })
 
@@ -105,6 +115,7 @@ module.exports = {
   deployDaiToken: deployDaiToken,
   deployWethToken: deployWethToken,
   deployMockKaglaGauge: deployMockKaglaGauge,
+  deployMockKaglaGaugeController: deployMockKaglaGaugeController,
   deployMockKaglaVotingEscrow: deployMockKaglaVotingEscrow,
   deployMockKaglaRegistry: deployMockKaglaRegistry,
   deployMockKaglaFeeDistributor: deployMockKaglaFeeDistributor,

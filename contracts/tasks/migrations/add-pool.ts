@@ -1,6 +1,6 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import { PoolManager__factory } from '../../types'
+import { PoolManagerV3__factory, PoolManager__factory } from '../../types'
 
 task('add-pool', 'Add pool by using PoolManager')
   .addOptionalParam('deployerAddress', "Deployer's address")
@@ -34,11 +34,8 @@ task('add-pool', 'Add pool by using PoolManager')
         (await ethers.getSigners())[0]
 
       console.log(`--- [add-pool] START PoolName: ${poolName} ---`)
-      const tx = await PoolManager__factory.connect(poolManagerAddress, _deployer).addPool(
-        swap,
-        gauge,
-        stashVersion,
-      )
+      const tx = await PoolManagerV3__factory.connect(poolManagerAddress, _deployer)
+        .functions["addPool(address)"](gauge)
       await tx.wait()
       console.log(`--- [add-pool] FINISHED ---`)
     },

@@ -12,6 +12,7 @@ import {
   KglDepositor__factory,
   MerkleAirdropFactory__factory,
   MerkleAirdrop__factory,
+  MockKaglaGauge__factory,
   MuKglToken__factory,
   MuuuToken__factory,
   StashFactoryV2__factory,
@@ -658,8 +659,8 @@ task(
         },
       })
 
-      const poolManagerAddress = await hre.run(
-        `deploy-${ContractKeys.PoolManager}`,
+      const { poolManagerAddress, poolManagerProxyAddress } = await hre.run(
+        `deploy-${ContractKeys.PoolManagerProxy}`,
         commonTaskArgs,
       )
 
@@ -667,7 +668,7 @@ task(
         signer,
         addresses: {
           booster: boosterAddress,
-          poolManager: poolManagerAddress,
+          poolManager: poolManagerProxyAddress,
           rewardFactory: rewardFactoryAddress,
           tokenFactory: tokenFactoryAddress,
           stashFactory: stashFactoryAddress,
@@ -751,7 +752,7 @@ task(
           poolName: '3pool',
           poolManagerAddress,
           swap: constants.tokens['3Kgl'],
-          gauge: constants.kaglas.gauge,
+          gauge: constants.kaglas.liquidityGauge,
           stashVersion: '3',
         })
       }

@@ -3,6 +3,7 @@ const jsonfile = require('jsonfile')
 const ethers = require('ethers')
 const {
   deployMockKaglaGauge,
+  deployMockKaglaGaugeController,
   deployMockKaglaVotingEscrow,
   deployMockKaglaRegistry,
   deployMockKaglaFeeDistributor,
@@ -31,18 +32,23 @@ module.exports = async (callback) => {
     deployer: deployer,
     artifacts: artifacts,
   }
+
   const votingEscrow = await deployMockKaglaVotingEscrow(commonArgs)
   console.log(`> deployed votingEscrow`)
-  const gauge = await deployMockKaglaGauge({
-    threeKglTokenAddress: threeKglTokenAddress,
-    ...commonArgs,
-  })
-  console.log(`> deployed gauge`)
+
+  const gaugeController = await deployMockKaglaGaugeController(commonArgs)
+  console.log(`> deployed gaugeController`)
+
   const feeDistributor = await deployMockKaglaFeeDistributor({
     tokenAddress: threeKglTokenAddress,
     ...commonArgs,
   })
   console.log(`> deployed feeDistributor`)
+
+  const gauge = await deployMockKaglaGauge({
+    threeKglTokenAddress: threeKglTokenAddress,
+    ...commonArgs,
+  })
   const registry = await deployMockKaglaRegistry({
     pool: threeKglTokenAddress, // temporary
     gauge: gauge.address,
@@ -50,17 +56,20 @@ module.exports = async (callback) => {
     ...commonArgs,
   })
   console.log(`> deployed registry`)
+
   const addressProvider = await deployMockKaglaAddressProvider({
     registryAddress: registry.address,
     feeDistributorAddress: feeDistributor.address,
     ...commonArgs,
   })
   console.log(`> deployed addressProvider`)
+
   console.log(`--- finished deployments ---`)
 
   const deployedInfos = [
     { key: 'votingEscrow', contract: votingEscrow },
-    { key: 'gauge', contract: gauge },
+    { key: 'gaugeController', contract: gaugeController },
+    { key: 'liquidityGauge', contract: gauge },
     { key: 'minter', contract: { address: ethers.constants.AddressZero } }, // no deployed mock
     { key: 'feeDistributor', contract: feeDistributor },
     { key: 'registry', contract: registry },

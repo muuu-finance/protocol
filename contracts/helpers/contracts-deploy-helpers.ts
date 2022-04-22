@@ -14,11 +14,13 @@ import {
   MuuuRewardPool__factory,
   MuuuStakingProxyV2__factory,
   MuuuToken__factory,
+  PoolManagerProxy__factory,
+  PoolManagerSecondaryProxy__factory,
+  PoolManagerV3__factory,
   PoolManager__factory,
   ProxyFactory__factory,
   RewardFactory__factory,
   StashFactoryV2__factory,
-  StashFactory__factory,
   TokenFactory__factory,
   TreasuryFunds__factory,
   VestedEscrow__factory,
@@ -258,6 +260,43 @@ export const deployPoolManager = async ({
     await new PoolManager__factory(deployer).deploy(pools, addressProvider),
     ContractKeys.PoolManager,
   )
+
+export const deployPoolManagerProxy = async ({
+  deployer,
+  pools
+}: DeployCommonArgs & {
+  pools: string
+}) => withSaveAndVerify(
+  await new PoolManagerProxy__factory(deployer).deploy(pools),
+  ContractKeys.PoolManagerProxy,
+)
+
+export const deployPoolManagerSecondaryProxy = async ({
+  deployer,
+  gaugeController,
+  pools,
+  booster
+}: DeployCommonArgs & {
+  gaugeController: string
+  pools: string
+  booster: string
+}) => withSaveAndVerify(
+  await new PoolManagerSecondaryProxy__factory(deployer).deploy(gaugeController, pools, booster),
+  ContractKeys.PoolManagerSecondaryProxy,
+)
+
+export const deployPoolManagerV3 = async ({
+  deployer,
+  pools,
+  gaugeController,
+}: DeployCommonArgs & {
+  pools: string
+  gaugeController: string
+}) => withSaveAndVerify(
+  await new PoolManagerV3__factory(deployer).deploy(pools, gaugeController),
+  ContractKeys.PoolManagerV3,
+)
+
 
 export const deployArbitratorVault = async ({
   deployer,

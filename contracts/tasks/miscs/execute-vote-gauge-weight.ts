@@ -34,7 +34,7 @@ task(
 
   const booster = await Booster__factory.connect(system.booster, deployer)
   const gaugeController = await IGaugeController__factory.connect(
-    constants.kaglas.gauge,
+    constants.kaglas.gaugeController,
     deployer,
   )
 
