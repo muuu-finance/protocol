@@ -65,12 +65,9 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         fileName: TaskUtils.getFilePath({ network: network.name }),
       })
 
-      const _gaugeController = await new MockGaugeController__factory(_deployer).deploy()
-      await _gaugeController.deployTransaction.wait()
-
       const poolManagerSecondaryProxy = await deployPoolManagerSecondaryProxy({
         deployer: _deployer,
-        gaugeController: _gaugeController.address, // constants.kaglas.gaugeController,
+        gaugeController: constants.kaglas.gauge,
         pools: poolManagerProxy.address,
         booster: deployeds.system.booster
       })
@@ -83,7 +80,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
 
       const poolManagerV3 = await deployPoolManagerV3({
         deployer: _deployer,
-        gaugeController: _gaugeController.address, // constants.kaglas.gaugeController,
+        gaugeController: constants.kaglas.gauge,
         pools: poolManagerSecondaryProxy.address
       })
       TaskUtils.writeContractAddress({

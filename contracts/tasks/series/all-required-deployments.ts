@@ -12,6 +12,7 @@ import {
   KglDepositor__factory,
   MerkleAirdropFactory__factory,
   MerkleAirdrop__factory,
+  MockKaglaGauge__factory,
   MuKglToken__factory,
   MuuuToken__factory,
   StashFactoryV2__factory,
@@ -746,12 +747,16 @@ task(
       console.log(`--- start: add pools ---`)
 
       if (_useMockContracts) {
+        // generate mock gauge
+        const gauge = await new MockKaglaGauge__factory(signer).deploy(constants.tokens['3Kgl'])
+        await gauge.deployTransaction.wait()
+
         await hre.run(`add-pool`, {
           deployerAddress: signer.address,
           poolName: '3pool',
           poolManagerAddress,
           swap: constants.tokens['3Kgl'],
-          gauge: constants.kaglas.gauge,
+          gauge: gauge.address,
           stashVersion: '3',
         })
       }
