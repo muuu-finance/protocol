@@ -13,7 +13,7 @@ export const local: ConstantsType = {
   kaglas: {
     // need overrides by loading json
     votingEscrow: '',
-    gauge: '',
+    gaugeController: '',
     minter: ethers.constants.AddressZero, // no deployed mock
     feeDistributor: '',
     registry: '',

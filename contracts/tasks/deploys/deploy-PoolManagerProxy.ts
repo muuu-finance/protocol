@@ -67,7 +67,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
 
       const poolManagerSecondaryProxy = await deployPoolManagerSecondaryProxy({
         deployer: _deployer,
-        gaugeController: constants.kaglas.gauge,
+        gaugeController: constants.kaglas.gaugeController,
         pools: poolManagerProxy.address,
         booster: deployeds.system.booster
       })
@@ -80,7 +80,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
 
       const poolManagerV3 = await deployPoolManagerV3({
         deployer: _deployer,
-        gaugeController: constants.kaglas.gauge,
+        gaugeController: constants.kaglas.gaugeController,
         pools: poolManagerSecondaryProxy.address
       })
       TaskUtils.writeContractAddress({
