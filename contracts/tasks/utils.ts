@@ -141,6 +141,7 @@ export const ContractKeys = {
   KaglaVoterProxy: 'KaglaVoterProxy',
   MuuuToken: 'MuuuToken',
   Booster: 'Booster',
+  BoosterOwner: 'BoosterOwner',
   RewardFactory: 'RewardFactory',
   TokenFactory: 'TokenFactory',
   StashFactoryV2: 'StashFactoryV2',

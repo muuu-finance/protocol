@@ -3,6 +3,7 @@ import { ContractKeys } from '../tasks/utils'
 import {
   ArbitratorVault__factory,
   BaseRewardPool__factory,
+  BoosterOwner__factory,
   Booster__factory,
   ClaimZap__factory,
   ExtraRewardStashV3__factory,
@@ -110,6 +111,27 @@ export const deployBooster = async ({
     await new Booster__factory(deployer).deploy(staker, minter, kgl, registry),
     ContractKeys.Booster,
   )
+
+export const deployBoosterOwner = async ({
+  deployer,
+  booster,
+  stashFactory,
+  rescueStash,
+  poolManager
+}: DeployCommonArgs & {
+  booster: string
+  stashFactory: string
+  rescueStash: string
+  poolManager: string
+}) => withSaveAndVerify(
+  await new BoosterOwner__factory(deployer).deploy(
+    booster,
+    stashFactory,
+    rescueStash,
+    poolManager
+  ),
+  ContractKeys.BoosterOwner,
+)
 
 export const deployRewardFactory = async ({
   deployer,
