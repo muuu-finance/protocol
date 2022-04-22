@@ -19,7 +19,7 @@ contract KglDepositor is Ownable {
   uint256 private constant MAXTIME = 2 * 364 * 86400;
   uint256 private constant WEEK = 7 * 86400;
 
-  uint256 public lockIncentive = 10; //incentive to users who spend gas to lock kgl
+  uint256 public lockIncentive = 0; //incentive to users who spend gas to lock kgl
   uint256 public constant FEE_DENOMINATOR = 10000;
 
   address public feeManager;
