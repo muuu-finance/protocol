@@ -49,6 +49,17 @@ const deployWethToken = async ({ deployer, artifacts }) =>
   })
 
 // Kagla
+const deployMockKaglaGauge = async ({
+  threeKglTokenAddress,
+  deployer,
+  artifacts,
+}) => {
+  const MockKaglaGauge = artifacts.require('MockKaglaGauge')
+  return await MockKaglaGauge.new(threeKglTokenAddress, {
+    from: deployer,
+  })
+}
+
 const deployMockKaglaGaugeController = async ({
   deployer,
   artifacts,
@@ -103,6 +114,7 @@ module.exports = {
   deployThreeKglToken: deployThreeKglToken,
   deployDaiToken: deployDaiToken,
   deployWethToken: deployWethToken,
+  deployMockKaglaGauge: deployMockKaglaGauge,
   deployMockKaglaGaugeController: deployMockKaglaGaugeController,
   deployMockKaglaVotingEscrow: deployMockKaglaVotingEscrow,
   deployMockKaglaRegistry: deployMockKaglaRegistry,

@@ -10,7 +10,7 @@ export const shiden: ConstantsType = {
   },
   kaglas: {
     votingEscrow: '0xDFe3C797977a0B40C90E7c2869407327a4208654',
-    gauge: '0xBEDcfA1EB6cf39dd829207147692C0eaeCe32065',
+    gaugeController: '0xBEDcfA1EB6cf39dd829207147692C0eaeCe32065',
     minter: "0x5dE0CF708F7753F176F1d23229c0EE50a23872f7",
     feeDistributor: '', // only use when using mock
     registry: '', // only use when using mock
