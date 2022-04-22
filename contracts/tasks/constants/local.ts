@@ -14,6 +14,7 @@ export const local: ConstantsType = {
     // need overrides by loading json
     votingEscrow: '',
     gaugeController: '',
+    liquidityGauge: '',
     minter: ethers.constants.AddressZero, // no deployed mock
     feeDistributor: '',
     registry: '',

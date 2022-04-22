@@ -747,16 +747,12 @@ task(
       console.log(`--- start: add pools ---`)
 
       if (_useMockContracts) {
-        // generate mock gauge
-        const gauge = await new MockKaglaGauge__factory(signer).deploy(constants.tokens['3Kgl'])
-        await gauge.deployTransaction.wait()
-
         await hre.run(`add-pool`, {
           deployerAddress: signer.address,
           poolName: '3pool',
           poolManagerAddress,
           swap: constants.tokens['3Kgl'],
-          gauge: gauge.address,
+          gauge: constants.kaglas.liquidityGauge,
           stashVersion: '3',
         })
       }
