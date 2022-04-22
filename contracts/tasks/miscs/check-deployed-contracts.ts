@@ -14,6 +14,9 @@ import {
   MuuuRewardPool__factory,
   MuuuStakingProxyV2__factory,
   MuuuToken__factory,
+  PoolManagerProxy__factory,
+  PoolManagerSecondaryProxy__factory,
+  PoolManagerV3__factory,
   PoolManager__factory,
   StashFactoryV2__factory,
   TreasuryFunds__factory,
@@ -289,6 +292,56 @@ const checkPoolManager = async (args: CheckFunctionArgs) => {
   console.log(`--- [end] PoolManager ---`)
 }
 
+const checkPoolManagerProxy = async (args: CheckFunctionArgs) => {
+  console.log(`--- [start] PoolManagerProxy ---`)
+  console.log(`> address ... ${args.address}`)
+  const _instance = await PoolManagerProxy__factory.connect(
+    args.address,
+    args.providerOrSigner,
+  )
+  const targets = [
+    { label: 'owner', fn: _instance.owner },
+    { label: 'operator', fn: _instance.operator },
+    { label: 'pools', fn: _instance.pools },
+  ]
+  for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
+  console.log(`--- [end] PoolManagerProxy ---`)
+}
+const checkPoolManagerSecondaryProxy = async (args: CheckFunctionArgs) => {
+  console.log(`--- [start] PoolManagerSecondaryProxy ---`)
+  console.log(`> address ... ${args.address}`)
+  const _instance = await PoolManagerSecondaryProxy__factory.connect(
+    args.address,
+    args.providerOrSigner,
+  )
+  const targets = [
+    { label: 'owner', fn: _instance.owner },
+    { label: 'operator', fn: _instance.operator },
+    { label: 'pools', fn: _instance.pools },
+    { label: 'booster', fn: _instance.booster },
+    { label: 'gaugeController', fn: _instance.gaugeController },
+    { label: 'isShutdown', fn: _instance.isShutdown },
+  ]
+  for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
+  console.log(`--- [end] PoolManagerSecondaryProxy ---`)
+}
+const checkPoolManagerV3 = async (args: CheckFunctionArgs) => {
+  console.log(`--- [start] PoolManagerV3 ---`)
+  console.log(`> address ... ${args.address}`)
+  const _instance = await PoolManagerV3__factory.connect(
+    args.address,
+    args.providerOrSigner,
+  )
+  const targets = [
+    { label: 'operator', fn: _instance.operator },
+    { label: 'pools', fn: _instance.pools },
+    { label: 'gaugeController', fn: _instance.gaugeController },
+  ]
+  for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
+  console.log(`--- [end] PoolManagerV3 ---`)
+}
+
+
 const checkArbitratorVault = async (args: CheckFunctionArgs) => {
   console.log(`--- [start] ArbitratorVault ---`)
   console.log(`> address ... ${args.address}`)
@@ -455,8 +508,21 @@ task('check-deployed-contracts', 'Check deployed contracts').setAction(
       providerOrSigner: ethers.provider,
     })
 
-    await checkPoolManager({
-      address: system.poolManager,
+    // await checkPoolManager({
+    //   address: system.poolManager,
+    //   providerOrSigner: ethers.provider,
+    // })
+
+    await checkPoolManagerProxy({
+      address: system.poolManagerProxy,
+      providerOrSigner: ethers.provider,
+    })
+    await checkPoolManagerSecondaryProxy({
+      address: system.poolManagerSecondaryProxy,
+      providerOrSigner: ethers.provider,
+    })
+    await checkPoolManagerV3({
+      address: system.poolManagerV3,
       providerOrSigner: ethers.provider,
     })
 
