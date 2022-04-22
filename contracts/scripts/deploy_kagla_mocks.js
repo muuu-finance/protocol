@@ -2,7 +2,7 @@ const fs = require('fs')
 const jsonfile = require('jsonfile')
 const ethers = require('ethers')
 const {
-  deployMockKaglaGauge,
+  deployMockKaglaGaugeController,
   deployMockKaglaVotingEscrow,
   deployMockKaglaRegistry,
   deployMockKaglaFeeDistributor,
@@ -33,11 +33,8 @@ module.exports = async (callback) => {
   }
   const votingEscrow = await deployMockKaglaVotingEscrow(commonArgs)
   console.log(`> deployed votingEscrow`)
-  const gauge = await deployMockKaglaGauge({
-    threeKglTokenAddress: threeKglTokenAddress,
-    ...commonArgs,
-  })
-  console.log(`> deployed gauge`)
+  const gauge = await deployMockKaglaGaugeController(commonArgs)
+  console.log(`> deployed gaugeController`)
   const feeDistributor = await deployMockKaglaFeeDistributor({
     tokenAddress: threeKglTokenAddress,
     ...commonArgs,
