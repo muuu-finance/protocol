@@ -1,7 +1,6 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import { deployBoosterOwner, deployTreasuryFunds } from '../../helpers/contracts-deploy-helpers'
-import { loadConstants } from '../constants'
+import { deployBoosterOwner } from '../../helpers/contracts-deploy-helpers'
 import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
 const CONTRACT_KEY = ContractKeys.BoosterOwner
