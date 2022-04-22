@@ -43,11 +43,11 @@ task(
     deployer,
   )
   const balance = await veKgl.balanceOf(system.voteProxy)
-  console.log('VorterProxy holds veKGL:', balance.toString())
+  console.log('VoterProxy holds veKGL:', balance.toString())
 
   const kgl = await ERC20__factory.connect(constants.tokens.KGL, deployer)
   const kglBalance = await kgl.balanceOf(system.voteProxy)
-  console.log('VorterProxy holds KGL:', kglBalance.toString())
+  console.log('VoterProxy holds KGL:', kglBalance.toString())
 
   const poolCount = await booster.poolLength()
 
