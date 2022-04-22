@@ -5,6 +5,7 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import {
   ArbitratorVault__factory,
   BaseRewardPool__factory,
+  BoosterOwner__factory,
   Booster__factory,
   ERC20__factory,
   KaglaVoterProxy__factory,
@@ -85,7 +86,9 @@ const checkMuuuToken = async (args: CheckFunctionArgs) => {
   console.log(`--- [end] MuuuToken ---`)
 }
 
-const checkPreminedMuuu = async (args: CheckFunctionArgs & { treasuryAddress: string } ) => {
+const checkPreminedMuuu = async (
+  args: CheckFunctionArgs & { treasuryAddress: string },
+) => {
   console.log(`--- [start] check Premined MUUU ---`)
   const _instance = await MuuuToken__factory.connect(
     args.address,
@@ -95,7 +98,11 @@ const checkPreminedMuuu = async (args: CheckFunctionArgs & { treasuryAddress: st
 
   console.log(`maxSupply ... ${formatted(await _instance.maxSupply())}`)
   console.log(`totalSupply ... ${formatted(await _instance.totalSupply())}`)
-  console.log(`treasury(${args.treasuryAddress}) ... ${formatted(await _instance.balanceOf(args.treasuryAddress))}`)
+  console.log(
+    `treasury(${args.treasuryAddress}) ... ${formatted(
+      await _instance.balanceOf(args.treasuryAddress),
+    )}`,
+  )
 
   console.log(`--- [end] check Premined MUUU ---`)
 }
@@ -108,6 +115,7 @@ const checkBooster = async (args: CheckFunctionArgs) => {
     args.providerOrSigner,
   )
   const targets = [
+    { label: 'owner', fn: _instance.owner },
     { label: 'kgl', fn: _instance.kgl },
     { label: 'voteOwnership', fn: _instance.voteOwnership },
     { label: 'voteParameter', fn: _instance.voteParameter },
@@ -141,18 +149,40 @@ const checkBooster = async (args: CheckFunctionArgs) => {
   console.log(`--- [end] Booster ---`)
 }
 
+const checkBoosterOwner = async (args: CheckFunctionArgs) => {
+  console.log(`--- [start] BoosterOwner ---`)
+  console.log(`> address ... ${args.address}`)
+  const _instance = await BoosterOwner__factory.connect(
+    args.address,
+    args.providerOrSigner,
+  )
+  const targets = [
+    { label: 'owner', fn: _instance.owner },
+    { label: 'stashFactory', fn: _instance.stashFactory },
+    { label: 'rescueStash', fn: _instance.rescueStash },
+    { label: 'poolManager', fn: _instance.poolManager },
+    { label: 'pendingowner', fn: _instance.pendingowner },
+    { label: 'isSealed', fn: _instance.isSealed },
+    { label: 'FORCE_DELAY', fn: _instance.FORCE_DELAY },
+    { label: 'isForceTimerStarted', fn: _instance.isForceTimerStarted },
+    { label: 'forceTimestamp', fn: _instance.forceTimestamp },
+  ]
+  for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
+  console.log(`--- [end] BoosterOwner ---`)
+}
+
 const checkStashFactoryV2 = async (args: CheckFunctionArgs) => {
   console.log(`--- [start] StashFactoryV2 ---`)
   console.log(`> address ... ${args.address}`)
   const _instance = await StashFactoryV2__factory.connect(
     args.address,
-    args.providerOrSigner
+    args.providerOrSigner,
   )
   const targets = [
     { label: 'operator', fn: _instance.operator },
     { label: 'rewardFactory', fn: _instance.rewardFactory },
     { label: 'proxyFactory', fn: _instance.proxyFactory },
-    { label: 'v3Implementation', fn: _instance.v3Implementation }
+    { label: 'v3Implementation', fn: _instance.v3Implementation },
   ]
   for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
   console.log(`--- [end] StashFactoryV2 ---`)
@@ -341,7 +371,6 @@ const checkPoolManagerV3 = async (args: CheckFunctionArgs) => {
   console.log(`--- [end] PoolManagerV3 ---`)
 }
 
-
 const checkArbitratorVault = async (args: CheckFunctionArgs) => {
   console.log(`--- [start] ArbitratorVault ---`)
   console.log(`> address ... ${args.address}`)
@@ -431,7 +460,7 @@ const checkVotingBalanceV2Gauges = async (args: CheckFunctionArgs) => {
   const targets = [
     { label: 'locker', fn: _instance.locker },
     { label: 'rewardsDuration', fn: _instance.rewardsDuration },
-    { label: 'totalSupply', fn: _instance.totalSupply }
+    { label: 'totalSupply', fn: _instance.totalSupply },
   ]
   for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
   console.log(`--- [end] VotingBalanceV2Gauges ---`)
@@ -444,7 +473,7 @@ const checkTreasuryFunds = async (args: CheckFunctionArgs) => {
     args.address,
     args.providerOrSigner,
   )
-  const targets = [ { label: 'operator', fn: _instance.operator } ]
+  const targets = [{ label: 'operator', fn: _instance.operator }]
   for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
   console.log(`--- [end] TreasuryFunds ---`)
 }
@@ -549,7 +578,12 @@ task('check-deployed-contracts', 'Check deployed contracts').setAction(
     await checkPreminedMuuu({
       address: system.muuu,
       providerOrSigner: ethers.provider,
-      treasuryAddress: system.treasury
+      treasuryAddress: system.treasury,
+    })
+
+    await checkBoosterOwner({
+      address: system.boosterOwner,
+      providerOrSigner: ethers.provider,
     })
 
     await checkTreasuryFunds({
