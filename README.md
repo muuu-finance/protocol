@@ -44,11 +44,17 @@ yarn deploy:with-mocks:local
 yarn deploy-locker:with-mocks:local
 # Or
 yarn deploy:full:local # exec all commands as mentioned above
+# if necessary
+yarn deploy-booster-owner-and-transfer-roles:local
+```
 
+```bash
 # if use TreasuryFunds
 yarn deploy-treasury-funds:local
 # update treasury's address in contracts/tasks/constants/local.ts
 yarn deploy:full:local
+# if necessary
+yarn deploy-booster-owner-and-transfer-roles:local
 ```
 
 **Global Network**
@@ -63,6 +69,7 @@ yarn deploy-treasury-funds:Nnnn
 # update treasury's address in contracts/tasks/constants/Nnnn.ts
 yarn deploy:Nnnn
 yarn deploy-locker:Nnnn
+yarn deploy-booster-owner-and-transfer-roles:Nnnn
 
 # If you want to check deployed contracts
 yarn check-deployed-contracts:Nnnn
