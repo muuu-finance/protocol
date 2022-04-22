@@ -1,6 +1,7 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { deployPoolManagerProxy, deployPoolManagerSecondaryProxy, deployPoolManagerV3 } from '../../helpers/contracts-deploy-helpers'
+import { MockGaugeController__factory } from '../../types'
 import { loadConstants } from '../constants'
 import { ContractJsonGroups, ContractKeys, TaskUtils } from '../utils'
 
@@ -64,9 +65,12 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         fileName: TaskUtils.getFilePath({ network: network.name }),
       })
 
+      const _gaugeController = await new MockGaugeController__factory(_deployer).deploy()
+      await _gaugeController.deployTransaction.wait()
+
       const poolManagerSecondaryProxy = await deployPoolManagerSecondaryProxy({
         deployer: _deployer,
-        gaugeController: constants.kaglas.gauge,
+        gaugeController: _gaugeController.address, // constants.kaglas.gaugeController,
         pools: poolManagerProxy.address,
         booster: deployeds.system.booster
       })
@@ -79,7 +83,7 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
 
       const poolManagerV3 = await deployPoolManagerV3({
         deployer: _deployer,
-        gaugeController: constants.kaglas.gauge,
+        gaugeController: _gaugeController.address, // constants.kaglas.gaugeController,
         pools: poolManagerSecondaryProxy.address
       })
       TaskUtils.writeContractAddress({
