@@ -69,6 +69,7 @@ module.exports = async (callback) => {
   const deployedInfos = [
     { key: 'votingEscrow', contract: votingEscrow },
     { key: 'gaugeController', contract: gaugeController },
+    { key: 'liquidityGauge', contract: gauge },
     { key: 'minter', contract: { address: ethers.constants.AddressZero } }, // no deployed mock
     { key: 'feeDistributor', contract: feeDistributor },
     { key: 'registry', contract: registry },
