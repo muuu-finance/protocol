@@ -8,7 +8,7 @@ import { TaskUtils } from "../utils";
 // Parameters to use in task
 const ADDRESSES_PARAMS = {
   operatorInTreasury: "",
-  ownerInBoosterOwner: "",
+  // ownerInBoosterOwner: "",
   voteDelegateInBooster: "",
   feeManagerInBooster: "",
   ownerInKagleVoterProxy: "",
@@ -66,6 +66,16 @@ const getRoles = async (provider: ethers.providers.JsonRpcProvider, addrs: Addre
     { label: "PoolManagerSecondaryProxy’s owner", fn: contracts._poolManagerSecondaryProxy.owner },
   ]
   for (const _v of functions) console.log(`${_v.label} ... ${await _v.fn()}`)
+}
+
+const validateInputtedAddress = (params: typeof ADDRESSES_PARAMS): boolean => {
+  for (const [key, value] of Object.entries(params)) {
+    if (!ethers.utils.isAddress(value)) {
+      console.log(`[ERROR] input is not address: ${key}`)
+      return false
+    }
+  }
+  return true
 }
 
 const bulkTransferRoleToInputtedAddress = async (signer: SignerWithAddress, addrs: Addresses, params: typeof ADDRESSES_PARAMS) => {
@@ -135,6 +145,7 @@ task(
   await getRoles(ethers.provider, addresses)
 
   console.log(`--- transfer roles: start ---`)
+  if (!validateInputtedAddress(ADDRESSES_PARAMS)) return
   await bulkTransferRoleToInputtedAddress(signer, addresses, ADDRESSES_PARAMS)
   console.log(`--- transfer roles: end ---`)
 
