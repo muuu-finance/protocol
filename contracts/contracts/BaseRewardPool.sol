@@ -52,7 +52,7 @@ contract BaseRewardPool {
 
   IERC20 public rewardToken;
   IERC20 public stakingToken;
-  uint256 public constant duration = 7 days;
+  uint256 public constant duration = 15 minutes;
 
   address public operator;
   address public rewardManager;
