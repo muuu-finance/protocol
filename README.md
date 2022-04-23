@@ -46,6 +46,7 @@ yarn deploy-locker:with-mocks:local
 yarn deploy:full:local # exec all commands as mentioned above
 # if necessary
 yarn deploy-booster-owner-and-transfer-roles:local
+yarn transfer-roles:local
 ```
 
 ```bash
@@ -55,6 +56,7 @@ yarn deploy-treasury-funds:local
 yarn deploy:full:local
 # if necessary
 yarn deploy-booster-owner-and-transfer-roles:local
+yarn transfer-roles:local
 ```
 
 **Global Network**
@@ -70,6 +72,7 @@ yarn deploy-treasury-funds:Nnnn
 yarn deploy:Nnnn
 yarn deploy-locker:Nnnn
 yarn deploy-booster-owner-and-transfer-roles:Nnnn
+yarn transfer-roles:Nnnn
 
 # If you want to check deployed contracts
 yarn check-deployed-contracts:Nnnn
