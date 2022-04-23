@@ -21,7 +21,7 @@ contract MuuuToken is ERC20, Ownable {
 
   mapping(address => bool) public minterList;
 
-  constructor() public ERC20("Muuu Token", "MUUU") {
+  constructor() public ERC20("TEST Muuu Token", "TESTMUUU") {
     minterList[msg.sender] = true;
     reductionPerCliff = maxSupply.div(totalCliffs);
   }

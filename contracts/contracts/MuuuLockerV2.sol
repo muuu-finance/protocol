@@ -125,8 +125,8 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
     address _boostPayment,
     address _mukglStaking
   ) public Ownable() {
-    _name = "Vote Locked Muuu Token";
-    _symbol = "vlMUUU";
+    _name = "TEST Vote Locked Muuu Token";
+    _symbol = "TESTvlMUUU";
     _decimals = 18;
 
     stakingToken = _stakingToken;
