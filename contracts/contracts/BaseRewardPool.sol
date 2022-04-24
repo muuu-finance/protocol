@@ -52,7 +52,7 @@ contract BaseRewardPool {
 
   IERC20 public rewardToken;
   IERC20 public stakingToken;
-  uint256 public constant duration = 15 minutes;
+  uint256 public duration;
 
   address public operator;
   address public rewardManager;
@@ -91,6 +91,12 @@ contract BaseRewardPool {
     rewardToken = IERC20(rewardToken_);
     operator = operator_;
     rewardManager = rewardManager_;
+    duration = 15 minutes;
+  }
+
+  // for debug
+  function setDuration(uint _duration) external {
+    duration = _duration;
   }
 
   function totalSupply() public view returns (uint256) {

@@ -65,7 +65,7 @@ contract VirtualBalanceRewardPool is VirtualBalanceWrapper {
   using SafeERC20 for IERC20;
 
   IERC20 public rewardToken;
-  uint256 public constant duration = 15 minutes;
+  uint256 public duration;
 
   address public operator;
 
@@ -93,6 +93,12 @@ contract VirtualBalanceRewardPool is VirtualBalanceWrapper {
     deposits = IDeposit(deposit_);
     rewardToken = IERC20(reward_);
     operator = op_;
+    duration = 15 minutes;
+  }
+
+    // for debug
+  function setDuration(uint _duration) external {
+    duration = _duration;
   }
 
   modifier updateReward(address account) {

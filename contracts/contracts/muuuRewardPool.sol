@@ -52,7 +52,7 @@ contract MuuuRewardPool {
 
   IERC20 public immutable rewardToken;
   IERC20 public immutable stakingToken;
-  uint256 public constant duration = 15 minutes;
+  uint256 public duration;
   uint256 public constant FEE_DENOMINATOR = 10000;
 
   address public immutable operator;
@@ -97,6 +97,12 @@ contract MuuuRewardPool {
     kglDeposits = kglDeposits_;
     muKglRewards = muKglRewards_;
     muKglToken = IERC20(muKglToken_);
+    duration = 15 minutes;
+  }
+
+  // for debug
+  function setDuration(uint _duration) external {
+    duration = _duration;
   }
 
   function totalSupply() public view returns (uint256) {
