@@ -48,7 +48,7 @@ const PARAMS = {
 task('lockers-for-test:increase-time', 'lockers-for-test:increase-time').setAction(async ({}, hre: HardhatRuntimeEnvironment) => {
   const { network, ethers } = hre
   console.log(`network: ${network.name}`)
-  await ethers.provider.send("evm_increaseTime", [60 * 3])
+  await ethers.provider.send("evm_increaseTime", [60 * 5])
   await ethers.provider.send("evm_mine", [])
   console.log(`--- CurrentTime ---`)
   const currentBlockNumber = await ethers.provider.getBlockNumber()
@@ -151,5 +151,27 @@ task(
 
   console.log(`locker.balanceOf ... ${ethers.utils.formatUnits(await locker.balanceOf(signer.address))}`)
   console.log(`locker.lockedBalanceOf ... ${ethers.utils.formatUnits(await locker.lockedBalanceOf(signer.address))}`)
+  // console.log(`locker.lockedBalances`)
+  // console.log(await locker.lockedBalances(signer.address))
   console.log(`votingBalanceV2Gauges.balanceOf ... ${ethers.utils.formatUnits(await votingBalanceV2Gauges.balanceOf(signer.address))}`)
+})
+
+task(
+  'lockers-for-test:balances-used-by-voting-balance',
+  'lockers-for-test:balances-used-by-voting-balance'
+).addOptionalParam(
+  'deployerAddress', "deployerAddress"
+).setAction(async ({ deployerAddress }, hre: HardhatRuntimeEnvironment) => {
+  const { network, ethers } = hre
+  const signer = deployerAddress
+    ? await ethers.getSigner(deployerAddress)
+    : (await ethers.getSigners())[0]
+  const locker = MuuuLockerV2__factory.connect(PARAMS.muuuLockerV2, signer)
+
+  const epochCount = (await locker.epochCount()).toNumber()
+  for (let i = 0; i < epochCount; i++) {
+    console.log(`> epochs ${epochCount - i - 1}`)
+    console.log(`locker.balanceAtEpochOf ... ${ethers.utils.formatUnits(await locker.balanceAtEpochOf(epochCount - i - 1, signer.address))}`)
+    console.log(`locker.pendingLockAtEpochOf ... ${ethers.utils.formatUnits(await locker.pendingLockAtEpochOf(epochCount - i - 1, signer.address))}`)
+  }
 })
