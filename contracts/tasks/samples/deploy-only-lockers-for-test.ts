@@ -8,6 +8,7 @@ task('deploy-only-lockers-for-test', 'deploy-only-lockers-for-test').setAction(a
   const { network, ethers } = hre
   console.log(`network: ${network.name}`)
   const [signer] = await ethers.getSigners()
+  console.log(`deployer: ${signer.address}`)
 
   const muuuToken = await deployMuuuToken({
     deployer: signer,
