@@ -6,12 +6,17 @@ import "./interfaces/ILockedMuuu.sol";
 
 contract VotingBalanceV2Gauges {
   address public immutable locker;
-  uint256 public constant rewardsDuration = 86400 * 7;
+  uint256 public rewardsDuration;
 
   constructor(
     address _locker
   ) public {
     locker = _locker;
+    rewardsDuration = 15 minutes;
+  }
+
+  function setRewardsDuration(uint _rewardsDuration) external {
+    rewardsDuration = _rewardsDuration;
   }
 
   function balanceOf(address _account) external view returns (uint256) {
