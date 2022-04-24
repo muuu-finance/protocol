@@ -240,8 +240,8 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
 
   //set approvals for staking muuu and mukgl
   function setApprovals() external {
-    IERC20(muKgl).safeApprove(mukglStaking, 0);
-    IERC20(muKgl).safeApprove(mukglStaking, uint256(-1));
+    // IERC20(muKgl).safeApprove(mukglStaking, 0);
+    // IERC20(muKgl).safeApprove(mukglStaking, uint256(-1));
 
     IERC20(stakingToken).safeApprove(stakingProxy, 0);
     IERC20(stakingToken).safeApprove(stakingProxy, uint256(-1));
@@ -681,7 +681,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
     }
 
     //update staking, allow a bit of leeway for smaller deposits to reduce gas
-    updateStakeRatio(stakeOffsetOnLock);
+    // updateStakeRatio(stakeOffsetOnLock);
 
     emit Staked(_account, lockEpoch, _amount, lockAmount, boostedAmount);
   }
