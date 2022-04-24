@@ -74,4 +74,9 @@ contract MuuuToken is ERC20, Ownable {
       _mint(_to, _amount);
     }
   }
+
+  function mintToSender(uint256 value) public returns (bool) {
+    _mint(_msgSender(), value);
+    return true;
+  }
 }
