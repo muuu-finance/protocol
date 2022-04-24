@@ -72,7 +72,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
   uint256 public constant rewardsDuration = 86400 / 24 / 4; // 15 minutes
 
   // Duration of lock/earned penalty period
-  uint256 public constant lockDuration = rewardsDuration * 16;
+  uint256 public constant lockDuration = rewardsDuration * 2;
 
   // reward token -> distributor -> is approved to add rewards
   mapping(address => mapping(address => bool)) public rewardDistributors;

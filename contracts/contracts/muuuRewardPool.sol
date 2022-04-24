@@ -52,7 +52,7 @@ contract MuuuRewardPool {
 
   IERC20 public immutable rewardToken;
   IERC20 public immutable stakingToken;
-  uint256 public constant duration = 7 days;
+  uint256 public constant duration = 15 minutes;
   uint256 public constant FEE_DENOMINATOR = 10000;
 
   address public immutable operator;

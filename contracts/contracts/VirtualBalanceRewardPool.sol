@@ -65,7 +65,7 @@ contract VirtualBalanceRewardPool is VirtualBalanceWrapper {
   using SafeERC20 for IERC20;
 
   IERC20 public rewardToken;
-  uint256 public constant duration = 7 days;
+  uint256 public constant duration = 15 minutes;
 
   address public operator;
 
