@@ -135,7 +135,7 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
     mukglStaking = _mukglStaking;
 
     rewardsDuration = 15 minutes;
-    lockDuration = rewardsDuration * 2;
+    lockDuration = rewardsDuration * 4;
 
     uint256 currentEpoch = block.timestamp.div(rewardsDuration).mul(rewardsDuration);
     epochs.push(Epoch({ supply: 0, date: uint32(currentEpoch) }));
