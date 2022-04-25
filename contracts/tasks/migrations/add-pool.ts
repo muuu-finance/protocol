@@ -6,7 +6,6 @@ task('add-pool', 'Add pool by using PoolManager')
   .addOptionalParam('deployerAddress', "Deployer's address")
   .addParam('poolName', 'key to use pools info in json')
   .addParam('poolManagerAddress', 'PoolManager contract address')
-  .addParam('swap', 'param in PoolManager#swap')
   .addParam('gauge', 'param in PoolManager#swap')
   .setAction(
     async (
@@ -14,13 +13,11 @@ task('add-pool', 'Add pool by using PoolManager')
         deployerAddress,
         poolName,
         poolManagerAddress,
-        swap,
         gauge,
       }: {
         deployerAddress: string
         poolName: string
         poolManagerAddress: string
-        swap: string
         gauge: string
       },
       hre: HardhatRuntimeEnvironment,
