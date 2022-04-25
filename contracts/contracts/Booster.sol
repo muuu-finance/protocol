@@ -14,7 +14,7 @@ contract Booster is Ownable {
   using SafeMath for uint256;
 
   address public kgl;
-  uint256 public constant distributionAddressId = 4;
+  uint256 public distributionAddressId;
   address public voteOwnership;
   address public voteParameter;
 
@@ -86,6 +86,7 @@ contract Booster is Ownable {
     registry = _registry;
     voteOwnership = address(0);
     voteParameter = address(0);
+    distributionAddressId = 4;
   }
 
   /// SETTER SECTION ///
@@ -142,6 +143,11 @@ contract Booster is Ownable {
       lockRewards = _rewards;
       stakerRewards = _stakerRewards;
     }
+  }
+
+  function setDistributionAddressId(uint _distributionAddressId) external {
+    require(msg.sender == feeManager, "!auth");
+    distributionAddressId = _distributionAddressId;
   }
 
   // Set reward token and claim contract, get from Kagla's registry
