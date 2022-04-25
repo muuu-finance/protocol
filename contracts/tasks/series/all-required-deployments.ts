@@ -244,8 +244,8 @@ const _prepareAfterDeployingPoolManager = async ({
       tokenFactory,
     )
   ).wait()
-  console.log('> Booster#setFeeInfo')
-  await(await _boosterInstance.setFeeInfo()).wait()
+  console.log('> [skip] Booster#setFeeInfo')
+  // await(await _boosterInstance.setFeeInfo()).wait()
 }
 
 // contracts/migrations/1_deploy_contracts.js#L313
