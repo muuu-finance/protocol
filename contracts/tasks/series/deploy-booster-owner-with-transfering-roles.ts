@@ -31,11 +31,10 @@ task(
   console.log(`--- start: transfer role ---`)
   const boosterOwner = BoosterOwner__factory.connect(boosterOwnerAddress, signer)
   const booster = Booster__factory.connect(deployeds.system.booster, signer)
-  await (await booster.transferOwnership(boosterOwnerAddress))
+  await (await booster.transferOwnership(boosterOwnerAddress)).wait()
   const newBoosterOwner = await booster.owner()
   console.log(`check: booster's owner = ${newBoosterOwner}`)
   if (newBoosterOwner.toLowerCase() != boosterOwnerAddress.toLowerCase()) {
-    console.log("[ERROR] Premine total does not match to calculated total from holders")
     throw new Error("[ERROR] current booster's owner is not BoosterOwner address after Booster#transferOwner")
   }
   // TODO: transfer BoosterOwner's owner to admin address?
