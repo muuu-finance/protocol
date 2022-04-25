@@ -1,6 +1,10 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import { Booster__factory, MuuuLockerV2__factory, MuuuStakingProxyV2__factory } from '../../types'
+import {
+  Booster__factory,
+  MuuuLockerV2__factory,
+  MuuuStakingProxyV2__factory,
+} from '../../types'
 import { ContractKeys, TaskUtils } from '../utils'
 
 task('locker-deployments', 'Deploy necessary contracts to lock, vote function')
@@ -40,10 +44,11 @@ task('locker-deployments', 'Deploy necessary contracts to lock, vote function')
         `deploy-${ContractKeys.MuuuStakingProxyV2}`,
         commonTaskArgs,
       )
-      await hre.run(
-        `deploy-${ContractKeys.VotingBalanceV2Gauges}`,
-        commonTaskArgs,
-      )
+      // [NOTE] use MuuuLockerV2 for counting number of votes instead of VotingBalanceV2Gauges
+      // await hre.run(
+      //   `deploy-${ContractKeys.VotingBalanceV2Gauges}`,
+      //   commonTaskArgs,
+      // )
       console.log(`--- finish: deployments ---`)
 
       console.log(`--- start: initialize / setups ---`)
@@ -59,7 +64,10 @@ task('locker-deployments', 'Deploy necessary contracts to lock, vote function')
       await (await stakingProxyInstance.setApprovals()).wait()
       console.log('> Booster#setLockerStakingProxy')
       await (
-        await Booster__factory.connect(deployeds.system.booster, signer).setLockerStakingProxy(stakingProxyAddress)
+        await Booster__factory.connect(
+          deployeds.system.booster,
+          signer,
+        ).setLockerStakingProxy(stakingProxyAddress)
       ).wait()
       console.log(`> MuuuLockerV2#addReward`)
       await (
