@@ -15,6 +15,7 @@ task(
 )
 .addOptionalParam('deployerAddress', "Deployer's address")
 .setAction(async ({ deployerAddress }: { deployerAddress: string }, hre: HardhatRuntimeEnvironment) => {
+  console.log(`--- [add-${POOL_NAME}-pool] START ---`)
   const { ethers, network: _network } = hre
 
   const _deployer =
@@ -23,7 +24,7 @@ task(
   
   const networkName = _network.name as keyof typeof CONSTANTS_POOLS_INDEX
   const constantsPoolIndex = CONSTANTS_POOLS_INDEX[networkName]
-  if (!constantsPoolIndex) return
+  if (constantsPoolIndex == null) throw new Error(`[ERROR] constants pool index is null`)
 
   await hre.run(`add-pool-extended-version`, {
     deployerAddress: _deployer.address,
@@ -31,4 +32,5 @@ task(
     constantsPoolIndex: constantsPoolIndex.toString(),
     networkName: networkName
   })
+  console.log(`--- [add-${POOL_NAME}-pool] FINISHED ---`)
 })
