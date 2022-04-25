@@ -1,12 +1,12 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import { PoolManagerV3__factory, PoolManager__factory } from '../../types'
+import { PoolManagerV3__factory } from '../../types'
 
 task('add-pool', 'Add pool by using PoolManager')
   .addOptionalParam('deployerAddress', "Deployer's address")
   .addParam('poolName', 'key to use pools info in json')
   .addParam('poolManagerAddress', 'PoolManager contract address')
-  .addParam('gauge', 'param in PoolManager#swap')
+  .addParam('gauge', 'param in PoolManagerV3#addPool')
   .setAction(
     async (
       {
