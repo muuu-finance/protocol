@@ -12,7 +12,6 @@ import {
   KglDepositor__factory,
   MerkleAirdropFactory__factory,
   MerkleAirdrop__factory,
-  MockKaglaGauge__factory,
   MuKglToken__factory,
   MuuuToken__factory,
   StashFactoryV2__factory,
