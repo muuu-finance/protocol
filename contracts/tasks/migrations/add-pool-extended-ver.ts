@@ -63,5 +63,13 @@ task('add-pool-extended-version', 'add-pool-extended-version')
 
     // confirm
     const poolInfo = await instance.poolInfo(poolLength.toNumber())
-    console.log(poolInfo)
+    const data = {
+      lptoken: poolInfo.lptoken,
+      token: poolInfo.token,
+      gauge: poolInfo.gauge,
+      kglRewards: poolInfo.kglRewards,
+      stash: poolInfo.stash,
+      shutdown: poolInfo.shutdown
+    }
+    console.log(data)
   })
