@@ -69,7 +69,15 @@ task('add-pool-extended-version', 'add-pool-extended-version')
       gauge: poolInfo.gauge,
       kglRewards: poolInfo.kglRewards,
       stash: poolInfo.stash,
-      shutdown: poolInfo.shutdown
+      rewards: [],
+      name: poolName,
+      id: poolLength.toNumber()
     }
-    console.log(data)
+    const _deployedPools = deployedPools.concat([data])
+    console.log(_deployedPools)
+    TaskUtils.writeValueToGroup(
+      'pools',
+      _deployedPools,
+      TaskUtils.getFilePath({ network: networkName }),
+    )
   })
