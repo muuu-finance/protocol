@@ -429,7 +429,7 @@ const _writePoolInfosToJson = async ({
   networkName: string
   boosterAddress: string
   kglTokenAddress: string
-  pools?: { name: string; swap: string; gauge: string }[]
+  pools?: { name: string; gauge: string }[]
 }) => {
   const poolsContracts = []
   const _boosterInstance = await Booster__factory.connect(
@@ -751,7 +751,6 @@ task(
           deployerAddress: signer.address,
           poolName: '3pool',
           poolManagerAddress,
-          swap: constants.tokens['3Kgl'],
           gauge: constants.kaglas.liquidityGauge,
         })
       }
@@ -763,7 +762,6 @@ task(
             deployerAddress: signer.address,
             poolName: _p.name,
             poolManagerAddress,
-            swap: _p.swap,
             gauge: _p.gauge,
           })
         }
