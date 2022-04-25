@@ -187,16 +187,6 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "_v1",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "_v2",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
           "name": "_v3",
           "type": "address"
         }

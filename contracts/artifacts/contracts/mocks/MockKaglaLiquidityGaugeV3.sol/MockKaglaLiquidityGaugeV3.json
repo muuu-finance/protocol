@@ -1,0 +1,24 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "MockKaglaLiquidityGaugeV3",
+  "sourceName": "contracts/mocks/MockKaglaLiquidityGaugeV3.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "rewards_receiver",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x6080604052348015600f57600080fd5b50608a8061001e6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c806364817b8a14602d575b600080fd5b6033604f565b604080516001600160a01b039092168252519081900360200190f35b60009056fea2646970667358221220e4e99cd0c7ef98371730230a27718f84bb639451003b2f379e496afae4686a0864736f6c634300060c0033",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060285760003560e01c806364817b8a14602d575b600080fd5b6033604f565b604080516001600160a01b039092168252519081900360200190f35b60009056fea2646970667358221220e4e99cd0c7ef98371730230a27718f84bb639451003b2f379e496afae4686a0864736f6c634300060c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

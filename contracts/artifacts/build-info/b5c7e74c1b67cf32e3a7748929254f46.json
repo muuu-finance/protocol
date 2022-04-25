@@ -1,0 +1,260 @@
+{
+  "id": "b5c7e74c1b67cf32e3a7748929254f46",
+  "_format": "hh-sol-build-info-1",
+  "solcVersion": "0.6.12",
+  "solcLongVersion": "0.6.12+commit.27d51765",
+  "input": {
+    "language": "Solidity",
+    "sources": {
+      "contracts/mocks/MockKaglaLiquidityGaugeV3.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity 0.6.12;\n\n// Mock for Kagla LiquidityGaugeV3\n// refs\n// - https://curve.readthedocs.io/dao-gauges.html#liquiditygaugev3\ncontract MockKaglaLiquidityGaugeV3 {\n  function rewards_receiver() external pure returns (address) {\n    return address(0);\n  }\n}\n"
+      }
+    },
+    "settings": {
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ],
+          "": [
+            "ast"
+          ]
+        }
+      }
+    }
+  },
+  "output": {
+    "contracts": {
+      "contracts/mocks/MockKaglaLiquidityGaugeV3.sol": {
+        "MockKaglaLiquidityGaugeV3": {
+          "abi": [
+            {
+              "inputs": [],
+              "name": "rewards_receiver",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "pure",
+              "type": "function"
+            }
+          ],
+          "evm": {
+            "bytecode": {
+              "linkReferences": {},
+              "object": "6080604052348015600f57600080fd5b50608a8061001e6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c806364817b8a14602d575b600080fd5b6033604f565b604080516001600160a01b039092168252519081900360200190f35b60009056fea2646970667358221220e4e99cd0c7ef98371730230a27718f84bb639451003b2f379e496afae4686a0864736f6c634300060c0033",
+              "opcodes": "PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH1 0xF JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x8A DUP1 PUSH2 0x1E PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN INVALID PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH1 0xF JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x4 CALLDATASIZE LT PUSH1 0x28 JUMPI PUSH1 0x0 CALLDATALOAD PUSH1 0xE0 SHR DUP1 PUSH4 0x64817B8A EQ PUSH1 0x2D JUMPI JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH1 0x33 PUSH1 0x4F JUMP JUMPDEST PUSH1 0x40 DUP1 MLOAD PUSH1 0x1 PUSH1 0x1 PUSH1 0xA0 SHL SUB SWAP1 SWAP3 AND DUP3 MSTORE MLOAD SWAP1 DUP2 SWAP1 SUB PUSH1 0x20 ADD SWAP1 RETURN JUMPDEST PUSH1 0x0 SWAP1 JUMP INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xE4 0xE9 SWAP13 0xD0 0xC7 0xEF SWAP9 CALLDATACOPY OR ADDRESS 0x23 EXP 0x27 PUSH18 0x8F84BB639451003B2F379E496AFAE4686A08 PUSH5 0x736F6C6343 STOP MOD 0xC STOP CALLER ",
+              "sourceMap": "167:129:0:-:0;;;;;;;;;;;;;;;;;;;"
+            },
+            "deployedBytecode": {
+              "immutableReferences": {},
+              "linkReferences": {},
+              "object": "6080604052348015600f57600080fd5b506004361060285760003560e01c806364817b8a14602d575b600080fd5b6033604f565b604080516001600160a01b039092168252519081900360200190f35b60009056fea2646970667358221220e4e99cd0c7ef98371730230a27718f84bb639451003b2f379e496afae4686a0864736f6c634300060c0033",
+              "opcodes": "PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH1 0xF JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x4 CALLDATASIZE LT PUSH1 0x28 JUMPI PUSH1 0x0 CALLDATALOAD PUSH1 0xE0 SHR DUP1 PUSH4 0x64817B8A EQ PUSH1 0x2D JUMPI JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH1 0x33 PUSH1 0x4F JUMP JUMPDEST PUSH1 0x40 DUP1 MLOAD PUSH1 0x1 PUSH1 0x1 PUSH1 0xA0 SHL SUB SWAP1 SWAP3 AND DUP3 MSTORE MLOAD SWAP1 DUP2 SWAP1 SUB PUSH1 0x20 ADD SWAP1 RETURN JUMPDEST PUSH1 0x0 SWAP1 JUMP INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xE4 0xE9 SWAP13 0xD0 0xC7 0xEF SWAP9 CALLDATACOPY OR ADDRESS 0x23 EXP 0x27 PUSH18 0x8F84BB639451003B2F379E496AFAE4686A08 PUSH5 0x736F6C6343 STOP MOD 0xC STOP CALLER ",
+              "sourceMap": "167:129:0:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;206:88;;;:::i;:::-;;;;-1:-1:-1;;;;;206:88:0;;;;;;;;;;;;;;;257:7;206:88;:::o"
+            },
+            "methodIdentifiers": {
+              "rewards_receiver()": "64817b8a"
+            }
+          },
+          "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"rewards_receiver\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/mocks/MockKaglaLiquidityGaugeV3.sol\":\"MockKaglaLiquidityGaugeV3\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/mocks/MockKaglaLiquidityGaugeV3.sol\":{\"keccak256\":\"0xc9687bde96a507f77ddee80d57595594e0eb50a989e8acf5b2219ed35a6545f7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e2cd651041700c38dee37a3809af0d2132359d8030f2c0c1c72b2d1262d27ad6\",\"dweb:/ipfs/QmdbsPFRtkuspUDnEWGrqHq8qGfoLBQCQyKxheR4SvTsjJ\"]}},\"version\":1}"
+        }
+      }
+    },
+    "sources": {
+      "contracts/mocks/MockKaglaLiquidityGaugeV3.sol": {
+        "ast": {
+          "absolutePath": "contracts/mocks/MockKaglaLiquidityGaugeV3.sol",
+          "exportedSymbols": {
+            "MockKaglaLiquidityGaugeV3": [
+              13
+            ]
+          },
+          "id": 14,
+          "license": "MIT",
+          "nodeType": "SourceUnit",
+          "nodes": [
+            {
+              "id": 1,
+              "literals": [
+                "solidity",
+                "0.6",
+                ".12"
+              ],
+              "nodeType": "PragmaDirective",
+              "src": "32:23:0"
+            },
+            {
+              "abstract": false,
+              "baseContracts": [],
+              "contractDependencies": [],
+              "contractKind": "contract",
+              "documentation": null,
+              "fullyImplemented": true,
+              "id": 13,
+              "linearizedBaseContracts": [
+                13
+              ],
+              "name": "MockKaglaLiquidityGaugeV3",
+              "nodeType": "ContractDefinition",
+              "nodes": [
+                {
+                  "body": {
+                    "id": 11,
+                    "nodeType": "Block",
+                    "src": "266:28:0",
+                    "statements": [
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "arguments": [
+                            {
+                              "argumentTypes": null,
+                              "hexValue": "30",
+                              "id": 8,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "number",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "287:1:0",
+                              "subdenomination": null,
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_rational_0_by_1",
+                                "typeString": "int_const 0"
+                              },
+                              "value": "0"
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
+                              {
+                                "typeIdentifier": "t_rational_0_by_1",
+                                "typeString": "int_const 0"
+                              }
+                            ],
+                            "id": 7,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "lValueRequested": false,
+                            "nodeType": "ElementaryTypeNameExpression",
+                            "src": "279:7:0",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_type$_t_address_$",
+                              "typeString": "type(address)"
+                            },
+                            "typeName": {
+                              "id": 6,
+                              "name": "address",
+                              "nodeType": "ElementaryTypeName",
+                              "src": "279:7:0",
+                              "typeDescriptions": {
+                                "typeIdentifier": null,
+                                "typeString": null
+                              }
+                            }
+                          },
+                          "id": 9,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "typeConversion",
+                          "lValueRequested": false,
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "279:10:0",
+                          "tryCall": false,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address_payable",
+                            "typeString": "address payable"
+                          }
+                        },
+                        "functionReturnParameters": 5,
+                        "id": 10,
+                        "nodeType": "Return",
+                        "src": "272:17:0"
+                      }
+                    ]
+                  },
+                  "documentation": null,
+                  "functionSelector": "64817b8a",
+                  "id": 12,
+                  "implemented": true,
+                  "kind": "function",
+                  "modifiers": [],
+                  "name": "rewards_receiver",
+                  "nodeType": "FunctionDefinition",
+                  "overrides": null,
+                  "parameters": {
+                    "id": 2,
+                    "nodeType": "ParameterList",
+                    "parameters": [],
+                    "src": "231:2:0"
+                  },
+                  "returnParameters": {
+                    "id": 5,
+                    "nodeType": "ParameterList",
+                    "parameters": [
+                      {
+                        "constant": false,
+                        "id": 4,
+                        "mutability": "mutable",
+                        "name": "",
+                        "nodeType": "VariableDeclaration",
+                        "overrides": null,
+                        "scope": 12,
+                        "src": "257:7:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        "typeName": {
+                          "id": 3,
+                          "name": "address",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "257:7:0",
+                          "stateMutability": "nonpayable",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "value": null,
+                        "visibility": "internal"
+                      }
+                    ],
+                    "src": "256:9:0"
+                  },
+                  "scope": 13,
+                  "src": "206:88:0",
+                  "stateMutability": "pure",
+                  "virtual": false,
+                  "visibility": "external"
+                }
+              ],
+              "scope": 14,
+              "src": "167:129:0"
+            }
+          ],
+          "src": "32:265:0"
+        },
+        "id": 0
+      }
+    }
+  }
+}

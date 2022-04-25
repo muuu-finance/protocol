@@ -1,0 +1,3992 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/ArbitratorVault.sol": {
+      "lastModificationDate": 1650873481047,
+      "contentHash": "c5516872d7f223658d2e843e4b1537eb",
+      "sourceName": "contracts/ArbitratorVault.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "ArbitratorVault"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/Interfaces.sol": {
+      "lastModificationDate": 1647435274593,
+      "contentHash": "614940c792626329c26baaa8eed91b11",
+      "sourceName": "contracts/Interfaces.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IAddressProvider",
+        "IDeposit",
+        "IFeeDistro",
+        "IKaglaGauge",
+        "IKaglaVoteEscrow",
+        "IKglDeposit",
+        "IMinter",
+        "IPools",
+        "IRegistry",
+        "IRewardFactory",
+        "IRewards",
+        "IStaker",
+        "IStash",
+        "IStashFactory",
+        "ITokenFactory",
+        "ITokenMinter",
+        "IVestedEscrow",
+        "IVoting",
+        "IWalletChecker"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/node_modules/@openzeppelin/contracts/math/SafeMath.sol": {
+      "lastModificationDate": 1648702491796,
+      "contentHash": "e03e12206057e809eb76c5f681170c32",
+      "sourceName": "@openzeppelin/contracts/math/SafeMath.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.6.0 <0.8.0"
+      ],
+      "artifacts": [
+        "SafeMath"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+      "lastModificationDate": 1648702495307,
+      "contentHash": "e0a41531d159d3a32f84b7a3ecf9fabb",
+      "sourceName": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.6.0 <0.8.0"
+      ],
+      "artifacts": [
+        "IERC20"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/node_modules/@openzeppelin/contracts/utils/Address.sol": {
+      "lastModificationDate": 1648702491823,
+      "contentHash": "7aa46886ff5abe7515496208a5e2ce5a",
+      "sourceName": "@openzeppelin/contracts/utils/Address.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.6.2 <0.8.0"
+      ],
+      "artifacts": [
+        "Address"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/node_modules/@openzeppelin/contracts/token/ERC20/SafeERC20.sol": {
+      "lastModificationDate": 1648702495310,
+      "contentHash": "33e22842646d746e5c4124c2fdc051aa",
+      "sourceName": "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./IERC20.sol",
+        "../../math/SafeMath.sol",
+        "../../utils/Address.sol"
+      ],
+      "versionPragmas": [
+        ">=0.6.0 <0.8.0"
+      ],
+      "artifacts": [
+        "SafeERC20"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/wrappers/MuuuStakingWrapper.sol": {
+      "lastModificationDate": 1647744248895,
+      "contentHash": "17a8e5ca34aef90fab29e937e40d31ee",
+      "sourceName": "contracts/wrappers/MuuuStakingWrapper.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../interfaces/IRewardStaking.sol",
+        "../interfaces/IMuuuDeposits.sol",
+        "../libraries/MuuuMining.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+        "@openzeppelin/contracts/utils/ReentrancyGuard.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MuuuStakingWrapper"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/IRewardStaking.sol": {
+      "lastModificationDate": 1647433173780,
+      "contentHash": "e58a639a13008f20be1507cec417a1ac",
+      "sourceName": "contracts/interfaces/IRewardStaking.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IRewardStaking"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/IMuuuDeposits.sol": {
+      "lastModificationDate": 1647435274615,
+      "contentHash": "a8bd645466c593d997826da8ff8b77c6",
+      "sourceName": "contracts/interfaces/IMuuuDeposits.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IMuuuDeposits"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/libraries/MuuuMining.sol": {
+      "lastModificationDate": 1647744248893,
+      "contentHash": "f2fb8c81a5d6be35b65b9e1c430090d7",
+      "sourceName": "contracts/libraries/MuuuMining.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../interfaces/IMuuu.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MuuuMining"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol": {
+      "lastModificationDate": 1648702495307,
+      "contentHash": "8065b340476f61365c076897199425f1",
+      "sourceName": "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../../utils/Context.sol",
+        "./IERC20.sol",
+        "../../math/SafeMath.sol"
+      ],
+      "versionPragmas": [
+        ">=0.6.0 <0.8.0"
+      ],
+      "artifacts": [
+        "ERC20"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/node_modules/@openzeppelin/contracts/utils/ReentrancyGuard.sol": {
+      "lastModificationDate": 1648702491824,
+      "contentHash": "1c60f58cee45c61469e1aea31e4dd879",
+      "sourceName": "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.6.0 <0.8.0"
+      ],
+      "artifacts": [
+        "ReentrancyGuard"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/IMuuu.sol": {
+      "lastModificationDate": 1647435274615,
+      "contentHash": "199db9741ddf807c5fb35ec83adb70f8",
+      "sourceName": "contracts/interfaces/IMuuu.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IMuuu"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/node_modules/@openzeppelin/contracts/utils/Context.sol": {
+      "lastModificationDate": 1648702491824,
+      "contentHash": "2adbd82f6d055a4751566d4671512b03",
+      "sourceName": "@openzeppelin/contracts/utils/Context.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.6.0 <0.8.0"
+      ],
+      "artifacts": [
+        "Context"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/wrappers/MuuuStakingWrapperAbra.sol": {
+      "lastModificationDate": 1647435274625,
+      "contentHash": "23a084065ff7b463cca90f529fc42cc7",
+      "sourceName": "contracts/wrappers/MuuuStakingWrapperAbra.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../interfaces/ICauldron.sol",
+        "../interfaces/IBentoBox.sol",
+        "./MuuuStakingWrapper.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MuuuStakingWrapperAbra"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/ICauldron.sol": {
+      "lastModificationDate": 1647433173701,
+      "contentHash": "8b4fd583c933a11a2199b8be3473c18d",
+      "sourceName": "contracts/interfaces/ICauldron.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "ICauldron"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/IBentoBox.sol": {
+      "lastModificationDate": 1647433173687,
+      "contentHash": "374b7d1f85447379f929798651c02967",
+      "sourceName": "contracts/interfaces/IBentoBox.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IBentoBox"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/wrappers/MuKglStakingWrapperRari.sol": {
+      "lastModificationDate": 1647744248895,
+      "contentHash": "5b3d217682cfc1554f3aaec7b9309a40",
+      "sourceName": "contracts/wrappers/MuKglStakingWrapperRari.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../interfaces/IRewardStaking.sol",
+        "../interfaces/IMuuuDeposits.sol",
+        "../libraries/MuuuMining.sol",
+        "../interfaces/IRariToken.sol",
+        "./MuKglStakingWrapper.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+        "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MuKglRari"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/IRariToken.sol": {
+      "lastModificationDate": 1647433173762,
+      "contentHash": "f3ad2a94df68576b89a953173cd6cbab",
+      "sourceName": "contracts/interfaces/IRariToken.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IRariToken"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/wrappers/MuKglStakingWrapper.sol": {
+      "lastModificationDate": 1647744248894,
+      "contentHash": "4d802ad16307260223a24462b0533b7b",
+      "sourceName": "contracts/wrappers/MuKglStakingWrapper.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../interfaces/IRewardStaking.sol",
+        "../interfaces/IMuuuDeposits.sol",
+        "../libraries/MuuuMining.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+        "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MuKglStakingWrapper"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
+      "lastModificationDate": 1648702491784,
+      "contentHash": "6748815a5b45c4aeeda56819f41190e0",
+      "sourceName": "@openzeppelin/contracts/access/Ownable.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../utils/Context.sol"
+      ],
+      "versionPragmas": [
+        ">=0.6.0 <0.8.0"
+      ],
+      "artifacts": [
+        "Ownable"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/RescueToken.sol": {
+      "lastModificationDate": 1647435274605,
+      "contentHash": "772b71f6a8b328354da1d224c7824136",
+      "sourceName": "contracts/RescueToken.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "RescueToken"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/VotingEligibility.sol": {
+      "lastModificationDate": 1647433175648,
+      "contentHash": "41aebc412a863e8ec04fb9e01317ccd1",
+      "sourceName": "contracts/VotingEligibility.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "VotingEligibility"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/VotingBalance.sol": {
+      "lastModificationDate": 1647435274610,
+      "contentHash": "cdcd40463aa4316ff0d21adb2629e437",
+      "sourceName": "contracts/VotingBalance.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/ILockedMuuu.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "VotingBalance"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/ILockedMuuu.sol": {
+      "lastModificationDate": 1647435274614,
+      "contentHash": "24e22ab00ec57037e546251d2a92eaae",
+      "sourceName": "contracts/interfaces/ILockedMuuu.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "ILockedMuuu"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/VotingBalanceV2Gauges.sol": {
+      "lastModificationDate": 1650873491641,
+      "contentHash": "9a775af75e7e421678de1f4475029842",
+      "sourceName": "contracts/VotingBalanceV2Gauges.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/ILockedMuuu.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "VotingBalanceV2Gauges"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/VotingBalanceMax.sol": {
+      "lastModificationDate": 1647435274611,
+      "contentHash": "21d990b59740d832979a8f65ff87ec66",
+      "sourceName": "contracts/VotingBalanceMax.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/ILockedMuuu.sol",
+        "./interfaces/IVotingEligibility.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "VotingBalanceMax"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/IVotingEligibility.sol": {
+      "lastModificationDate": 1647433173800,
+      "contentHash": "f3bacdb7052862d2d50d864bd9c9840b",
+      "sourceName": "contracts/interfaces/IVotingEligibility.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IVotingEligibility"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/VoteDelegateExtension.sol": {
+      "lastModificationDate": 1647433175499,
+      "contentHash": "e937702ed2a66fcc8980f52dfa30742f",
+      "sourceName": "contracts/VoteDelegateExtension.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/IBooster.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "VoteDelegateExtension"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/IBooster.sol": {
+      "lastModificationDate": 1647433173694,
+      "contentHash": "80fc5cde6bc8a4ae1f07febc86598d91",
+      "sourceName": "contracts/interfaces/IBooster.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IBooster"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/VestedEscrow.sol": {
+      "lastModificationDate": 1647744248889,
+      "contentHash": "6777f7a0c71fe31f684ce8f3d3ec4b2e",
+      "sourceName": "contracts/VestedEscrow.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "./libraries/MathUtil.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/utils/ReentrancyGuard.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "VestedEscrow"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/libraries/MathUtil.sol": {
+      "lastModificationDate": 1647744248892,
+      "contentHash": "ae8a3281c32f050502cd0e54afc91304",
+      "sourceName": "contracts/libraries/MathUtil.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MathUtil"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/vlMuuuExtraRewardDistribution.sol": {
+      "lastModificationDate": 1647744248893,
+      "contentHash": "073048eb63c2812477c3b02bfc1a9fd5",
+      "sourceName": "contracts/vlMuuuExtraRewardDistribution.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/ILockedMuuu.sol",
+        "./libraries/BoringMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "VlMuuuExtraRewardDistribution"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/libraries/BoringMath.sol": {
+      "lastModificationDate": 1647744248891,
+      "contentHash": "f202f878e4938746341a119756f06804",
+      "sourceName": "contracts/libraries/BoringMath.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "BoringMath",
+        "BoringMath112",
+        "BoringMath128",
+        "BoringMath224",
+        "BoringMath32",
+        "BoringMath64"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/MuuuLockerV2.sol": {
+      "lastModificationDate": 1650873490761,
+      "contentHash": "442513fdeb7a3b12099708ce61e8e54b",
+      "sourceName": "contracts/MuuuLockerV2.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./libraries/MathUtil.sol",
+        "./interfaces/IStakingProxy.sol",
+        "./interfaces/IRewardStaking.sol",
+        "./libraries/BoringMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/math/Math.sol",
+        "@openzeppelin/contracts/access/Ownable.sol",
+        "@openzeppelin/contracts/utils/ReentrancyGuard.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MuuuLockerV2"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/IStakingProxy.sol": {
+      "lastModificationDate": 1647433173789,
+      "contentHash": "6f7a5fcf4aaeeb050fc3e559e8f8be69",
+      "sourceName": "contracts/interfaces/IStakingProxy.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IStakingProxy"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/node_modules/@openzeppelin/contracts/math/Math.sol": {
+      "lastModificationDate": 1648702491798,
+      "contentHash": "e5c844515b04deabacef7eb872abc384",
+      "sourceName": "@openzeppelin/contracts/math/Math.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.6.0 <0.8.0"
+      ],
+      "artifacts": [
+        "Math"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/MuuuLocker.sol": {
+      "lastModificationDate": 1647744248886,
+      "contentHash": "132854cbe0fe6f0d1ad5563f60aea60e",
+      "sourceName": "contracts/MuuuLocker.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./libraries/MathUtil.sol",
+        "./interfaces/IStakingProxy.sol",
+        "./interfaces/IRewardStaking.sol",
+        "./libraries/BoringMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/math/Math.sol",
+        "@openzeppelin/contracts/access/Ownable.sol",
+        "@openzeppelin/contracts/utils/ReentrancyGuard.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MuuuLocker"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/BasicMuuuHolder.sol": {
+      "lastModificationDate": 1647435274585,
+      "contentHash": "f22d95f6135d30ea1017c73ab68b7cf2",
+      "sourceName": "contracts/BasicMuuuHolder.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/IRewardStaking.sol",
+        "./interfaces/ILockedMuuu.sol",
+        "./interfaces/IDelegation.sol",
+        "./interfaces/IKglDepositor.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "BasicMuuuHolder"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/IDelegation.sol": {
+      "lastModificationDate": 1647433173711,
+      "contentHash": "4e61e39db4d8eb87af65d8b67fe78a7f",
+      "sourceName": "contracts/interfaces/IDelegation.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IDelegation"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/IKglDepositor.sol": {
+      "lastModificationDate": 1647435274613,
+      "contentHash": "4bbe5b11aeba491fed440488aa645476",
+      "sourceName": "contracts/interfaces/IKglDepositor.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IKglDepositor"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/MuuuStakingProxyV2.sol": {
+      "lastModificationDate": 1650873492387,
+      "contentHash": "1652888a09259fb54e65c206d8fc2418",
+      "sourceName": "contracts/MuuuStakingProxyV2.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/IKglDepositor.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IMuuuLocker",
+        "IMuuuRewards",
+        "MuuuStakingProxyV2"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/MuuuStakingProxy.sol": {
+      "lastModificationDate": 1648695146589,
+      "contentHash": "5462c736393d17a41db507128f70a821",
+      "sourceName": "contracts/MuuuStakingProxy.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/IKglDepositor.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IMuuuLocker",
+        "IMuuuRewards",
+        "MuuuStakingProxy"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/VirtualBalanceRewardPool.sol": {
+      "lastModificationDate": 1647744248890,
+      "contentHash": "b9afddf458e200f18e6499cdac534381",
+      "sourceName": "contracts/VirtualBalanceRewardPool.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "./libraries/MathUtil.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "VirtualBalanceRewardPool",
+        "VirtualBalanceWrapper"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/TokenFactory.sol": {
+      "lastModificationDate": 1647433175294,
+      "contentHash": "6fa326a680c51c5b3e5a4fb4089b9424",
+      "sourceName": "contracts/TokenFactory.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "./DepositToken.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "TokenFactory"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/DepositToken.sol": {
+      "lastModificationDate": 1647604974025,
+      "contentHash": "539ea08829ad22ddf5c39f6b873edad0",
+      "sourceName": "contracts/DepositToken.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "DepositToken"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/StashFactoryV2.sol": {
+      "lastModificationDate": 1650873492730,
+      "contentHash": "e46d383eabc3aea27a6dfa950e27ee69",
+      "sourceName": "contracts/StashFactoryV2.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "./interfaces/IProxyFactory.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "StashFactoryV2"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/IProxyFactory.sol": {
+      "lastModificationDate": 1647433173757,
+      "contentHash": "5c670bcca5c05b090b9fde6e6a10c465",
+      "sourceName": "contracts/interfaces/IProxyFactory.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IProxyFactory"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/StashFactory.sol": {
+      "lastModificationDate": 1647435274606,
+      "contentHash": "40a776bcc9d8770f78824a6ff1a746a2",
+      "sourceName": "contracts/StashFactory.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "./ExtraRewardStashV1.sol",
+        "./ExtraRewardStashV2.sol",
+        "./ExtraRewardStashV3.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "StashFactory"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/ExtraRewardStashV1.sol": {
+      "lastModificationDate": 1647435274591,
+      "contentHash": "44c819ca73eb141f91d6f367305109b8",
+      "sourceName": "contracts/ExtraRewardStashV1.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "ExtraRewardStashV1"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/ExtraRewardStashV2.sol": {
+      "lastModificationDate": 1647435274592,
+      "contentHash": "9d9282872ca6409508d620e34a529f82",
+      "sourceName": "contracts/ExtraRewardStashV2.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "ExtraRewardStashV2"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/ExtraRewardStashV3.sol": {
+      "lastModificationDate": 1650539012279,
+      "contentHash": "a62f2fa87e880613afd18713b8007aaa",
+      "sourceName": "contracts/ExtraRewardStashV3.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "./interfaces/IRewardHook.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "ExtraRewardStashV3"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/IRewardHook.sol": {
+      "lastModificationDate": 1647433173774,
+      "contentHash": "d056857056315aefcd40ac3c76c086b1",
+      "sourceName": "contracts/interfaces/IRewardHook.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IRewardHook"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/ChefRewardHook.sol": {
+      "lastModificationDate": 1647433173103,
+      "contentHash": "09ebf90f01417f1f3d952eaded866d60",
+      "sourceName": "contracts/ChefRewardHook.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/IRewardHook.sol",
+        "./interfaces/IChef.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "ChefRewardHook"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/IChef.sol": {
+      "lastModificationDate": 1647433173706,
+      "contentHash": "abd76859a503c832a691390703d7f1d5",
+      "sourceName": "contracts/interfaces/IChef.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IChef"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/RewardFactory.sol": {
+      "lastModificationDate": 1647604974027,
+      "contentHash": "57d176028b7be0ab9e609ac6c6a2f347",
+      "sourceName": "contracts/RewardFactory.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "./BaseRewardPool.sol",
+        "./VirtualBalanceRewardPool.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "RewardFactory"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/BaseRewardPool.sol": {
+      "lastModificationDate": 1650873491414,
+      "contentHash": "2dd26ba4050e82f318bd92b8ddc5d80b",
+      "sourceName": "contracts/BaseRewardPool.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "./libraries/MathUtil.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "BaseRewardPool"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/PoolManagerV3.sol": {
+      "lastModificationDate": 1650873493401,
+      "contentHash": "60411ce351bc43fba05f3381e2b0f1dc",
+      "sourceName": "contracts/PoolManagerV3.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "./interfaces/IGaugeController.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "PoolManagerV3"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/IGaugeController.sol": {
+      "lastModificationDate": 1647433173717,
+      "contentHash": "b950bd1ad051e5c363108d1150fa40e7",
+      "sourceName": "contracts/interfaces/IGaugeController.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IGaugeController"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/PoolManagerV2.sol": {
+      "lastModificationDate": 1647435274603,
+      "contentHash": "27e451af35479a2729a7862bee5e17cb",
+      "sourceName": "contracts/PoolManagerV2.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "./interfaces/IGaugeController.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "PoolManagerV2"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/PoolManagerSecondaryProxy.sol": {
+      "lastModificationDate": 1650873493426,
+      "contentHash": "eef4703887b7bf2956c8a5cd3cd4ca59",
+      "sourceName": "contracts/PoolManagerSecondaryProxy.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "./interfaces/IGaugeController.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "PoolManagerSecondaryProxy"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/PoolManagerProxy.sol": {
+      "lastModificationDate": 1650873493454,
+      "contentHash": "d3e3020335f60e8b26641cfa30401d6d",
+      "sourceName": "contracts/PoolManagerProxy.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "PoolManagerProxy"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/PoolManager.sol": {
+      "lastModificationDate": 1647591784276,
+      "contentHash": "fbbb47772d2547b0bcb6d9daf5fddff0",
+      "sourceName": "contracts/PoolManager.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "PoolManager"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/MuuuToken.sol": {
+      "lastModificationDate": 1650873493731,
+      "contentHash": "158e7cabfac035841d48ae296ee2213d",
+      "sourceName": "contracts/MuuuToken.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MuuuToken"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/MuuuRewardPool.sol": {
+      "lastModificationDate": 1647752077927,
+      "contentHash": "0618bf7e4934afe115efa6eb250b6b99",
+      "sourceName": "contracts/MuuuRewardPool.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "./libraries/MathUtil.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MuuuRewardPool"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/MuuuRewarder.sol": {
+      "lastModificationDate": 1647744248888,
+      "contentHash": "06b76606de16fb1cbb3a7e53617628b7",
+      "sourceName": "contracts/MuuuRewarder.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "./libraries/MathUtil.sol",
+        "./interfaces/ISushiRewarder.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IMasterChefV2",
+        "IMuuuChef",
+        "MuuuRewarder"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/ISushiRewarder.sol": {
+      "lastModificationDate": 1647433173794,
+      "contentHash": "d429d7a23dec128805055f64c07d1f72",
+      "sourceName": "contracts/interfaces/ISushiRewarder.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "ISushiRewarder"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/MuKglToken.sol": {
+      "lastModificationDate": 1647744248886,
+      "contentHash": "828667c9ccfe53021d94bc369dbc573f",
+      "sourceName": "contracts/MuKglToken.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MuKglToken"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/mocks/MockKaglaVoteEscrow.sol": {
+      "lastModificationDate": 1647435274621,
+      "contentHash": "6499cb8d42a12401242bf7d4d3746c10",
+      "sourceName": "contracts/mocks/MockKaglaVoteEscrow.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../Interfaces.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MockKaglaVoteEscrow"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/mocks/MockKaglaGauge.sol": {
+      "lastModificationDate": 1647604974029,
+      "contentHash": "6349979f5064a153de5bd3ecab3ef99d",
+      "sourceName": "contracts/mocks/MockKaglaGauge.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../Interfaces.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MockKaglaGauge"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/mocks/MockGaugeController.sol": {
+      "lastModificationDate": 1647604974028,
+      "contentHash": "c79b6bafc0d11f8cea6fcff25b8abc3f",
+      "sourceName": "contracts/mocks/MockGaugeController.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../Interfaces.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MockGaugeController"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/MerkleAirdrop.sol": {
+      "lastModificationDate": 1647435274596,
+      "contentHash": "e766346b175d101db0ac4c154c213ead",
+      "sourceName": "contracts/MerkleAirdrop.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MerkleAirdrop"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/MerkleAirdropFactory.sol": {
+      "lastModificationDate": 1647433173988,
+      "contentHash": "1de502f980e85352152ac21b110c0315",
+      "sourceName": "contracts/MerkleAirdropFactory.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./MerkleAirdrop.sol",
+        "@openzeppelin/contracts/utils/Address.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MerkleAirdropFactory"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/KglDepositor.sol": {
+      "lastModificationDate": 1650873493381,
+      "contentHash": "f14f30e47557d0db68b022cb880e2d29",
+      "sourceName": "contracts/KglDepositor.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "KglDepositor"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/KaglaVoterProxy.sol": {
+      "lastModificationDate": 1647744248885,
+      "contentHash": "6a2d9c2c9458c1c55562c8cf4f90bf5e",
+      "sourceName": "contracts/KaglaVoterProxy.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "KaglaVoterProxy"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/ExtraRewardStashTokenRescue.sol": {
+      "lastModificationDate": 1647433173335,
+      "contentHash": "b9098f1b7d5332aa4b49b3fd5a3a0898",
+      "sourceName": "contracts/ExtraRewardStashTokenRescue.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "ExtraRewardStashTokenRescue",
+        "IRewardDeposit"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/Booster.sol": {
+      "lastModificationDate": 1650873493362,
+      "contentHash": "02af6aebf8ac88ce9541a6c9524b0a65",
+      "sourceName": "contracts/Booster.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Interfaces.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "Booster"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/ClaimZap.sol": {
+      "lastModificationDate": 1647744248884,
+      "contentHash": "cccbd5feb9fbbfaf2fb924f536ffd95b",
+      "sourceName": "contracts/ClaimZap.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./libraries/MathUtil.sol",
+        "./interfaces/ILockedMuuu.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "ClaimZap",
+        "IBasicRewards",
+        "IChefRewards",
+        "IMuKglDeposit",
+        "IMuuuRewards",
+        "ISwapExchange"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/TreasuryFunds.sol": {
+      "lastModificationDate": 1647433175307,
+      "contentHash": "61c8848beb9debaf2ed1c51329a8345e",
+      "sourceName": "contracts/TreasuryFunds.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "TreasuryFunds"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/RewardHook.sol": {
+      "lastModificationDate": 1647433175230,
+      "contentHash": "b26414bdd4113261ffc097000616faf3",
+      "sourceName": "contracts/RewardHook.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/math/SafeMath.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "RewardHook"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/RewardDeposit.sol": {
+      "lastModificationDate": 1647433175192,
+      "contentHash": "64fe871ad97b02e1f18a4b9e8f6a26ba",
+      "sourceName": "contracts/RewardDeposit.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "RewardDeposit"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/RedirectableGauge.sol": {
+      "lastModificationDate": 1647744248889,
+      "contentHash": "5be7d100f0b017ce8ef974e36fbfea93",
+      "sourceName": "contracts/RedirectableGauge.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "RedirectableGauge"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/MuuuMasterChef.sol": {
+      "lastModificationDate": 1647435274599,
+      "contentHash": "193e9aa24b3875ad2d51b35a7ac00d2c",
+      "sourceName": "contracts/MuuuMasterChef.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol",
+        "@openzeppelin/contracts/utils/Context.sol",
+        "@openzeppelin/contracts/access/Ownable.sol",
+        "./interfaces/IRewarder.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MuuuMasterChef"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/IRewarder.sol": {
+      "lastModificationDate": 1647433173768,
+      "contentHash": "55f29d7a256c8d2c29add86d007547a9",
+      "sourceName": "contracts/interfaces/IRewarder.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IRewarder"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/mocks/MockMinter.sol": {
+      "lastModificationDate": 1647843221705,
+      "contentHash": "ba77c75c0bbc0be90d79e368cd756760",
+      "sourceName": "contracts/mocks/MockMinter.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IMintableERC20",
+        "MockMinter"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/LockerAdmin.sol": {
+      "lastModificationDate": 1647435274595,
+      "contentHash": "68abe073993b6be0821c2fd666325ccc",
+      "sourceName": "contracts/LockerAdmin.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/ILockedMuuu.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "LockerAdmin"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/FakeGauge.sol": {
+      "lastModificationDate": 1647433173571,
+      "contentHash": "97f83dd83dcfcb50ffb0555c63db64d7",
+      "sourceName": "contracts/FakeGauge.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "FakeGauge"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/ChefExtraRewards.sol": {
+      "lastModificationDate": 1647433173079,
+      "contentHash": "71d11ece60560b98faa1ca838e3dc58a",
+      "sourceName": "contracts/ChefExtraRewards.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/utils/Address.sol",
+        "@openzeppelin/contracts/token/ERC20/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "ChefExtraRewards"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/DebugInterfaces.sol": {
+      "lastModificationDate": 1647435274590,
+      "contentHash": "75b699db7cc22287c1ec6f449b2cb680",
+      "sourceName": "contracts/DebugInterfaces.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/math/SafeMath.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "I2KaglaFi",
+        "I3KaglaFi",
+        "IBaseRewards",
+        "IBurner",
+        "IClaim",
+        "IEscro",
+        "IExchange",
+        "IKaglaAavePool",
+        "IKaglaGaugeController",
+        "IKaglaGaugeDebug",
+        "ISPool",
+        "ISnxRewards",
+        "IUniswapV2Factory",
+        "IUniswapV2Router01",
+        "IVoteStarter",
+        "IWalletCheckerDebug",
+        "Multicaller",
+        "MulticallerView",
+        "SushiChefV1",
+        "SushiChefV2"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/mocks/tokens/MintableERC20.sol": {
+      "lastModificationDate": 1647433174041,
+      "contentHash": "8dd642d69c86e400ae3b9f2b4f848610",
+      "sourceName": "contracts/mocks/tokens/MintableERC20.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MintableERC20"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/ChefToken.sol": {
+      "lastModificationDate": 1647435274588,
+      "contentHash": "8e4b873d39cd6321b74709622bb07aa6",
+      "sourceName": "contracts/ChefToken.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "ChefToken"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/BoosterOwner.sol": {
+      "lastModificationDate": 1650873493473,
+      "contentHash": "29691ee2b23d660c657a3b9bc96531cc",
+      "sourceName": "contracts/BoosterOwner.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "BoosterOwner",
+        "IOwner"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/ClaimVekglFees.sol": {
+      "lastModificationDate": 1647435274588,
+      "contentHash": "5be07b275b64180fb02026d2f8926c0a",
+      "sourceName": "contracts/ClaimVekglFees.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "ClaimVekglFees",
+        "IFeeClaim"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/EpsInterface.sol": {
+      "lastModificationDate": 1647744248891,
+      "contentHash": "483a4dc5dcd1cc9b2e689ea4d71f86d6",
+      "sourceName": "contracts/interfaces/EpsInterface.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "EpsDistro",
+        "EpsMerkel"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/interfaces/IKglBribe.sol": {
+      "lastModificationDate": 1647435274613,
+      "contentHash": "7449580156cc6227e71925a3b7860911",
+      "sourceName": "contracts/interfaces/IKglBribe.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "IKglBribe"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/Migrations.sol": {
+      "lastModificationDate": 1647433173994,
+      "contentHash": "c3ff019b6eb9757a4ab210c199ba4431",
+      "sourceName": "contracts/Migrations.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "Migrations"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/mocks/MockKaglaAddressProvider.sol": {
+      "lastModificationDate": 1647435274618,
+      "contentHash": "eab4be2dd02941e40b5fd471a0ceff6a",
+      "sourceName": "contracts/mocks/MockKaglaAddressProvider.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MockKaglaAddressProvider"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/mocks/MockKaglaFeeDistributor.sol": {
+      "lastModificationDate": 1647435274618,
+      "contentHash": "4d61df34e969926d6ae2a6649514c071",
+      "sourceName": "contracts/mocks/MockKaglaFeeDistributor.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MockKaglaFeeDistributor"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/mocks/MockKaglaLiquidityGaugeV3.sol": {
+      "lastModificationDate": 1650873492807,
+      "contentHash": "f839ba97b74388d5433302c32de64016",
+      "sourceName": "contracts/mocks/MockKaglaLiquidityGaugeV3.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MockKaglaLiquidityGaugeV3"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/mocks/MockKaglaRegistry.sol": {
+      "lastModificationDate": 1647604974030,
+      "contentHash": "37f61a902a22944f8a7075691c84a543",
+      "sourceName": "contracts/mocks/MockKaglaRegistry.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "MockKaglaRegistry"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/ProxyFactory.sol": {
+      "lastModificationDate": 1647433175160,
+      "contentHash": "b68359064d68a9cac2e26d4fc253721a",
+      "sourceName": "contracts/ProxyFactory.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "ProxyFactory"
+      ]
+    },
+    "/Users/shuto/Documents/bridges-dev/muuu/protocol/contracts/contracts/SimpleProxy.sol": {
+      "lastModificationDate": 1647433175241,
+      "contentHash": "1b57c96e65bd0814e47122329eaf483c",
+      "sourceName": "contracts/SimpleProxy.sol",
+      "solcConfig": {
+        "version": "0.6.12",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.6.12"
+      ],
+      "artifacts": [
+        "SimpleProxy"
+      ]
+    }
+  }
+}
