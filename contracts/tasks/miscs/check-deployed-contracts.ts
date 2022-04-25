@@ -570,10 +570,10 @@ task('check-deployed-contracts', 'Check deployed contracts').setAction(
       providerOrSigner: ethers.provider,
     })
 
-    await checkVotingBalanceV2Gauges({
-      address: system.votingBalanceV2Gauges,
-      providerOrSigner: ethers.provider,
-    })
+    // await checkVotingBalanceV2Gauges({
+    //   address: system.votingBalanceV2Gauges,
+    //   providerOrSigner: ethers.provider,
+    // })
 
     await checkPreminedMuuu({
       address: system.muuu,

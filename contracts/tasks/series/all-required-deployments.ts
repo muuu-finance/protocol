@@ -12,7 +12,6 @@ import {
   KglDepositor__factory,
   MerkleAirdropFactory__factory,
   MerkleAirdrop__factory,
-  MockKaglaGauge__factory,
   MuKglToken__factory,
   MuuuToken__factory,
   StashFactoryV2__factory,
@@ -244,8 +243,8 @@ const _prepareAfterDeployingPoolManager = async ({
       tokenFactory,
     )
   ).wait()
-  console.log('> Booster#setFeeInfo')
-  await(await _boosterInstance.setFeeInfo()).wait()
+  console.log('> [skip] Booster#setFeeInfo')
+  // await(await _boosterInstance.setFeeInfo()).wait()
 }
 
 // contracts/migrations/1_deploy_contracts.js#L313

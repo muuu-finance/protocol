@@ -45,7 +45,7 @@ contract StashFactoryV2 {
     require(msg.sender == operator, "!authorized");
     if (_stashVersion == 3) {
       require(v3Implementation != address(0), "0 impl");
-      require(!IsV3(_gauge), "stash version mismatch");
+      require(IsV3(_gauge), "stash version mismatch");
 
       address stash = IProxyFactory(proxyFactory).clone(v3Implementation);
       IStash(stash).initialize(_pid, operator, _staker, _gauge, rewardFactory);
