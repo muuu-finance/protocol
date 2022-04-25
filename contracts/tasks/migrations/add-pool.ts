@@ -8,7 +8,6 @@ task('add-pool', 'Add pool by using PoolManager')
   .addParam('poolManagerAddress', 'PoolManager contract address')
   .addParam('swap', 'param in PoolManager#swap')
   .addParam('gauge', 'param in PoolManager#swap')
-  .addParam('stashVersion', 'param in PoolManager#swap')
   .setAction(
     async (
       {
@@ -17,14 +16,12 @@ task('add-pool', 'Add pool by using PoolManager')
         poolManagerAddress,
         swap,
         gauge,
-        stashVersion,
       }: {
         deployerAddress: string
         poolName: string
         poolManagerAddress: string
         swap: string
         gauge: string
-        stashVersion: string
       },
       hre: HardhatRuntimeEnvironment,
     ) => {
