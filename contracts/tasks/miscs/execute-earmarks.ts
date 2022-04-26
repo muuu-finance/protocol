@@ -14,7 +14,8 @@ task('execute-earmarks', 'Execute earmarkRewards and earmarkFees')
       await booster.earmarkRewards(i)
       console.log('earmark pool ' + i + ' complete')
     }
-    await booster.earmarkFees()
-    console.log('earmark fees complete')
+    // [NOTE] not execute earmark fees because kagla do not distribute fee.
+    // await booster.earmarkFees()
+    // console.log('earmark fees complete')
     console.log(`--- FINISHED ---`)
   })
