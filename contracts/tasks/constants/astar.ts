@@ -9,7 +9,7 @@ export const astar: ConstantsType = {
     WETH: '', // not used
   },
   kaglas: {
-    votingEscrow: '', // need
+    votingEscrow: '0x432c8199F548425F7d5746416D98126E521e8174',
     gaugeController: '0x1f857fB3bCb72F03cB210f62602fD45eE1caeBdf',
     liquidityGauge: '', // not used
     minter: "0x210c5BE93182d02A666392996f62244001e6E04d",
