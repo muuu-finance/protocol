@@ -264,7 +264,6 @@ contract Booster is Ownable {
     //   voteproxy so it can grab the incentive tokens off the contract after claiming rewards
     //   reward factory so that stashes can make new extra reward contracts if a new incentive is added to the gauge
     if (stash != address(0)) {
-      poolInfo[pid].stash = stash;
       IStaker(staker).setStashAccess(stash, true);
       IRewardFactory(rewardFactory).setAccess(stash, true);
     }
