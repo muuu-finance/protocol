@@ -54,6 +54,7 @@ contract MuuuRewardPool {
   IERC20 public immutable stakingToken;
   uint256 public constant duration = 7 days;
   uint256 public constant FEE_DENOMINATOR = 10000;
+  uint256 public constant ACCEPTABLE_REWARD_AMOUNT = type(uint256).max / 1e18; // https://sips.synthetix.io/sips/sip-77/#potential-overflow-bug-fix
 
   address public immutable operator;
   address public immutable kglDeposits;
@@ -298,6 +299,7 @@ contract MuuuRewardPool {
   }
 
   function notifyRewardAmount(uint256 reward) internal updateReward(address(0)) {
+    require(reward < ACCEPTABLE_REWARD_AMOUNT, "over acceptable reward amount");
     historicalRewards = historicalRewards.add(reward);
     if (block.timestamp >= periodFinish) {
       rewardRate = reward.div(duration);

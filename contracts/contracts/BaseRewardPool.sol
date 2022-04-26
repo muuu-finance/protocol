@@ -53,6 +53,7 @@ contract BaseRewardPool {
   IERC20 public rewardToken;
   IERC20 public stakingToken;
   uint256 public constant duration = 7 days;
+  uint256 public constant ACCEPTABLE_REWARD_AMOUNT = type(uint256).max / 1e18; // https://sips.synthetix.io/sips/sip-77/#potential-overflow-bug-fix
 
   address public operator;
   address public rewardManager;
@@ -305,6 +306,7 @@ contract BaseRewardPool {
   }
 
   function notifyRewardAmount(uint256 reward) internal updateReward(address(0)) {
+    require(reward < ACCEPTABLE_REWARD_AMOUNT, "over acceptable reward amount");
     historicalRewards = historicalRewards.add(reward);
     if (block.timestamp >= periodFinish) {
       rewardRate = reward.div(duration);
