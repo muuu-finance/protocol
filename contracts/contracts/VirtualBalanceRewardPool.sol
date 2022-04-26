@@ -142,7 +142,7 @@ contract VirtualBalanceRewardPool is VirtualBalanceWrapper {
   }
 
   function getReward(address _account) public updateReward(_account) {
-    uint256 reward = rewards[account];
+    uint256 reward = rewards[_account];
     if (reward > 0) {
       rewards[_account] = 0;
       rewardToken.safeTransfer(_account, reward);

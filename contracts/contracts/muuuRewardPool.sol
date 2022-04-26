@@ -238,7 +238,7 @@ contract MuuuRewardPool {
     bool _claimExtras,
     bool _stake
   ) public updateReward(_account) {
-    uint256 reward = rewards[account];
+    uint256 reward = rewards[_account];
     if (reward > 0) {
       rewards[_account] = 0;
       rewardToken.safeApprove(kglDeposits, 0);
