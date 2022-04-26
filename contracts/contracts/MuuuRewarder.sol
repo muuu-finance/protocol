@@ -266,7 +266,7 @@ contract MuuuRewarder is ISushiRewarder {
   }
 
   function getReward(address _account, bool _claimExtras) public updateReward(_account) {
-    uint256 reward = earned(_account);
+    uint256 reward = rewards[account];
     if (reward > 0) {
       rewards[_account] = 0;
       rewardToken.safeTransfer(_account, reward);

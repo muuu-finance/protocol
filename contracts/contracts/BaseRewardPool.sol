@@ -249,7 +249,7 @@ contract BaseRewardPool {
     updateReward(_account)
     returns (bool)
   {
-    uint256 reward = earned(_account);
+    uint256 reward = rewards[account];
     if (reward > 0) {
       rewards[_account] = 0;
       rewardToken.safeTransfer(_account, reward);
