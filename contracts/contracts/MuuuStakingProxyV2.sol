@@ -77,12 +77,13 @@ contract MuuuStakingProxyV2 {
 
   function setPendingOwner(address _po) external {
     require(msg.sender == owner, "!auth");
+    require(_po != address(0), "invalid owner");
+
     pendingOwner = _po;
   }
 
-  function applyPendingOwner() external {
-    require(msg.sender == owner, "!auth");
-    require(pendingOwner != address(0), "invalid owner");
+  function acceptOwner() external {
+    require(msg.sender == pendingOwner, "!auth");
 
     owner = pendingOwner;
     pendingOwner = address(0);
