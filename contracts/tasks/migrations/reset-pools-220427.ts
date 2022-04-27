@@ -7,8 +7,39 @@ const SUPPORTED_NETWORK = ["astar", "shiden", "localhost"] as const
 type SupportedNetwork = typeof SUPPORTED_NETWORK[number]
 type EthereumAddress = `0x${string}`
 
-const REMOVING_POOLS: { poolIndex: number, gauge: EthereumAddress }[] = []
-const ADDING_GAUGES: EthereumAddress[] = []
+type Constant = {
+  removingPools: { poolIndex: number, gauge: EthereumAddress }[]
+  addingPools: EthereumAddress[]
+}
+
+const astarConstant: Constant = {
+  removingPools: [],
+  addingPools: []
+}
+const shidenConstant: Constant = {
+  removingPools: [],
+  addingPools: []
+}
+const localhostConstant: Constant = {
+  removingPools: [
+    { poolIndex: 1, gauge: "0x8565Fb7dfB5D36b2aA00086ffc920cfF20db4F2f" },
+    { poolIndex: 2, gauge: "0xBbC60A8fAf66552554e460d55Ac0563Fb9e76c01" },
+    { poolIndex: 3, gauge: "0x0D8448C0fBB84c30395838C8b3fD64722ea94532" },
+    { poolIndex: 4, gauge: "0x26d1E94963C8b382Ad66320826399E4B30347404" },
+  ],
+  addingPools: [
+    "0x78dC73Dab92F57DA506F3538A68A2f163dB8c3A0",
+    "0xF1479810f495a5E1dc5Fe7bC567Ad2b69D4A8052",
+    "0x63870142f7D3030a5966bC031F0ae113F1CEB406",
+    "0x2F0fA68F3fD995522E5aB49131c36fc52B6353B2"
+  ]
+}
+
+const CONSTANTS: { [key in SupportedNetwork]: Constant } = {
+  astar: astarConstant,
+  shiden: shidenConstant,
+  localhost: localhostConstant,
+}
 
 task(
   "reset-pools-220427",
@@ -31,6 +62,9 @@ task(
   const { system } = TaskUtils.loadDeployedContractAddresses({ network: networkName })
   const _booster = Booster__factory.connect(system.booster, _deployer)
   const _poolManagerV3 = PoolManagerV3__factory.connect(system.poolManagerV3, _deployer)
+
+  // load constants
+  const { removingPools: REMOVING_POOLS, addingPools: ADDING_GAUGES } = CONSTANTS[networkName]
   
   // validations
   console.log(`--- START validations`)
