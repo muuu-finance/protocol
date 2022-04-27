@@ -62,6 +62,7 @@ task(
   console.log(`--- FINISH add pool`)
 
   // confirmation current pools
+  console.log(`--- confirmCurrentPools`)
   await confirmCurrentPools(_booster)
   console.log(`--- [reset-pools-220427] FINISHED ---`)
 })
@@ -69,11 +70,11 @@ task(
 const confirmCurrentPools = async (instance: Booster) => {
   const _poolLength = await instance.poolLength()
   console.log(`poolLength ... ${_poolLength.toNumber()}`)
-  const result = []
+  const results = []
   for (let i = 0; i < _poolLength.toNumber(); i++) {
     const poolInfo = await instance.poolInfo(i)
     const { lptoken, token, gauge, kglRewards, stash, shutdown } = poolInfo
-    result.push({
+    results.push({
       lptoken,
       token,
       gauge,
@@ -82,4 +83,5 @@ const confirmCurrentPools = async (instance: Booster) => {
       shutdown
     })
   }
+  console.log(results)
 }
