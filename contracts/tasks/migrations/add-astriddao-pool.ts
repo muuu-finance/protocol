@@ -13,7 +13,9 @@ const CONSTANTS_POOLS_INDEX = {
  * Template task to add pool to protocol
  * - This task takes responsibility to convert parameter about adding pool
  *   - Transfer actual processing to `add-pool-extended-version` task
- * - Operator need to modify Parameters (defined above)
+ * - Operator need
+ *   - modify Parameters (defined above)
+ *   - update constants (key is `pools`) for each network
  */
 task(
   `add-${POOL_NAME}-pool`,
