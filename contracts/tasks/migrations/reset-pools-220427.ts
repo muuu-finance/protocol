@@ -13,7 +13,7 @@ const ADDING_GAUGES: EthereumAddress[] = []
 task(
   "reset-pools-220427",
   'reset-pools-220427'
-).addParam(
+).addOptionalParam(
   'deployerAddress',
   "Deployer's address"
 ).setAction(async ({ deployerAddress }: { deployerAddress: string }, hre: HardhatRuntimeEnvironment) => {
@@ -37,7 +37,7 @@ task(
   if (REMOVING_POOLS.length !== ADDING_GAUGES.length) throw new Error("Not match length - adding gauges, removing gauges")
   for (const removingPool of REMOVING_POOLS) {
     const addedPool = await _booster.poolInfo(removingPool.poolIndex)
-    if (addedPool.shutdown) throw new Error(`Already shutdown: ${addedPool}`)
+    if (addedPool.shutdown) throw new Error(`Already shutdown: ${addedPool.toString()}`)
     if (addedPool.gauge.toLowerCase() !== removingPool.gauge.toLowerCase()) throw new Error(`Not match gauge address from Booster#poolInfo: ${removingPool}`)
     if (ADDING_GAUGES.some(addingGauge => addingGauge.toLowerCase() === addedPool.gauge.toLowerCase())) throw new Error(`Include adding gauge address in current pools: ${addedPool}`)
   }
@@ -48,7 +48,7 @@ task(
   for await (const removingPool of REMOVING_POOLS) {
     const tx = await _poolManagerV3.shutdownPool(removingPool.poolIndex)
     await tx.wait()
-    console.log(`> shotdown: ${removingPool}`)
+    console.log(`> shotdown: ${removingPool.poolIndex} ${removingPool.gauge}`)
   }
   console.log(`--- FINISH shotdown`)
 
@@ -85,3 +85,15 @@ const confirmCurrentPools = async (instance: Booster) => {
   }
   console.log(results)
 }
+
+
+task(
+  "confirm-pools-220427",
+  'confirm-pools-220427'
+).setAction(async ({}, hre: HardhatRuntimeEnvironment) => {
+  const { ethers, network } = hre
+  const { system } = TaskUtils.loadDeployedContractAddresses({ network: network.name })
+  const _deployer = (await ethers.getSigners())[0]
+  const _booster = Booster__factory.connect(system.booster, _deployer)
+  await confirmCurrentPools(_booster)
+})
