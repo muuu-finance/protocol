@@ -62,7 +62,7 @@ task(
   console.log(`--- FINISH add pool`)
 
   // confirmation current pools
-  console.log(`--- confirmCurrentPools`)
+  console.log(`--- confirmation current pools`)
   await confirmCurrentPools(_booster)
   console.log(`--- [reset-pools-220427] FINISHED ---`)
 })
