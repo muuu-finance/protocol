@@ -17,8 +17,16 @@ const astarConstant: Constant = {
   addingPools: []
 }
 const shidenConstant: Constant = {
-  removingPools: [],
-  addingPools: []
+  removingPools: [
+    { poolIndex: 0, gauge: "0xe806e841ca26fF5A82E58A7A9144B7032623E4FB" },
+    { poolIndex: 1, gauge: "0xc020e5D53Af59b0Fd22970f9851AcB1a12A317c6" },
+    { poolIndex: 2, gauge: "0x02871ff0b539E04A952e1d6cB4ae2f6eBCE7f3eD" }
+  ],
+  addingPools: [
+    "0x6A892edcFfafe4F64896419b1b57965e8e5bb68e",
+    "0x1571943e281f8C579Fcf63cBD31E425c0bFDdc74",
+    "0xdF180f31739284a1A8Ba3a110cDdaD58642F3DAF"
+  ]
 }
 const localhostConstant: Constant = {
   removingPools: [
