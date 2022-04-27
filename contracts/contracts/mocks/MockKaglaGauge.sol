@@ -33,6 +33,11 @@ contract MockKaglaGauge {
 
   function claim_rewards() external {}
 
+  function rewards_receiver(address _address) external pure returns (address) {
+    //v3
+    return _address;
+  }
+
   function reward_tokens(uint256 _amount) external view returns (address) {
     //v2
     return 0x0000000000000000000000000000000000000000;
