@@ -34,7 +34,7 @@ task('add-pool-extended-version', 'add-pool-extended-version')
     const { ethers } = hre
     const network = networkName as SupportedNetwork
 
-    const { system } = TaskUtils.loadDeployedContractAddresses({ network: network })
+    const { system, pools: deployedPools } = TaskUtils.loadDeployedContractAddresses({ network: network })
     const { pools } = loadConstants({ 
       network: network,
       isUseMocks: false
