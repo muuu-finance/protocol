@@ -102,6 +102,8 @@ const getStatsInKGL = async (eoa: string, booster: Booster, _ethers: typeof ethe
     muKglRewards.totalSupply().then(v => ethers.utils.formatUnits(v)),
     muKglRewards.rewardRate().then(v => ethers.utils.formatUnits(v)),
     muKglRewards.periodFinish().then(v => new Date(v.toNumber() * 1000)),
+    muKglRewards.currentRewards().then(v => ethers.utils.formatUnits(v)),
+    muKglRewards.queuedRewards().then(v => ethers.utils.formatUnits(v)),
     muKglRewards.earned(eoa).then(v => ethers.utils.formatUnits(v)),
     // feeRewards.rewardRate().then(v => ethers.utils.formatUnits(v)),
     // feeRewards.earned(eoa).then(v => ethers.utils.formatUnits(v)),
@@ -111,7 +113,9 @@ const getStatsInKGL = async (eoa: string, booster: Booster, _ethers: typeof ethe
       totalSupply: datas[0],
       rewardRate: datas[1],
       periodFinish: datas[2],
-      earned: datas[3],
+      currentRewards: datas[3],
+      queuedRewards: datas[4],
+      earned: datas[5],
     },
     // "3KGL": {
     //   rewardRate: datas[3],
@@ -126,6 +130,8 @@ const getStatsInPool = async (eoa: string, rewardPool: BaseRewardPool, registry:
     rewardPool.rewardRate().then(v => ethers.utils.formatUnits(v)),
     rewardPool.periodFinish().then(v => new Date(v.toNumber() * 1000)),
     rewardPool.earned(eoa).then(v => ethers.utils.formatUnits(v)),
+    rewardPool.currentRewards().then(v => ethers.utils.formatUnits(v)),
+    rewardPool.queuedRewards().then(v => ethers.utils.formatUnits(v)),
     lpToken.name(),
     lpToken.symbol(),
     (registry.get_virtual_price_from_lp_token(lpToken.address) as Promise<BigNumber>).then(v => ethers.utils.formatUnits(v))
@@ -134,10 +140,12 @@ const getStatsInPool = async (eoa: string, rewardPool: BaseRewardPool, registry:
     totalSupply: datas[0],
     rewardRate: datas[1],
     periodFinish: datas[2],
-    earned: datas[3],
-    name: datas[4],
-    symbol: datas[5],
-    virtualPrice: datas[6],
+    currentRewards: datas[3],
+    queuedRewards: datas[4],
+    earned: datas[5],
+    name: datas[6],
+    symbol: datas[7],
+    virtualPrice: datas[8],
   }
 }
 
@@ -148,13 +156,17 @@ const getStatsInMUUU = async (eoa: string, booster: Booster, _ethers: typeof eth
     muuuRewards.totalSupply().then(v => _ethers.utils.formatUnits(v)),
     muuuRewards.rewardRate().then(v => _ethers.utils.formatUnits(v)),
     muuuRewards.periodFinish().then(v => new Date(v.toNumber() * 1000)),
+    muuuRewards.currentRewards().then(v => ethers.utils.formatUnits(v)),
+    muuuRewards.queuedRewards().then(v => ethers.utils.formatUnits(v)),
     muuuRewards.earned(eoa).then(v => _ethers.utils.formatUnits(v)),
   ])
   return {
     totalSupply: datas[0],
     rewardRate: datas[1],
     periodFinish: datas[2],
-    earned: datas[3]
+    currentRewards: datas[3],
+    queuedRewards: datas[4],
+    earned: datas[5]
   }
 }
 
