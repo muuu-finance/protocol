@@ -14,7 +14,7 @@ type SupportedNetwork = typeof SUPPORTED_NETWORK[number]
 // parameters
 const EOA = ""
 const addressProviderAddress: { [key in SupportedNetwork]: string } = {
-  astar: "",
+  astar: "0x5a0ad8337E5C6895b3893E80c8333859DAcf7c01",
   shiden: "0x762b149eA23070d6F021F70CB8877d2248278855",
   localhost: ""
 }
@@ -89,29 +89,38 @@ task("check-stats-with-user", "Check Stats with user").setAction(
 )
 
 const getStatsInKGL = async (eoa: string, booster: Booster, _ethers: typeof ethers & HardhatEthersHelpers) => {
-  const [muKglRewardsAddress, feeRewardsAddress] = await Promise.all([
+  const [
+    muKglRewardsAddress,
+    // feeRewardsAddress
+  ] = await Promise.all([
     booster.lockRewards(),
-    booster.lockFees()
+    // booster.lockFees()
   ])
   const muKglRewards = BaseRewardPool__factory.connect(muKglRewardsAddress, _ethers.provider)
-  const feeRewards = BaseRewardPool__factory.connect(feeRewardsAddress, _ethers.provider)
+  // const feeRewards = BaseRewardPool__factory.connect(feeRewardsAddress, _ethers.provider)
   const datas = await Promise.all([
     muKglRewards.totalSupply().then(v => ethers.utils.formatUnits(v)),
     muKglRewards.rewardRate().then(v => ethers.utils.formatUnits(v)),
-    muKglRewards.earned(eoa).then(v => ethers.utils.formatUnits(v)),
-    feeRewards.rewardRate().then(v => ethers.utils.formatUnits(v)),
-    feeRewards.earned(eoa).then(v => ethers.utils.formatUnits(v)),
+    muKglRewards.periodFinish().then(v => new Date(v.toNumber() * 1000)),
+    muKglRewards.currentRewards().then(v => ethers.utils.formatUnits(v)),
+    muKglRewards.queuedRewards().then(v => ethers.utils.formatUnits(v)),
+    eoa ? muKglRewards.earned(eoa).then(v => ethers.utils.formatUnits(v)) : Promise.resolve("-"),
+    // feeRewards.rewardRate().then(v => ethers.utils.formatUnits(v)),
+    // feeRewards.earned(eoa).then(v => ethers.utils.formatUnits(v)),
   ])
   return {
     muKGL: {
       totalSupply: datas[0],
       rewardRate: datas[1],
-      earned: datas[2]
+      periodFinish: datas[2],
+      currentRewards: datas[3],
+      queuedRewards: datas[4],
+      earned: datas[5],
     },
-    "3KGL": {
-      rewardRate: datas[3],
-      earned: datas[4]
-    }
+    // "3KGL": {
+    //   rewardRate: datas[3],
+    //   earned: datas[4]
+    // }
   }
 }
 
@@ -119,7 +128,10 @@ const getStatsInPool = async (eoa: string, rewardPool: BaseRewardPool, registry:
   const datas = await Promise.all([
     rewardPool.totalSupply().then(v => ethers.utils.formatUnits(v)),
     rewardPool.rewardRate().then(v => ethers.utils.formatUnits(v)),
-    rewardPool.earned(eoa).then(v => ethers.utils.formatUnits(v)),
+    rewardPool.periodFinish().then(v => new Date(v.toNumber() * 1000)),
+    rewardPool.currentRewards().then(v => ethers.utils.formatUnits(v)),
+    rewardPool.queuedRewards().then(v => ethers.utils.formatUnits(v)),
+    eoa ? rewardPool.earned(eoa).then(v => ethers.utils.formatUnits(v)) : Promise.resolve("-"),
     lpToken.name(),
     lpToken.symbol(),
     (registry.get_virtual_price_from_lp_token(lpToken.address) as Promise<BigNumber>).then(v => ethers.utils.formatUnits(v))
@@ -127,10 +139,13 @@ const getStatsInPool = async (eoa: string, rewardPool: BaseRewardPool, registry:
   return {
     totalSupply: datas[0],
     rewardRate: datas[1],
-    earned: datas[2],
-    name: datas[3],
-    symbol: datas[4],
-    virtualPrice: datas[5],
+    periodFinish: datas[2],
+    currentRewards: datas[3],
+    queuedRewards: datas[4],
+    earned: datas[5],
+    name: datas[6],
+    symbol: datas[7],
+    virtualPrice: datas[8],
   }
 }
 
@@ -140,25 +155,32 @@ const getStatsInMUUU = async (eoa: string, booster: Booster, _ethers: typeof eth
   const datas = await Promise.all([
     muuuRewards.totalSupply().then(v => _ethers.utils.formatUnits(v)),
     muuuRewards.rewardRate().then(v => _ethers.utils.formatUnits(v)),
-    muuuRewards.earned(eoa).then(v => _ethers.utils.formatUnits(v)),
+    muuuRewards.periodFinish().then(v => new Date(v.toNumber() * 1000)),
+    muuuRewards.currentRewards().then(v => ethers.utils.formatUnits(v)),
+    muuuRewards.queuedRewards().then(v => ethers.utils.formatUnits(v)),
+    eoa ? muuuRewards.earned(eoa).then(v => ethers.utils.formatUnits(v)) : Promise.resolve("-"),
   ])
   return {
     totalSupply: datas[0],
     rewardRate: datas[1],
-    earned: datas[2]
+    periodFinish: datas[2],
+    currentRewards: datas[3],
+    queuedRewards: datas[4],
+    earned: datas[5]
   }
 }
 
 const getStatsInLockMUUU = async (eoa: string, locker: MuuuLockerV2, muKglAddress: string, _ethers: typeof ethers & HardhatEthersHelpers) => {
   const datas = await Promise.all([
     locker.boostedSupply().then(v => _ethers.utils.formatUnits(v)),
-    locker.rewardData(muKglAddress).then(v => _ethers.utils.formatUnits(v.rewardRate)),
-    locker.claimableRewards(eoa).then(v => _ethers.utils.formatUnits(v[0].amount))
+    locker.rewardData(muKglAddress),
+    eoa ? locker.claimableRewards(eoa).then(v => _ethers.utils.formatUnits(v[0].amount)) : Promise.resolve("-"),
   ])
 
   return {
     totalSupply: datas[0],
-    rewardRate: datas[1],
+    rewardRate: _ethers.utils.formatUnits(datas[1].rewardRate),
+    periodFinish: new Date(datas[1].periodFinish * 1000),
     earned: datas[2],
   }
 }
