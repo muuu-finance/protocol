@@ -15,7 +15,7 @@ contract MuKglToken is ERC20 {
 
   address public operator;
 
-  constructor() public ERC20("Muuu KGL", "muKGL") {
+  constructor() public ERC20("TEST Muuu KGL", "TESTmuKGL") {
     operator = msg.sender;
   }
 

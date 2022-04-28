@@ -69,10 +69,10 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
   mapping(address => Reward) public rewardData;
 
   // Duration that rewards are streamed over
-  uint256 public constant rewardsDuration = 86400 * 7;
+  uint256 public rewardsDuration;
 
   // Duration of lock/earned penalty period
-  uint256 public constant lockDuration = rewardsDuration * 16;
+  uint256 public lockDuration;
 
   // reward token -> distributor -> is approved to add rewards
   mapping(address => mapping(address => bool)) public rewardDistributors;
@@ -125,8 +125,8 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
     address _boostPayment,
     address _mukglStaking
   ) public Ownable() {
-    _name = "Vote Locked Muuu Token";
-    _symbol = "vlMUUU";
+    _name = "TEST Vote Locked Muuu Token";
+    _symbol = "TESTvlMUUU";
     _decimals = 18;
 
     stakingToken = _stakingToken;
@@ -134,8 +134,17 @@ contract MuuuLockerV2 is ReentrancyGuard, Ownable {
     boostPayment = _boostPayment;
     mukglStaking = _mukglStaking;
 
+    rewardsDuration = 15 minutes;
+    lockDuration = rewardsDuration * 4;
+
     uint256 currentEpoch = block.timestamp.div(rewardsDuration).mul(rewardsDuration);
     epochs.push(Epoch({ supply: 0, date: uint32(currentEpoch) }));
+  }
+
+  // for debug
+  function setDurations(uint _rewardsDuration, uint _lockMultiplier) external {
+    rewardsDuration = _rewardsDuration;
+    lockDuration = _rewardsDuration * _lockMultiplier;
   }
 
   function decimals() public view returns (uint8) {
