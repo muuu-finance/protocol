@@ -104,7 +104,7 @@ const getStatsInKGL = async (eoa: string, booster: Booster, _ethers: typeof ethe
     muKglRewards.periodFinish().then(v => new Date(v.toNumber() * 1000)),
     muKglRewards.currentRewards().then(v => ethers.utils.formatUnits(v)),
     muKglRewards.queuedRewards().then(v => ethers.utils.formatUnits(v)),
-    muKglRewards.earned(eoa).then(v => ethers.utils.formatUnits(v)),
+    eoa ? muKglRewards.earned(eoa).then(v => ethers.utils.formatUnits(v)) : Promise.resolve("-"),
     // feeRewards.rewardRate().then(v => ethers.utils.formatUnits(v)),
     // feeRewards.earned(eoa).then(v => ethers.utils.formatUnits(v)),
   ])
@@ -129,9 +129,9 @@ const getStatsInPool = async (eoa: string, rewardPool: BaseRewardPool, registry:
     rewardPool.totalSupply().then(v => ethers.utils.formatUnits(v)),
     rewardPool.rewardRate().then(v => ethers.utils.formatUnits(v)),
     rewardPool.periodFinish().then(v => new Date(v.toNumber() * 1000)),
-    rewardPool.earned(eoa).then(v => ethers.utils.formatUnits(v)),
     rewardPool.currentRewards().then(v => ethers.utils.formatUnits(v)),
     rewardPool.queuedRewards().then(v => ethers.utils.formatUnits(v)),
+    eoa ? rewardPool.earned(eoa).then(v => ethers.utils.formatUnits(v)) : Promise.resolve("-"),
     lpToken.name(),
     lpToken.symbol(),
     (registry.get_virtual_price_from_lp_token(lpToken.address) as Promise<BigNumber>).then(v => ethers.utils.formatUnits(v))
@@ -158,7 +158,7 @@ const getStatsInMUUU = async (eoa: string, booster: Booster, _ethers: typeof eth
     muuuRewards.periodFinish().then(v => new Date(v.toNumber() * 1000)),
     muuuRewards.currentRewards().then(v => ethers.utils.formatUnits(v)),
     muuuRewards.queuedRewards().then(v => ethers.utils.formatUnits(v)),
-    muuuRewards.earned(eoa).then(v => _ethers.utils.formatUnits(v)),
+    eoa ? muuuRewards.earned(eoa).then(v => ethers.utils.formatUnits(v)) : Promise.resolve("-"),
   ])
   return {
     totalSupply: datas[0],
@@ -174,7 +174,7 @@ const getStatsInLockMUUU = async (eoa: string, locker: MuuuLockerV2, muKglAddres
   const datas = await Promise.all([
     locker.boostedSupply().then(v => _ethers.utils.formatUnits(v)),
     locker.rewardData(muKglAddress),
-    locker.claimableRewards(eoa).then(v => _ethers.utils.formatUnits(v[0].amount))
+    eoa ? locker.claimableRewards(eoa).then(v => _ethers.utils.formatUnits(v[0].amount)) : Promise.resolve("-"),
   ])
 
   return {
