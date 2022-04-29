@@ -4,10 +4,10 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types'
 type EthereumAddress = `0x${string}`
 
 // Parameters
-const POOL_NAME = "astriddao"
+const POOL_NAME = "bai3kgl"
 const GAUGE: { astar: EthereumAddress, shiden: EthereumAddress, localhost: EthereumAddress } = {
-  astar: "0xTBD",
-  shiden: "0xTBD",
+  astar: "0x9C8B44d5179502e651D95597ac3E9308B2e2f6C0",
+  shiden: "0x9D2070D930005553D2994A202BB17C80053A4e00",
   localhost: "0xTBD"
 }
 
