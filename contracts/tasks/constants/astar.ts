@@ -19,16 +19,16 @@ export const astar: ConstantsType = {
   },
   pools: [
     {
-      name: "3Pool", // (3KGL) lptoken = 0x18BDb86E835E9952cFaA844EB923E470E832Ad58
-      gauge: "0xa480B71b5aFBe28df9658C253e1E18A5EeDA131E",
+      name: "3Pool",
+      gauge: "0x35327a731cCc30C043e74E2c7385486Ef905Eb08",
     },
     {
-      name: "Starlay 3Pool", // (l3KGL) lptoken = 0x60811F3d54e860cDf01D72ED422a700e9cf010a9
-      gauge: "0x13EE6d778B41229a8dF6a2c6EB2dcf595faFc2f4",
+      name: "Starlay 3Pool",
+      gauge: "0x6b822dE272355524D92Ab70310035e4c573044bE",
     },
     {
-      name: "BUSD+3KGL", // (BUSD3KGL) lptoken = 0x11baa439EFf75B80a72b889e171d6E95FB39ee11
-      gauge: "0x940f388bb2f33C81840b70cDd72b3bC73d76232E",
+      name: "BUSD+3KGL",
+      gauge: "0x5A2497F1C79C7a9a28224A0dBfc8e6f4EA412074",
     }
   ],
   contracts: {
