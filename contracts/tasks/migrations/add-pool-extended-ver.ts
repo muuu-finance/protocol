@@ -17,17 +17,17 @@ type SupportedNetwork = typeof SUPPORTED_NETWORK[number]
 task('add-pool-extended-version', 'add-pool-extended-version')
   .addParam('deployerAddress', "Deployer's address")
   .addParam('poolName', "Pool's name")
-  .addParam('gauge', 'gauge address')
+  .addParam('gaugeAddress', 'gauge address')
   .addParam('networkName', 'Network name')
   .setAction(async ({
     deployerAddress,
     poolName,
-    gauge,
+    gaugeAddress,
     networkName
   }: {
     deployerAddress: string
     poolName: string
-    gauge: string
+    gaugeAddress: string
     networkName: string
   }, hre: HardhatRuntimeEnvironment) => {
     if (!(SUPPORTED_NETWORK as ReadonlyArray<string>).includes(networkName)) throw new Error(`Support only ${SUPPORTED_NETWORK} ...`)
@@ -39,7 +39,7 @@ task('add-pool-extended-version', 'add-pool-extended-version')
       network: network,
       isUseMocks: false
     })
-    if (!pools || !pools.some(p => p.gauge.toLowerCase() == gauge.toLowerCase())) throw new Error(`Could not get pools from constants`)
+    if (!pools || !pools.some(p => p.gauge.toLowerCase() == gaugeAddress.toLowerCase())) throw new Error(`Could not get pools from constants`)
 
     const instance = Booster__factory.connect(system.booster, ethers.provider)
     const poolLength = await instance.poolLength()
@@ -49,14 +49,14 @@ task('add-pool-extended-version', 'add-pool-extended-version')
       )
     )
     const addedGauges = addedPools.map(v => v.gauge)
-    if (addedGauges.some(v => v.toLowerCase() == gauge.toLowerCase())) throw new Error(`Selected gauge has already been added`)
+    if (addedGauges.some(v => v.toLowerCase() == gaugeAddress.toLowerCase())) throw new Error(`Selected gauge has already been added`)
 
     // execute
     await hre.run(`add-pool`, {
       deployerAddress: deployerAddress,
       poolName: poolName,
       poolManagerAddress: system.poolManagerV3,
-      gauge: gauge
+      gauge: gaugeAddress
     })
 
     // confirm
