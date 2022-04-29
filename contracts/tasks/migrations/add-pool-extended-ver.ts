@@ -17,17 +17,17 @@ type SupportedNetwork = typeof SUPPORTED_NETWORK[number]
 task('add-pool-extended-version', 'add-pool-extended-version')
   .addParam('deployerAddress', "Deployer's address")
   .addParam('poolName', "Pool's name")
-  .addParam('constantsPoolIndex', 'index of pools constants in environment constants file')
+  .addParam('gauge', 'gauge address')
   .addParam('networkName', 'Network name')
   .setAction(async ({
     deployerAddress,
     poolName,
-    constantsPoolIndex,
+    gauge,
     networkName
   }: {
     deployerAddress: string
     poolName: string
-    constantsPoolIndex: string
+    gauge: string
     networkName: string
   }, hre: HardhatRuntimeEnvironment) => {
     if (!(SUPPORTED_NETWORK as ReadonlyArray<string>).includes(networkName)) throw new Error(`Support only ${SUPPORTED_NETWORK} ...`)
@@ -39,9 +39,7 @@ task('add-pool-extended-version', 'add-pool-extended-version')
       network: network,
       isUseMocks: false
     })
-    const _constantsPoolIndex = Number(constantsPoolIndex)
-    if (!pools || !pools[_constantsPoolIndex]) throw new Error(`Could not get pools from constants`)
-    const gauge = pools[_constantsPoolIndex].gauge
+    if (!pools || !pools.some(p => p.gauge.toLowerCase() == gauge.toLowerCase())) throw new Error(`Could not get pools from constants`)
 
     const instance = Booster__factory.connect(system.booster, ethers.provider)
     const poolLength = await instance.poolLength()
