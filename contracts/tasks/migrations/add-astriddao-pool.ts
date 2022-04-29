@@ -1,12 +1,14 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 
+type EthereumAddress = `0x${string}`
+
 // Parameters
 const POOL_NAME = "astriddao"
-const CONSTANTS_POOLS_INDEX = {
-  astar: null,
-  shiden: null,
-  localhost: 0
+const GAUGE: { astar: EthereumAddress, shiden: EthereumAddress, localhost: EthereumAddress } = {
+  astar: "0xTBD",
+  shiden: "0xTBD",
+  localhost: "0xTBD"
 }
 
 /**
@@ -30,14 +32,14 @@ task(
     (await ethers.getSigner(deployerAddress)) ||
     (await ethers.getSigners())[0]
   
-  const networkName = _network.name as keyof typeof CONSTANTS_POOLS_INDEX
-  const constantsPoolIndex = CONSTANTS_POOLS_INDEX[networkName]
-  if (constantsPoolIndex == null) throw new Error(`[ERROR] constants pool index is null`)
+  const networkName = _network.name as keyof typeof GAUGE
+  const gauge = GAUGE[networkName]
+  if (gauge == null) throw new Error(`[ERROR] gauge's address is null`)
 
   await hre.run(`add-pool-extended-version`, {
     deployerAddress: _deployer.address,
     poolName: POOL_NAME,
-    constantsPoolIndex: constantsPoolIndex.toString(),
+    gaugeAddress: gauge,
     networkName: networkName
   })
   console.log(`--- [add-${POOL_NAME}-pool] FINISHED ---`)
