@@ -29,7 +29,11 @@ export const astar: ConstantsType = {
     {
       name: "BUSD+3KGL",
       gauge: "0x5A2497F1C79C7a9a28224A0dBfc8e6f4EA412074",
-    }
+    },
+    {
+      name: "BAI+3KGL",
+      gauge: "0x9C8B44d5179502e651D95597ac3E9308B2e2f6C0",
+    },
   ],
   contracts: {
     treasury: {
