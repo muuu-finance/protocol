@@ -44,11 +44,6 @@ task('locker-deployments', 'Deploy necessary contracts to lock, vote function')
         `deploy-${ContractKeys.MuuuStakingProxyV2}`,
         commonTaskArgs,
       )
-      // [NOTE] use MuuuLockerV2 for counting number of votes instead of VotingBalanceV2Gauges
-      // await hre.run(
-      //   `deploy-${ContractKeys.VotingBalanceV2Gauges}`,
-      //   commonTaskArgs,
-      // )
       console.log(`--- finish: deployments ---`)
 
       console.log(`--- start: initialize / setups ---`)

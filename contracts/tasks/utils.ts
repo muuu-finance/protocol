@@ -158,7 +158,6 @@ export const ContractKeys = {
   ArbitratorVault: 'ArbitratorVault',
   MuuuLockerV2: 'MuuuLockerV2',
   MuuuStakingProxyV2: 'MuuuStakingProxyV2',
-  VotingBalanceV2Gauges: 'VotingBalanceV2Gauges',
   ClaimZap: 'ClaimZap',
   VestedEscrow: 'VestedEscrow',
   MerkleAirdropFactory: 'MerkleAirdropFactory',
