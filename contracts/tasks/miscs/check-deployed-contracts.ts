@@ -559,13 +559,13 @@ task('check-deployed-contracts', 'Check deployed contracts').setAction(
       treasuryAddress: system.treasury,
     })
 
-    await checkBoosterOwner({
-      address: system.boosterOwner,
+    await checkTreasuryFunds({
+      address: system.treasury,
       providerOrSigner: ethers.provider,
     })
 
-    await checkTreasuryFunds({
-      address: system.treasury,
+    await checkBoosterOwner({
+      address: system.boosterOwner,
       providerOrSigner: ethers.provider,
     })
 
