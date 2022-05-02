@@ -9,7 +9,7 @@ export const astar: ConstantsType = {
     WETH: '', // not used
   },
   kaglas: {
-    votingEscrow: '', // need
+    votingEscrow: '0x432c8199F548425F7d5746416D98126E521e8174',
     gaugeController: '0x1f857fB3bCb72F03cB210f62602fD45eE1caeBdf',
     liquidityGauge: '', // not used
     minter: "0x210c5BE93182d02A666392996f62244001e6E04d",
@@ -19,21 +19,25 @@ export const astar: ConstantsType = {
   },
   pools: [
     {
-      name: "3Pool", // (3KGL) lptoken = 0x18BDb86E835E9952cFaA844EB923E470E832Ad58
-      gauge: "0xa480B71b5aFBe28df9658C253e1E18A5EeDA131E",
+      name: "3Pool",
+      gauge: "0x35327a731cCc30C043e74E2c7385486Ef905Eb08",
     },
     {
-      name: "Starlay 3Pool", // (l3KGL) lptoken = 0x60811F3d54e860cDf01D72ED422a700e9cf010a9
-      gauge: "0x13EE6d778B41229a8dF6a2c6EB2dcf595faFc2f4",
+      name: "Starlay 3Pool",
+      gauge: "0x6b822dE272355524D92Ab70310035e4c573044bE",
     },
     {
-      name: "BUSD+3KGL", // (BUSD3KGL) lptoken = 0x11baa439EFf75B80a72b889e171d6E95FB39ee11
-      gauge: "0x940f388bb2f33C81840b70cDd72b3bC73d76232E",
-    }
+      name: "BUSD+3KGL",
+      gauge: "0x5A2497F1C79C7a9a28224A0dBfc8e6f4EA412074",
+    },
+    {
+      name: "BAI+3KGL",
+      gauge: "0x9C8B44d5179502e651D95597ac3E9308B2e2f6C0",
+    },
   ],
   contracts: {
     treasury: {
-      address: '', // set TreasuryFunds address after deployed
+      address: '0xC8c84Db782a926aA61D3B131B58c0CCb2c3576d5', // set TreasuryFunds address after deployed
       operator: '' // if possible, set TreasuryFunds's operator before deployed
     },
     muKglRewards: {

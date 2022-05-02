@@ -19,20 +19,21 @@ export const shiden: ConstantsType = {
   },
   pools: [
     {
-      name: "3Pool", // (3KGL) lptoken = 0x99799cAB58C5591ee10015F12173C1104eB23225
-      // swap: "0x8DEEF31ca7fE831527E46D4C736B147628564f7C",
-      gauge: "0xe616CD383Af18aEde6024e9BFB54B9Cd1D7aC385",
+      name: "3Pool",
+      gauge: "0x6A892edcFfafe4F64896419b1b57965e8e5bb68e",
     },
     {
-      name: "Starlay 3Pool", // (l3KGL) lptoken = 0x3328E82bB102809e91A072851a5BcBa86215E5E4
-      // swap: "0xe144E1849e1C005D188f9fA11d4A484D29547F39",
-      gauge: "0xd5e4DEcE9fC2328f0658717682A9b703b496F073",
+      name: "Starlay 3Pool",
+      gauge: "0x1571943e281f8C579Fcf63cBD31E425c0bFDdc74",
     },
     {
-      name: "BUSD+3KGL", // (BUSD3KGL) lptoken = 0xaA85Ebb591077e11246422ea941c503b473b5299
-      // swap: "0xfbFf009e75d81e037BFA7dd81E5aBdaC585426dF",
-      gauge: "0xcBeD93bB370376e4EA7D08d3d4FDEdDc5A84b1ed",
-    }
+      name: "BUSD+3KGL",
+      gauge: "0xdF180f31739284a1A8Ba3a110cDdaD58642F3DAF",
+    },
+    {
+      name: "BAI+3KGL",
+      gauge: "0x9D2070D930005553D2994A202BB17C80053A4e00",
+    },
   ],
   contracts: {
     treasury: {

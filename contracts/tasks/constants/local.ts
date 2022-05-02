@@ -1,5 +1,4 @@
 import { ethers } from 'ethers'
-import jsonfile from 'jsonfile'
 import { ConstantsType } from './types'
 
 export const local: ConstantsType = {
@@ -45,14 +44,3 @@ export const local: ConstantsType = {
     },
   },
 }
-
-// vested: {
-//   addresses: vested.team.addresses.concat(
-//     vested.investor.addresses,
-//     vested.treasury.addresses,
-//   ),
-//   amounts: vested.team.amounts.concat(
-//     vested.investor.amounts,
-//     vested.treasury.amounts,
-//   ),
-// },

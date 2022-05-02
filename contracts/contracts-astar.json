@@ -1,0 +1,84 @@
+{
+  "system": {
+    "treasury": "0xC8c84Db782a926aA61D3B131B58c0CCb2c3576d5",
+    "voteProxy": "0xF4011e0F2D82AA7Bb32c794d4686bcf6B90591D4",
+    "muuu": "0xc5BcAC31cf55806646017395AD119aF2441Aee37",
+    "booster": "0x6d12e3dE6dAcDBa2779C4947c0F718E13b78cfF4",
+    "rFactory": "0x890F02DE774cBFdd51a76c4BA78580BEB9b5161e",
+    "tFactory": "0xcA9f7fAB82E4Bcf85ec75E4F64777df0208fD1D9",
+    "proxyFactory": "0xD8CD5DdC8c6Df1eC42C17fEe2476cfA98b83dBdC",
+    "sFactory": "0x6c08Fa7210c69Cc258729E8d864dE05bd1A2E7BD",
+    "extraRewardStashV3": "0x9bc0d34c46E4c318039617a46FF9E3513d639d07",
+    "muKgl": "0x5eaAe8435B178d4677904430BAc5079e73aFa56e",
+    "kglDepositor": "0xDd90cFb9Ef2B841E0ad407e937bc74474Db13529",
+    "muKglRewards": "0x27E1076E8A9264718d5eF6824fB010AB6b7543B3",
+    "muuuRewards": "0xB2ae0CF4819f2BE89574D3dc46D481cf80C7a255",
+    "poolManagerProxy": "0xB1dE84D4ffCcBBF41c11474bFb7c1b59ec09Bdcb",
+    "poolManagerSecondaryProxy": "0x70A0779b2E94ADcba7A64d9E2685Bc35F7EFbB1b",
+    "poolManagerV3": "0x92e15368505eBA7db23B65C2629B1D5055937d3C",
+    "muuuLockerV2": "0x64073378AE0A265fd1e2419E41C87c1513d3d334",
+    "muuuStakingProxyV2": "0x6b7F5FCf791053af92fBE55CC6296dEA1e0E3B2E"
+  },
+  "pools": [
+    {
+      "lptoken": "0x18BDb86E835E9952cFaA844EB923E470E832Ad58",
+      "token": "0xC612357168fBacDA2609186f03c341bBd1e53653",
+      "gauge": "0xa480B71b5aFBe28df9658C253e1E18A5EeDA131E",
+      "kglRewards": "0xcFB4e35947659d60803515f86b57DfB7A1250ba6",
+      "stash": "0x2f10b4B2e171C968694abA1eAB30873e89180eE9",
+      "shutdown": true,
+      "name": "3Pool",
+      "id": 0
+    },
+    {
+      "lptoken": "0x60811F3d54e860cDf01D72ED422a700e9cf010a9",
+      "token": "0x618C7a56474D6c6e165F9Bb1D852Bf1887E56868",
+      "gauge": "0x13EE6d778B41229a8dF6a2c6EB2dcf595faFc2f4",
+      "kglRewards": "0x1d6A7b4595E5dE6A122Ca507a12cf19b7978F203",
+      "stash": "0xE39BB7c904B5c8E59FD552e8CEe69C68974b2abD",
+      "shutdown": true,
+      "name": "Starlay 3Pool",
+      "id": 1
+    },
+    {
+      "lptoken": "0x11baa439EFf75B80a72b889e171d6E95FB39ee11",
+      "token": "0x68C2a4C202E10318E66264953Eb4eaF820C16e1b",
+      "gauge": "0x940f388bb2f33C81840b70cDd72b3bC73d76232E",
+      "kglRewards": "0xa79E937175b3ea09C326A2138FF15B6D8E71b961",
+      "stash": "0xaE676C1024d164Cb8Ebf5a14764E46b7DA8451C6",
+      "shutdown": true,
+      "name": "BUSD+3KGL",
+      "id": 2
+    },
+    {
+      "lptoken": "0x18BDb86E835E9952cFaA844EB923E470E832Ad58",
+      "token": "0x0125F9A29a985344E0f4159A6D55A2800cf46Ded",
+      "gauge": "0x35327a731cCc30C043e74E2c7385486Ef905Eb08",
+      "kglRewards": "0xA4A8163D0C9C41a918E4218b70e7B0BE4ac81983",
+      "stash": "0x81eb78F214ef133fA02539e7264C2542B0Ee1BA1",
+      "shutdown": false,
+      "name": "3Pool",
+      "id": 3
+    },
+    {
+      "lptoken": "0x60811F3d54e860cDf01D72ED422a700e9cf010a9",
+      "token": "0xd44e0Ed145904c1905129a767F2D6de2e68A23FC",
+      "gauge": "0x6b822dE272355524D92Ab70310035e4c573044bE",
+      "kglRewards": "0x48611e9B924474F2a13b1C18E38B082099CBEF58",
+      "stash": "0x93670c243C56283bBe78A29eF3211e02b5910974",
+      "shutdown": false,
+      "name": "Starlay 3Pool",
+      "id": 4
+    },
+    {
+      "lptoken": "0x11baa439EFf75B80a72b889e171d6E95FB39ee11",
+      "token": "0x4af9ABbdffe5C76cAf9F8999f68F6f7564e3d0Ea",
+      "gauge": "0x5A2497F1C79C7a9a28224A0dBfc8e6f4EA412074",
+      "kglRewards": "0x8B23ca8D0cE64e570781428a5BAb241911077934",
+      "stash": "0x125810e27Be6c8fdAACD8a668aDB036fBeA999db",
+      "shutdown": false,
+      "name": "BUSD+3KGL",
+      "id": 5
+    }
+  ]
+}

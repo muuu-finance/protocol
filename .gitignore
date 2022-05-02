@@ -6,6 +6,7 @@ contracts/.secret
 contracts/.etherscanApi
 contracts/contracts.json
 contracts/contracts-*.json
+!contracts/contracts-astar.json
 contracts/contract-mocks.json
 contracts/contract-mocks-*.json
 tmp/
