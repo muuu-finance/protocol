@@ -29,6 +29,19 @@ task(
   console.log(`--- BEFORE check ---`)
   await confirmIncentives(system.booster, _deployer)
 
+  console.log(`--- execute Booster#setFees ---`)
+  const _instance = Booster__factory.connect(
+    system.booster,
+    _deployer,
+  )
+  const tx = await _instance.setFees(
+    1000, // _lockFees,
+    400, // _stakerFees,
+    0, // _callerFees,
+    200 // _nativeTokenLockFees
+  )
+  await tx.wait()
+
   console.log(`--- AFTER check ---`)
   await confirmIncentives(system.booster, _deployer)
   console.log(`--- [update-incentive-220503] FINISHED ---`)
@@ -38,7 +51,7 @@ const confirmIncentives = async (
   address: string,
   providerOrSigner: SignerWithAddress | ethers.providers.JsonRpcProvider
 ) => {
-  const _instance = await Booster__factory.connect(
+  const _instance = Booster__factory.connect(
     address,
     providerOrSigner,
   )
