@@ -121,6 +121,7 @@ const checkBooster = async (args: CheckFunctionArgs) => {
     { label: 'lockIncentive', fn: _instance.lockIncentive },
     { label: 'stakerIncentive', fn: _instance.stakerIncentive },
     { label: 'earmarkIncentive', fn: _instance.earmarkIncentive },
+    { label: 'nativeTokenLockIncentive', fn: _instance.nativeTokenLockIncentive },
     { label: 'feeManager', fn: _instance.feeManager },
     { label: 'poolManager', fn: _instance.poolManager },
     { label: 'staker', fn: _instance.staker },
