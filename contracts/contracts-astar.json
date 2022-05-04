@@ -79,6 +79,16 @@
       "shutdown": false,
       "name": "BUSD+3KGL",
       "id": 5
+    },
+    {
+      "lptoken": "0x00D41391B0d455fDAD49Bc6Fb8F590DB844403B6",
+      "token": "0xb8ff8F2e849978CFaB2f39E1dcE72C2e5a6afbB6",
+      "gauge": "0x9C8B44d5179502e651D95597ac3E9308B2e2f6C0",
+      "kglRewards": "0xfe1Facac14b67685851FB5186B08d17108BC960b",
+      "stash": "0x5419b49D36A3b2E69879F9dbfe1eE3003d9Bb7b4",
+      "rewards": [],
+      "name": "bai3kgl",
+      "id": 6
     }
   ]
 }
