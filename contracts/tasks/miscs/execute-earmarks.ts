@@ -7,18 +7,17 @@ task('execute-earmarks', 'Execute earmarkRewards and earmarkFees')
   .setAction(async ({ boosteraddress }, hre: HardhatRuntimeEnvironment) => {
     const { ethers } = hre
     const _deployer = (await ethers.getSigners())[0]
-
     const booster = await Booster__factory.connect(boosteraddress, _deployer)
+
     const poolCount = await booster.poolLength()
     const poolInfos = await Promise.all([...Array(poolCount.toNumber())].map((_, i) => booster.poolInfo(i)))
-    for (let i = 0; i < poolCount.toNumber(); i++) {
-      if (poolInfos[i].shutdown) {
-        console.log(`SKIP earmark pool ${i}`)
-        continue;
-      }
-      await booster.earmarkRewards(i)
-      console.log('earmark pool ' + i + ' complete')
-    }
+    const targetPids = [...Array(poolCount.toNumber())]
+      .map((_, i) => poolInfos[i].shutdown ? null : i)
+      .filter((v):v is number => v !== null)
+    console.log(`earmark target pool ids: ${targetPids}`)
+    const txs = await Promise.all(targetPids.map(id => booster.earmarkRewards(id)))
+    await Promise.all(txs.map((tx, i) => tx.wait().then(() => console.log(`earmark pool ${targetPids[i]} complete`))))
+
     // [NOTE] not execute earmark fees because kagla do not distribute fee.
     // await booster.earmarkFees()
     // console.log('earmark fees complete')
