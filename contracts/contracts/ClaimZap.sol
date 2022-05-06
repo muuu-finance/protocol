@@ -99,8 +99,8 @@ contract ClaimZap is Ownable {
 
     // Claim from BaseReward of Kagla's pools
     for (uint256 i = 0; i < poolIds.length; i++) {
-      (, , , address kglRewards, ,bool isShutdown ) = IBooster(booster).poolInfo(poolIds[i]);
-      if(isShutdown) continue;
+      (, , , address kglRewards, , bool isShutdown) = IBooster(booster).poolInfo(poolIds[i]);
+      if (isShutdown) continue;
       IBasicRewards(kglRewards).getReward(msg.sender, true);
     }
 
