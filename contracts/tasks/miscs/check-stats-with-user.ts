@@ -181,6 +181,8 @@ const getStatsInLockMUUU = async (eoa: string, locker: MuuuLockerV2, muKglAddres
     totalSupply: datas[0],
     rewardRate: _ethers.utils.formatUnits(datas[1].rewardRate),
     periodFinish: new Date(datas[1].periodFinish * 1000),
+    lastUpdateTime: new Date(datas[1].lastUpdateTime * 1000),
+    rewardPerTokenStored: _ethers.utils.formatUnits(datas[1].rewardPerTokenStored),
     earned: datas[2],
   }
 }
