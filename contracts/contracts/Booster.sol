@@ -66,7 +66,6 @@ contract Booster is Ownable {
   event RewardsEarmarked(uint256 pid);
   event FeesEarmarked();
 
-
   constructor(
     address _staker,
     address _minter,
@@ -206,7 +205,10 @@ contract Booster is Ownable {
   }
 
   function setRewardMultiplier(uint256 _rewardMultiplier) external onlyOwner {
-    require(_rewardMultiplier > 0 &&  _rewardMultiplier <= MULTIPLIER_DENOMINATOR , "rewardMultiplier should be 0-100000");
+    require(
+      _rewardMultiplier > 0 && _rewardMultiplier <= MULTIPLIER_DENOMINATOR,
+      "rewardMultiplier should be 0-100000"
+    );
     rewardMultiplier = _rewardMultiplier;
   }
 
@@ -491,9 +493,15 @@ contract Booster is Ownable {
       uint256 _callIncentive = kglBal.mul(earmarkIncentive).div(FEE_DENOMINATOR);
 
       //send stakingProxy for locker
-      if (lockerStakingProxy != address(0) && lockerStakingProxy != address(this) && nativeTokenLockIncentive > 0) {
+      if (
+        lockerStakingProxy != address(0) &&
+        lockerStakingProxy != address(this) &&
+        nativeTokenLockIncentive > 0
+      ) {
         //only subtract after address condition check
-        uint256 _nativeTokenLockIncentive = kglBal.mul(nativeTokenLockIncentive).div(FEE_DENOMINATOR);
+        uint256 _nativeTokenLockIncentive = kglBal.mul(nativeTokenLockIncentive).div(
+          FEE_DENOMINATOR
+        );
         kglBal = kglBal.sub(_nativeTokenLockIncentive);
         IERC20(kgl).safeTransfer(lockerStakingProxy, _nativeTokenLockIncentive);
       }
