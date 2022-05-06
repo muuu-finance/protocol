@@ -151,7 +151,6 @@ export const ContractKeys = {
   KglDepositor: 'KglDepositor',
   BaseRewardPool: 'BaseRewardPool',
   MuuuRewardPool: 'MuuuRewardPool',
-  PoolManager: 'PoolManager',
   PoolManagerProxy: 'PoolManagerProxy',
   PoolManagerSecondaryProxy: 'PoolManagerSecondaryProxy',
   PoolManagerV3: 'PoolManagerV3',
