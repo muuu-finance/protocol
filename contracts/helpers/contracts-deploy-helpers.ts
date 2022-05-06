@@ -18,7 +18,6 @@ import {
   PoolManagerProxy__factory,
   PoolManagerSecondaryProxy__factory,
   PoolManagerV3__factory,
-  PoolManager__factory,
   ProxyFactory__factory,
   RewardFactory__factory,
   StashFactoryV2__factory,
@@ -58,13 +57,14 @@ type DeployCommonArgs = {
 
 export const deployTreasuryFunds = async ({
   deployer,
-  operator
+  operator,
 }: DeployCommonArgs & {
   operator: string
-}) => withSaveAndVerify(
-  await new TreasuryFunds__factory(deployer).deploy(operator),
-  ContractKeys.TreasuryFunds,
-)
+}) =>
+  withSaveAndVerify(
+    await new TreasuryFunds__factory(deployer).deploy(operator),
+    ContractKeys.TreasuryFunds,
+  )
 
 export const deployKaglaVoterProxy = async ({
   deployer,
@@ -116,21 +116,22 @@ export const deployBoosterOwner = async ({
   booster,
   stashFactory,
   rescueStash,
-  poolManager
+  poolManager,
 }: DeployCommonArgs & {
   booster: string
   stashFactory: string
   rescueStash: string
   poolManager: string
-}) => withSaveAndVerify(
-  await new BoosterOwner__factory(deployer).deploy(
-    booster,
-    stashFactory,
-    rescueStash,
-    poolManager
-  ),
-  ContractKeys.BoosterOwner,
-)
+}) =>
+  withSaveAndVerify(
+    await new BoosterOwner__factory(deployer).deploy(
+      booster,
+      stashFactory,
+      rescueStash,
+      poolManager,
+    ),
+    ContractKeys.BoosterOwner,
+  )
 
 export const deployRewardFactory = async ({
   deployer,
@@ -157,33 +158,37 @@ export const deployTokenFactory = async ({
   )
 
 export const deployStashFactoryV2 = async ({
-    deployer,
-    operator,
-    rewardFactory,
-    proxyFactory
-  }: DeployCommonArgs & {
-    operator: string
-    rewardFactory: string
-    proxyFactory: string
-  }) =>
-    withSaveAndVerify(
-      await new StashFactoryV2__factory(deployer).deploy(
-        operator,
-        rewardFactory,
-        proxyFactory
-      ),
-      ContractKeys.StashFactoryV2,
-    )
+  deployer,
+  operator,
+  rewardFactory,
+  proxyFactory,
+}: DeployCommonArgs & {
+  operator: string
+  rewardFactory: string
+  proxyFactory: string
+}) =>
+  withSaveAndVerify(
+    await new StashFactoryV2__factory(deployer).deploy(
+      operator,
+      rewardFactory,
+      proxyFactory,
+    ),
+    ContractKeys.StashFactoryV2,
+  )
 
-export const deployProxyFactory = async ({ deployer }: DeployCommonArgs) => withSaveAndVerify(
-  await new ProxyFactory__factory(deployer).deploy(),
-  ContractKeys.ProxyFactory
-)
+export const deployProxyFactory = async ({ deployer }: DeployCommonArgs) =>
+  withSaveAndVerify(
+    await new ProxyFactory__factory(deployer).deploy(),
+    ContractKeys.ProxyFactory,
+  )
 
-export const deployExtraRewardStashV3 = async ({ deployer }: DeployCommonArgs) => withSaveAndVerify(
-  await new ExtraRewardStashV3__factory(deployer).deploy(),
-  ContractKeys.ExtraRewardStashV3
-)
+export const deployExtraRewardStashV3 = async ({
+  deployer,
+}: DeployCommonArgs) =>
+  withSaveAndVerify(
+    await new ExtraRewardStashV3__factory(deployer).deploy(),
+    ContractKeys.ExtraRewardStashV3,
+  )
 
 export const deployMuKglToken = async ({ deployer }: DeployCommonArgs) =>
   withSaveAndVerify(
@@ -269,42 +274,35 @@ export const deployMuuuRewardPool = async ({
     ContractKeys.MuuuRewardPool,
   )
 
-export const deployPoolManager = async ({
-  deployer,
-  pools,
-  addressProvider,
-}: DeployCommonArgs & {
-  pools: string
-  addressProvider: string
-}) =>
-  withSaveAndVerify(
-    await new PoolManager__factory(deployer).deploy(pools, addressProvider),
-    ContractKeys.PoolManager,
-  )
-
 export const deployPoolManagerProxy = async ({
   deployer,
-  pools
+  pools,
 }: DeployCommonArgs & {
   pools: string
-}) => withSaveAndVerify(
-  await new PoolManagerProxy__factory(deployer).deploy(pools),
-  ContractKeys.PoolManagerProxy,
-)
+}) =>
+  withSaveAndVerify(
+    await new PoolManagerProxy__factory(deployer).deploy(pools),
+    ContractKeys.PoolManagerProxy,
+  )
 
 export const deployPoolManagerSecondaryProxy = async ({
   deployer,
   gaugeController,
   pools,
-  booster
+  booster,
 }: DeployCommonArgs & {
   gaugeController: string
   pools: string
   booster: string
-}) => withSaveAndVerify(
-  await new PoolManagerSecondaryProxy__factory(deployer).deploy(gaugeController, pools, booster),
-  ContractKeys.PoolManagerSecondaryProxy,
-)
+}) =>
+  withSaveAndVerify(
+    await new PoolManagerSecondaryProxy__factory(deployer).deploy(
+      gaugeController,
+      pools,
+      booster,
+    ),
+    ContractKeys.PoolManagerSecondaryProxy,
+  )
 
 export const deployPoolManagerV3 = async ({
   deployer,
@@ -313,11 +311,11 @@ export const deployPoolManagerV3 = async ({
 }: DeployCommonArgs & {
   pools: string
   gaugeController: string
-}) => withSaveAndVerify(
-  await new PoolManagerV3__factory(deployer).deploy(pools, gaugeController),
-  ContractKeys.PoolManagerV3,
-)
-
+}) =>
+  withSaveAndVerify(
+    await new PoolManagerV3__factory(deployer).deploy(pools, gaugeController),
+    ContractKeys.PoolManagerV3,
+  )
 
 export const deployArbitratorVault = async ({
   deployer,
@@ -385,33 +383,33 @@ export const deployMuuuStakingProxyV2 = async ({
 
 export const deployClaimZap = async ({
   deployer,
+  booster,
   kgl,
   muuu,
   muKgl,
   kglDeposit,
   muKglRewards,
   muuuRewards,
-  exchange,
   locker,
 }: DeployCommonArgs & {
+  booster: string
   kgl: string
   muuu: string
   muKgl: string
   kglDeposit: string
   muKglRewards: string
   muuuRewards: string
-  exchange: string
   locker: string
 }) =>
   withSaveAndVerify(
     await new ClaimZap__factory(deployer).deploy(
+      booster,
       kgl,
       muuu,
       muKgl,
       kglDeposit,
       muKglRewards,
       muuuRewards,
-      exchange,
       locker,
     ),
     ContractKeys.ClaimZap,
