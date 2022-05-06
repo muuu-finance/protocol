@@ -64,7 +64,7 @@ task('test-claimzap', 'test claim zap').setAction(
       system.muuuLockerV2,
       deployer,
     )
-    const locked = await locker.balanceOf(deployer.address)
+    const locked = await locker.lockedBalances(deployer.address)
     const earnedInLocker = await locker.claimableRewards(deployer.address)
     console.log('I have locked MUUU:', locked.toString())
     console.log('I have earned in locker:', earnedInLocker.toString())
@@ -121,7 +121,7 @@ task('test-claimzap', 'test claim zap').setAction(
       'I have earned in muuu rewards:',
       earnedInMuuuRewardsAfter.toString(),
     )
-    const lockedAfter = await locker.balanceOf(deployer.address)
+    const lockedAfter = await locker.lockedBalances(deployer.address)
     const earnedInLockerAfter = await locker.claimableRewards(deployer.address)
     console.log('I have locked MUUU:', lockedAfter.toString())
     console.log('I have earned in locker:', earnedInLockerAfter.toString())
