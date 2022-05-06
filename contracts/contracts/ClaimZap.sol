@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.6.12;
 
-import "./libraries/MathUtil.sol";
 import "./interfaces/ILockedMuuu.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
@@ -141,9 +140,5 @@ contract ClaimZap is Ownable {
         IBasicRewards(muuuRewards).stakeFor(msg.sender, muuuBalance);
       }
     }
-  }
-
-  function CheckOption(uint256 _mask, uint256 _flag) internal pure returns (bool) {
-    return (_mask & (1 << _flag)) != 0;
   }
 }
