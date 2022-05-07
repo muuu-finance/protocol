@@ -18,7 +18,6 @@ import {
   PoolManagerProxy__factory,
   PoolManagerSecondaryProxy__factory,
   PoolManagerV3__factory,
-  PoolManager__factory,
   StashFactoryV2__factory,
   TreasuryFunds__factory,
 } from '../../types'
@@ -304,22 +303,6 @@ const checkMuuuRewardPool = async (args: CheckFunctionArgs) => {
       console.log(`extraRewards:${i} ... ${await _instance.extraRewards(i)}`)
   }
   console.log(`--- [end] MuuuRewardPool ---`)
-}
-
-const checkPoolManager = async (args: CheckFunctionArgs) => {
-  console.log(`--- [start] PoolManager ---`)
-  console.log(`> address ... ${args.address}`)
-  const _instance = await PoolManager__factory.connect(
-    args.address,
-    args.providerOrSigner,
-  )
-  const targets = [
-    { label: 'operator', fn: _instance.operator },
-    { label: 'pools', fn: _instance.pools },
-    { label: 'addressProvider', fn: _instance.addressProvider },
-  ]
-  for (const _v of targets) console.log(`${_v.label} ... ${await _v.fn()}`)
-  console.log(`--- [end] PoolManager ---`)
 }
 
 const checkPoolManagerProxy = async (args: CheckFunctionArgs) => {
