@@ -128,7 +128,7 @@ interface IStaker {
     address _to,
     uint256 _value,
     bytes calldata _data
-  ) external returns (bool, bytes memory);
+  ) external payable returns (bool, bytes memory);
 }
 
 interface IRewards {
