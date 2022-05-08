@@ -18,7 +18,6 @@ import {
   PoolManagerProxy__factory,
   PoolManagerSecondaryProxy__factory,
   PoolManagerV3__factory,
-  PoolManager__factory,
   ProxyFactory__factory,
   RewardFactory__factory,
   StashFactoryV2__factory,
@@ -267,19 +266,6 @@ export const deployMuuuRewardPool = async ({
       rewardManager,
     ),
     ContractKeys.MuuuRewardPool,
-  )
-
-export const deployPoolManager = async ({
-  deployer,
-  pools,
-  addressProvider,
-}: DeployCommonArgs & {
-  pools: string
-  addressProvider: string
-}) =>
-  withSaveAndVerify(
-    await new PoolManager__factory(deployer).deploy(pools, addressProvider),
-    ContractKeys.PoolManager,
   )
 
 export const deployPoolManagerProxy = async ({
