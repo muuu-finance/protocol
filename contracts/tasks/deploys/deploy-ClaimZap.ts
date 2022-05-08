@@ -51,13 +51,13 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
 
       const instance = await deployClaimZap({
         deployer: _deployer,
+        booster: deployeds.system.booster,
         kgl: constants.tokens.KGL,
         muuu: deployeds.system.muuu,
         muKgl: deployeds.system.muKgl,
         kglDeposit: deployeds.system.kglDepositor,
         muKglRewards: deployeds.system.muKglRewards,
         muuuRewards: deployeds.system.muuuRewards,
-        exchange: constants.contracts.treasury.address,
         locker: deployeds.system.muuuLockerV2,
       })
       TaskUtils.writeContractAddress({
@@ -67,6 +67,9 @@ task(`deploy-${CONTRACT_KEY}`, `Deploy ${CONTRACT_KEY}`)
         fileName: TaskUtils.getFilePath({ network: network.name }),
       })
       console.log(`>> deployed ${CONTRACT_KEY}\n`)
+      console.log(`>> setApprovals start.`)
+      await instance.setApprovals()
+      console.log(`>> setApprovals is done.`)
 
       if (!inMultiDeploymentFlow)
         console.log(`--- [deploy-${CONTRACT_KEY}] FINISHED ---`)

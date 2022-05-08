@@ -22,7 +22,11 @@ contract PoolManagerSecondaryProxy {
 
   mapping(address => bool) public usedMap;
 
-  constructor(address _gaugeController, address _pools, address _booster) public {
+  constructor(
+    address _gaugeController,
+    address _pools,
+    address _booster
+  ) public {
     owner = msg.sender;
     operator = msg.sender;
     gaugeController = _gaugeController;

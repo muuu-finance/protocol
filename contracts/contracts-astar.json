@@ -17,7 +17,8 @@
     "poolManagerSecondaryProxy": "0x70A0779b2E94ADcba7A64d9E2685Bc35F7EFbB1b",
     "poolManagerV3": "0x92e15368505eBA7db23B65C2629B1D5055937d3C",
     "muuuLockerV2": "0x64073378AE0A265fd1e2419E41C87c1513d3d334",
-    "muuuStakingProxyV2": "0x6b7F5FCf791053af92fBE55CC6296dEA1e0E3B2E"
+    "muuuStakingProxyV2": "0x6b7F5FCf791053af92fBE55CC6296dEA1e0E3B2E",
+    "claimZap": "0x7aBe88F4E1e0E2a674141CD58624aC40d7C5DE70"
   },
   "pools": [
     {

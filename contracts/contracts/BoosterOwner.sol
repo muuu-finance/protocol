@@ -83,7 +83,12 @@ contract BoosterOwner {
   event AcceptedOwnership(address newOwner);
   event OwnershipSealed();
 
-  constructor(address _booster, address _stashFactory, address _rescueStash, address _poolManager) public {
+  constructor(
+    address _booster,
+    address _stashFactory,
+    address _rescueStash,
+    address _poolManager
+  ) public {
     owner = msg.sender;
     booster = _booster;
     stashFactory = _stashFactory;
@@ -99,12 +104,15 @@ contract BoosterOwner {
   function setBooster(address _booster) external onlyOwner {
     booster = _booster;
   }
+
   function setStashFactory(address _stashFactory) external onlyOwner {
     stashFactory = _stashFactory;
   }
+
   function setRescueStash(address _rescueStash) external onlyOwner {
     rescueStash = _rescueStash;
   }
+
   function setPoolManager(address _poolManager) external onlyOwner {
     poolManager = _poolManager;
   }

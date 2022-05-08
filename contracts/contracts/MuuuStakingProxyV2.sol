@@ -170,7 +170,7 @@ contract MuuuStakingProxyV2 {
     if (muKglBal > 0) {
       uint256 incentiveAmount = muKglBal.mul(callIncentive).div(denominator);
       muKglBal = muKglBal.sub(incentiveAmount);
-      
+
       if (incentiveAmount > 0) {
         //send incentives
         IERC20(muKgl).safeTransfer(msg.sender, incentiveAmount);
