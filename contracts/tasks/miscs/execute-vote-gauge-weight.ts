@@ -1,14 +1,70 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import {
+  Booster,
   Booster__factory,
   ERC20__factory,
+  IGaugeController,
   IGaugeController__factory,
 } from '../../types'
 import { loadConstants } from '../constants'
 import { TaskUtils } from '../utils'
 
 const SUPPORTED_NETWORK = ['astar', 'shiden', 'localhost'] as const
+const BASE_VOTE_WEIGHT: { [key in number]: number } = {
+  3: 10.0, // 3Pool
+  4: 20.0, // Starlay 3Pool
+  5: 30.0, // BUSD+3KGL
+  6: 40.0, // bai3kgl
+}
+
+const generateVoteWeightParameter = async (
+  voterProxyAddress: string,
+  booster: Booster,
+  gaugeController: IGaugeController,
+) => {
+  const total = Object.values(BASE_VOTE_WEIGHT).reduce(
+    (pre, cur) => pre + cur,
+    0,
+  )
+  if (total !== 100)
+    throw Error(`total of BASE_VOTE_WEIGHT is not 100%: now ${total}`)
+
+  // Collect pool / gauge / gauge weight infos
+  const currentTime = new Date().getTime()
+  const infos: {
+    pid: number
+    gauge: string
+    currentWeight: number
+    futureWeight: number
+    diff: number
+  }[] = []
+  for (const pid of Object.keys(BASE_VOTE_WEIGHT)) {
+    const poolInfo = await booster.poolInfo(pid)
+    if (poolInfo.shutdown)
+      throw new Error(`Include shutdown pool: pid = ${pid}`)
+    const voteUserSlopes = await gaugeController.vote_user_slopes(
+      voterProxyAddress,
+      poolInfo.gauge,
+    )
+    const endTime = voteUserSlopes[2].toNumber() * 1000
+    if (endTime >= currentTime)
+      throw new Error(`Not over vote end time: endTime = ${new Date(endTime)}`)
+    const futureWeight = BASE_VOTE_WEIGHT[Number(pid)]
+    const currentPower = voteUserSlopes[1].toNumber()
+    infos.push({
+      pid: Number(pid),
+      gauge: poolInfo.gauge,
+      currentWeight: currentPower,
+      futureWeight: futureWeight * 100,
+      diff: currentPower - futureWeight * 100,
+    })
+  }
+
+  // sort in descending order of minus
+  infos.sort((a, b) => a.diff - b.diff)
+  return [infos.map((v) => v.gauge), infos.map((v) => v.futureWeight)]
+}
 
 task('execute-vote-gauge-weight', 'Execute voteGaugeWeight').setAction(
   async ({}, hre: HardhatRuntimeEnvironment) => {
@@ -129,5 +185,35 @@ task('confirm-vote-gauge-weight', 'Confirm voteGaugeWeight').setAction(
     }
 
     console.log(`--- FINISHED ---`)
+  },
+)
+
+task('check-vote-weight-parameter', 'Check voteWeight parameter').setAction(
+  async ({}, hre: HardhatRuntimeEnvironment) => {
+    const { network, ethers } = hre
+    const { system } = TaskUtils.loadDeployedContractAddresses({
+      network: network.name,
+    })
+    const constants = loadConstants({
+      network: network.name,
+      isUseMocks: false,
+    })
+    const booster = await Booster__factory.connect(
+      system.booster,
+      ethers.provider,
+    )
+    const gaugeController = await IGaugeController__factory.connect(
+      constants.kaglas.gaugeController,
+      ethers.provider,
+    )
+    const [gauges, weights] = await generateVoteWeightParameter(
+      system.voteProxy,
+      booster,
+      gaugeController,
+    )
+    console.log(`> gauges`)
+    console.log(gauges)
+    console.log(`> weights`)
+    console.log(weights)
   },
 )
