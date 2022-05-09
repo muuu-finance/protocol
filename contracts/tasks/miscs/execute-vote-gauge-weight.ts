@@ -1,90 +1,219 @@
 import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import {
+  Booster,
   Booster__factory,
   ERC20__factory,
+  IGaugeController,
   IGaugeController__factory,
 } from '../../types'
 import { loadConstants } from '../constants'
 import { TaskUtils } from '../utils'
 
-task(
-  'execute-vote-gauge-weight',
-  'Execute voteGaugeWeight',
-).setAction(async ({}, hre: HardhatRuntimeEnvironment) => {
-  const { network, ethers } = hre
-  if (
-    !(
-      network.name === 'astar' ||
-      network.name === 'shiden' ||
-      network.name === 'localhost'
-    )
+const SUPPORTED_NETWORK = ['astar', 'shiden', 'localhost'] as const
+const BASE_VOTE_WEIGHT: { [key in number]: number } = {
+  3: 10.0, // 3Pool
+  4: 20.0, // Starlay 3Pool
+  5: 30.0, // BUSD+3KGL
+  6: 40.0, // bai3kgl
+}
+
+const generateVoteWeightParameter = async (
+  voterProxyAddress: string,
+  booster: Booster,
+  gaugeController: IGaugeController,
+) => {
+  const total = Object.values(BASE_VOTE_WEIGHT).reduce(
+    (pre, cur) => pre + cur,
+    0,
   )
-    throw new Error('Support only astar, shiden...')
-  console.log(`------- START -------`)
-  console.log(`network ... ${network.name}`)
-  const { system } = TaskUtils.loadDeployedContractAddresses({
-    network: network.name,
-  })
-  const constants = loadConstants({
-    network: network.name,
-    isUseMocks: false,
-  })
-  const deployer = (await ethers.getSigners())[0]
+  if (total !== 100)
+    throw Error(`total of BASE_VOTE_WEIGHT is not 100%: now ${total}`)
 
-  const booster = await Booster__factory.connect(system.booster, deployer)
-  const gaugeController = await IGaugeController__factory.connect(
-    constants.kaglas.gaugeController,
-    deployer,
-  )
-
-  const veKgl = await ERC20__factory.connect(
-    constants.kaglas.votingEscrow,
-    deployer,
-  )
-  const balance = await veKgl.balanceOf(system.voteProxy)
-  console.log('VoterProxy holds veKGL:', balance.toString())
-
-  const kgl = await ERC20__factory.connect(constants.tokens.KGL, deployer)
-  const kglBalance = await kgl.balanceOf(system.voteProxy)
-  console.log('VoterProxy holds KGL:', kglBalance.toString())
-
-  const poolCount = await booster.poolLength()
-
-  // TMP: should read weights from another file or something
-  // weight: 100% = 10000
-  // const weights = [5000, 2000, 3000]
-
-  for (let i = 0; i < poolCount.toNumber(); i++) {
-    const poolInfo = await booster.poolInfo(i)
-
-    const lpToken = await ERC20__factory.connect(poolInfo.lptoken, deployer)
-    console.log('Lp Name:', await lpToken.symbol())
-    console.log('Pool Gauge Address:', poolInfo.gauge)
-
-    const weight = await gaugeController.get_gauge_weight(poolInfo.gauge)
-    console.log('Gauge Weight:', weight)
-
-    const voteInfoBefore = await gaugeController.vote_user_slopes(
-      system.voteProxy,
+  // Collect pool / gauge / gauge weight infos
+  const currentTime = new Date().getTime()
+  const infos: {
+    pid: number
+    gauge: string
+    currentWeight: number
+    futureWeight: number
+    diff: number
+  }[] = []
+  for (const pid of Object.keys(BASE_VOTE_WEIGHT)) {
+    const poolInfo = await booster.poolInfo(pid)
+    if (poolInfo.shutdown)
+      throw new Error(`Include shutdown pool: pid = ${pid}`)
+    const voteUserSlopes = await gaugeController.vote_user_slopes(
+      voterProxyAddress,
       poolInfo.gauge,
     )
-    console.log('Vote Info Before slope:', voteInfoBefore[0].toString())
-    console.log('Vote Info Before power:', voteInfoBefore[1].toString())
-    console.log('Vote Info Before end of lock:', voteInfoBefore[2].toString())
-
-    console.log('--- Vote Start ---')
-    // memo: cannot vote more than once each gauge
-    // await booster.voteGaugeWeight([poolInfo.gauge], [weights[i]])
-    console.log('--- Vote Finish ---')
-
-    const voteInfoAfter = await gaugeController.vote_user_slopes(
-      system.voteProxy,
-      poolInfo.gauge,
-    )
-    console.log('Vote Info After slope:', voteInfoAfter[0].toString())
-    console.log('Vote Info After power:', voteInfoAfter[1].toString())
-    console.log('Vote Info After end of lock:', voteInfoAfter[2].toString())
+    const endTime = voteUserSlopes[2].toNumber() * 1000
+    if (endTime >= currentTime)
+      throw new Error(`Not over vote end time: endTime = ${new Date(endTime)}`)
+    const futureWeight = BASE_VOTE_WEIGHT[Number(pid)]
+    const currentPower = voteUserSlopes[1].toNumber()
+    infos.push({
+      pid: Number(pid),
+      gauge: poolInfo.gauge,
+      currentWeight: currentPower,
+      futureWeight: futureWeight * 100,
+      diff: currentPower - futureWeight * 100,
+    })
   }
-  console.log(`--- FINISHED ---`)
-})
+
+  // sort in descending order of minus
+  infos.sort((a, b) => a.diff - b.diff)
+  return [infos.map((v) => v.gauge), infos.map((v) => v.futureWeight)]
+}
+
+task('execute-vote-gauge-weight', 'Execute voteGaugeWeight').setAction(
+  async ({}, hre: HardhatRuntimeEnvironment) => {
+    const { network, ethers } = hre
+
+    if (!(SUPPORTED_NETWORK as ReadonlyArray<string>).includes(network.name))
+      throw new Error(`Support only ${SUPPORTED_NETWORK} ...`)
+
+    console.log(`------- START -------`)
+    console.log(`network ... ${network.name}`)
+    const { system } = TaskUtils.loadDeployedContractAddresses({
+      network: network.name,
+    })
+    const constants = loadConstants({
+      network: network.name,
+      isUseMocks: false,
+    })
+    const deployer = (await ethers.getSigners())[0]
+
+    const booster = await Booster__factory.connect(system.booster, deployer)
+    const gaugeController = await IGaugeController__factory.connect(
+      constants.kaglas.gaugeController,
+      deployer,
+    )
+
+    const veKgl = await ERC20__factory.connect(
+      constants.kaglas.votingEscrow,
+      deployer,
+    )
+    const balance = await veKgl.balanceOf(system.voteProxy)
+    console.log('VoterProxy holds veKGL:', balance.toString())
+
+    const kgl = await ERC20__factory.connect(constants.tokens.KGL, deployer)
+    const kglBalance = await kgl.balanceOf(system.voteProxy)
+    console.log('VoterProxy holds KGL:', kglBalance.toString())
+
+    const poolCount = await booster.poolLength()
+
+    // TMP: should read weights from another file or something
+    // weight: 100% = 10000
+    // const weights = [5000, 2000, 3000]
+
+    const checkVoteInfo = async (user: string, gauge: string) => {
+      const voteInfoBefore = await gaugeController.vote_user_slopes(user, gauge)
+      console.log('slope:', voteInfoBefore[0].toString())
+      console.log('power:', voteInfoBefore[1].toString())
+      console.log('end:', voteInfoBefore[2].toString())
+    }
+
+    for (let i = 0; i < poolCount.toNumber(); i++) {
+      const poolInfo = await booster.poolInfo(i)
+
+      const lpToken = await ERC20__factory.connect(poolInfo.lptoken, deployer)
+      console.log('Lp Name:', await lpToken.symbol())
+      console.log('Pool Gauge Address:', poolInfo.gauge)
+
+      const weight = await gaugeController.get_gauge_weight(poolInfo.gauge)
+      console.log('Gauge Weight:', weight)
+
+      console.log(`Before Vote`)
+      await checkVoteInfo(system.voteProxy, poolInfo.gauge)
+
+      console.log('--- Vote Start ---')
+      // memo: cannot vote more than once each gauge
+      // await booster.voteGaugeWeight([poolInfo.gauge], [weights[i]])
+      console.log('--- Vote Finish ---')
+
+      console.log(`After Vote`)
+      await checkVoteInfo(system.voteProxy, poolInfo.gauge)
+    }
+    console.log(`--- FINISHED ---`)
+  },
+)
+
+task('confirm-vote-gauge-weight', 'Confirm voteGaugeWeight').setAction(
+  async ({}, hre: HardhatRuntimeEnvironment) => {
+    const { network, ethers } = hre
+
+    if (!(SUPPORTED_NETWORK as ReadonlyArray<string>).includes(network.name))
+      throw new Error(`Support only ${SUPPORTED_NETWORK} ...`)
+
+    console.log(`------- START -------`)
+    console.log(`network ... ${network.name}`)
+    const {
+      system: { booster, voteProxy },
+    } = TaskUtils.loadDeployedContractAddresses({
+      network: network.name,
+    })
+    const constants = loadConstants({
+      network: network.name,
+      isUseMocks: false,
+    })
+
+    const _booster = await Booster__factory.connect(booster, ethers.provider)
+    const gaugeController = await IGaugeController__factory.connect(
+      constants.kaglas.gaugeController,
+      ethers.provider,
+    )
+
+    const poolCount = await _booster.poolLength()
+    for (let i = 0; i < poolCount.toNumber(); i++) {
+      const poolInfo = await _booster.poolInfo(i)
+      if (poolInfo.shutdown) {
+        console.log(`skip to confirm pool ${i} because shotdown`)
+        continue
+      }
+      console.log(`> pid: ${i}, gauge: ${poolInfo.gauge}`)
+      const weight = await gaugeController.get_gauge_weight(poolInfo.gauge)
+      console.log('Gauge Weight:', weight.toString())
+      const voteUserSlopes = await gaugeController.vote_user_slopes(
+        voteProxy,
+        poolInfo.gauge,
+      )
+      // ref: https://github.com/kagla-finance/kagla-dao-contracts/blob/main/contracts/GaugeController.vy#L18-L21
+      console.log('slope:', voteUserSlopes[0].toString())
+      console.log('power:', voteUserSlopes[1].toString())
+      console.log('end:', new Date(voteUserSlopes[2].toNumber() * 1000))
+    }
+
+    console.log(`--- FINISHED ---`)
+  },
+)
+
+task('check-vote-weight-parameter', 'Check voteWeight parameter').setAction(
+  async ({}, hre: HardhatRuntimeEnvironment) => {
+    const { network, ethers } = hre
+    const { system } = TaskUtils.loadDeployedContractAddresses({
+      network: network.name,
+    })
+    const constants = loadConstants({
+      network: network.name,
+      isUseMocks: false,
+    })
+    const booster = await Booster__factory.connect(
+      system.booster,
+      ethers.provider,
+    )
+    const gaugeController = await IGaugeController__factory.connect(
+      constants.kaglas.gaugeController,
+      ethers.provider,
+    )
+    const [gauges, weights] = await generateVoteWeightParameter(
+      system.voteProxy,
+      booster,
+      gaugeController,
+    )
+    console.log(`> gauges`)
+    console.log(gauges)
+    console.log(`> weights`)
+    console.log(weights)
+  },
+)
