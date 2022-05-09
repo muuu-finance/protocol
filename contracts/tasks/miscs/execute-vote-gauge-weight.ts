@@ -9,7 +9,6 @@ import { loadConstants } from '../constants'
 import { TaskUtils } from '../utils'
 
 const SUPPORTED_NETWORK = ['astar', 'shiden', 'localhost'] as const
-type SupportedNetwork = typeof SUPPORTED_NETWORK[number]
 
 task('execute-vote-gauge-weight', 'Execute voteGaugeWeight').setAction(
   async ({}, hre: HardhatRuntimeEnvironment) => {
