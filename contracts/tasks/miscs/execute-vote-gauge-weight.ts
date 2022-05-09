@@ -8,17 +8,16 @@ import {
 import { loadConstants } from '../constants'
 import { TaskUtils } from '../utils'
 
+const SUPPORTED_NETWORK = ['astar', 'shiden', 'localhost'] as const
+type SupportedNetwork = typeof SUPPORTED_NETWORK[number]
+
 task('execute-vote-gauge-weight', 'Execute voteGaugeWeight').setAction(
   async ({}, hre: HardhatRuntimeEnvironment) => {
     const { network, ethers } = hre
-    if (
-      !(
-        network.name === 'astar' ||
-        network.name === 'shiden' ||
-        network.name === 'localhost'
-      )
-    )
-      throw new Error('Support only astar, shiden...')
+
+    if (!(SUPPORTED_NETWORK as ReadonlyArray<string>).includes(network.name))
+      throw new Error(`Support only ${SUPPORTED_NETWORK} ...`)
+
     console.log(`------- START -------`)
     console.log(`network ... ${network.name}`)
     const { system } = TaskUtils.loadDeployedContractAddresses({
@@ -53,6 +52,13 @@ task('execute-vote-gauge-weight', 'Execute voteGaugeWeight').setAction(
     // weight: 100% = 10000
     // const weights = [5000, 2000, 3000]
 
+    const checkVoteInfo = async (user: string, gauge: string) => {
+      const voteInfoBefore = await gaugeController.vote_user_slopes(user, gauge)
+      console.log('slope:', voteInfoBefore[0].toString())
+      console.log('power:', voteInfoBefore[1].toString())
+      console.log('end:', voteInfoBefore[2].toString())
+    }
+
     for (let i = 0; i < poolCount.toNumber(); i++) {
       const poolInfo = await booster.poolInfo(i)
 
@@ -63,26 +69,16 @@ task('execute-vote-gauge-weight', 'Execute voteGaugeWeight').setAction(
       const weight = await gaugeController.get_gauge_weight(poolInfo.gauge)
       console.log('Gauge Weight:', weight)
 
-      const voteInfoBefore = await gaugeController.vote_user_slopes(
-        system.voteProxy,
-        poolInfo.gauge,
-      )
-      console.log('Vote Info Before slope:', voteInfoBefore[0].toString())
-      console.log('Vote Info Before power:', voteInfoBefore[1].toString())
-      console.log('Vote Info Before end of lock:', voteInfoBefore[2].toString())
+      console.log(`Before Vote`)
+      await checkVoteInfo(system.voteProxy, poolInfo.gauge)
 
       console.log('--- Vote Start ---')
       // memo: cannot vote more than once each gauge
       // await booster.voteGaugeWeight([poolInfo.gauge], [weights[i]])
       console.log('--- Vote Finish ---')
 
-      const voteInfoAfter = await gaugeController.vote_user_slopes(
-        system.voteProxy,
-        poolInfo.gauge,
-      )
-      console.log('Vote Info After slope:', voteInfoAfter[0].toString())
-      console.log('Vote Info After power:', voteInfoAfter[1].toString())
-      console.log('Vote Info After end of lock:', voteInfoAfter[2].toString())
+      console.log(`After Vote`)
+      await checkVoteInfo(system.voteProxy, poolInfo.gauge)
     }
     console.log(`--- FINISHED ---`)
   },
@@ -91,14 +87,10 @@ task('execute-vote-gauge-weight', 'Execute voteGaugeWeight').setAction(
 task('confirm-vote-gauge-weight', 'Confirm voteGaugeWeight').setAction(
   async ({}, hre: HardhatRuntimeEnvironment) => {
     const { network, ethers } = hre
-    if (
-      !(
-        network.name === 'astar' ||
-        network.name === 'shiden' ||
-        network.name === 'localhost'
-      )
-    )
-      throw new Error('Support only astar, shiden...')
+
+    if (!(SUPPORTED_NETWORK as ReadonlyArray<string>).includes(network.name))
+      throw new Error(`Support only ${SUPPORTED_NETWORK} ...`)
+
     console.log(`------- START -------`)
     console.log(`network ... ${network.name}`)
     const {
