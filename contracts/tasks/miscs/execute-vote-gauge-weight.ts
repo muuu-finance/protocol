@@ -28,7 +28,7 @@ const generateVoteWeightParameter = async (
     0,
   )
   if (total !== 10000)
-    throw Error(`total of BASE_VOTE_WEIGHT is not 100%: now ${total}`)
+    throw Error(`total of BASE_VOTE_WEIGHT is not 10000(=100%): now ${total}`)
 
   // Collect pool / gauge / gauge weight infos
   const currentTime = new Date().getTime()
