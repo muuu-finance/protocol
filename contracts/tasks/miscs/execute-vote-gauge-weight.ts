@@ -63,7 +63,10 @@ const generateVoteWeightParameter = async (
 
   // sort in descending order of minus
   infos.sort((a, b) => b.diff - a.diff)
-  return [infos.map((v) => v.gauge), infos.map((v) => v.futureWeight)]
+  return {
+    gauges: infos.map((v) => v.gauge),
+    weights: infos.map((v) => v.futureWeight),
+  }
 }
 
 task('execute-vote-gauge-weight', 'Execute voteGaugeWeight').setAction(
@@ -116,21 +119,46 @@ task('execute-vote-gauge-weight', 'Execute voteGaugeWeight').setAction(
 
     for (let i = 0; i < poolCount.toNumber(); i++) {
       const poolInfo = await booster.poolInfo(i)
+      if (poolInfo.shutdown) {
+        continue
+      }
 
       const lpToken = await ERC20__factory.connect(poolInfo.lptoken, deployer)
       console.log('Lp Name:', await lpToken.symbol())
       console.log('Pool Gauge Address:', poolInfo.gauge)
 
       const weight = await gaugeController.get_gauge_weight(poolInfo.gauge)
-      console.log('Gauge Weight:', weight)
+      console.log('Gauge Weight:', weight.toString())
 
       console.log(`Before Vote`)
       await checkVoteInfo(system.voteProxy, poolInfo.gauge)
+    }
 
-      console.log('--- Vote Start ---')
-      // memo: cannot vote more than once each gauge
-      // await booster.voteGaugeWeight([poolInfo.gauge], [weights[i]])
-      console.log('--- Vote Finish ---')
+    console.log('--- Vote Start ---')
+    // memo: cannot vote more than once each gauge
+    const { gauges, weights } = await generateVoteWeightParameter(
+      system.voteProxy,
+      booster,
+      gaugeController,
+    )
+    console.log('gauges', gauges)
+    console.log('weights', weights)
+    const tx = await booster.voteGaugeWeight(gauges, weights)
+    await tx.wait()
+    console.log('--- Vote Finish ---')
+
+    for (let i = 0; i < poolCount.toNumber(); i++) {
+      const poolInfo = await booster.poolInfo(i)
+      if (poolInfo.shutdown) {
+        continue
+      }
+
+      const lpToken = await ERC20__factory.connect(poolInfo.lptoken, deployer)
+      console.log('Lp Name:', await lpToken.symbol())
+      console.log('Pool Gauge Address:', poolInfo.gauge)
+
+      const weight = await gaugeController.get_gauge_weight(poolInfo.gauge)
+      console.log('Gauge Weight:', weight.toString())
 
       console.log(`After Vote`)
       await checkVoteInfo(system.voteProxy, poolInfo.gauge)
@@ -206,7 +234,7 @@ task('check-vote-weight-parameter', 'Check voteWeight parameter').setAction(
       constants.kaglas.gaugeController,
       ethers.provider,
     )
-    const [gauges, weights] = await generateVoteWeightParameter(
+    const { gauges, weights } = await generateVoteWeightParameter(
       system.voteProxy,
       booster,
       gaugeController,
