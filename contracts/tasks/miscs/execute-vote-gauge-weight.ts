@@ -12,10 +12,10 @@ import { TaskUtils } from '../utils'
 
 const SUPPORTED_NETWORK = ['astar', 'shiden', 'localhost'] as const
 const BASE_VOTE_WEIGHT: { [key in number]: number } = {
-  3: 10.0, // 3Pool
-  4: 20.0, // Starlay 3Pool
-  5: 30.0, // BUSD+3KGL
-  6: 40.0, // bai3kgl
+  3: 5000, // 3Pool
+  4: 1119, // Starlay 3Pool
+  5: 1731, // BUSD+3KGL
+  6: 2150, // bai3kgl
 }
 
 const generateVoteWeightParameter = async (
@@ -27,8 +27,8 @@ const generateVoteWeightParameter = async (
     (pre, cur) => pre + cur,
     0,
   )
-  if (total !== 100)
-    throw Error(`total of BASE_VOTE_WEIGHT is not 100%: now ${total}`)
+  if (total !== 10000)
+    throw Error(`total of BASE_VOTE_WEIGHT is not 10000(=100%): now ${total}`)
 
   // Collect pool / gauge / gauge weight infos
   const currentTime = new Date().getTime()
@@ -56,14 +56,17 @@ const generateVoteWeightParameter = async (
       pid: Number(pid),
       gauge: poolInfo.gauge,
       currentWeight: currentPower,
-      futureWeight: futureWeight * 100,
-      diff: currentPower - futureWeight * 100,
+      futureWeight: futureWeight,
+      diff: currentPower - futureWeight,
     })
   }
 
   // sort in descending order of minus
-  infos.sort((a, b) => a.diff - b.diff)
-  return [infos.map((v) => v.gauge), infos.map((v) => v.futureWeight)]
+  infos.sort((a, b) => b.diff - a.diff)
+  return {
+    gauges: infos.map((v) => v.gauge),
+    weights: infos.map((v) => v.futureWeight),
+  }
 }
 
 task('execute-vote-gauge-weight', 'Execute voteGaugeWeight').setAction(
@@ -116,21 +119,46 @@ task('execute-vote-gauge-weight', 'Execute voteGaugeWeight').setAction(
 
     for (let i = 0; i < poolCount.toNumber(); i++) {
       const poolInfo = await booster.poolInfo(i)
+      if (poolInfo.shutdown) {
+        continue
+      }
 
       const lpToken = await ERC20__factory.connect(poolInfo.lptoken, deployer)
       console.log('Lp Name:', await lpToken.symbol())
       console.log('Pool Gauge Address:', poolInfo.gauge)
 
       const weight = await gaugeController.get_gauge_weight(poolInfo.gauge)
-      console.log('Gauge Weight:', weight)
+      console.log('Gauge Weight:', weight.toString())
 
       console.log(`Before Vote`)
       await checkVoteInfo(system.voteProxy, poolInfo.gauge)
+    }
 
-      console.log('--- Vote Start ---')
-      // memo: cannot vote more than once each gauge
-      // await booster.voteGaugeWeight([poolInfo.gauge], [weights[i]])
-      console.log('--- Vote Finish ---')
+    console.log('--- Vote Start ---')
+    // memo: cannot vote more than once each gauge
+    const { gauges, weights } = await generateVoteWeightParameter(
+      system.voteProxy,
+      booster,
+      gaugeController,
+    )
+    console.log('gauges', gauges)
+    console.log('weights', weights)
+    const tx = await booster.voteGaugeWeight(gauges, weights)
+    await tx.wait()
+    console.log('--- Vote Finish ---')
+
+    for (let i = 0; i < poolCount.toNumber(); i++) {
+      const poolInfo = await booster.poolInfo(i)
+      if (poolInfo.shutdown) {
+        continue
+      }
+
+      const lpToken = await ERC20__factory.connect(poolInfo.lptoken, deployer)
+      console.log('Lp Name:', await lpToken.symbol())
+      console.log('Pool Gauge Address:', poolInfo.gauge)
+
+      const weight = await gaugeController.get_gauge_weight(poolInfo.gauge)
+      console.log('Gauge Weight:', weight.toString())
 
       console.log(`After Vote`)
       await checkVoteInfo(system.voteProxy, poolInfo.gauge)
@@ -206,7 +234,7 @@ task('check-vote-weight-parameter', 'Check voteWeight parameter').setAction(
       constants.kaglas.gaugeController,
       ethers.provider,
     )
-    const [gauges, weights] = await generateVoteWeightParameter(
+    const { gauges, weights } = await generateVoteWeightParameter(
       system.voteProxy,
       booster,
       gaugeController,

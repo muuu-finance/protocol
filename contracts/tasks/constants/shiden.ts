@@ -34,6 +34,10 @@ export const shiden: ConstantsType = {
       name: "BAI+3KGL",
       gauge: "0x9D2070D930005553D2994A202BB17C80053A4e00",
     },
+    {
+      name: "oUSD+3KGL",
+      gauge: "0xA52f1d4362f4fF6A976c379C8d450AA7EB20aff4",
+    },
   ],
   contracts: {
     treasury: {
