@@ -7,7 +7,7 @@ type EthereumAddress = `0x${string}`
 const POOL_NAME = "ousd3kgl"
 const GAUGE: { astar: EthereumAddress, shiden: EthereumAddress, localhost: EthereumAddress } = {
   astar: "0xbF98a30a9B385b225e9a3FD327FE8C4EDE2d6655",
-  shiden: "0xTBD",
+  shiden: "0xA52f1d4362f4fF6A976c379C8d450AA7EB20aff4",
   localhost: "0xTBD"
 }
 
