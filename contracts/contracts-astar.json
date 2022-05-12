@@ -90,6 +90,16 @@
       "rewards": [],
       "name": "bai3kgl",
       "id": 6
+    },
+    {
+      "lptoken": "0xea84bedb14577e22B545FF7B07548A48b3B08D84",
+      "token": "0xc6650c2730dE47cB76e90Bbdcc29976172Bf4128",
+      "gauge": "0xbF98a30a9B385b225e9a3FD327FE8C4EDE2d6655",
+      "kglRewards": "0x3EFED791e5a946D3d581D96Ee7FeaF796794412c",
+      "stash": "0x3F744D8077Ad1373E41C251Bc8e2D356d7B752DE",
+      "rewards": [],
+      "name": "ousd3kgl",
+      "id": 7
     }
   ]
 }

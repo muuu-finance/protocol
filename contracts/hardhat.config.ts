@@ -1,5 +1,6 @@
 import '@nomiclabs/hardhat-ethers'
 import "@nomiclabs/hardhat-waffle";
+import "@nomiclabs/hardhat-etherscan";
 import '@typechain/hardhat'
 import { BigNumber, ethers } from 'ethers'
 import fs from 'fs'
@@ -155,6 +156,17 @@ const config: HardhatUserConfig = {
       chainId: 81,
     }),
   },
+  etherscan: {
+    apiKey: "dummy",
+    customChains: [{
+      network: "astar",
+      chainId: 592,
+      urls: {
+        apiURL: "https://blockscout.com/astar/api",
+        browserURL: "https://blockscout.com/astar",
+      },
+    }]
+  }
 }
 
 export default config
