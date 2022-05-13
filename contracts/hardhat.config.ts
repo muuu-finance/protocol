@@ -77,8 +77,8 @@ const GWEI = 1000 * 1000 * 1000
 const gasPrices: { [key in tNetwork]: number } = {
   rinkeby: 3 * GWEI,
   kovan: 3 * GWEI,
-  astar: 1 * GWEI,
-  shiden: 1 * GWEI,
+  astar: 5 * GWEI,
+  shiden: 3 * GWEI,
   shibuya: 3 * GWEI
 }
 

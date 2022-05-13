@@ -1,6 +1,6 @@
 import { task } from "hardhat/config"
 import { HardhatEthersHelpers, HardhatRuntimeEnvironment } from "hardhat/types"
-import { BaseRewardPool, BaseRewardPool__factory, Booster, Booster__factory, ERC20, ERC20__factory, MuuuLockerV2, MuuuLockerV2__factory, MuuuToken__factory } from "../../types"
+import { BaseRewardPool, BaseRewardPool__factory, Booster, Booster__factory, DepositToken, DepositToken__factory, ERC20, ERC20__factory, MuuuLockerV2, MuuuLockerV2__factory, MuuuToken__factory } from "../../types"
 import { TaskUtils } from "../utils"
 import jsonfile from 'jsonfile'
 import { BigNumber, Contract, ethers } from "ethers"
@@ -76,6 +76,7 @@ task("check-stats-with-user", "Check Stats with user").setAction(
     for (const p of poolInfos) console.log(await getStatsInPool(
       EOA,
       BaseRewardPool__factory.connect(p.kglRewards, ethers.provider),
+      DepositToken__factory.connect(p.token, ethers.provider),
       registry,
       ERC20__factory.connect(p.lptoken, ethers.provider)
     ))
@@ -124,7 +125,7 @@ const getStatsInKGL = async (eoa: string, booster: Booster, _ethers: typeof ethe
   }
 }
 
-const getStatsInPool = async (eoa: string, rewardPool: BaseRewardPool, registry: Contract, lpToken: ERC20) => {
+const getStatsInPool = async (eoa: string, rewardPool: BaseRewardPool, depositToken: DepositToken, registry: Contract, lpToken: ERC20) => {
   const datas = await Promise.all([
     rewardPool.totalSupply().then(v => ethers.utils.formatUnits(v)),
     rewardPool.rewardRate().then(v => ethers.utils.formatUnits(v)),
@@ -132,9 +133,13 @@ const getStatsInPool = async (eoa: string, rewardPool: BaseRewardPool, registry:
     rewardPool.currentRewards().then(v => ethers.utils.formatUnits(v)),
     rewardPool.queuedRewards().then(v => ethers.utils.formatUnits(v)),
     eoa ? rewardPool.earned(eoa).then(v => ethers.utils.formatUnits(v)) : Promise.resolve("-"),
+    depositToken.name(),
+    depositToken.symbol(),
+    depositToken.totalSupply().then(v => ethers.utils.formatUnits(v)),
     lpToken.name(),
     lpToken.symbol(),
-    (registry.get_virtual_price_from_lp_token(lpToken.address) as Promise<BigNumber>).then(v => ethers.utils.formatUnits(v))
+    lpToken.totalSupply().then(v => ethers.utils.formatUnits(v)),
+    (registry.get_virtual_price_from_lp_token(lpToken.address) as Promise<BigNumber>).then(v => ethers.utils.formatUnits(v)),
   ])
   return {
     totalSupply: datas[0],
@@ -143,9 +148,17 @@ const getStatsInPool = async (eoa: string, rewardPool: BaseRewardPool, registry:
     currentRewards: datas[3],
     queuedRewards: datas[4],
     earned: datas[5],
-    name: datas[6],
-    symbol: datas[7],
-    virtualPrice: datas[8],
+    depositToken: {
+      name: datas[6],
+      symbol: datas[7],
+      totalSupply: datas[8],
+    },
+    lpToken: {
+      name: datas[9],
+      symbol: datas[10],
+      totalSupply: datas[11],
+      virtualPrice: datas[12],
+    }
   }
 }
 
