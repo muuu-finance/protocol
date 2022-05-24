@@ -32,7 +32,6 @@ const generateVoteWeightParameter = async (
     throw Error(`total of BASE_VOTE_WEIGHT is not 10000(=100%): now ${total}`)
 
   // Collect pool / gauge / gauge weight infos
-  const currentTime = new Date().getTime()
   const infos: {
     pid: number
     gauge: string
