@@ -12,10 +12,11 @@ import { TaskUtils } from '../utils'
 
 const SUPPORTED_NETWORK = ['astar', 'shiden', 'localhost'] as const
 const BASE_VOTE_WEIGHT: { [key in number]: number } = {
-  3: 5000, // 3Pool
-  4: 1119, // Starlay 3Pool
-  5: 1731, // BUSD+3KGL
-  6: 2150, // bai3kgl
+  3: 1268, // 3Pool
+  4: 5000, // Starlay 3Pool
+  5: 500, // BUSD+3KGL
+  6: 2732, // bai3kgl
+  7: 500, // oUSD3kgl
 }
 
 const generateVoteWeightParameter = async (
@@ -31,7 +32,6 @@ const generateVoteWeightParameter = async (
     throw Error(`total of BASE_VOTE_WEIGHT is not 10000(=100%): now ${total}`)
 
   // Collect pool / gauge / gauge weight infos
-  const currentTime = new Date().getTime()
   const infos: {
     pid: number
     gauge: string
@@ -47,9 +47,6 @@ const generateVoteWeightParameter = async (
       voterProxyAddress,
       poolInfo.gauge,
     )
-    const endTime = voteUserSlopes[2].toNumber() * 1000
-    if (endTime >= currentTime)
-      throw new Error(`Not over vote end time: endTime = ${new Date(endTime)}`)
     const futureWeight = BASE_VOTE_WEIGHT[Number(pid)]
     const currentPower = voteUserSlopes[1].toNumber()
     infos.push({

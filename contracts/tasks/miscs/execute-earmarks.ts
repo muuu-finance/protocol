@@ -10,14 +10,21 @@ task('execute-earmarks', 'Execute earmarkRewards and earmarkFees')
 
     const booster = await Booster__factory.connect(boosteraddress, _deployer)
     const poolCount = await booster.poolLength()
-    const poolInfos = await Promise.all([...Array(poolCount.toNumber())].map((_, i) => booster.poolInfo(i)))
+    const poolInfos = await Promise.all(
+      [...Array(poolCount.toNumber())].map((_, i) => booster.poolInfo(i)),
+    )
     for (let i = 0; i < poolCount.toNumber(); i++) {
       if (poolInfos[i].shutdown) {
         console.log(`SKIP earmark pool ${i}`)
-        continue;
+        continue
       }
-      await booster.earmarkRewards(i)
-      console.log('earmark pool ' + i + ' complete')
+      try {
+        const tx = await booster.earmarkRewards(i)
+        await tx.wait()
+        console.log('earmark pool ' + i + ' complete')
+      } catch (e) {
+        console.error(e)
+      }
     }
     // [NOTE] not execute earmark fees because kagla do not distribute fee.
     // await booster.earmarkFees()
