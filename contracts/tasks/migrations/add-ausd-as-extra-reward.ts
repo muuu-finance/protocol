@@ -35,16 +35,11 @@ task(
 .addOptionalParam('deployerAddress', "Deployer's address")
 .setAction(async ({ deployerAddress }: { deployerAddress: string }, hre: HardhatRuntimeEnvironment) => {
   console.log(`--- [add-${TOKEN_NAME}-as-extra-reward] START ---`)
-  const { ethers, network: _network } = hre
-  const deployer = deployerAddress
-   ? (await ethers.getSigner(deployerAddress))
-    : (await ethers.getSigners())[0]
-  
-  const networkName = _network.name as keyof typeof PARAMETER
+  const networkName = hre.network.name as keyof typeof PARAMETER
   const { pid, token } = PARAMETER[networkName]
 
   await hre.run("add-extra-reward:validate", { pid: pid.toString(), token });
-  // await hre.run("add-extra-reward:execute", { pid, token });
+  await hre.run("add-extra-reward:execute", { pid: pid.toString(), token, deployerAddress });
 
   console.log(`--- [add-${TOKEN_NAME}-as-extra-reward] FINISHED ---`)
 })
