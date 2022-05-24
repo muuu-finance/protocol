@@ -43,3 +43,17 @@ task(
 
   console.log(`--- [add-${TOKEN_NAME}-as-extra-reward] FINISHED ---`)
 })
+
+task(
+  `check-parameter-for-${TOKEN_NAME}-as-extra-reward`,
+  `check-parameter-for-${TOKEN_NAME}-as-extra-reward`
+)
+.setAction(async ({}, hre: HardhatRuntimeEnvironment) => {
+  console.log(`--- [check-parameter-for-${TOKEN_NAME}-as-extra-reward] START ---`)
+  const networkName = hre.network.name as keyof typeof PARAMETER
+  const { pid, token } = PARAMETER[networkName]
+
+  await hre.run("add-extra-reward:validate", { pid: pid.toString(), token });
+
+  console.log(`--- [check-parameter-for-${TOKEN_NAME}-as-extra-reward] FINISHED ---`)
+})
