@@ -12,7 +12,7 @@ import { TaskUtils } from '../utils'
 
 const SUPPORTED_NETWORK = ['astar', 'shiden', 'localhost'] as const
 const BASE_VOTE_WEIGHT: { [key in number]: number } = {
-  3: 3706, // 3Pool
+  3: 3705, // 3Pool
   4: 154, // Starlay 3Pool
   5: 100, // BUSD+3KGL
   6: 2393, // bai3kgl
