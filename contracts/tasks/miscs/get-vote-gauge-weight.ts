@@ -13,6 +13,12 @@ const WEEK = DAY * 7
 const URL = 'https://hub.snapshot.org/graphql'
 const SPACE = 'muuu.eth'
 
+// - Parameter
+const BORDER = {
+  top: 50,
+  bottom: 5,
+}
+
 // Interfaces
 // - GraphQL
 type Proposal = {
@@ -174,7 +180,7 @@ task('get-vote-gauge-weight', 'get-vote-gauge-weight').setAction(
     let overflowTotal = new BigNumberJs(0)
     const afterOverflow: (VoteResult & { overflow: string })[] = raw.map(
       (v) => {
-        const border = new BigNumberJs(50)
+        const border = new BigNumberJs(BORDER.top)
         const ratio = new BigNumberJs(v.processedRatio3)
         if (ratio.isGreaterThan(border)) {
           const overflow = ratio.minus(border)
@@ -200,7 +206,7 @@ task('get-vote-gauge-weight', 'get-vote-gauge-weight').setAction(
     const afterLowerLimit: (typeof afterOverflow[number] & {
       insufficient: string
     })[] = afterOverflow.map((v) => {
-      const border = new BigNumberJs(1)
+      const border = new BigNumberJs(BORDER.bottom)
       const ratio = new BigNumberJs(v.processedRatio3)
       if (ratio.isLessThan(border)) {
         const insufficient = border.minus(ratio)
