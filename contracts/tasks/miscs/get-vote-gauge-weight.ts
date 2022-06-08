@@ -138,11 +138,11 @@ const currentTimestamp = async (provider: JsonRpcProvider) => {
 }
 
 const getPoolIdFromLabel = (label: string): number => {
-  if (label === "3Pool") return 3
-  if (label === "Starlay 3Pool") return 4
-  if (label === "BUSD+3KGL") return 5
-  if (label === "BAI+3KGL") return 6
-  if (label === "oUSD+3KGL") return 7
+  if (label === '3Pool') return 3
+  if (label === 'Starlay 3Pool') return 4
+  if (label === 'BUSD+3KGL') return 5
+  if (label === 'BAI+3KGL') return 6
+  if (label === 'oUSD+3KGL') return 7
   return 0
 }
 
@@ -159,38 +159,47 @@ task('get-vote-gauge-weight', 'get-vote-gauge-weight').setAction(
       start: currentTerm,
       end: currentTerm + DAY,
     })
+
+    // validate & convert
+    if (res.proposals.length !== 1)
+      throw new Error(
+        `Exist one or more proposals: length = ${res.proposals.length}`,
+      )
     const proposal = convertProposalForUser(res.proposals[0])
-
-    
-
+    console.log(`## Target Proposal (converted)`)
+    console.log(proposal)
     const raw: VoteResult[] = proposal.results
 
     // Consider overflow
     let overflowTotal = new BigNumberJs(0)
-    const afterOverflow: (VoteResult & { overflow: string })[] = raw.map(v => {
-      const border = new BigNumberJs(50) 
-      const ratio = new BigNumberJs(v.processedRatio3)
-      if (ratio.isGreaterThan(border)) {
-        const overflow = ratio.minus(border)
-        overflowTotal = overflowTotal.plus(overflow)
+    const afterOverflow: (VoteResult & { overflow: string })[] = raw.map(
+      (v) => {
+        const border = new BigNumberJs(50)
+        const ratio = new BigNumberJs(v.processedRatio3)
+        if (ratio.isGreaterThan(border)) {
+          const overflow = ratio.minus(border)
+          overflowTotal = overflowTotal.plus(overflow)
+          return {
+            ...v,
+            overflow: overflow.toString(),
+            current: border.toString(),
+          }
+        }
         return {
           ...v,
-          overflow: overflow.toString(),
-          current: border.toString()
+          overflow: new BigNumberJs(0).toString(),
         }
-      }
-      return {
-        ...v,
-        overflow: new BigNumberJs(0).toString(),
-      }
-    })
+      },
+    )
     // For Debug
     // console.log("## afterOverflow")
     // console.log(afterOverflow)
 
     // Consider insufficient
     let insufficientTotal = new BigNumberJs(0)
-    const afterLowerLimit: (typeof afterOverflow[number] & { insufficient: string })[] = afterOverflow.map(v => {
+    const afterLowerLimit: (typeof afterOverflow[number] & {
+      insufficient: string
+    })[] = afterOverflow.map((v) => {
       const border = new BigNumberJs(1)
       const ratio = new BigNumberJs(v.processedRatio3)
       if (ratio.isLessThan(border)) {
@@ -199,7 +208,7 @@ task('get-vote-gauge-weight', 'get-vote-gauge-weight').setAction(
         return {
           ...v,
           insufficient: insufficient.toString(),
-          current: border.toString()
+          current: border.toString(),
         }
       }
       return {
@@ -221,14 +230,16 @@ task('get-vote-gauge-weight', 'get-vote-gauge-weight').setAction(
     }, new BigNumberJs(0))
 
     const adjustingValue = overflowTotal.minus(insufficientTotal)
-    const calcurated = afterLowerLimit.map(v => {
+    const calcurated = afterLowerLimit.map((v) => {
       const _overflow = new BigNumberJs(v.overflow)
       const _insufficient = new BigNumberJs(v.insufficient)
       if (_overflow.isZero() && _insufficient.isZero()) {
-        const _adjustingValue = adjustingValue.multipliedBy(new BigNumberJs(v.current)).dividedBy(totalRatioInRange)
+        const _adjustingValue = adjustingValue
+          .multipliedBy(new BigNumberJs(v.current))
+          .dividedBy(totalRatioInRange)
         return {
           ...v,
-          current: new BigNumberJs(v.current).plus(_adjustingValue).toString()
+          current: new BigNumberJs(v.current).plus(_adjustingValue).toString(),
         }
       }
       return v
@@ -238,23 +249,30 @@ task('get-vote-gauge-weight', 'get-vote-gauge-weight').setAction(
     // console.log(calcurated)
 
     // Process results
-    const results = calcurated.map(v => ({
+    const results = calcurated.map((v) => ({
       label: v.label,
       poolId: getPoolIdFromLabel(v.label),
       current: v.current,
-      fixed: new BigNumberJs(v.current).toFixed(2).toString()
+      fixed: new BigNumberJs(v.current).toFixed(2).toString(),
     }))
-    console.log("## results")
+    console.log('## results')
     console.log(results)
     // console.log(`total current: ${results.reduce((pv, cv) => pv.plus(new BigNumberJs(cv.current)), new BigNumberJs(0)).toString()}`)
-    console.log(`total fixed: ${results.reduce((pv, cv) => pv.plus(new BigNumberJs(cv.fixed)), new BigNumberJs(0)).toString()}`)
+    console.log(
+      `total fixed: ${results
+        .reduce(
+          (pv, cv) => pv.plus(new BigNumberJs(cv.fixed)),
+          new BigNumberJs(0),
+        )
+        .toString()}`,
+    )
     const output = results.reduce((pv, cv, index) => {
       const key = cv.poolId ? cv.poolId : `0-${index}` // consider to no poolId (cannot get from label)
       pv[key] = new BigNumberJs(cv.fixed).shiftedBy(2).toNumber()
       return pv
-    }, {} as { [key in any]: number } )
+    }, {} as { [key in any]: number })
     console.log(`## output`)
     console.log(output)
     return output
-  }
+  },
 )
