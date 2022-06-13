@@ -6,7 +6,7 @@ const ETHERSCAN_KEY = process.env.ETHERSCAN_KEY || ''
 const BWARE_LABS_KEY = process.env.BWARE_LABS_KEY || '' // if use BwareLabs for Astar, set this parameter
 const getAstarNetworkUrl = (networkName) =>
   BWARE_LABS_KEY
-    ? `https://${networkName}-api.bwarelabs.com/${BWARE_LABS_KEY}`
+    ? `https://${networkName}.blastapi.io/${BWARE_LABS_KEY}`
     : `https://rpc.${
         networkName === 'astar' ? 'astar' : `${networkName}.astar`
       }.network:8545`
@@ -22,5 +22,5 @@ module.exports = {
   MNEMONIC: MNEMONIC,
   ETHERSCAN_KEY: ETHERSCAN_KEY,
   getAstarNetworkUrl: getAstarNetworkUrl,
-  getEthereumNetworkUrl: getEthereumNetworkUrl
+  getEthereumNetworkUrl: getEthereumNetworkUrl,
 }

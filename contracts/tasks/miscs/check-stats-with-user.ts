@@ -15,8 +15,8 @@ type SupportedNetwork = typeof SUPPORTED_NETWORK[number]
 const EOA = ""
 const addressProviderAddress: { [key in SupportedNetwork]: string } = {
   astar: "0x5a0ad8337E5C6895b3893E80c8333859DAcf7c01",
-  localhost: ""
   shiden: '0xF86360a930590BaE72E42eFE03eba0aD61EAD6A9',
+  localhost: ""
 }
 
 // main
