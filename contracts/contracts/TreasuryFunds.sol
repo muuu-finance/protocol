@@ -39,7 +39,7 @@ contract TreasuryFunds {
     address _to,
     uint256 _value,
     bytes calldata _data
-  ) external returns (bool, bytes memory) {
+  ) external payable returns (bool, bytes memory) {
     require(msg.sender == operator, "!auth");
 
     (bool success, bytes memory result) = _to.call{ value: _value }(_data);

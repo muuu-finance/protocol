@@ -66,6 +66,7 @@ contract VirtualBalanceRewardPool is VirtualBalanceWrapper {
 
   IERC20 public rewardToken;
   uint256 public constant duration = 7 days;
+  uint256 public constant ACCEPTABLE_REWARD_AMOUNT = type(uint256).max / 1e18; // https://sips.synthetix.io/sips/sip-77/#potential-overflow-bug-fix
 
   address public operator;
 
@@ -141,7 +142,7 @@ contract VirtualBalanceRewardPool is VirtualBalanceWrapper {
   }
 
   function getReward(address _account) public updateReward(_account) {
-    uint256 reward = earned(_account);
+    uint256 reward = rewards[_account];
     if (reward > 0) {
       rewards[_account] = 0;
       rewardToken.safeTransfer(_account, reward);
@@ -183,6 +184,7 @@ contract VirtualBalanceRewardPool is VirtualBalanceWrapper {
   }
 
   function notifyRewardAmount(uint256 reward) internal updateReward(address(0)) {
+    require(reward < ACCEPTABLE_REWARD_AMOUNT, "over acceptable reward amount");
     historicalRewards = historicalRewards.add(reward);
     if (block.timestamp >= periodFinish) {
       rewardRate = reward.div(duration);
