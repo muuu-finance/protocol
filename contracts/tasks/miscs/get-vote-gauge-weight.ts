@@ -15,7 +15,7 @@ const SPACE = 'muuu.eth'
 
 // - Parameter
 const BORDER = {
-  top: 50,
+  top: 100,
   bottom: 1,
 }
 
