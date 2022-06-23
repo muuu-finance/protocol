@@ -171,6 +171,17 @@ interface IStash {
   ) external;
 }
 
+interface IStashV2Rev2 {
+  function initialize(
+    uint256 _pid,
+    address _operator,
+    address _staker,
+    address _gauge,
+    address _rewardFactory,
+    address _kgl
+  ) external;
+}
+
 interface IFeeDistro {
   function claim() external;
 
