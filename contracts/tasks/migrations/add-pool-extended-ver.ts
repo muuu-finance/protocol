@@ -12,7 +12,6 @@ const validateNetwork = (network: string): SupportedNetwork => {
   if (!(SUPPORTED_NETWORK as ReadonlyArray<string>).includes(network)) throw new Error(`Support only ${SUPPORTED_NETWORK} ...`)
   return network as SupportedNetwork
 }
-
 const checkConstantsPools = (network: string, gauge: string) => {
   const { pools } = loadConstants({ 
     network: network,
@@ -21,7 +20,6 @@ const checkConstantsPools = (network: string, gauge: string) => {
 
   if (!pools || !pools.some(p => p.gauge.toLowerCase() == gauge.toLowerCase())) throw new Error(`Could not get pools from constants`)
 }
-
 const checkPoolsInBooster = async (instance: Booster, poolLength: number, gauge: string, lpToken?: string) => {
   const addedPools = await Promise.all(
     [...Array(poolLength)].map(
@@ -35,7 +33,6 @@ const checkPoolsInBooster = async (instance: Booster, poolLength: number, gauge:
     if (addedLptokens.some(v => v.toLowerCase() == lpToken.toLowerCase())) throw new Error(`Selected lptoken has already been added`)
   }
 }
-
 const logDeployedPools = async (
   instance: Booster,
   poolLength: number,
@@ -136,6 +133,9 @@ task('add-pool-extended-version', 'add-pool-extended-version')
     )
   })
 
+/**
+ * extended version of `force-add-pool` task
+ */
 task('force-add-pool-extended-version', 'add-pool-extended-version')
   .addParam('deployerAddress', "Deployer's address")
   .addParam('poolName', "Pool's name")
@@ -185,7 +185,7 @@ task('force-add-pool-extended-version', 'add-pool-extended-version')
       instance,
       poolLength.toNumber(),
       poolName,
-      gaugeAddress,
-      lpTokenAddress
+      deployedPools,
+      network,
     )
   })
