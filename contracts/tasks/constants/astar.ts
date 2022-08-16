@@ -38,6 +38,10 @@ export const astar: ConstantsType = {
       name: "oUSD+3KGL",
       gauge: "0xbF98a30a9B385b225e9a3FD327FE8C4EDE2d6655",
     },
+    {
+      name: "aUSD+3KGL",
+      gauge: "0xe6bA40C9686a05a2841829f98b5dF9cd6E3300A9",
+    },
   ],
   contracts: {
     treasury: {

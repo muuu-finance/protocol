@@ -1,11 +1,64 @@
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { Booster__factory } from "../../types";
+import { Booster, Booster__factory } from "../../types";
 import { loadConstants } from "../constants";
+import { DeployedContractAddresses } from "../types";
 import { TaskUtils } from "../utils";
 
 const SUPPORTED_NETWORK = ["astar", "shiden", "localhost"] as const
 type SupportedNetwork = typeof SUPPORTED_NETWORK[number]
+
+const validateNetwork = (network: string): SupportedNetwork => {
+  if (!(SUPPORTED_NETWORK as ReadonlyArray<string>).includes(network)) throw new Error(`Support only ${SUPPORTED_NETWORK} ...`)
+  return network as SupportedNetwork
+}
+const checkConstantsPools = (network: string, gauge: string) => {
+  const { pools } = loadConstants({ 
+    network: network,
+    isUseMocks: false
+  })
+
+  if (!pools || !pools.some(p => p.gauge.toLowerCase() == gauge.toLowerCase())) throw new Error(`Could not get pools from constants`)
+}
+const checkPoolsInBooster = async (instance: Booster, poolLength: number, gauge: string, lpToken?: string) => {
+  const addedPools = await Promise.all(
+    [...Array(poolLength)].map(
+      (_, i) => instance.poolInfo(i)
+    )
+  )
+  const addedGauges = addedPools.map(v => v.gauge)
+  if (addedGauges.some(v => v.toLowerCase() == gauge.toLowerCase())) throw new Error(`Selected gauge has already been added`)
+  if (lpToken) {
+    const addedLptokens = addedPools.map(v => v.lptoken)
+    if (addedLptokens.some(v => v.toLowerCase() == lpToken.toLowerCase())) throw new Error(`Selected lptoken has already been added`)
+  }
+}
+const logDeployedPools = async (
+  instance: Booster,
+  poolLength: number,
+  poolName: string,
+  deployedPools: DeployedContractAddresses["pools"],
+  network: string
+) => {
+  const poolInfo = await instance.poolInfo(poolLength)
+  const data = {
+    lptoken: poolInfo.lptoken,
+    token: poolInfo.token,
+    gauge: poolInfo.gauge,
+    kglRewards: poolInfo.kglRewards,
+    stash: poolInfo.stash,
+    rewards: [],
+    name: poolName,
+    id: poolLength
+  }
+  const _deployedPools = deployedPools.concat([data])
+  console.log(_deployedPools)
+  TaskUtils.writeValueToGroup(
+    'pools',
+    _deployedPools,
+    TaskUtils.getFilePath({ network }),
+  )
+}
 
 /**
  * extended version of `add-pool` task 
@@ -31,25 +84,20 @@ task('add-pool-extended-version', 'add-pool-extended-version')
     networkName: string
   }, hre: HardhatRuntimeEnvironment) => {
     if (!(SUPPORTED_NETWORK as ReadonlyArray<string>).includes(networkName)) throw new Error(`Support only ${SUPPORTED_NETWORK} ...`)
+    const network = validateNetwork(networkName)
     const { ethers } = hre
-    const network = networkName as SupportedNetwork
-
     const { system, pools: deployedPools } = TaskUtils.loadDeployedContractAddresses({ network: network })
-    const { pools } = loadConstants({ 
-      network: network,
-      isUseMocks: false
-    })
-    if (!pools || !pools.some(p => p.gauge.toLowerCase() == gaugeAddress.toLowerCase())) throw new Error(`Could not get pools from constants`)
+
+    checkConstantsPools(network, gaugeAddress)
 
     const instance = Booster__factory.connect(system.booster, ethers.provider)
     const poolLength = await instance.poolLength()
-    const addedPools = await Promise.all(
-      [...Array(poolLength.toNumber())].map(
-        (_, i) => instance.poolInfo(i)
-      )
+
+    await checkPoolsInBooster(
+      instance,
+      poolLength.toNumber(),
+      gaugeAddress
     )
-    const addedGauges = addedPools.map(v => v.gauge)
-    if (addedGauges.some(v => v.toLowerCase() == gaugeAddress.toLowerCase())) throw new Error(`Selected gauge has already been added`)
 
     // execute
     await hre.run(`add-pool`, {
@@ -60,22 +108,68 @@ task('add-pool-extended-version', 'add-pool-extended-version')
     })
 
     // confirm
-    const poolInfo = await instance.poolInfo(poolLength.toNumber())
-    const data = {
-      lptoken: poolInfo.lptoken,
-      token: poolInfo.token,
-      gauge: poolInfo.gauge,
-      kglRewards: poolInfo.kglRewards,
-      stash: poolInfo.stash,
-      rewards: [],
-      name: poolName,
-      id: poolLength.toNumber()
-    }
-    const _deployedPools = deployedPools.concat([data])
-    console.log(_deployedPools)
-    TaskUtils.writeValueToGroup(
-      'pools',
-      _deployedPools,
-      TaskUtils.getFilePath({ network: networkName }),
+    await logDeployedPools(
+      instance,
+      poolLength.toNumber(),
+      poolName,
+      deployedPools,
+      network,
+    )
+  })
+
+/**
+ * extended version of `force-add-pool` task
+ */
+task('force-add-pool-extended-version', 'add-pool-extended-version')
+  .addParam('deployerAddress', "Deployer's address")
+  .addParam('poolName', "Pool's name")
+  .addParam('gaugeAddress', 'gauge address')
+  .addParam('lpTokenAddress', 'lpToken address')
+  .addParam('networkName', 'Network name')
+  .setAction(async ({
+    deployerAddress,
+    poolName,
+    gaugeAddress,
+    lpTokenAddress,
+    networkName
+  }: {
+    deployerAddress: string
+    poolName: string
+    gaugeAddress: string
+    lpTokenAddress: string
+    networkName: string
+  }, hre: HardhatRuntimeEnvironment) => {
+    const network = validateNetwork(networkName)
+    const { ethers } = hre
+    const { system, pools: deployedPools } = TaskUtils.loadDeployedContractAddresses({ network: network })
+
+    checkConstantsPools(network, gaugeAddress)
+
+    const instance = Booster__factory.connect(system.booster, ethers.provider)
+    const poolLength = await instance.poolLength()
+
+    await checkPoolsInBooster(
+      instance,
+      poolLength.toNumber(),
+      gaugeAddress,
+      lpTokenAddress
+    )
+
+    // execute
+    await hre.run(`force-add-pool`, {
+      deployerAddress: deployerAddress,
+      poolName: poolName,
+      poolManagerAddress: system.poolManagerV3,
+      gauge: gaugeAddress,
+      lpToken: lpTokenAddress
+    })
+
+    // confirm
+    await logDeployedPools(
+      instance,
+      poolLength.toNumber(),
+      poolName,
+      deployedPools,
+      network,
     )
   })

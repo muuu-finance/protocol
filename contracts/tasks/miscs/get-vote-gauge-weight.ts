@@ -149,6 +149,7 @@ const getPoolIdFromLabel = (label: string): number => {
   if (label === 'BUSD+3KGL') return 5
   if (label === 'BAI+3KGL') return 6
   if (label === 'oUSD+3KGL') return 7
+  if (label === 'aUSD+3KGL') return 8
   return 0
 }
 
@@ -163,7 +164,7 @@ task('get-vote-gauge-weight', 'get-vote-gauge-weight').setAction(
     // Get snapshot result
     const res = await getProposalsFromSnapshot({
       start: currentTerm,
-      end: currentTerm + DAY,
+      end: currentTerm + WEEK,
     })
 
     // validate & convert
