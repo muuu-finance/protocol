@@ -164,7 +164,7 @@ task('get-vote-gauge-weight', 'get-vote-gauge-weight').setAction(
     // Get snapshot result
     const res = await getProposalsFromSnapshot({
       start: currentTerm,
-      end: currentTerm + DAY,
+      end: currentTerm + WEEK,
     })
 
     // validate & convert
