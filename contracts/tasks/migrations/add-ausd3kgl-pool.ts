@@ -14,7 +14,7 @@ const PARAMS: {
 } = {
   astar: {
     gauge: "0xe6bA40C9686a05a2841829f98b5dF9cd6E3300A9",
-    lpToken: null
+    lpToken: "0xe12332a6118832CBAfC1913Ec5D8C3a05E6Fd880"
   },
   shiden: {
     gauge: null,
