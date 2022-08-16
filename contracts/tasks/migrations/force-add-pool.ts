@@ -2,11 +2,12 @@ import { task } from 'hardhat/config'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { PoolManagerV3__factory } from '../../types'
 
-task('add-pool', 'Add pool by using PoolManager')
+task('force-add-pool', 'Force add pool by using PoolManager')
   .addOptionalParam('deployerAddress', "Deployer's address")
   .addParam('poolName', 'key to use pools info in json')
   .addParam('poolManagerAddress', 'PoolManager contract address')
-  .addParam('gauge', 'param in PoolManagerV3#addPool')
+  .addParam('gauge', 'gauge address to add')
+  .addParam('lpToken', 'lpToken address to add')
   .setAction(
     async (
       {
@@ -14,11 +15,13 @@ task('add-pool', 'Add pool by using PoolManager')
         poolName,
         poolManagerAddress,
         gauge,
+        lpToken,
       }: {
         deployerAddress: string
         poolName: string
         poolManagerAddress: string
         gauge: string
+        lpToken: string,
       },
       hre: HardhatRuntimeEnvironment,
     ) => {
@@ -27,11 +30,14 @@ task('add-pool', 'Add pool by using PoolManager')
         (await ethers.getSigner(deployerAddress)) ||
         (await ethers.getSigners())[0]
 
-      console.log(`--- [add-pool] START PoolName: ${poolName} ---`)
-      const tx = await PoolManagerV3__factory.connect(poolManagerAddress, _deployer)
-        .functions["addPool(address)"](gauge)
+      console.log(`--- [force-add-pool] START PoolName: ${poolName} ---`)
+      const tx = await PoolManagerV3__factory.connect(poolManagerAddress, _deployer).forceAddPool(
+        lpToken,
+        gauge,
+        3 // stash version
+      )
       console.log(`tx: ${tx.hash}`)
       await tx.wait()
-      console.log(`--- [add-pool] FINISHED ---`)
+      console.log(`--- [force-add-pool] FINISHED ---`)
     },
   )
