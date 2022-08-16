@@ -30,6 +30,7 @@ task('add-pool', 'Add pool by using PoolManager')
       console.log(`--- [add-pool] START PoolName: ${poolName} ---`)
       const tx = await PoolManagerV3__factory.connect(poolManagerAddress, _deployer)
         .functions["addPool(address)"](gauge)
+      console.log(`tx: ${tx.hash}`)
       await tx.wait()
       console.log(`--- [add-pool] FINISHED ---`)
     },
