@@ -43,10 +43,6 @@ export const astar: ConstantsType = {
       gauge: '0xe6bA40C9686a05a2841829f98b5dF9cd6E3300A9',
     },
     {
-      name: 'aUSD+3KGL',
-      gauge: '0xe6bA40C9686a05a2841829f98b5dF9cd6E3300A9',
-    },
-    {
       name: 'ASTR/nASTR',
       gauge: '0xEC1BD689f7576E912348D50aE3F10F4cA5489384',
     },
