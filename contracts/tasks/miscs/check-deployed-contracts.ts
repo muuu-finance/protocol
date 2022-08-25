@@ -548,10 +548,11 @@ task('check-deployed-contracts', 'Check deployed contracts').setAction(
       providerOrSigner: ethers.provider,
     })
 
-    await checkBoosterOwner({
-      address: system.boosterOwner,
-      providerOrSigner: ethers.provider,
-    })
+    // NOTE: not deployed yet
+    // await checkBoosterOwner({
+    //   address: system.boosterOwner,
+    //   providerOrSigner: ethers.provider,
+    // })
 
     console.log(`------- END -------`)
   },
