@@ -4,7 +4,7 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types'
 type EthereumAddress = `0x${string}`
 
 // Parameters
-const POOL_NAME = 'adaiusdc3kgl-f'
+const POOL_NAME = 'ausdtusdc3kgl-f'
 type Param = {
   gauge: EthereumAddress | null
   lpToken: EthereumAddress | null
