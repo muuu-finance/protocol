@@ -110,6 +110,26 @@
       "rewards": [],
       "name": "ausd3kgl",
       "id": 8
+    },
+    {
+      "lptoken": "0x847f0Fd7e3A234E7321D01fF2347E4501eA89cF1",
+      "token": "0x5fD86978Ee4df3E006448433Ec4Aa51D461bEdc8",
+      "gauge": "0xEC1BD689f7576E912348D50aE3F10F4cA5489384",
+      "kglRewards": "0x8B70B9A1e178006132044f121972f6A0d38EF5c6",
+      "stash": "0xc23AB037D576Ec1245D7A89a62d20D66F0E497dE",
+      "rewards": [],
+      "name": "astrnastr",
+      "id": 9
+    },
+    {
+      "lptoken": "0xb91E7aBCbF38d0CAc1f99b062b75AE0c18e169d1",
+      "token": "0x4C565C34c4ecB07Ad168ded84C8DED8aEC1246A5",
+      "gauge": "0x4d69485D5E45f83A1A7DA1bd425eA1bE7c3E1106",
+      "kglRewards": "0x51d6a5eE71FB3e398704E2cD9F38241eBB687794",
+      "stash": "0x77E97B62afEA29D0743e283dc1654Fcf7E7Ddc0B",
+      "rewards": [],
+      "name": "kglmukgl",
+      "id": 10
     }
   ]
 }
