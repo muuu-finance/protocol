@@ -1,9 +1,8 @@
-import { task } from 'hardhat/config'
-import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import { request, gql } from 'graphql-request'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import BigNumberJs from 'bignumber.js'
-import { BigNumber } from 'ethers'
+import { gql, request } from 'graphql-request'
+import { task } from 'hardhat/config'
+import { HardhatRuntimeEnvironment } from 'hardhat/types'
 
 // Constants
 const HOUR = 60 * 60 // in minute
@@ -150,6 +149,8 @@ const getPoolIdFromLabel = (label: string): number => {
   if (label === 'BAI+3KGL') return 6
   if (label === 'oUSD+3KGL') return 7
   if (label === 'aUSD+3KGL') return 8
+  if (label === 'ASTR/nASTR') return 9
+  if (label === 'KGL/muKGL') return 10
   return 0
 }
 
