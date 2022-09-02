@@ -1,6 +1,9 @@
 {
   "scripts": {
     "hardhat": "npx hardhat",
+    "hardhat:local": "hardhat --network localhost",
+    "hardhat:astar": "hardhat --network astar",
+    "hardhat:shiden": "hardhat --network shiden",
     "truffle": "npx truffle",
     "compile": "yarn truffle compile && SKIP_LOAD=true yarn hardhat compile",
     "deploy": "yarn hardhat all-required-developments",
