@@ -155,7 +155,7 @@ const bulkTransferRoleToInputtedAddress = async (
   await (
     await _muuuStakingProxyV2.setPendingOwner(params.ownerInMuuuStakingProxyV2)
   ).wait()
-  await (await _muuuStakingProxyV2.applyPendingOwner()).wait()
+  await (await _muuuStakingProxyV2.acceptOwner()).wait()
 
   await (
     await _poolManagerV3.setOperator(params.operatorInPoolManagerV3)
