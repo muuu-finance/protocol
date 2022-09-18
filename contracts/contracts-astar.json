@@ -130,6 +130,16 @@
       "rewards": [],
       "name": "kglmukgl",
       "id": 10
+    },
+    {
+      "lptoken": "0x5c71534Db6e54322943AD429209D97Fa25bBFcd2",
+      "token": "0xBa5534fd7b9A11bb6127eB6920fD9DBf0e67b5bf",
+      "gauge": "0x8af463423696cd485e138d78b261cA95EbCB7F44",
+      "kglRewards": "0xd997D637C1a3C3273c91A4C5b6C417395aF0948a",
+      "stash": "0xD87aeCdC4fe895f811fF12bBeE60D2E810735DB5",
+      "rewards": [],
+      "name": "laymulay",
+      "id": 11
     }
   ]
 }
