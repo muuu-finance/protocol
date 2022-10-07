@@ -70,6 +70,10 @@ export const astar: ConstantsType = {
       name: 'LAY/muLAY',
       gauge: '0x8af463423696cd485e138d78b261cA95EbCB7F44',
     },
+    {
+      name: 'USDT+3KGL',
+      gauge: '0xF04285C92B120B327d2318cAcafe5cb1F4D9DB0F',
+    },
   ],
   contracts: {
     treasury: {
