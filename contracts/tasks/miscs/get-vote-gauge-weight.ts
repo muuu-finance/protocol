@@ -152,6 +152,7 @@ const getPoolIdFromLabel = (label: string): number => {
   if (label === 'ASTR/nASTR') return 9
   if (label === 'KGL/muKGL') return 10
   if (label === 'LAY/muLAY') return 11
+  if (label === 'USDT+3KGL') return 12
   return 0
 }
 
