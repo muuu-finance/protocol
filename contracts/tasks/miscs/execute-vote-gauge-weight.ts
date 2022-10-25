@@ -13,15 +13,15 @@ import { TaskUtils } from '../utils'
 const SUPPORTED_NETWORK = ['astar', 'shiden', 'localhost'] as const
 const BASE_VOTE_WEIGHT: { [key in number]: number } = {
   3: 100, // 3Pool
-  4: 1741, // Starlay 3Pool
+  4: 2719, // Starlay 3Pool
   5: 100, // BUSD+3KGL
   6: 100, // bai3kgl
-  7: 100, // oUSD3kgl
-  8: 2754, // aUSD3kgl
-  9: 4736, // ASTR/nASTR
+  7: 283, // oUSD3kgl
+  8: 2636, // aUSD3kgl
+  9: 2638, // ASTR/nASTR
   10: 100, // KGL/muKGL
-  11: 100, // LAY/muLAY
-  12: 169, // USDT+3KGL
+  11: 795, // LAY/muLAY
+  12: 529, // USDT+3KGL
 }
 
 const generateVoteWeightParameter = async (
