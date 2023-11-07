@@ -6,6 +6,7 @@ import {
   BoosterOwner__factory,
   Booster__factory,
   ClaimZap__factory,
+  ExtraRewardStashV3Rev2__factory,
   ExtraRewardStashV3__factory,
   KaglaVoterProxy__factory,
   KglDepositor__factory,
@@ -20,6 +21,7 @@ import {
   PoolManagerV3__factory,
   ProxyFactory__factory,
   RewardFactory__factory,
+  StashFactoryV2Rev2__factory,
   StashFactoryV2__factory,
   TokenFactory__factory,
   TreasuryFunds__factory,
@@ -176,6 +178,28 @@ export const deployStashFactoryV2 = async ({
     ContractKeys.StashFactoryV2,
   )
 
+export const deployStashFactoryV2Rev2 = async ({
+  deployer,
+  operator,
+  rewardFactory,
+  proxyFactory,
+  kgl,
+}: DeployCommonArgs & {
+  operator: string
+  rewardFactory: string
+  proxyFactory: string
+  kgl: string
+}) =>
+  withSaveAndVerify(
+    await new StashFactoryV2Rev2__factory(deployer).deploy(
+      operator,
+      rewardFactory,
+      proxyFactory,
+      kgl
+    ),
+    ContractKeys.StashFactoryV2Rev2,
+  )
+
 export const deployProxyFactory = async ({ deployer }: DeployCommonArgs) =>
   withSaveAndVerify(
     await new ProxyFactory__factory(deployer).deploy(),
@@ -188,6 +212,14 @@ export const deployExtraRewardStashV3 = async ({
   withSaveAndVerify(
     await new ExtraRewardStashV3__factory(deployer).deploy(),
     ContractKeys.ExtraRewardStashV3,
+  )
+
+export const deployExtraRewardStashV3Rev2 = async ({
+  deployer,
+}: DeployCommonArgs) =>
+  withSaveAndVerify(
+    await new ExtraRewardStashV3Rev2__factory(deployer).deploy(),
+    ContractKeys.ExtraRewardStashV3Rev2,
   )
 
 export const deployMuKglToken = async ({ deployer }: DeployCommonArgs) =>
